@@ -391,19 +391,18 @@ def compute_action_scores(
         'forward': 0.0,
         'archive': 0.0,
         'delete': 0.0,
-        'create_task': 0.0,
     }
 
-    # Reply likelihood
+    # Reply likelihood (5-class action space)
     if topic.is_question or topic.is_action_request:
         if people.sender_org_level >= 2:  # Manager or above
             scores['reply_now'] += 0.4
         else:
             scores['reply_later'] += 0.3
 
-    # Task creation
+    # Forward likelihood
     if task.has_deadline or len(task.action_items) > 0:
-        scores['create_task'] += 0.3 * task_score
+        scores['forward'] += 0.2  # May need to delegate
 
     # Archive
     if topic.is_fyi_only and not topic.is_action_request:

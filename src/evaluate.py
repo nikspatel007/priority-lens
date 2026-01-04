@@ -33,20 +33,17 @@ from features.combined import extract_combined_features, CombinedFeatureExtracto
 from policy_network import EmailPolicyNetwork, PolicyConfig, create_policy_network
 
 
-# Action mapping: dataset labels -> model indices
-# Model outputs: 0=reply_now, 1=reply_later, 2=forward, 3=archive, 4=delete, 5=create_task
-ACTION_NAMES = ['reply_now', 'reply_later', 'forward', 'archive', 'delete', 'create_task']
+# Action mapping: dataset labels -> model indices (5-class action space)
+# Model outputs: 0=reply_now, 1=reply_later, 2=forward, 3=archive, 4=delete
+ACTION_NAMES = ['reply_now', 'reply_later', 'forward', 'archive', 'delete']
 
 # Map dataset labels to model action indices
 LABEL_TO_ACTION = {
-    'REPLIED': 0,      # reply_now (could also be reply_later, but we use reply_now)
-    'FORWARDED': 2,    # forward
-    'DELETED': 4,      # delete
-    'ARCHIVED': 3,     # archive
-    'AUTO_FILED': 3,   # archive (system auto-filing is similar to archiving)
-    'KEPT': 3,         # archive (kept in inbox = low priority, similar to archive)
-    'COMPOSED': 0,     # reply_now (new composition is like replying)
-    'JUNK': 4,         # delete (junk = delete)
+    'REPLY_NOW': 0,    # reply_now (responded < 1 hour)
+    'REPLY_LATER': 1,  # reply_later (responded >= 1 hour)
+    'FORWARD': 2,      # forward
+    'ARCHIVE': 3,      # archive
+    'DELETE': 4,       # delete
 }
 
 # Timing labels: 0=immediate, 1=same_day, 2=next_day, 3=this_week, 4=when_possible
@@ -211,18 +208,20 @@ def get_ground_truth(emails: list[dict]) -> tuple[list[int], list[float]]:
     priorities = []
 
     for email in emails:
-        label = email.get('action', 'KEPT')
+        label = email.get('action', 'ARCHIVE')
         action_idx = LABEL_TO_ACTION.get(label, 3)  # Default to archive
         action_indices.append(action_idx)
 
-        # Infer priority from action (higher priority for replies)
-        if label in ('REPLIED', 'COMPOSED'):
-            priority = 0.8
-        elif label == 'FORWARDED':
+        # Infer priority from action (higher priority for immediate replies)
+        if label == 'REPLY_NOW':
+            priority = 0.9
+        elif label == 'REPLY_LATER':
+            priority = 0.7
+        elif label == 'FORWARD':
             priority = 0.6
-        elif label in ('DELETED', 'JUNK'):
+        elif label == 'DELETE':
             priority = 0.2
-        else:  # ARCHIVED, AUTO_FILED, KEPT
+        else:  # ARCHIVE
             priority = 0.4
         priorities.append(priority)
 
@@ -277,7 +276,7 @@ def evaluate_model(
     print(f"Inference complete: {inference_time:.2f}s ({samples_per_second:.0f} samples/sec)")
 
     # Compute metrics
-    num_classes = 6
+    num_classes = 5
 
     # Action accuracy
     correct_actions = sum(1 for t, p in zip(y_true_actions, y_pred_actions) if t == p)

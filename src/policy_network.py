@@ -4,7 +4,7 @@
 This module implements a PyTorch neural network for email prioritization
 decisions. The network uses an Actor-Critic architecture with:
 - Shared feature encoder
-- Action type head (6 classes)
+- Action type head (5 classes)
 - Response timing head (5 classes)
 - Priority head (continuous 0-1)
 - Value head (for advantage estimation)
@@ -25,14 +25,14 @@ from torch.distributions import Categorical
 
 
 # Constants matching email_action.py
-NUM_ACTION_TYPES = 6  # reply_now, reply_later, forward, archive, delete, create_task
+NUM_ACTION_TYPES = 5  # reply_now, reply_later, forward, archive, delete
 NUM_RESPONSE_TIMES = 5  # immediate, same_day, next_day, this_week, when_possible
 DEFAULT_FEATURE_DIM = 60  # From CombinedFeatures
 
 
 class PolicyOutput(NamedTuple):
     """Output from policy network forward pass."""
-    action_logits: torch.Tensor  # Shape: (batch, 6)
+    action_logits: torch.Tensor  # Shape: (batch, 5)
     timing_logits: torch.Tensor  # Shape: (batch, 5)
     priority: torch.Tensor       # Shape: (batch, 1)
     value: torch.Tensor          # Shape: (batch, 1)
@@ -200,7 +200,7 @@ class EmailPolicyNetwork(nn.Module):
         >>> policy = EmailPolicyNetwork(config)
         >>> features = torch.randn(32, 60)  # batch of 32 emails
         >>> output = policy(features)
-        >>> print(output.action_logits.shape)  # (32, 6)
+        >>> print(output.action_logits.shape)  # (32, 5)
 
         # Sample actions for training
         >>> sample = policy.sample_action(features)

@@ -75,14 +75,13 @@ The agent outputs a multi-dimensional action:
 ```python
 @dataclass
 class EmailAction:
-    # Primary action (discrete)
+    # Primary action (discrete, 5-class)
     action_type: Literal[
-        'reply_now',      # Draft immediate reply
-        'reply_later',    # Flag for later response
+        'reply_now',      # Respond within 1 hour
+        'reply_later',    # Respond after 1 hour
         'forward',        # Forward to someone else
-        'archive',        # No action needed
-        'delete',         # Spam/irrelevant
-        'create_task',    # Convert to task item
+        'archive',        # Move to folder (no response)
+        'delete',         # Delete/spam
     ]
 
     # Priority score (continuous, 0-1)
@@ -97,10 +96,8 @@ class EmailAction:
         'when_possible',  # No urgency
     ]
 
-    # Task creation details (if create_task)
-    task_priority: Literal['high', 'medium', 'low']
-    task_deadline: Optional[datetime]
-    task_assignee: Optional[str]  # Could delegate
+    # Forward details (if forward)
+    forward_to: Optional[str]  # Suggested recipient
 ```
 
 ### 3. Reward Function
@@ -318,7 +315,7 @@ class EmailAgent:
             'action': action_type,
             'priority': priority_score,
             'timing': suggested_timing,
-            'should_create_task': action_type == 'create_task',
+            'requires_response': action_type in ('reply_now', 'reply_later'),
             'context': self.extract_context(email),
         }
 ```

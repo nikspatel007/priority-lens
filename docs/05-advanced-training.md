@@ -288,7 +288,7 @@ Context:
 - Action requested: {row['is_action_request']}
 
 What action should be taken? Respond with:
-1. Action type (reply_now, reply_later, forward, archive, delete, create_task)
+1. Action type (reply_now, reply_later, forward, archive, delete)
 2. Priority score (0-1)
 3. Reasoning"""
 
