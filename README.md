@@ -84,16 +84,22 @@ For graph-based queries and efficient data storage, the system supports SurrealD
 # Install SurrealDB
 brew install surrealdb/tap/surreal
 
-# Start database (file-backed)
-surreal start file:data/enron.db --user root --pass root
+# Start database (using helper script)
+./scripts/start_surreal.sh           # Start Enron database (default)
+./scripts/start_surreal.sh gmail     # Or start Gmail database
 
-# Import Enron data
+# Initialize schema (in a new terminal while DB is running)
+./scripts/init_surreal.sh            # Apply schema to Enron
+./scripts/init_surreal.sh gmail      # Apply schema to Gmail
+
+# Import data
 python -m db.import_data enron data/train.json data/val.json data/test.json
-
-# Import Gmail data (separate database for privacy)
 python -m db.import_data gmail data/gmail_emails.json
 
-# Use SurrealDB-backed dataset
+# Connect to query data
+surreal sql --endpoint http://127.0.0.1:8000 --user root --pass root --ns email --db enron
+
+# Use SurrealDB-backed dataset in Python
 from db import create_surreal_dataloaders
 train, val, test = create_surreal_dataloaders(database='enron')
 ```
@@ -112,7 +118,9 @@ rl-emails/
 ├── requirements.txt
 ├── docs/                  # Documentation
 ├── scripts/               # Setup scripts
-│   └── download_enron.sh
+│   ├── download_enron.sh  # Download Enron dataset
+│   ├── start_surreal.sh   # Start SurrealDB server
+│   └── init_surreal.sh    # Initialize database schema
 ├── src/                   # Source code
 │   ├── preprocess.py
 │   ├── train.py
