@@ -29,6 +29,26 @@ except ImportError:
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Import SFTConfig for checkpoint loading (if available)
+try:
+    from sft_training import SFTConfig
+except ImportError:
+    # Define minimal SFTConfig for unpickling checkpoints
+    @dataclass
+    class SFTConfig:
+        learning_rate: float = 1e-3
+        weight_decay: float = 0.01
+        batch_size: int = 64
+        epochs: int = 10
+        warmup_epochs: int = 1
+        lr_decay: float = 0.1
+        lr_decay_epochs: tuple = (7, 9)
+        dropout: float = 0.1
+        label_smoothing: float = 0.1
+        log_every: int = 10
+        save_every: int = 1
+        checkpoint_dir: str = "checkpoints"
+
 from features.combined import extract_combined_features, CombinedFeatureExtractor
 from policy_network import EmailPolicyNetwork, PolicyConfig, create_policy_network
 
@@ -416,7 +436,7 @@ def main():
     # Load or create model
     if args.checkpoint and args.checkpoint.exists():
         print(f"Loading checkpoint from {args.checkpoint}...")
-        checkpoint = torch.load(args.checkpoint, map_location='cpu')
+        checkpoint = torch.load(args.checkpoint, map_location='cpu', weights_only=False)
         model = create_policy_network()
         model.load_state_dict(checkpoint['model_state_dict'])
         print("Checkpoint loaded")

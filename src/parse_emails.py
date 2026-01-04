@@ -51,7 +51,7 @@ def parse_email_file(file_path: Path) -> Optional[dict]:
     """Parse a single email file into structured data."""
     try:
         with open(file_path, 'r', encoding='latin-1') as f:
-            msg = email.message_from_file(f, policy=policy.default)
+            msg = email.message_from_file(f, policy=policy.compat32)
     except Exception as e:
         print(f"Error reading {file_path}: {e}", file=sys.stderr)
         return None
