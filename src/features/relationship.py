@@ -36,6 +36,7 @@ from email.utils import parsedate_to_datetime
 
 if TYPE_CHECKING:
     from .sender_frequency import SenderFrequencyIndex
+    from .user_response import UserResponseIndex
 
 
 # Email parsing utilities
@@ -738,6 +739,7 @@ class CommunicationGraph:
         email: dict,
         user: str,
         sender_frequency_index: Optional["SenderFrequencyIndex"] = None,
+        user_response_index: Optional["UserResponseIndex"] = None,
     ) -> RelationshipFeatures:
         """Extract relationship features for a single email and user.
 
@@ -746,6 +748,8 @@ class CommunicationGraph:
             user: The user's email address (the recipient)
             sender_frequency_index: Optional SenderFrequencyIndex for accurate
                 time-windowed frequency computation. If None, uses edge counts.
+            user_response_index: Optional UserResponseIndex for accurate
+                user response rate and timing computation. If None, uses edge stats.
 
         Returns:
             RelationshipFeatures for this email
@@ -764,18 +768,25 @@ class CommunicationGraph:
         user_baseline = self.user_baselines.get(user)
         user_avg_response = user_baseline.avg_response_time_hours if user_baseline else None
 
-        # Sender response deviation
+        # Response rate and avg response time to sender
+        # First compute from edge stats as fallback
         user_response_to_sender = stats_to.avg_response_time_hours
-        if user_response_to_sender is not None and user_avg_response is not None and user_avg_response > 0:
-            deviation = (user_avg_response - user_response_to_sender) / user_avg_response
-        else:
-            deviation = 0.0
-
-        # Response rate to sender
         if stats_from.emails_sent > 0:
             response_rate = stats_to.total_responses / stats_from.emails_sent
         else:
             response_rate = 0.0
+
+        # Use UserResponseIndex for accurate response history if provided
+        if user_response_index is not None and email_date is not None:
+            user_resp = user_response_index.get_response_history(user, sender, email_date)
+            response_rate = user_resp.user_replied_to_sender_rate
+            user_response_to_sender = user_resp.avg_response_time_hours
+
+        # Sender response deviation (how much faster/slower user responds to this sender vs baseline)
+        if user_response_to_sender is not None and user_avg_response is not None and user_avg_response > 0:
+            deviation = (user_avg_response - user_response_to_sender) / user_avg_response
+        else:
+            deviation = 0.0
 
         # Days since last email
         days_since = None

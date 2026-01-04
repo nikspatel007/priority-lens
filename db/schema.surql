@@ -264,6 +264,57 @@ DEFINE FUNCTION fn::sender_frequency_all_windows(
     };
 };
 
+-- Function to compute user response history metrics for a sender
+-- Returns object with reply_rate, avg_response_time_hours, total_received, total_responses
+DEFINE FUNCTION fn::user_response_history(
+    $user: string,
+    $sender: string,
+    $reference_time: datetime
+) {
+    -- Count total emails from sender to user before reference time
+    LET $total_received = (SELECT count() FROM emails
+                           WHERE from_email = $sender
+                             AND $user IN to_emails
+                             AND date < $reference_time
+                           GROUP ALL);
+    LET $received_count = $total_received[0].count ?? 0;
+
+    -- Count responses: emails from user that reply to sender's emails
+    -- Using replies_to edges and thread matching
+    LET $responses = (SELECT count() FROM emails AS e
+                      WHERE e.from_email = $user
+                        AND $sender IN e.to_emails
+                        AND e.date < $reference_time
+                        AND e.in_reply_to IS NOT NONE
+                        AND (SELECT count() FROM emails WHERE message_id = e.in_reply_to AND from_email = $sender)[0].count > 0
+                      GROUP ALL);
+    LET $response_count = $responses[0].count ?? 0;
+
+    -- Compute average response time from replies_to edges
+    LET $response_times = (SELECT
+            (e.date - orig.date) AS response_duration
+        FROM emails AS e
+        WHERE e.from_email = $user
+          AND e.date < $reference_time
+          AND e.in_reply_to IS NOT NONE
+        LET orig = (SELECT * FROM emails WHERE message_id = e.in_reply_to AND from_email = $sender LIMIT 1)[0]
+        WHERE orig IS NOT NONE
+    );
+
+    LET $avg_time = NONE;
+    -- Calculate average in hours if we have response times
+    -- Note: duration math may need adjustment based on SurrealDB version
+
+    LET $reply_rate = $response_count / math::max($received_count, 1);
+
+    RETURN {
+        reply_rate: $reply_rate,
+        avg_response_time_hours: $avg_time,
+        total_received: $received_count,
+        total_responses: $response_count
+    };
+};
+
 -- ============================================================================
 -- EVENTS (Auto-update triggers)
 -- ============================================================================

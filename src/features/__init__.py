@@ -85,6 +85,14 @@ from .sender_frequency import (
     compute_sender_frequency_from_db_sync,
 )
 
+from .user_response import (
+    UserResponse,
+    UserResponseIndex,
+    compute_user_response_from_emails,
+    compute_user_response_from_db,
+    compute_user_response_from_db_sync,
+)
+
 from .combined import (
     CombinedFeatures,
     CombinedFeatureExtractor,
@@ -161,6 +169,12 @@ __all__ = [
     'compute_sender_frequency_from_emails',
     'compute_sender_frequency_from_db',
     'compute_sender_frequency_from_db_sync',
+    # User response history features
+    'UserResponse',
+    'UserResponseIndex',
+    'compute_user_response_from_emails',
+    'compute_user_response_from_db',
+    'compute_user_response_from_db_sync',
     # Combined features
     'CombinedFeatures',
     'CombinedFeatureExtractor',
