@@ -147,6 +147,18 @@ class CommunicationStats:
     response_times_hours: list[float] = field(default_factory=list)
     first_contact: Optional[datetime] = None
     last_contact: Optional[datetime] = None
+    thread_depths: list[int] = field(default_factory=list)  # Depth of each thread participated in
+
+    @property
+    def avg_thread_depth(self) -> Optional[float]:
+        """Average thread depth (how deep conversations go).
+
+        Thread depth is the number of messages in threads this pair participates in.
+        Higher depth = longer back-and-forth conversations.
+        """
+        if not self.thread_depths:
+            return None
+        return sum(self.thread_depths) / len(self.thread_depths)
 
     @property
     def avg_response_time_hours(self) -> Optional[float]:
@@ -278,6 +290,9 @@ class RelationshipFeatures:
     response_rate_to_sender: float = 0.0  # How often user responds to this sender
     avg_response_time_to_sender: Optional[float] = None  # User's typical response time
 
+    # Thread participation
+    avg_thread_depth: Optional[float]  # Average depth of threads with this sender
+
     # Recency
     days_since_last_email: Optional[float] = None
 
@@ -291,7 +306,7 @@ class RelationshipFeatures:
     def to_feature_vector(self) -> list[float]:
         """Convert to numerical vector for ML pipeline.
 
-        Returns 14-dimensional vector (with frequency windows and CC affinity).
+        Returns 15-dimensional vector (with frequency, CC affinity, thread depth).
         """
         return [
             self.sender_response_deviation,
@@ -304,6 +319,7 @@ class RelationshipFeatures:
             min(self.total_emails_from_sender, 500) / 500.0,
             self.response_rate_to_sender,
             (self.avg_response_time_to_sender or 24.0) / 168.0,  # Normalize by week
+            min(self.avg_thread_depth or 1.0, 20.0) / 20.0,  # Normalize by max 20 depth
             min(self.days_since_last_email or 365, 365) / 365.0,
             self.communication_asymmetry,
             self.response_time_asymmetry,
@@ -580,6 +596,42 @@ class CommunicationGraph:
             # Add CC counts from tracking
             baseline.times_in_cc = self.user_cc_counts.get(user, 0)
 
+        # Compute thread depths after baselines
+        self.compute_thread_depths()
+
+    def compute_thread_depths(self) -> None:
+        """Compute thread depth statistics for each sender-recipient pair.
+
+        Thread depth measures how deep conversations go between two parties.
+        For each thread, we count the number of messages and attribute that
+        depth to each pair of participants who exchanged messages in that thread.
+        """
+        for thread_id, messages in self.messages_by_thread.items():
+            if len(messages) < 2:
+                continue
+
+            # Get thread depth (total messages in thread)
+            thread_depth = len(messages)
+
+            # Find all participants who actually exchanged messages
+            # Track pairs that had actual exchanges in this thread
+            senders_in_thread = set(m.sender for m in messages)
+
+            # For each sender in the thread, record depth for their relationship
+            # with each recipient they sent to
+            for msg in messages:
+                sender = msg.sender
+                for recipient in msg.recipients:
+                    if recipient in senders_in_thread:
+                        # This is an active exchange - record depth
+                        key = (sender, recipient)
+                        if key in self.edges:
+                            self.edges[key].thread_depths.append(thread_depth)
+                        # Also record for reverse direction if they replied
+                        reverse_key = (recipient, sender)
+                        if reverse_key in self.edges:
+                            self.edges[reverse_key].thread_depths.append(thread_depth)
+
     def get_sender_frequency_rank(self, sender: str, user: str) -> float:
         """Get percentile rank of sender frequency for a user (0-1).
 
@@ -759,6 +811,13 @@ class CommunicationGraph:
             emails_30d = min(stats_from.emails_sent, 100)
             emails_90d = stats_from.emails_sent
 
+        # Compute avg_thread_depth from both directions
+        # Combine thread depths from sender->user and user->sender exchanges
+        combined_depths = stats_from.thread_depths + stats_to.thread_depths
+        avg_thread_depth = None
+        if combined_depths:
+            avg_thread_depth = sum(combined_depths) / len(combined_depths)
+
         return RelationshipFeatures(
             sender_response_deviation=deviation,
             sender_frequency_rank=self.get_sender_frequency_rank(sender, user),
@@ -770,6 +829,7 @@ class CommunicationGraph:
             total_emails_from_sender=stats_from.emails_sent,
             response_rate_to_sender=min(1.0, response_rate),
             avg_response_time_to_sender=user_response_to_sender,
+            avg_thread_depth=avg_thread_depth,
             days_since_last_email=days_since,
             communication_asymmetry=asymmetry,
             response_time_asymmetry=rt_asymmetry,
@@ -834,6 +894,7 @@ class CommunicationGraph:
                 'total_responses': stats.total_responses,
                 'avg_response_time_hours': stats.avg_response_time_hours,
                 'median_response_time_hours': stats.median_response_time_hours,
+                'avg_thread_depth': stats.avg_thread_depth,
                 'communication_ratio': stats.communication_ratio if stats.communication_ratio != float('inf') else None,
                 'first_contact': stats.first_contact.isoformat() if stats.first_contact else None,
                 'last_contact': stats.last_contact.isoformat() if stats.last_contact else None,
