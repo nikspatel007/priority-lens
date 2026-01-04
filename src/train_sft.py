@@ -38,14 +38,51 @@ LABEL_TO_ACTION = {
 }
 
 
-class EmailDataset(Dataset):
-    """PyTorch dataset for labeled emails."""
+def build_user_index(emails: list[dict]) -> tuple[dict[str, int], int]:
+    """Build a mapping from email addresses to user indices.
 
-    def __init__(self, emails: list[dict], feature_extractor: CombinedFeatureExtractor):
+    Args:
+        emails: List of email dictionaries with 'from' field
+
+    Returns:
+        Tuple of (email_to_idx dict, num_users)
+        Index 0 is reserved for unknown users.
+    """
+    # Collect unique email addresses from the 'from' field
+    unique_emails = set()
+    for email in emails:
+        sender = email.get('from', '').lower().strip()
+        if sender:
+            unique_emails.add(sender)
+
+    # Create mapping (0 = unknown, 1..N = known users)
+    email_to_idx = {email: idx + 1 for idx, email in enumerate(sorted(unique_emails))}
+    return email_to_idx, len(unique_emails)
+
+
+class EmailDataset(Dataset):
+    """PyTorch dataset for labeled emails with optional user tracking."""
+
+    def __init__(
+        self,
+        emails: list[dict],
+        feature_extractor: CombinedFeatureExtractor,
+        user_index: Optional[dict[str, int]] = None,
+    ):
+        """Initialize dataset.
+
+        Args:
+            emails: List of email dictionaries
+            feature_extractor: Feature extractor instance
+            user_index: Optional mapping from email addresses to user indices.
+                        If provided, enables user-specific model training.
+        """
         self.emails = emails
         self.feature_extractor = feature_extractor
+        self.user_index = user_index or {}
         self.features = []
         self.labels = []
+        self.user_ids = []  # User indices for user-specific models
 
         print(f"Extracting features from {len(emails)} emails...")
         for email in emails:
@@ -60,13 +97,21 @@ class EmailDataset(Dataset):
                 action_label = email.get('action', 'ARCHIVE')
                 action_idx = LABEL_TO_ACTION.get(action_label, 3)
 
+                # Get user ID (0 = unknown if not in index)
+                sender = email.get('from', '').lower().strip()
+                user_id = self.user_index.get(sender, 0)
+
                 self.features.append(feat_vec)
                 self.labels.append(action_idx)
+                self.user_ids.append(user_id)
             except Exception as e:
                 print(f"Warning: Failed to extract features: {e}")
                 continue
 
         print(f"Extracted features for {len(self.features)} emails")
+        if self.user_index:
+            unique_users = len(set(self.user_ids) - {0})
+            print(f"  Unique users in dataset: {unique_users}")
 
     def __len__(self):
         return len(self.features)
@@ -75,7 +120,13 @@ class EmailDataset(Dataset):
         return (
             torch.tensor(self.features[idx], dtype=torch.float32),
             torch.tensor(self.labels[idx], dtype=torch.long),
+            torch.tensor(self.user_ids[idx], dtype=torch.long),
         )
+
+    @property
+    def has_user_ids(self) -> bool:
+        """Check if this dataset has user ID information."""
+        return bool(self.user_index)
 
 
 def compute_class_weights(
@@ -115,21 +166,40 @@ def train_epoch(
     criterion: nn.Module,
     optimizer: optim.Optimizer,
     device: torch.device,
+    use_user_ids: bool = False,
 ) -> dict:
-    """Train for one epoch."""
+    """Train for one epoch.
+
+    Args:
+        model: The policy network
+        dataloader: Training data loader
+        criterion: Loss function
+        optimizer: Optimizer
+        device: Device to use
+        use_user_ids: Whether to use user IDs for user-specific training
+
+    Returns:
+        Dict with 'loss' and 'accuracy' metrics
+    """
     model.train()
     total_loss = 0.0
     correct = 0
     total = 0
 
-    for batch_idx, (features, labels) in enumerate(dataloader):
+    for batch in dataloader:
+        if use_user_ids:
+            features, labels, user_ids = batch
+            user_ids = user_ids.to(device)
+        else:
+            features, labels, _ = batch  # Ignore user_ids
+            user_ids = None
         features = features.to(device)
         labels = labels.to(device)
 
         optimizer.zero_grad()
 
-        # Forward pass
-        output = model(features)
+        # Forward pass (with optional user conditioning)
+        output = model(features, user_ids)
         action_logits = output.action_logits
 
         # Compute loss (cross-entropy on action prediction)
@@ -156,8 +226,20 @@ def evaluate(
     dataloader: DataLoader,
     criterion: nn.Module,
     device: torch.device,
+    use_user_ids: bool = False,
 ) -> dict:
-    """Evaluate model on a dataset."""
+    """Evaluate model on a dataset.
+
+    Args:
+        model: The policy network
+        dataloader: Evaluation data loader
+        criterion: Loss function
+        device: Device to use
+        use_user_ids: Whether to use user IDs for user-specific evaluation
+
+    Returns:
+        Dict with evaluation metrics
+    """
     model.eval()
     total_loss = 0.0
     correct = 0
@@ -166,11 +248,17 @@ def evaluate(
     all_labels = []
 
     with torch.no_grad():
-        for features, labels in dataloader:
+        for batch in dataloader:
+            if use_user_ids:
+                features, labels, user_ids = batch
+                user_ids = user_ids.to(device)
+            else:
+                features, labels, _ = batch
+                user_ids = None
             features = features.to(device)
             labels = labels.to(device)
 
-            output = model(features)
+            output = model(features, user_ids)
             action_logits = output.action_logits
 
             loss = criterion(action_logits, labels)
@@ -221,6 +309,11 @@ def main():
                        help='Device (auto, cpu, cuda, mps)')
     parser.add_argument('--weight-power', type=float, default=0.3,
                        help='Class weight power (0=uniform, 0.3=soft, 1.0=inverse freq)')
+    # User-specific model arguments
+    parser.add_argument('--user-specific', action='store_true',
+                       help='Enable user-specific model with per-user embeddings')
+    parser.add_argument('--user-embedding-dim', type=int, default=32,
+                       help='Dimension of user embeddings (default: 32)')
 
     args = parser.parse_args()
 
@@ -249,13 +342,21 @@ def main():
             val_emails = json.load(f)
         print(f"Loaded {len(val_emails)} validation emails")
 
+    # Build user index for user-specific training
+    user_index = None
+    num_users = 0
+    if args.user_specific:
+        print("\nBuilding user index for user-specific training...")
+        user_index, num_users = build_user_index(train_emails)
+        print(f"  Found {num_users} unique users")
+
     # Create datasets
     feature_extractor = CombinedFeatureExtractor()
-    train_dataset = EmailDataset(train_emails, feature_extractor)
+    train_dataset = EmailDataset(train_emails, feature_extractor, user_index)
 
     val_dataset = None
     if val_emails:
-        val_dataset = EmailDataset(val_emails, feature_extractor)
+        val_dataset = EmailDataset(val_emails, feature_extractor, user_index)
 
     # Create dataloaders
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)
@@ -277,9 +378,13 @@ def main():
         input_dim=69,  # CombinedFeatures dimension (with content features)
         hidden_dims=hidden_dims,
         dropout=args.dropout,
+        num_users=num_users if args.user_specific else 0,
+        user_embedding_dim=args.user_embedding_dim,
     )
     model = EmailPolicyNetwork(config).to(device)
     print(f"\nModel: {sum(p.numel() for p in model.parameters())} parameters")
+    if args.user_specific:
+        print(f"  User-specific: {num_users} users, {args.user_embedding_dim}d embeddings")
 
     # Compute class weights for imbalanced data
     class_weights = compute_class_weights(train_dataset, args.weight_power).to(device)
@@ -291,17 +396,24 @@ def main():
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=5, factor=0.5)
 
     # Training loop
+    use_user_ids = args.user_specific
     best_val_acc = 0.0
     print(f"\nTraining for {args.epochs} epochs...")
     print("-" * 60)
 
     for epoch in range(args.epochs):
-        train_metrics = train_epoch(model, train_loader, criterion, optimizer, device)
+        train_metrics = train_epoch(
+            model, train_loader, criterion, optimizer, device,
+            use_user_ids=use_user_ids
+        )
 
         log = f"Epoch {epoch+1:3d}: train_loss={train_metrics['loss']:.4f}, train_acc={train_metrics['accuracy']:.3f}"
 
         if val_loader:
-            val_metrics = evaluate(model, val_loader, criterion, device)
+            val_metrics = evaluate(
+                model, val_loader, criterion, device,
+                use_user_ids=use_user_ids
+            )
             log += f", val_loss={val_metrics['loss']:.4f}, val_acc={val_metrics['accuracy']:.3f}"
             scheduler.step(val_metrics['loss'])
 
@@ -315,6 +427,7 @@ def main():
                     'optimizer_state_dict': optimizer.state_dict(),
                     'config': config,
                     'val_accuracy': best_val_acc,
+                    'user_index': user_index,  # Save for inference
                 }, args.output)
                 log += " *"
         else:
@@ -326,6 +439,7 @@ def main():
                     'epoch': epoch,
                     'model_state_dict': model.state_dict(),
                     'config': config,
+                    'user_index': user_index,
                 }, args.output)
 
         print(log)
@@ -337,7 +451,10 @@ def main():
     # Final evaluation on validation set
     if val_loader:
         print("\nFinal validation metrics:")
-        final_metrics = evaluate(model, val_loader, criterion, device)
+        final_metrics = evaluate(
+            model, val_loader, criterion, device,
+            use_user_ids=use_user_ids
+        )
         for action, acc in final_metrics['per_class_accuracy'].items():
             print(f"  {action}: {acc:.3f}")
 
