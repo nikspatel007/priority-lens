@@ -1,0 +1,97 @@
+{
+  "action_accuracy": 0.508596008944977,
+  "timing_accuracy": 0.0,
+  "action_precision": {
+    "reply_now": 0.30198019801980197,
+    "reply_later": 0.0,
+    "forward": 0.041822056473095365,
+    "archive": 0.6490695552116812,
+    "delete": 0.4,
+    "create_task": 0.0
+  },
+  "action_recall": {
+    "reply_now": 0.14330735732294292,
+    "reply_later": 0.0,
+    "forward": 0.2489429175475687,
+    "archive": 0.7330719247143177,
+    "delete": 0.0028878549655061768,
+    "create_task": 0.0
+  },
+  "action_f1": {
+    "reply_now": 0.19437320276676767,
+    "reply_later": 0.0,
+    "forward": 0.07161319750646193,
+    "archive": 0.6885180352708448,
+    "delete": 0.005734310289901242,
+    "create_task": 0.0
+  },
+  "priority_mae": 0.16805775925643474,
+  "priority_correlation": 0.035374165965687765,
+  "total_samples": 70207,
+  "action_distribution_true": {
+    "archive": 44630,
+    "reply_now": 17452,
+    "forward": 1892,
+    "delete": 6233
+  },
+  "action_distribution_pred": {
+    "reply_now": 8282,
+    "forward": 11262,
+    "archive": 50406,
+    "reply_later": 212,
+    "delete": 45
+  },
+  "confusion_matrix": {
+    "reply_now": {
+      "reply_now": 2501,
+      "reply_later": 33,
+      "forward": 2953,
+      "archive": 11960,
+      "delete": 5,
+      "create_task": 0
+    },
+    "reply_later": {
+      "reply_now": 0,
+      "reply_later": 0,
+      "forward": 0,
+      "archive": 0,
+      "delete": 0,
+      "create_task": 0
+    },
+    "forward": {
+      "reply_now": 332,
+      "reply_later": 3,
+      "forward": 471,
+      "archive": 1085,
+      "delete": 1,
+      "create_task": 0
+    },
+    "archive": {
+      "reply_now": 4909,
+      "reply_later": 147,
+      "forward": 6836,
+      "archive": 32717,
+      "delete": 21,
+      "create_task": 0
+    },
+    "delete": {
+      "reply_now": 540,
+      "reply_later": 29,
+      "forward": 1002,
+      "archive": 4644,
+      "delete": 18,
+      "create_task": 0
+    },
+    "create_task": {
+      "reply_now": 0,
+      "reply_later": 0,
+      "forward": 0,
+      "archive": 0,
+      "delete": 0,
+      "create_task": 0
+    }
+  },
+  "inference_time_seconds": 0.07743096351623535,
+  "samples_per_second": 906704.4604873002,
+  "timestamp": "2026-01-03 22:13:50"
+}
