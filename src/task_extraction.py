@@ -4,7 +4,7 @@ This module extracts actionable tasks and deadlines from emails, providing
 features that help the RL agent decide whether to create tracked tasks.
 
 Features extracted:
-- Deadline detection with date parsing
+- Deadline detection with date parsing (using enhanced DeadlineParser)
 - Action item extraction
 - Assignment detection
 - Effort estimation
@@ -15,6 +15,25 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Optional
 
+try:
+    from .deadline_parser import (
+        DeadlineParser,
+        DeadlineParserConfig,
+        Deadline,
+        DeadlineType,
+        extract_deadline,
+        extract_all_deadlines,
+    )
+except ImportError:
+    from deadline_parser import (
+        DeadlineParser,
+        DeadlineParserConfig,
+        Deadline,
+        DeadlineType,
+        extract_deadline,
+        extract_all_deadlines,
+    )
+
 
 @dataclass
 class TaskFeatures:
@@ -24,6 +43,9 @@ class TaskFeatures:
         has_deadline: Whether email mentions a deadline
         deadline_date: Parsed deadline datetime if detected
         deadline_text: Raw text that triggered deadline detection
+        deadline_urgency: Urgency score (0-1) based on deadline proximity
+        deadline_type: Type of deadline (explicit, implicit, urgency keyword, etc.)
+        all_deadlines: All extracted deadlines from the email
         has_deliverable: Whether email mentions a concrete deliverable
         deliverable_description: Extracted deliverable text
         is_assigned_to_user: Whether task seems assigned to the recipient
@@ -37,6 +59,9 @@ class TaskFeatures:
     has_deadline: bool = False
     deadline_date: Optional[datetime] = None
     deadline_text: str = ""
+    deadline_urgency: float = 0.0
+    deadline_type: Optional[str] = None
+    all_deadlines: list[Deadline] = field(default_factory=list)
     has_deliverable: bool = False
     deliverable_description: str = ""
     is_assigned_to_user: bool = False
@@ -147,8 +172,37 @@ def parse_date_reference(date_str: str, reference_date: Optional[datetime] = Non
     return None
 
 
-def extract_deadlines(text: str, reference_date: Optional[datetime] = None) -> tuple[bool, Optional[datetime], str]:
-    """Extract deadline information from text.
+def extract_deadlines(text: str, reference_date: Optional[datetime] = None, use_llm: bool = False) -> tuple[bool, Optional[datetime], str, float, Optional[str], list[Deadline]]:
+    """Extract deadline information from text using enhanced DeadlineParser.
+
+    Args:
+        text: Email text to analyze
+        reference_date: Reference date for relative calculations
+        use_llm: Whether to use LLM-based semantic extraction
+
+    Returns:
+        Tuple of (has_deadline, deadline_date, deadline_text, urgency, deadline_type, all_deadlines)
+    """
+    config = DeadlineParserConfig(use_llm=use_llm)
+    parser = DeadlineParser(config)
+    deadlines = parser.extract(text, reference_date)
+
+    if deadlines:
+        primary = deadlines[0]
+        return (
+            True,
+            primary.resolved_date,
+            primary.text,
+            primary.urgency,
+            primary.deadline_type.value if primary.deadline_type else None,
+            deadlines
+        )
+
+    return False, None, "", 0.0, None, []
+
+
+def extract_deadlines_legacy(text: str, reference_date: Optional[datetime] = None) -> tuple[bool, Optional[datetime], str]:
+    """Legacy deadline extraction for backward compatibility.
 
     Args:
         text: Email text to analyze
@@ -413,12 +467,14 @@ def detect_blocking(text: str) -> tuple[bool, bool]:
 def extract_tasks(
     email: dict,
     reference_date: Optional[datetime] = None,
+    use_llm: bool = False,
 ) -> TaskFeatures:
     """Extract task features from an email.
 
     Args:
         email: Email dictionary with 'subject', 'body', 'from' fields
         reference_date: Reference date for deadline calculations
+        use_llm: Whether to use LLM-based semantic deadline extraction
 
     Returns:
         TaskFeatures with all extracted information
@@ -428,8 +484,10 @@ def extract_tasks(
     sender = email.get('from', '')
     full_text = f"{subject} {body}"
 
-    # Extract deadlines
-    has_deadline, deadline_date, deadline_text = extract_deadlines(full_text, reference_date)
+    # Extract deadlines using enhanced parser
+    has_deadline, deadline_date, deadline_text, urgency, deadline_type, all_deadlines = extract_deadlines(
+        full_text, reference_date, use_llm=use_llm
+    )
 
     # Extract action items
     action_items = extract_action_items(full_text)
@@ -450,6 +508,9 @@ def extract_tasks(
         has_deadline=has_deadline,
         deadline_date=deadline_date,
         deadline_text=deadline_text,
+        deadline_urgency=urgency,
+        deadline_type=deadline_type,
+        all_deadlines=all_deadlines,
         has_deliverable=has_deliverable,
         deliverable_description=deliverable_description,
         is_assigned_to_user=is_assigned,
@@ -480,19 +541,16 @@ def compute_task_score(features: TaskFeatures) -> float:
 
     score = 0.2  # Base score for having any task indicators
 
-    # Deadline boost
+    # Deadline boost - use the enhanced urgency score
     if features.has_deadline:
         score += 0.25
 
-        # Additional boost for imminent deadlines
-        if features.deadline_date:
-            days_until = (features.deadline_date - datetime.now()).days
-            if days_until < 1:
-                score += 0.25  # Due today
-            elif days_until < 3:
-                score += 0.15  # Due in 2-3 days
-            elif days_until < 7:
-                score += 0.10  # Due this week
+        # Use urgency from enhanced parser (already considers deadline proximity)
+        score += features.deadline_urgency * 0.25
+
+        # Additional boost for multiple deadlines (complex task)
+        if len(features.all_deadlines) > 1:
+            score += 0.05 * min(len(features.all_deadlines), 3)
 
     # Assignment boost
     if features.is_assigned_to_user:
