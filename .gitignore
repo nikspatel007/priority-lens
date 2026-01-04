@@ -1,0 +1,11 @@
+# Data files (large datasets)
+data/
+
+# Runtime files
+.runtime/
+
+# Claude settings (local)
+.claude/
+
+# Beads redirect (local runtime)
+.beads/
