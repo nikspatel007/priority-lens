@@ -71,7 +71,7 @@ except ImportError:
         checkpoint_dir: str = "checkpoints"
         val_split: float = 0.1
 
-from features.combined import extract_combined_features, CombinedFeatureExtractor
+from features.combined import extract_combined_features, CombinedFeatureExtractor, FEATURE_DIMS
 from policy_network import EmailPolicyNetwork, PolicyConfig, create_policy_network
 
 
@@ -222,17 +222,29 @@ def load_emails(data_path: Path, limit: Optional[int] = None) -> list[dict]:
 def extract_features_batch(
     emails: list[dict],
     batch_size: int = 1000,
+    include_content: bool = False,
 ) -> list:
-    """Extract features from emails in batches."""
-    print(f"Extracting features from {len(emails)} emails...")
+    """Extract features from emails in batches.
 
-    extractor = CombinedFeatureExtractor()
+    Args:
+        emails: List of email dicts
+        batch_size: Batch size for processing
+        include_content: Whether to include content embeddings (384-dim)
+
+    Returns:
+        List of feature vectors
+    """
+    feature_dim = FEATURE_DIMS['total_with_content'] if include_content else FEATURE_DIMS['total_base']
+    print(f"Extracting features from {len(emails)} emails (dim={feature_dim}, content={include_content})...")
+
+    extractor = CombinedFeatureExtractor(include_content=include_content)
     features_list = []
 
     for i in range(0, len(emails), batch_size):
         batch = emails[i:i + batch_size]
-        batch_features = [extractor.to_vector(email) for email in batch]
-        features_list.extend(batch_features)
+        # Use batch extraction for efficiency (especially with content embeddings)
+        batch_features = extractor.to_matrix(batch)
+        features_list.extend(list(batch_features))
 
         if (i + batch_size) % 10000 == 0 or i + batch_size >= len(emails):
             print(f"  Processed {min(i + batch_size, len(emails))}/{len(emails)} emails")
@@ -435,6 +447,16 @@ def main():
         default=512,
         help='Batch size for inference (default: 512)',
     )
+    parser.add_argument(
+        '--include-content',
+        action='store_true',
+        help='Include content embeddings (384-dim sentence transformer)',
+    )
+    parser.add_argument(
+        '--input-dim',
+        type=int,
+        help='Override input dimension (auto-detected from checkpoint if not specified)',
+    )
 
     args = parser.parse_args()
 
@@ -446,25 +468,49 @@ def main():
         print(f"Error: Data file not found: {args.data}")
         sys.exit(1)
 
-    # Load data
-    emails = load_emails(args.data, args.limit)
-
-    # Extract features
-    features = extract_features_batch(emails)
-
-    # Get ground truth
-    y_true_actions, y_true_priorities = get_ground_truth(emails)
+    # Determine input dimension
+    include_content = args.include_content
+    input_dim = args.input_dim
 
     # Load or create model
     if args.checkpoint and args.checkpoint.exists():
         print(f"Loading checkpoint from {args.checkpoint}...")
         checkpoint = torch.load(args.checkpoint, map_location='cpu', weights_only=False)
-        model = create_policy_network()
+
+        # Auto-detect input_dim from checkpoint config if available
+        if input_dim is None:
+            if 'config' in checkpoint and hasattr(checkpoint['config'], 'input_dim'):
+                input_dim = checkpoint['config'].input_dim
+                print(f"Auto-detected input_dim from checkpoint: {input_dim}")
+            elif 'input_dim' in checkpoint:
+                input_dim = checkpoint['input_dim']
+                print(f"Auto-detected input_dim from checkpoint: {input_dim}")
+
+        # Infer include_content from input_dim
+        if input_dim is not None:
+            include_content = input_dim > FEATURE_DIMS['total_base']
+            print(f"Content features: {'enabled' if include_content else 'disabled'} (input_dim={input_dim})")
+
+        # Create model with correct input_dim
+        if input_dim is None:
+            input_dim = FEATURE_DIMS['total_with_content'] if include_content else FEATURE_DIMS['total_base']
+        model = create_policy_network(input_dim=input_dim)
         model.load_state_dict(checkpoint['model_state_dict'])
         print("Checkpoint loaded")
     else:
         print("Using untrained baseline model")
-        model = create_policy_network()
+        if input_dim is None:
+            input_dim = FEATURE_DIMS['total_with_content'] if include_content else FEATURE_DIMS['total_base']
+        model = create_policy_network(input_dim=input_dim)
+
+    # Load data
+    emails = load_emails(args.data, args.limit)
+
+    # Extract features
+    features = extract_features_batch(emails, include_content=include_content)
+
+    # Get ground truth
+    y_true_actions, y_true_priorities = get_ground_truth(emails)
 
     # Evaluate
     metrics = evaluate_model(

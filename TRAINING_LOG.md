@@ -30,6 +30,7 @@
 | SFT (vanilla) | 96.8% | 37.48% | Mode collapse → archive |
 | SFT (class weights) | 48.6% | 53.14% | Balanced predictions, +15.7pp |
 | DPO (synthetic prefs) | 54.2% | 32.64% | Mode collapse → reply_later, FAILED |
+| **SFT + content** | **72.6%** | **73.39%** | **+20.25pp with embeddings** |
 
 #### Per-class F1 Scores (Class Weighted SFT)
 | Action | Precision | Recall | F1 |
@@ -71,6 +72,41 @@ classification accuracy on supervised tasks. The approach was fundamentally misa
 | archive | 0.000 | 0.000 | 0.000 |
 | delete | 0.000 | 0.000 | 0.000 |
 
+#### Stage 5: Content Features (SUCCESS)
+Added email body embeddings using sentence-transformers, expanding features from 60 to 444 dimensions.
+
+**Implementation**:
+- Model: `all-MiniLM-L6-v2` (384-dim embeddings)
+- Features: Combined subject + body text embeddings
+- Total feature vector: 60 (metadata) + 384 (content) = 444 dims
+- New module: `src/features/content.py`
+
+**Training**:
+- 10 epochs, best validation accuracy: 72.6% (epoch 5)
+- Used existing class weighting approach
+- Training time: ~2 min/epoch (embedding extraction is efficient)
+
+**Per-class Results (SFT + Content)**:
+| Action | Precision | Recall | F1 |
+|--------|-----------|--------|-----|
+| reply_now | 0.000 | 0.000 | 0.000 |
+| reply_later | 0.758 | 0.913 | 0.828 |
+| forward | 0.694 | 0.865 | 0.770 |
+| archive | 0.754 | 0.617 | 0.679 |
+| delete | 0.677 | 0.630 | 0.653 |
+
+**Improvement over metadata-only SFT**:
+| Action | F1 (metadata) | F1 (+ content) | Δ |
+|--------|---------------|----------------|-----|
+| reply_later | 0.630 | 0.828 | +0.198 |
+| forward | 0.316 | 0.770 | +0.454 |
+| archive | 0.469 | 0.679 | +0.210 |
+| delete | 0.603 | 0.653 | +0.050 |
+
+**Key insight**: Semantic content features significantly improve classification, especially for
+`forward` (+45pp F1) where email content strongly indicates forwarding intent. This validates
+recommendation #4 from the previous analysis.
+
 ### Artifacts (gitignored, local only)
 ```
 data/
@@ -88,7 +124,9 @@ checkpoints/
 ├── sft_epoch_*.pt     # Per-epoch checkpoints
 ├── stage_4.pt         # DPO final checkpoint (FAILED)
 ├── best_dpo.pt        # Best DPO validation checkpoint
-└── dpo_epoch_*.pt     # DPO per-epoch checkpoints
+├── dpo_epoch_*.pt     # DPO per-epoch checkpoints
+├── sft_content.pt     # SFT + content features (BEST: 73.39%)
+└── sft_content_epoch_*.pt  # Content SFT per-epoch checkpoints
 ```
 
 ### Issues Identified (Resolved)
@@ -109,10 +147,13 @@ checkpoints/
 - [ ] Try Gmail data (better threading headers for reply_now)
 - [ ] Experiment with focal loss + balanced sampling combination
 - [x] Stage 4: DPO training - **FAILED** (mode collapse, see analysis above)
+- [x] Stage 5: Content features - **SUCCESS** (+20pp improvement)
 
 ### Recommendations for Improving Accuracy
 1. **Better data**: Gmail/Outlook with proper threading headers for reply_now classification
 2. **Ensemble methods**: Combine multiple SFT models with different class weights
 3. **Two-stage classification**: First classify urgent vs non-urgent, then sub-classify
-4. **More sophisticated features**: Add email content embeddings (currently only metadata)
+4. ~~**More sophisticated features**: Add email content embeddings~~ → **DONE** (73.39% accuracy)
 5. **Human preference data**: Real human-labeled preferences instead of synthetic rankings
+6. **Larger embedding model**: Try `all-mpnet-base-v2` (768-dim) for richer representations
+7. **Attention-based fusion**: Use attention to weigh metadata vs content features dynamically

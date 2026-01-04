@@ -21,6 +21,12 @@ from .topic import TopicFeatures, classify_topic, compute_topic_score
 from .task import TaskFeatures, extract_tasks, compute_task_score
 from .people import PeopleFeatures, extract_people_features, compute_people_score
 from .temporal import TemporalFeatures, extract_temporal_features, compute_temporal_score
+from .content import (
+    ContentFeatures,
+    ContentFeatureExtractor,
+    get_content_extractor,
+    DEFAULT_EMBEDDING_DIM,
+)
 
 
 @dataclass
@@ -32,28 +38,36 @@ class CombinedFeatures:
     task: TaskFeatures
     people: PeopleFeatures
     temporal: TemporalFeatures
+    content: Optional[ContentFeatures] = None  # Optional for backward compat
 
     # Computed scores
-    project_score: float
-    topic_score: float
-    task_score: float
-    people_score: float
-    temporal_score: float
-    overall_priority: float
+    project_score: float = 0.0
+    topic_score: float = 0.0
+    task_score: float = 0.0
+    people_score: float = 0.0
+    temporal_score: float = 0.0
+    overall_priority: float = 0.0
 
-    def to_feature_vector(self) -> Union["np.ndarray", list[float]]:
+    def to_feature_vector(self, include_content: bool = True) -> Union["np.ndarray", list[float]]:
         """Convert to unified feature vector for ML pipeline.
 
         Returns concatenated vector of all features plus computed scores.
 
-        Vector structure:
+        Vector structure (with content):
         - Project features: 8 dims
         - Topic features: 20 dims
         - Task features: 12 dims
         - People features: 15 dims
         - Temporal features: 8 dims
         - Computed scores: 6 dims (project, topic, task, people, temporal, overall)
-        - Total: 69 dims
+        - Content embedding: 384 dims (if include_content=True and content is available)
+        - Total: 69 dims (without content) or 453 dims (with content)
+
+        Args:
+            include_content: Whether to include content embeddings (default True)
+
+        Returns:
+            Feature vector as numpy array or list
         """
         # Get individual vectors
         project_vec = self.project.to_feature_vector()
@@ -73,7 +87,7 @@ class CombinedFeatures:
         ]
 
         if HAS_NUMPY:
-            return np.concatenate([
+            base_vec = np.concatenate([
                 np.asarray(project_vec),
                 np.asarray(topic_vec),
                 np.asarray(task_vec),
@@ -81,6 +95,11 @@ class CombinedFeatures:
                 np.asarray(temporal_vec),
                 np.array(scores, dtype=np.float32),
             ])
+            # Add content embedding if available and requested
+            if include_content and self.content is not None:
+                content_vec = self.content.to_feature_vector()
+                return np.concatenate([base_vec, np.asarray(content_vec)])
+            return base_vec
         else:
             # List concatenation
             combined = []
@@ -90,11 +109,18 @@ class CombinedFeatures:
                 else:
                     combined.extend(list(vec))
             combined.extend(scores)
+            # Add content embedding if available and requested
+            if include_content and self.content is not None:
+                content_vec = self.content.to_feature_vector()
+                if isinstance(content_vec, list):
+                    combined.extend(content_vec)
+                else:
+                    combined.extend(list(content_vec))
             return combined
 
     def to_dict(self) -> dict:
         """Convert to dictionary representation for inspection/logging."""
-        return {
+        result = {
             'scores': {
                 'project': self.project_score,
                 'topic': self.topic_score,
@@ -138,8 +164,17 @@ class CombinedFeatures:
                 'is_weekend': self.temporal.is_weekend,
                 'urgency': self.temporal.temporal_urgency,
             },
-            'vector_dims': len(self.to_feature_vector()),
+            'vector_dims': len(self.to_feature_vector(include_content=self.content is not None)),
+            'vector_dims_without_content': len(self.to_feature_vector(include_content=False)),
         }
+        if self.content is not None:
+            result['content'] = {
+                'subject_length': self.content.subject_length,
+                'body_length': self.content.body_length,
+                'body_word_count': self.content.body_word_count,
+                'embedding_dim': self.content.embedding_dim,
+            }
+        return result
 
 
 def compute_overall_priority(
@@ -192,6 +227,8 @@ def extract_combined_features(
     thread_context: Optional[dict] = None,
     reference_time: Optional["datetime"] = None,
     weights: Optional[dict[str, float]] = None,
+    include_content: bool = False,
+    content_extractor: Optional[ContentFeatureExtractor] = None,
 ) -> CombinedFeatures:
     """Extract all features from an email and combine into unified representation.
 
@@ -202,6 +239,8 @@ def extract_combined_features(
         thread_context: Optional dict with thread timing info (for temporal features)
         reference_time: Time to compute temporal features from (default: now)
         weights: Optional custom priority weights
+        include_content: Whether to extract content embeddings (default False for backward compat)
+        content_extractor: Optional content extractor instance (uses global if None)
 
     Returns:
         CombinedFeatures with all extracted information
@@ -223,6 +262,14 @@ def extract_combined_features(
         reference_time=reference_time,
         thread_context=thread_context,
     )
+
+    # Extract content features if requested
+    content_features = None
+    if include_content:
+        if content_extractor is not None:
+            content_features = content_extractor.extract(email)
+        else:
+            content_features = get_content_extractor().extract(email)
 
     # Compute scores
     # Project score uses the project_features internal score
@@ -248,6 +295,7 @@ def extract_combined_features(
         task=task_features,
         people=people_features,
         temporal=temporal_features,
+        content=content_features,
         project_score=project_score,
         topic_score=topic_score,
         task_score=task_score,
@@ -262,7 +310,11 @@ def extract_batch(
     *,
     user_email: str = '',
     user_context: Optional[dict] = None,
+    thread_context: Optional[dict] = None,
+    reference_time: Optional["datetime"] = None,
     weights: Optional[dict[str, float]] = None,
+    include_content: bool = False,
+    content_extractor: Optional[ContentFeatureExtractor] = None,
 ) -> list[CombinedFeatures]:
     """Extract features from a batch of emails.
 
@@ -270,20 +322,72 @@ def extract_batch(
         emails: List of email dictionaries
         user_email: The user's email address
         user_context: Optional historical context
+        thread_context: Optional thread timing info
+        reference_time: Time to compute temporal features from
         weights: Optional priority weights
+        include_content: Whether to extract content embeddings
+        content_extractor: Optional content extractor instance
 
     Returns:
         List of CombinedFeatures, one per email
     """
-    return [
-        extract_combined_features(
+    # For content features, batch extraction is more efficient
+    content_features_list = None
+    if include_content:
+        extractor = content_extractor or get_content_extractor()
+        content_features_list = extractor.extract_batch(emails)
+
+    results = []
+    for i, email in enumerate(emails):
+        subject = email.get('subject', '')
+        body = email.get('body', '')
+
+        # Extract individual feature sets
+        project_features = extract_project_features(subject, body)
+        topic_features = classify_topic(subject, body)
+        task_features = extract_tasks(subject, body)
+        people_features = extract_people_features(
             email,
             user_email=user_email,
             user_context=user_context,
-            weights=weights,
         )
-        for email in emails
-    ]
+        temporal_features = extract_temporal_features(
+            email,
+            reference_time=reference_time,
+            thread_context=thread_context,
+        )
+
+        # Get content features from pre-computed batch
+        content_features = content_features_list[i] if content_features_list else None
+
+        # Compute scores
+        project_score = project_features.project_score
+        topic_score = compute_topic_score(topic_features)
+        task_score = compute_task_score(task_features)
+        people_score = compute_people_score(people_features)
+        temporal_score = compute_temporal_score(temporal_features)
+
+        overall_priority = compute_overall_priority(
+            project_score, topic_score, task_score, people_score, temporal_score,
+            weights=weights
+        )
+
+        results.append(CombinedFeatures(
+            project=project_features,
+            topic=topic_features,
+            task=task_features,
+            people=people_features,
+            temporal=temporal_features,
+            content=content_features,
+            project_score=project_score,
+            topic_score=topic_score,
+            task_score=task_score,
+            people_score=people_score,
+            temporal_score=temporal_score,
+            overall_priority=overall_priority,
+        ))
+
+    return results
 
 
 def build_feature_matrix(
@@ -291,6 +395,7 @@ def build_feature_matrix(
     *,
     user_email: str = '',
     user_context: Optional[dict] = None,
+    include_content: bool = False,
 ) -> Union["np.ndarray", list[list[float]]]:
     """Build feature matrix from batch of emails.
 
@@ -298,12 +403,18 @@ def build_feature_matrix(
         emails: List of email dictionaries
         user_email: The user's email address
         user_context: Optional historical context
+        include_content: Whether to include content embeddings
 
     Returns:
         Matrix of shape (n_emails, n_features)
     """
-    features_list = extract_batch(emails, user_email=user_email, user_context=user_context)
-    vectors = [f.to_feature_vector() for f in features_list]
+    features_list = extract_batch(
+        emails,
+        user_email=user_email,
+        user_context=user_context,
+        include_content=include_content,
+    )
+    vectors = [f.to_feature_vector(include_content=include_content) for f in features_list]
 
     if HAS_NUMPY:
         return np.stack(vectors)
@@ -321,6 +432,9 @@ class CombinedFeatureExtractor:
         user_email: str = '',
         user_context: Optional[dict] = None,
         weights: Optional[dict[str, float]] = None,
+        include_content: bool = False,
+        content_model: str = 'all-MiniLM-L6-v2',
+        device: Optional[str] = None,
     ):
         """Initialize extractor with user context.
 
@@ -328,10 +442,21 @@ class CombinedFeatureExtractor:
             user_email: The user's email address
             user_context: Historical interaction data
             weights: Priority computation weights
+            include_content: Whether to include content embeddings
+            content_model: Sentence transformer model name for content embeddings
+            device: Device for content model ('cpu', 'cuda', 'mps', or None for auto)
         """
         self.user_email = user_email
         self.user_context = user_context or {}
         self.weights = weights
+        self.include_content = include_content
+        self._content_extractor = None
+
+        if include_content:
+            self._content_extractor = ContentFeatureExtractor(
+                model_name=content_model,
+                device=device,
+            )
 
     def extract(self, email: dict) -> CombinedFeatures:
         """Extract features from a single email."""
@@ -340,19 +465,29 @@ class CombinedFeatureExtractor:
             user_email=self.user_email,
             user_context=self.user_context,
             weights=self.weights,
+            include_content=self.include_content,
+            content_extractor=self._content_extractor,
         )
 
     def extract_batch(self, emails: list[dict]) -> list[CombinedFeatures]:
-        """Extract features from multiple emails."""
-        return [self.extract(email) for email in emails]
+        """Extract features from multiple emails (optimized for batch)."""
+        return extract_batch(
+            emails,
+            user_email=self.user_email,
+            user_context=self.user_context,
+            weights=self.weights,
+            include_content=self.include_content,
+            content_extractor=self._content_extractor,
+        )
 
     def to_vector(self, email: dict) -> Union["np.ndarray", list[float]]:
         """Extract and convert to feature vector."""
-        return self.extract(email).to_feature_vector()
+        return self.extract(email).to_feature_vector(include_content=self.include_content)
 
     def to_matrix(self, emails: list[dict]) -> Union["np.ndarray", list[list[float]]]:
         """Extract and convert to feature matrix."""
-        vectors = [self.to_vector(email) for email in emails]
+        features_list = self.extract_batch(emails)
+        vectors = [f.to_feature_vector(include_content=self.include_content) for f in features_list]
         if HAS_NUMPY:
             return np.stack(vectors)
         return vectors
@@ -364,8 +499,14 @@ class CombinedFeatureExtractor:
     @property
     def feature_dim(self) -> int:
         """Return dimensionality of feature vector."""
-        # 8 + 20 + 12 + 15 + 8 + 6 = 69
-        return 69
+        # Base: 8 + 20 + 12 + 15 + 8 + 6 = 69
+        base_dim = 69
+        if self.include_content:
+            # Add content embedding dimension
+            if self._content_extractor is not None:
+                return base_dim + self._content_extractor.embedding_dim
+            return base_dim + DEFAULT_EMBEDDING_DIM
+        return base_dim
 
 
 # Feature dimension constants for external reference
@@ -376,7 +517,9 @@ FEATURE_DIMS = {
     'people': 15,
     'temporal': 8,
     'scores': 6,
-    'total': 69,
+    'content': DEFAULT_EMBEDDING_DIM,  # 384 for all-MiniLM-L6-v2
+    'total_base': 69,  # Without content
+    'total_with_content': 69 + DEFAULT_EMBEDDING_DIM,  # 453 with content
 }
 
 

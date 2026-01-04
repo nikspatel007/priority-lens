@@ -34,7 +34,7 @@ from torch.utils.data import DataLoader, Dataset, WeightedRandomSampler
 sys.path.insert(0, str(Path(__file__).parent))
 
 try:
-    from .features.combined import CombinedFeatureExtractor
+    from .features.combined import CombinedFeatureExtractor, FEATURE_DIMS
     from .policy_network import (
         EmailPolicyNetwork,
         PolicyConfig,
@@ -42,7 +42,7 @@ try:
         NUM_ACTION_TYPES,
     )
 except ImportError:
-    from features.combined import CombinedFeatureExtractor
+    from features.combined import CombinedFeatureExtractor, FEATURE_DIMS
     from policy_network import (
         EmailPolicyNetwork,
         PolicyConfig,
@@ -640,13 +640,21 @@ class SFTTrainer:
         print(f"\nTraining complete. Best validation accuracy: {best_val_acc:.1%}")
         return history
 
-    def save_checkpoint(self, path: Path) -> None:
-        """Save model checkpoint."""
-        torch.save({
+    def save_checkpoint(self, path: Path, input_dim: Optional[int] = None) -> None:
+        """Save model checkpoint.
+
+        Args:
+            path: Checkpoint file path
+            input_dim: Optional input dimension (for model reconstruction)
+        """
+        checkpoint = {
             'model_state_dict': self.policy.state_dict(),
             'optimizer_state_dict': self.optimizer.state_dict(),
             'config': self.config,
-        }, path)
+        }
+        if input_dim is not None:
+            checkpoint['input_dim'] = input_dim
+        torch.save(checkpoint, path)
         print(f"  Saved checkpoint to {path}")
 
     def load_checkpoint(self, path: Path) -> None:
@@ -817,6 +825,11 @@ Examples:
         action='store_true',
         help='Use balanced sampling (oversample minority classes)',
     )
+    parser.add_argument(
+        '--include-content',
+        action='store_true',
+        help='Include content embeddings (384-dim sentence transformer)',
+    )
 
     args = parser.parse_args()
 
@@ -829,14 +842,19 @@ Examples:
         train_emails = load_emails(args.data, args.limit)
         val_emails = load_emails(args.val_data) if args.val_data else None
 
-    # Create datasets
-    extractor = CombinedFeatureExtractor()
+    # Determine feature dimension
+    include_content = args.include_content
+    input_dim = FEATURE_DIMS['total_with_content'] if include_content else FEATURE_DIMS['total_base']
+    print(f"\nFeature dimension: {input_dim} (content embeddings: {'enabled' if include_content else 'disabled'})")
+
+    # Create datasets with content features if requested
+    extractor = CombinedFeatureExtractor(include_content=include_content)
     train_dataset = SFTDataset(train_emails, extractor)
     val_dataset = SFTDataset(val_emails, extractor) if val_emails else None
 
-    # Create policy network
-    policy = create_policy_network()
-    print(f"\nPolicy network: {sum(p.numel() for p in policy.parameters()):,} parameters")
+    # Create policy network with correct input dimension
+    policy = create_policy_network(input_dim=input_dim)
+    print(f"Policy network: {sum(p.numel() for p in policy.parameters()):,} parameters")
 
     # Configure trainer with class imbalance options
     config = SFTConfig(
@@ -861,8 +879,8 @@ Examples:
 
     history = trainer.train(train_dataset, val_dataset)
 
-    # Save final checkpoint
-    trainer.save_checkpoint(args.output)
+    # Save final checkpoint with input_dim for model reconstruction
+    trainer.save_checkpoint(args.output, input_dim=input_dim)
 
     # Final evaluation
     if val_dataset is not None:

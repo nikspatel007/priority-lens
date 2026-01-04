@@ -6,6 +6,7 @@ This package provides feature extraction for the email RL policy network:
 - task: Task extraction and deadline urgency
 - people: Sender importance and relationship scoring
 - temporal: Time-based features (hour, day, freshness, thread timing)
+- content: Semantic embeddings from email body text
 - combined: Unified feature vector for policy network input
 """
 
@@ -46,6 +47,14 @@ from .temporal import (
     compute_temporal_score,
 )
 
+from .content import (
+    ContentFeatures,
+    ContentFeatureExtractor,
+    extract_content_features,
+    get_content_extractor,
+    DEFAULT_EMBEDDING_DIM,
+)
+
 from .combined import (
     CombinedFeatures,
     CombinedFeatureExtractor,
@@ -84,6 +93,12 @@ __all__ = [
     'TemporalFeatures',
     'extract_temporal_features',
     'compute_temporal_score',
+    # Content features
+    'ContentFeatures',
+    'ContentFeatureExtractor',
+    'extract_content_features',
+    'get_content_extractor',
+    'DEFAULT_EMBEDDING_DIM',
     # Combined features
     'CombinedFeatures',
     'CombinedFeatureExtractor',
