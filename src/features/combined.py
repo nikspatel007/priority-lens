@@ -21,6 +21,7 @@ from .topic import TopicFeatures, classify_topic, compute_topic_score
 from .task import TaskFeatures, extract_tasks, compute_task_score
 from .people import PeopleFeatures, extract_people_features, compute_people_score
 from .temporal import TemporalFeatures, extract_temporal_features, compute_temporal_score
+from .service import ServiceFeatures, extract_service_features, compute_service_score
 from .content import (
     ContentFeatures,
     ContentFeatureExtractor,
@@ -40,6 +41,7 @@ class CombinedFeatures:
     task: TaskFeatures
     people: PeopleFeatures
     temporal: TemporalFeatures
+    service: Optional[ServiceFeatures] = None  # Service email detection
     content: Optional[ContentFeatures] = None  # Optional for backward compat
 
     # Computed scores
@@ -48,6 +50,7 @@ class CombinedFeatures:
     task_score: float = 0.0
     people_score: float = 0.0
     temporal_score: float = 0.0
+    service_score: float = 0.0  # Higher = more likely service email
     overall_priority: float = 0.0
 
     def to_feature_vector(self, include_content: bool = True) -> Union["np.ndarray", list[float]]:
@@ -61,9 +64,10 @@ class CombinedFeatures:
         - Task features: 12 dims
         - People features: 15 dims
         - Temporal features: 8 dims
-        - Computed scores: 6 dims (project, topic, task, people, temporal, overall)
+        - Service features: 9 dims
+        - Computed scores: 7 dims (project, topic, task, people, temporal, service, overall)
         - Content embedding: 384 dims (if include_content=True and content is available)
-        - Total: 69 dims (without content) or 453 dims (with content)
+        - Total: 79 dims (without content) or 463 dims (with content)
 
         Args:
             include_content: Whether to include content embeddings (default True)
@@ -77,6 +81,7 @@ class CombinedFeatures:
         task_vec = self.task.to_feature_vector()
         people_vec = self.people.to_feature_vector()
         temporal_vec = self.temporal.to_feature_vector()
+        service_vec = self.service.to_feature_vector() if self.service else [0.0] * 9
 
         # Computed scores
         scores = [
@@ -85,6 +90,7 @@ class CombinedFeatures:
             self.task_score,
             self.people_score,
             self.temporal_score,
+            self.service_score,
             self.overall_priority,
         ]
 
@@ -95,6 +101,7 @@ class CombinedFeatures:
                 np.asarray(task_vec),
                 np.asarray(people_vec),
                 np.asarray(temporal_vec),
+                np.asarray(service_vec, dtype=np.float32),
                 np.array(scores, dtype=np.float32),
             ])
             # Add content embedding if available and requested
@@ -105,7 +112,7 @@ class CombinedFeatures:
         else:
             # List concatenation
             combined = []
-            for vec in [project_vec, topic_vec, task_vec, people_vec, temporal_vec]:
+            for vec in [project_vec, topic_vec, task_vec, people_vec, temporal_vec, service_vec]:
                 if isinstance(vec, list):
                     combined.extend(vec)
                 else:
@@ -129,6 +136,7 @@ class CombinedFeatures:
                 'task': self.task_score,
                 'people': self.people_score,
                 'temporal': self.temporal_score,
+                'service': self.service_score,
                 'overall_priority': self.overall_priority,
             },
             'project': {
@@ -169,6 +177,15 @@ class CombinedFeatures:
             'vector_dims': len(self.to_feature_vector(include_content=self.content is not None)),
             'vector_dims_without_content': len(self.to_feature_vector(include_content=False)),
         }
+        if self.service is not None:
+            result['service'] = {
+                'has_list_unsubscribe_header': self.service.has_list_unsubscribe_header,
+                'has_unsubscribe_url': self.service.has_unsubscribe_url,
+                'unsubscribe_phrase_count': self.service.unsubscribe_phrase_count,
+                'is_service_sender': self.service.is_service_sender,
+                'is_service_email': self.service.is_service_email,
+                'confidence': self.service.service_email_confidence,
+            }
         if self.content is not None:
             result['content'] = {
                 'subject_length': self.content.subject_length,
@@ -185,10 +202,14 @@ def compute_overall_priority(
     task_score: float,
     people_score: float,
     temporal_score: float = 0.5,
+    service_score: float = 0.0,
     *,
     weights: Optional[dict[str, float]] = None,
 ) -> float:
     """Compute weighted overall priority score.
+
+    Service emails (high service_score) reduce overall priority since they're
+    typically automated and less urgent than personal correspondence.
 
     Args:
         project_score: Score from project features
@@ -196,6 +217,7 @@ def compute_overall_priority(
         task_score: Score from task extraction
         people_score: Score from people analysis
         temporal_score: Score from temporal features (default 0.5 for backward compat)
+        service_score: Score indicating service/automated email (0-1, higher = more service-like)
         weights: Optional custom weights (must sum to 1.0)
 
     Returns:
@@ -217,6 +239,10 @@ def compute_overall_priority(
         weights.get('task', 0.20) * task_score +
         weights.get('temporal', 0.15) * temporal_score
     )
+
+    # Service emails get priority reduction (service_score 1.0 reduces by up to 30%)
+    service_penalty = weights.get('service_penalty', 0.3) * service_score
+    priority = priority * (1.0 - service_penalty)
 
     return min(1.0, max(0.0, priority))
 
@@ -265,6 +291,9 @@ def extract_combined_features(
         thread_context=thread_context,
     )
 
+    # Extract service email features (unsubscribe detection)
+    service_features = extract_service_features(email)
+
     # Extract content features if requested
     content_features = None
     if include_content:
@@ -280,6 +309,7 @@ def extract_combined_features(
     task_score = compute_task_score(task_features)
     people_score = compute_people_score(people_features)
     temporal_score = compute_temporal_score(temporal_features)
+    service_score = compute_service_score(service_features)
 
     # Compute overall priority
     overall_priority = compute_overall_priority(
@@ -288,6 +318,7 @@ def extract_combined_features(
         task_score,
         people_score,
         temporal_score,
+        service_score,
         weights=weights,
     )
 
@@ -297,12 +328,14 @@ def extract_combined_features(
         task=task_features,
         people=people_features,
         temporal=temporal_features,
+        service=service_features,
         content=content_features,
         project_score=project_score,
         topic_score=topic_score,
         task_score=task_score,
         people_score=people_score,
         temporal_score=temporal_score,
+        service_score=service_score,
         overall_priority=overall_priority,
     )
 
@@ -359,6 +392,9 @@ def extract_batch(
             thread_context=thread_context,
         )
 
+        # Extract service email features
+        service_features = extract_service_features(email)
+
         # Get content features from pre-computed batch
         content_features = content_features_list[i] if content_features_list else None
 
@@ -368,10 +404,11 @@ def extract_batch(
         task_score = compute_task_score(task_features)
         people_score = compute_people_score(people_features)
         temporal_score = compute_temporal_score(temporal_features)
+        service_score = compute_service_score(service_features)
 
         overall_priority = compute_overall_priority(
             project_score, topic_score, task_score, people_score, temporal_score,
-            weights=weights
+            service_score, weights=weights
         )
 
         results.append(CombinedFeatures(
@@ -380,12 +417,14 @@ def extract_batch(
             task=task_features,
             people=people_features,
             temporal=temporal_features,
+            service=service_features,
             content=content_features,
             project_score=project_score,
             topic_score=topic_score,
             task_score=task_score,
             people_score=people_score,
             temporal_score=temporal_score,
+            service_score=service_score,
             overall_priority=overall_priority,
         ))
 
@@ -501,8 +540,8 @@ class CombinedFeatureExtractor:
     @property
     def feature_dim(self) -> int:
         """Return dimensionality of feature vector."""
-        # Base: 8 + 20 + 12 + 15 + 8 + 6 = 69
-        base_dim = 69
+        # Base: 8 + 20 + 12 + 15 + 8 + 9 + 7 = 79
+        base_dim = 79
         if self.include_content:
             # Add content embedding dimension
             if self._content_extractor is not None:
@@ -518,7 +557,8 @@ FEATURE_DIMS = {
     'task': 12,
     'people': 15,
     'temporal': 8,
-    'scores': 6,
+    'service': 9,
+    'scores': 7,
     'content': DEFAULT_EMBEDDING_DIM,  # 384 for all-MiniLM-L6-v2
     'content_large': LARGE_EMBEDDING_DIM,  # 768 for all-mpnet-base-v2
     'total_base': 69,  # Without content
@@ -581,6 +621,7 @@ if __name__ == '__main__':
     print(f"  Task:     {features.task_score:.2f}")
     print(f"  People:   {features.people_score:.2f}")
     print(f"  Temporal: {features.temporal_score:.2f}")
+    print(f"  Service:  {features.service_score:.2f}")
     print(f"  Overall:  {features.overall_priority:.2f}")
     print()
     print("PROJECT FEATURES:")
@@ -615,6 +656,17 @@ if __name__ == '__main__':
     print(f"  Weekend: {features.temporal.is_weekend}")
     print(f"  Time since receipt: {features.temporal.time_since_receipt_hours:.1f}h")
     print(f"  Urgency: {features.temporal.temporal_urgency:.2f}")
+    print()
+    print("SERVICE FEATURES:")
+    if features.service:
+        print(f"  Has unsubscribe header: {features.service.has_list_unsubscribe_header}")
+        print(f"  Has unsubscribe URL: {features.service.has_unsubscribe_url}")
+        print(f"  Unsubscribe phrases: {features.service.unsubscribe_phrase_count}")
+        print(f"  Is service sender: {features.service.is_service_sender}")
+        print(f"  Service confidence: {features.service.service_email_confidence:.2f}")
+        print(f"  Is service email: {features.service.is_service_email}")
+    else:
+        print("  (not extracted)")
     print()
     print("FEATURE VECTOR:")
     vec = features.to_feature_vector()

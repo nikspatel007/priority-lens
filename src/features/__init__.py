@@ -8,7 +8,7 @@ This package provides feature extraction for the email RL policy network:
 - temporal: Time-based features (hour, day, freshness, thread timing)
 - content: Semantic embeddings from email body text
 - relationship: Communication graph and relational priority model
-- service: Service domain classification (transactional, newsletter, etc.)
+- service: Service domain classification (transactional, newsletter, unsubscribe detection)
 - combined: Unified feature vector for policy network input
 """
 
@@ -47,6 +47,14 @@ from .temporal import (
     TemporalFeatures,
     extract_temporal_features,
     compute_temporal_score,
+)
+
+from .service import (
+    ServiceFeatures,
+    extract_service_features,
+    compute_service_score,
+    detect_list_unsubscribe_header,
+    detect_unsubscribe_links,
 )
 
 from .content import (
@@ -120,6 +128,12 @@ __all__ = [
     'TemporalFeatures',
     'extract_temporal_features',
     'compute_temporal_score',
+    # Service features
+    'ServiceFeatures',
+    'extract_service_features',
+    'compute_service_score',
+    'detect_list_unsubscribe_header',
+    'detect_unsubscribe_links',
     # Content features
     'ContentFeatures',
     'ContentFeatureExtractor',
