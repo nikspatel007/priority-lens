@@ -200,19 +200,12 @@ DEFINE FUNCTION fn::response_baseline($user_email: string) {
 };
 
 -- Function to compute communication frequency between users
+-- Simplified to avoid IF/THEN/ELSE syntax issues in SurrealDB 2.4.0
 DEFINE FUNCTION fn::comm_frequency($from_user: string, $to_user: string) {
     LET $edge = (SELECT * FROM communicates
                  WHERE in.email = $from_user AND out.email = $to_user
                  LIMIT 1);
-    RETURN IF $edge[0] THEN {
-        email_count: $edge[0].email_count,
-        reply_count: $edge[0].reply_count,
-        avg_response_time: $edge[0].avg_response_time_hours
-    } ELSE {
-        email_count: 0,
-        reply_count: 0,
-        avg_response_time: none
-    };
+    RETURN $edge[0];
 };
 
 -- ============================================================================
