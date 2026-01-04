@@ -76,6 +76,34 @@ See the [docs/](./docs/) folder for detailed documentation:
 - **KTO** (Kahneman-Tversky Optimization) - Works with unpaired preferences
 - **Temporal RLHF** - Uses future emails as human feedback signal
 
+## SurrealDB Integration (Optional)
+
+For graph-based queries and efficient data storage, the system supports SurrealDB:
+
+```bash
+# Install SurrealDB
+brew install surrealdb/tap/surreal
+
+# Start database (file-backed)
+surreal start file:data/enron.db --user root --pass root
+
+# Import Enron data
+python -m db.import_data enron data/train.json data/val.json data/test.json
+
+# Import Gmail data (separate database for privacy)
+python -m db.import_data gmail data/gmail_emails.json
+
+# Use SurrealDB-backed dataset
+from db import create_surreal_dataloaders
+train, val, test = create_surreal_dataloaders(database='enron')
+```
+
+Benefits:
+- **Graph queries**: Communication patterns between users
+- **Cached embeddings**: Store embeddings in DB for faster loading
+- **Efficient streaming**: Handle datasets larger than RAM
+- **Separate databases**: Enron (training) and Gmail (personal validation)
+
 ## Project Structure
 
 ```
@@ -90,6 +118,11 @@ rl-emails/
 │   ├── train.py
 │   ├── train_full_pipeline.py
 │   └── evaluate.py
+├── db/                    # SurrealDB integration
+│   ├── schema.surql       # Database schema
+│   ├── import_data.py     # Data import script
+│   ├── dataset.py         # PyTorch Dataset
+│   └── benchmark.py       # Performance comparison
 ├── data/                  # Dataset (after download)
 ├── models/                # Downloaded LLMs
 └── checkpoints/           # Training checkpoints
