@@ -175,6 +175,36 @@ class CommunicationStats:
 
 
 @dataclass
+class CCCooccurrence:
+    """Tracks CC co-occurrence patterns between two people."""
+    person_a: str
+    person_b: str
+    cc_together_count: int = 0  # Times both in CC
+    cc_with_sender_count: int = 0  # Times one in CC, other is sender
+    cc_with_recipient_count: int = 0  # Times one in CC, other in To
+    total_shared_emails: int = 0  # Total emails where both appear
+
+    @property
+    def cc_affinity_score(self) -> float:
+        """Compute CC affinity score (0-1).
+
+        Higher score means these people are frequently CC'd together.
+        Uses log scaling to handle high-volume pairs.
+        """
+        if self.total_shared_emails == 0:
+            return 0.0
+        # Weight CC-together most heavily
+        weighted_count = (
+            self.cc_together_count * 1.0 +
+            self.cc_with_sender_count * 0.5 +
+            self.cc_with_recipient_count * 0.5
+        )
+        # Log scale to normalize (asymptotes at 1.0)
+        import math
+        return min(1.0, math.log1p(weighted_count) / 5.0)
+
+
+@dataclass
 class UserBaseline:
     """Per-user baseline communication patterns."""
     user_email: str
@@ -192,6 +222,9 @@ class UserBaseline:
     # Relationship counts
     unique_senders: int = 0
     unique_recipients: int = 0
+
+    # CC patterns
+    times_in_cc: int = 0  # How often this user is CC'd
 
     @property
     def avg_response_time_hours(self) -> Optional[float]:
@@ -222,6 +255,7 @@ class UserBaseline:
             'median_response_time_hours': self.median_response_time_hours,
             'unique_senders': self.unique_senders,
             'unique_recipients': self.unique_recipients,
+            'times_in_cc': self.times_in_cc,
         }
 
 
@@ -251,10 +285,13 @@ class RelationshipFeatures:
     communication_asymmetry: float = 0.0  # >0 if user initiates more, <0 if sender does
     response_time_asymmetry: float = 0.0  # >0 if user responds faster than sender
 
+    # CC patterns
+    cc_affinity_score: float = 0.0  # How often user is CC'd with sender (0-1)
+
     def to_feature_vector(self) -> list[float]:
         """Convert to numerical vector for ML pipeline.
 
-        Returns 13-dimensional vector (added 7d and 90d frequency features).
+        Returns 14-dimensional vector (with frequency windows and CC affinity).
         """
         return [
             self.sender_response_deviation,
@@ -270,6 +307,7 @@ class RelationshipFeatures:
             min(self.days_since_last_email or 365, 365) / 365.0,
             self.communication_asymmetry,
             self.response_time_asymmetry,
+            self.cc_affinity_score,
         ]
 
 
@@ -292,6 +330,12 @@ class CommunicationGraph:
 
         # Sender frequency for ranking
         self.sender_counts: dict[str, int] = defaultdict(int)
+
+        # CC co-occurrence tracking: frozenset({person_a, person_b}) -> CCCooccurrence
+        self.cc_cooccurrence: dict[frozenset, CCCooccurrence] = {}
+
+        # Per-user CC counts: user -> number of times they were CC'd
+        self.user_cc_counts: dict[str, int] = defaultdict(int)
 
     def add_email(self, email: dict) -> None:
         """Add an email to the communication graph."""
@@ -344,6 +388,79 @@ class CommunicationGraph:
             reverse_key = (recipient, sender)
             reverse_stats = self.edges[reverse_key]
             reverse_stats.emails_received += 1
+
+        # Track CC co-occurrence patterns
+        self._update_cc_cooccurrence(sender, recipients, cc_recipients)
+
+    def _update_cc_cooccurrence(
+        self,
+        sender: str,
+        to_recipients: list[str],
+        cc_recipients: list[str],
+    ) -> None:
+        """Update CC co-occurrence tracking for an email.
+
+        Tracks three types of CC relationships:
+        1. Two people both in CC field
+        2. One in CC, one is sender
+        3. One in CC, one in To field
+        """
+        # Update per-user CC counts
+        for cc in cc_recipients:
+            self.user_cc_counts[cc] += 1
+
+        # Track CC-to-CC co-occurrence (people CC'd together)
+        for i, cc_a in enumerate(cc_recipients):
+            for cc_b in cc_recipients[i + 1:]:
+                self._record_cc_pair(cc_a, cc_b, 'cc_together')
+
+        # Track CC-to-sender co-occurrence
+        for cc in cc_recipients:
+            self._record_cc_pair(cc, sender, 'cc_with_sender')
+
+        # Track CC-to-To co-occurrence
+        for cc in cc_recipients:
+            for to in to_recipients:
+                self._record_cc_pair(cc, to, 'cc_with_recipient')
+
+    def _record_cc_pair(self, person_a: str, person_b: str, pattern_type: str) -> None:
+        """Record a CC co-occurrence between two people."""
+        if person_a == person_b:
+            return
+
+        key = frozenset({person_a, person_b})
+        if key not in self.cc_cooccurrence:
+            self.cc_cooccurrence[key] = CCCooccurrence(
+                person_a=min(person_a, person_b),
+                person_b=max(person_a, person_b),
+            )
+
+        cooc = self.cc_cooccurrence[key]
+        cooc.total_shared_emails += 1
+        if pattern_type == 'cc_together':
+            cooc.cc_together_count += 1
+        elif pattern_type == 'cc_with_sender':
+            cooc.cc_with_sender_count += 1
+        elif pattern_type == 'cc_with_recipient':
+            cooc.cc_with_recipient_count += 1
+
+    def get_cc_affinity_score(self, person_a: str, person_b: str) -> float:
+        """Get CC affinity score between two people.
+
+        Returns 0-1 score indicating how often these people are CC'd together.
+        Higher score = more frequent CC co-occurrence.
+        """
+        person_a = normalize_email(person_a)
+        person_b = normalize_email(person_b)
+
+        if person_a == person_b:
+            return 0.0
+
+        key = frozenset({person_a, person_b})
+        if key not in self.cc_cooccurrence:
+            return 0.0
+
+        return self.cc_cooccurrence[key].cc_affinity_score
 
     def detect_responses(self) -> None:
         """Detect response events from email threads."""
@@ -459,6 +576,9 @@ class CommunicationGraph:
                     recipients.add(recipient)
             baseline.unique_senders = len(senders)
             baseline.unique_recipients = len(recipients)
+
+            # Add CC counts from tracking
+            baseline.times_in_cc = self.user_cc_counts.get(user, 0)
 
     def get_sender_frequency_rank(self, sender: str, user: str) -> float:
         """Get percentile rank of sender frequency for a user (0-1).
@@ -653,6 +773,7 @@ class CommunicationGraph:
             days_since_last_email=days_since,
             communication_asymmetry=asymmetry,
             response_time_asymmetry=rt_asymmetry,
+            cc_affinity_score=self.get_cc_affinity_score(sender, user),
         )
 
     def compute_priority_score(
@@ -733,6 +854,40 @@ class CommunicationGraph:
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(baselines_data, f, indent=2)
 
+    def export_cc_affinities(self, output_path: Path, min_score: float = 0.1) -> None:
+        """Export CC affinity pairs to JSON file.
+
+        Args:
+            output_path: Path for output JSON file
+            min_score: Minimum affinity score to include (default 0.1)
+        """
+        affinities = []
+        for key, cooc in self.cc_cooccurrence.items():
+            if cooc.cc_affinity_score >= min_score:
+                affinities.append({
+                    'person_a': cooc.person_a,
+                    'person_b': cooc.person_b,
+                    'cc_affinity_score': round(cooc.cc_affinity_score, 4),
+                    'cc_together_count': cooc.cc_together_count,
+                    'cc_with_sender_count': cooc.cc_with_sender_count,
+                    'cc_with_recipient_count': cooc.cc_with_recipient_count,
+                    'total_shared_emails': cooc.total_shared_emails,
+                })
+
+        # Sort by affinity score descending
+        affinities.sort(key=lambda x: x['cc_affinity_score'], reverse=True)
+
+        affinity_data = {
+            'total_pairs': len(self.cc_cooccurrence),
+            'pairs_above_threshold': len(affinities),
+            'min_score_threshold': min_score,
+            'affinities': affinities,
+        }
+
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(output_path, 'w', encoding='utf-8') as f:
+            json.dump(affinity_data, f, indent=2)
+
 
 def build_communication_graph(emails: list[dict]) -> CommunicationGraph:
     """Build communication graph from list of emails.
@@ -764,7 +919,8 @@ def build_communication_graph(emails: list[dict]) -> CommunicationGraph:
     graph.compute_baselines()
 
     print(f"Graph built: {len(graph.user_baselines)} users, "
-          f"{len(graph.edges)} edges, {len(graph.response_events)} response events")
+          f"{len(graph.edges)} edges, {len(graph.response_events)} response events, "
+          f"{len(graph.cc_cooccurrence)} CC pairs")
 
     return graph
 
@@ -799,12 +955,16 @@ def process_email_dataset(
 
     graph_path = output_dir / 'relationship_graph.json'
     baselines_path = output_dir / 'user_baselines.json'
+    cc_affinities_path = output_dir / 'cc_affinities.json'
 
     print(f"Exporting relationship graph to {graph_path}...")
     graph.export_relationship_graph(graph_path)
 
     print(f"Exporting user baselines to {baselines_path}...")
     graph.export_user_baselines(baselines_path)
+
+    print(f"Exporting CC affinities to {cc_affinities_path}...")
+    graph.export_cc_affinities(cc_affinities_path)
 
     return graph
 
@@ -847,6 +1007,7 @@ if __name__ == '__main__':
     print(f"Total users: {len(graph.user_baselines)}")
     print(f"Total edges: {len(graph.edges)}")
     print(f"Total response events: {len(graph.response_events)}")
+    print(f"Total CC pairs tracked: {len(graph.cc_cooccurrence)}")
 
     # Top 10 most active users
     print("\nTop 10 most active users (by emails sent):")
@@ -857,7 +1018,21 @@ if __name__ == '__main__':
     )[:10]
     for user in sorted_users:
         avg_rt = f"{user.avg_response_time_hours:.1f}h" if user.avg_response_time_hours else "N/A"
+        cc_info = f", CC'd {user.times_in_cc}x" if user.times_in_cc > 0 else ""
         print(f"  {user.user_email}: {user.total_emails_sent} sent, "
-              f"{user.total_emails_received} received, avg response: {avg_rt}")
+              f"{user.total_emails_received} received, avg response: {avg_rt}{cc_info}")
+
+    # Top 10 CC affinity pairs
+    top_cc_pairs = sorted(
+        graph.cc_cooccurrence.values(),
+        key=lambda c: c.cc_affinity_score,
+        reverse=True
+    )[:10]
+    if top_cc_pairs:
+        print("\nTop 10 CC affinity pairs:")
+        for cooc in top_cc_pairs:
+            print(f"  {cooc.person_a} <-> {cooc.person_b}: "
+                  f"score={cooc.cc_affinity_score:.3f}, "
+                  f"together={cooc.cc_together_count}")
 
     print("=" * 60)
