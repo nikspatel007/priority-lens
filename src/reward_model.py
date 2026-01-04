@@ -24,7 +24,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 
-from .policy_network import FeatureEncoder, PolicyConfig, DEFAULT_FEATURE_DIM
+try:
+    from .policy_network import FeatureEncoder, PolicyConfig, DEFAULT_FEATURE_DIM
+except ImportError:
+    from policy_network import FeatureEncoder, PolicyConfig, DEFAULT_FEATURE_DIM
 
 
 class ActionPriority(IntEnum):

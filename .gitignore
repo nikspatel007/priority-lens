@@ -1,6 +1,9 @@
 # Data files (large datasets)
 data/
 
+# Model checkpoints (binary, large)
+checkpoints/
+
 # Runtime files
 .runtime/
 
@@ -13,6 +16,8 @@ data/
 # Python
 __pycache__/
 *.pyc
+.venv/
+venv/
 
 # IDE
 .idea/
