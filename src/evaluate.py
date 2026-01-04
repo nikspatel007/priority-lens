@@ -80,6 +80,7 @@ from policy_network import EmailPolicyNetwork, PolicyConfig, create_policy_netwo
 ACTION_NAMES = ['reply_now', 'reply_later', 'forward', 'archive', 'delete']
 
 # Map dataset labels to model action indices
+# Note: Data should already be labeled with final 5-class action space from label_actions.py
 LABEL_TO_ACTION = {
     'REPLY_NOW': 0,    # reply_now (responded < 1 hour)
     'REPLY_LATER': 1,  # reply_later (responded >= 1 hour)
@@ -296,17 +297,17 @@ def get_ground_truth(emails: list[dict]) -> tuple[list[int], list[float]]:
         action_idx = LABEL_TO_ACTION.get(label, 3)  # Default to archive
         action_indices.append(action_idx)
 
-        # Infer priority from action (higher priority for immediate replies)
+        # Infer priority from action (higher priority for urgent replies)
         if label == 'REPLY_NOW':
-            priority = 0.9
+            priority = 0.9  # Highest priority - responded within 1 hour
         elif label == 'REPLY_LATER':
-            priority = 0.7
+            priority = 0.7  # High priority but not urgent
         elif label == 'FORWARD':
-            priority = 0.6
+            priority = 0.6  # Moderate priority
         elif label == 'DELETE':
-            priority = 0.2
+            priority = 0.2  # Low priority
         else:  # ARCHIVE
-            priority = 0.4
+            priority = 0.4  # Default moderate-low priority
         priorities.append(priority)
 
     return action_indices, priorities
