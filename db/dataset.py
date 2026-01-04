@@ -19,7 +19,7 @@ from typing import Optional, Union
 import torch
 from torch.utils.data import Dataset, DataLoader
 
-from surrealdb import Surreal
+from surrealdb import AsyncSurreal
 
 # Import feature extraction from main source
 import sys
@@ -106,9 +106,8 @@ class SurrealEmailDataset(Dataset):
     def _load_data(self):
         """Load email data from SurrealDB."""
         async def fetch():
-            db = Surreal()
-            await db.connect(self.url)
-            await db.signin({'user': self.username, 'pass': self.password})
+            db = AsyncSurreal(self.url)
+            await db.signin({'username': self.username, 'password': self.password})
             await db.use(self.namespace, self.database)
 
             # Build query based on split
@@ -155,8 +154,9 @@ class SurrealEmailDataset(Dataset):
 
             await db.close()
 
-            if result and result[0].get('result'):
-                return result[0]['result']
+            # New API returns list directly
+            if result and isinstance(result, list):
+                return result
             return []
 
         # Run async function synchronously
@@ -274,9 +274,8 @@ class SurrealEmailDataset(Dataset):
 
         extractor = ContentFeatureExtractor(model_name=model_name)
 
-        db = Surreal()
-        await db.connect(self.url)
-        await db.signin({'user': self.username, 'pass': self.password})
+        db = AsyncSurreal(self.url)
+        await db.signin({'username': self.username, 'password': self.password})
         await db.use(self.namespace, self.database)
 
         # Process in batches
@@ -417,10 +416,9 @@ class SurrealGraphQueries:
         self.username = username
         self.password = password
 
-    async def _connect(self) -> Surreal:
-        db = Surreal()
-        await db.connect(self.url)
-        await db.signin({'user': self.username, 'pass': self.password})
+    async def _connect(self) -> AsyncSurreal:
+        db = AsyncSurreal(self.url)
+        await db.signin({'username': self.username, 'password': self.password})
         await db.use(self.namespace, self.database)
         return db
 
@@ -435,10 +433,10 @@ class SurrealGraphQueries:
                 {'email': user_email}
             )
 
-            if not user_result or not user_result[0].get('result'):
+            if not user_result or not isinstance(user_result, list) or len(user_result) == 0:
                 return {}
 
-            user = user_result[0]['result'][0]
+            user = user_result[0]
 
             # Get communication stats
             comm_result = await db.query(
@@ -460,8 +458,8 @@ class SurrealGraphQueries:
                 'emails_received': user.get('emails_received', 0),
             }
 
-            if comm_result and comm_result[0].get('result'):
-                stats = comm_result[0]['result'][0]
+            if comm_result and isinstance(comm_result, list) and len(comm_result) > 0:
+                stats = comm_result[0]
                 context['total_contacts'] = stats.get('total_communications', 0)
                 context['avg_emails_per_contact'] = stats.get('avg_emails_per_contact', 0)
 
@@ -484,8 +482,8 @@ class SurrealGraphQueries:
                 {'sender': sender_email, 'user': user_email}
             )
 
-            if result and result[0].get('result'):
-                edge = result[0]['result'][0]
+            if result and isinstance(result, list) and len(result) > 0:
+                edge = result[0]
                 return {
                     'emails_from_sender_30d': edge.get('email_count', 0),
                     'replies_to_sender': edge.get('reply_count', 0),
@@ -515,8 +513,8 @@ class SurrealGraphQueries:
                 {'thread_id': thread_id}
             )
 
-            if result and result[0].get('result'):
-                thread = result[0]['result'][0]
+            if result and isinstance(result, list) and len(result) > 0:
+                thread = result[0]
                 return {
                     'thread_length': thread.get('email_count', 1),
                     'thread_started': thread.get('started_at'),

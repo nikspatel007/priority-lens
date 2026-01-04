@@ -9,13 +9,14 @@ Usage:
     surreal start file:data/enron.db --user root --pass root --bind 0.0.0.0:8000
 
     # Import Enron data:
-    python db/import_data.py enron data/train.json data/val.json data/test.json
+    python -m db.import_data enron data/train.json data/val.json data/test.json
 
     # Import Gmail data:
-    python db/import_data.py gmail data/gmail_labeled.json --skip-schema
+    python -m db.import_data gmail data/gmail_emails.json --labels
 """
 
 import argparse
+import asyncio
 import json
 import re
 import sys
@@ -24,7 +25,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from surrealdb import Surreal
+from surrealdb import AsyncSurreal
 
 
 # Email address extraction regex
@@ -38,8 +39,8 @@ def extract_emails(field: str) -> list[str]:
     return EMAIL_PATTERN.findall(field.lower())
 
 
-def parse_date(date_str: str) -> Optional[datetime]:
-    """Parse date string to datetime for SurrealDB."""
+def parse_date(date_str: str) -> Optional[str]:
+    """Parse date string to ISO format for SurrealDB."""
     if not date_str:
         return None
 
@@ -54,13 +55,16 @@ def parse_date(date_str: str) -> Optional[datetime]:
 
     # Clean up the date string
     date_str = date_str.strip()
-    # Remove extra timezone info like "(PST)" or "(UTC)"
+    # Remove extra timezone info like "(PST)"
     date_str = re.sub(r'\s*\([A-Z]+\)\s*$', '', date_str)
 
     for fmt in formats:
         try:
             dt = datetime.strptime(date_str, fmt)
-            return dt  # Return datetime object, not string
+            # Validate year is reasonable (Enron emails are 1999-2002)
+            if dt.year < 1990 or dt.year > 2030:
+                continue  # Invalid year, try next format
+            return dt.isoformat()
         except ValueError:
             continue
 
@@ -84,10 +88,11 @@ def extract_org_level(x_from: str) -> Optional[str]:
 class EmailImporter:
     """Import email data into SurrealDB."""
 
-    def __init__(self, db: Surreal, namespace: str, database: str):
-        self.db = db
+    def __init__(self, url: str, namespace: str, database: str):
+        self.url = url
         self.namespace = namespace
         self.database = database
+        self.db: AsyncSurreal = None
         self.users_cache: dict[str, str] = {}  # email -> record id
         self.threads_cache: dict[str, str] = {}  # thread_id -> record id
         self.emails_cache: dict[str, str] = {}  # message_id -> record id
@@ -95,12 +100,13 @@ class EmailImporter:
             lambda: {'email_count': 0, 'reply_count': 0}
         )
 
-    def connect(self, username: str, password: str):
-        """Sign in to SurrealDB (connection already established via context)."""
-        self.db.signin({'username': username, 'password': password})
-        self.db.use(self.namespace, self.database)
+    async def connect(self, username: str, password: str):
+        """Connect to SurrealDB."""
+        self.db = AsyncSurreal(self.url)
+        await self.db.signin({'username': username, 'password': password})
+        await self.db.use(self.namespace, self.database)
 
-    def import_schema(self, schema_path: Path):
+    async def import_schema(self, schema_path: Path):
         """Import schema from .surql file."""
         schema = schema_path.read_text()
         # Execute schema statements one by one
@@ -108,11 +114,11 @@ class EmailImporter:
             statement = statement.strip()
             if statement and not statement.startswith('--'):
                 try:
-                    self.db.query(statement)
+                    await self.db.query(statement)
                 except Exception as e:
                     print(f"Warning: Schema statement failed: {e}")
 
-    def get_or_create_user(
+    async def get_or_create_user(
         self,
         email: str,
         name: Optional[str] = None,
@@ -125,13 +131,14 @@ class EmailImporter:
             return self.users_cache[email]
 
         # Check if user exists
-        result = self.db.query(
+        result = await self.db.query(
             'SELECT id FROM users WHERE email = $email LIMIT 1',
             {'email': email}
         )
 
-        if result and len(result) > 0 and result[0].get('id'):
-            user_id = result[0]['id']
+        # New API returns list directly, not nested under 'result'
+        if result and isinstance(result, list) and len(result) > 0:
+            user_id = str(result[0]['id'])
             self.users_cache[email] = user_id
             return user_id
 
@@ -143,23 +150,15 @@ class EmailImporter:
             'is_internal': '@enron.com' in email,
         }
 
-        result = self.db.create('users', user_data)
+        result = await self.db.create('users', user_data)
+        # Check if result is error string
         if isinstance(result, str):
-            # Error - user might already exist, try to query again
-            result = self.db.query(
-                'SELECT id FROM users WHERE email = $email LIMIT 1',
-                {'email': email}
-            )
-            if result and len(result) > 0 and result[0].get('id'):
-                user_id = str(result[0]['id'])
-                self.users_cache[email] = user_id
-                return user_id
-            return None
-        user_id = str(result['id'])  # Convert RecordID to string
+            raise ValueError(f"Failed to create user: {result}")
+        user_id = str(result['id'])
         self.users_cache[email] = user_id
         return user_id
 
-    def get_or_create_thread(
+    async def get_or_create_thread(
         self,
         thread_id: str,
         subject: str = '',
@@ -169,13 +168,14 @@ class EmailImporter:
             return self.threads_cache[thread_id]
 
         # Check if thread exists
-        result = self.db.query(
+        result = await self.db.query(
             'SELECT id FROM threads WHERE thread_id = $thread_id LIMIT 1',
             {'thread_id': thread_id}
         )
 
-        if result and len(result) > 0 and result[0].get('id'):
-            rec_id = result[0]['id']
+        # New API returns list directly
+        if result and isinstance(result, list) and len(result) > 0:
+            rec_id = str(result[0]['id'])
             self.threads_cache[thread_id] = rec_id
             return rec_id
 
@@ -185,23 +185,14 @@ class EmailImporter:
             'subject': subject,
         }
 
-        result = self.db.create('threads', thread_data)
+        result = await self.db.create('threads', thread_data)
         if isinstance(result, str):
-            # Error - thread might already exist
-            result = self.db.query(
-                'SELECT id FROM threads WHERE thread_id = $thread_id LIMIT 1',
-                {'thread_id': thread_id}
-            )
-            if result and len(result) > 0 and result[0].get('id'):
-                rec_id = str(result[0]['id'])
-                self.threads_cache[thread_id] = rec_id
-                return rec_id
-            return None
-        rec_id = str(result['id'])  # Convert RecordID to string
+            raise ValueError(f"Failed to create thread: {result}")
+        rec_id = str(result['id'])
         self.threads_cache[thread_id] = rec_id
         return rec_id
 
-    def import_email(
+    async def import_email(
         self,
         email_data: dict,
         source: str = 'enron',
@@ -225,9 +216,8 @@ class EmailImporter:
         bcc_emails = extract_emails(email_data.get('bcc', ''))
 
         date_str = email_data.get('date', '')
-        parsed_date = parse_date(date_str)
 
-        # Build email record
+        # Build email record (skip date field as SurrealDB datetime parsing is complex)
         record = {
             'message_id': message_id,
             'date_str': date_str,
@@ -243,9 +233,6 @@ class EmailImporter:
             'timing': email_data.get('timing'),
         }
 
-        if parsed_date:
-            record['date'] = parsed_date
-
         # Add source-specific fields
         if source == 'enron':
             record['x_from'] = email_data.get('x_from')
@@ -258,8 +245,7 @@ class EmailImporter:
             record['enron_user'] = email_data.get('user')
         elif source == 'gmail':
             record['gmail_thread_id'] = email_data.get('thread_id')
-            # Gmail labels are stored as x_gmail_labels in parsed data
-            record['labels'] = email_data.get('x_gmail_labels', []) or email_data.get('labels', [])
+            record['labels'] = email_data.get('labels', [])
 
         # Parse references
         refs = email_data.get('references', '')
@@ -267,19 +253,18 @@ class EmailImporter:
             record['references'] = EMAIL_PATTERN.findall(refs)
 
         try:
-            result = self.db.create('emails', record)
-            # Handle error case where result is string (error message)
+            result = await self.db.create('emails', record)
+            # Check if result is error string
             if isinstance(result, str):
-                print(f"Error creating email {message_id}: {result}", file=sys.stderr)
-                return None
-            email_id = str(result['id'])  # Convert RecordID to string
+                raise ValueError(f"Failed to create email: {result}")
+            email_id = str(result['id'])
             self.emails_cache[message_id] = email_id
 
             # Create user records and relationships
             if from_email:
                 org_level = extract_org_level(email_data.get('x_from', ''))
-                sender_id = self.get_or_create_user(from_email, org_level=org_level)
-                self.db.query(
+                sender_id = await self.get_or_create_user(from_email, org_level=org_level)
+                await self.db.query(
                     f'RELATE {email_id}->sent_by->{sender_id}'
                 )
 
@@ -289,24 +274,24 @@ class EmailImporter:
 
             # Create recipient relationships
             for to_email in to_emails:
-                recipient_id = self.get_or_create_user(to_email)
-                self.db.query(
+                recipient_id = await self.get_or_create_user(to_email)
+                await self.db.query(
                     f'RELATE {email_id}->received_by->{recipient_id} SET field = "to"'
                 )
 
             for cc_email in cc_emails:
-                recipient_id = self.get_or_create_user(cc_email)
-                self.db.query(
+                recipient_id = await self.get_or_create_user(cc_email)
+                await self.db.query(
                     f'RELATE {email_id}->received_by->{recipient_id} SET field = "cc"'
                 )
 
             # Handle threading
             thread_id = email_data.get('thread_id') or email_data.get('in_reply_to') or message_id
             if thread_id:
-                thread_rec_id = self.get_or_create_thread(
+                thread_rec_id = await self.get_or_create_thread(
                     thread_id, email_data.get('subject', '')
                 )
-                self.db.query(
+                await self.db.query(
                     f'RELATE {email_id}->belongs_to->{thread_rec_id}'
                 )
 
@@ -314,7 +299,7 @@ class EmailImporter:
             in_reply_to = email_data.get('in_reply_to')
             if in_reply_to and in_reply_to in self.emails_cache:
                 parent_id = self.emails_cache[in_reply_to]
-                self.db.query(
+                await self.db.query(
                     f'RELATE {email_id}->replies_to->{parent_id}'
                 )
                 # Track reply in comm edges
@@ -328,7 +313,7 @@ class EmailImporter:
             print(f"Error importing email {message_id}: {e}", file=sys.stderr)
             return None
 
-    def finalize_comm_edges(self):
+    async def finalize_comm_edges(self):
         """Create communication graph edges from accumulated data."""
         print(f"Creating {len(self.comm_edges)} communication edges...")
 
@@ -340,7 +325,7 @@ class EmailImporter:
             to_id = self.users_cache[to_email]
 
             try:
-                self.db.query(
+                await self.db.query(
                     f'''RELATE {from_id}->communicates->{to_id} SET
                         email_count = $email_count,
                         reply_count = $reply_count,
@@ -351,7 +336,7 @@ class EmailImporter:
             except Exception as e:
                 print(f"Warning: Could not create comm edge: {e}")
 
-    def import_json_file(
+    async def import_json_file(
         self,
         json_path: Path,
         source: str = 'enron',
@@ -368,7 +353,7 @@ class EmailImporter:
 
         imported = 0
         for i, email_data in enumerate(emails):
-            result = self.import_email(email_data, source=source, split=split)
+            result = await self.import_email(email_data, source=source, split=split)
             if result:
                 imported += 1
 
@@ -379,7 +364,7 @@ class EmailImporter:
         return imported
 
 
-def main():
+async def main():
     parser = argparse.ArgumentParser(
         description='Import email data into SurrealDB'
     )
@@ -441,66 +426,67 @@ def main():
 
     database = args.database or args.source
 
+    # Connect to SurrealDB
+    importer = EmailImporter(args.url, args.namespace, database)
+
     print(f"Connecting to {args.url}...")
+    await importer.connect(args.user, args.password)
+    print(f"Connected to namespace={args.namespace}, database={database}")
 
-    # Connect to SurrealDB using context manager
-    with Surreal(args.url) as db:
-        importer = EmailImporter(db, args.namespace, database)
-        importer.connect(args.user, args.password)
-        print(f"Connected to namespace={args.namespace}, database={database}")
+    # Import schema if not skipping
+    if not args.skip_schema and args.schema.exists():
+        print(f"Importing schema from {args.schema}...")
+        await importer.import_schema(args.schema)
+        print("Schema imported")
 
-        # Import schema if not skipping
-        if not args.skip_schema and args.schema.exists():
-            print(f"Importing schema from {args.schema}...")
-            importer.import_schema(args.schema)
-            print("Schema imported")
+    # Import files
+    total_imported = 0
 
-        # Import files
-        total_imported = 0
+    if args.source == 'enron':
+        # For Enron, expect train.json, val.json, test.json
+        split_map = {
+            'train': 'train',
+            'val': 'val',
+            'test': 'test',
+        }
 
-        if args.source == 'enron':
-            # For Enron, expect train.json, val.json, test.json
-            split_map = {
-                'train': 'train',
-                'val': 'val',
-                'test': 'test',
-            }
+        for json_file in args.files:
+            # Determine split from filename
+            split = None
+            for key in split_map:
+                if key in json_file.name:
+                    split = split_map[key]
+                    break
 
-            for json_file in args.files:
-                # Determine split from filename
-                split = None
-                for key in split_map:
-                    if key in json_file.name:
-                        split = split_map[key]
-                        break
+            count = await importer.import_json_file(
+                json_file,
+                source='enron',
+                split=split,
+                batch_size=args.batch_size,
+            )
+            total_imported += count
 
-                count = importer.import_json_file(
-                    json_file,
-                    source='enron',
-                    split=split,
-                    batch_size=args.batch_size,
-                )
-                total_imported += count
+    else:  # gmail
+        for json_file in args.files:
+            count = await importer.import_json_file(
+                json_file,
+                source='gmail',
+                split=None,  # Gmail doesn't have predefined splits
+                batch_size=args.batch_size,
+            )
+            total_imported += count
 
-        else:  # gmail
-            for json_file in args.files:
-                count = importer.import_json_file(
-                    json_file,
-                    source='gmail',
-                    split=None,  # Gmail doesn't have predefined splits
-                    batch_size=args.batch_size,
-                )
-                total_imported += count
+    # Finalize communication edges
+    await importer.finalize_comm_edges()
 
-        # Finalize communication edges
-        importer.finalize_comm_edges()
+    print(f"\nImport complete!")
+    print(f"  Total emails: {total_imported}")
+    print(f"  Total users: {len(importer.users_cache)}")
+    print(f"  Total threads: {len(importer.threads_cache)}")
+    print(f"  Communication edges: {len(importer.comm_edges)}")
 
-        print(f"\nImport complete!")
-        print(f"  Total emails: {total_imported}")
-        print(f"  Total users: {len(importer.users_cache)}")
-        print(f"  Total threads: {len(importer.threads_cache)}")
-        print(f"  Communication edges: {len(importer.comm_edges)}")
+    await importer.db.close()
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())

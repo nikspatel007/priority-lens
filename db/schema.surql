@@ -42,7 +42,7 @@ DEFINE INDEX threads_thread_id ON threads COLUMNS thread_id UNIQUE;
 DEFINE TABLE emails SCHEMAFULL;
 DEFINE FIELD message_id ON emails TYPE string;
 DEFINE FIELD date ON emails TYPE option<datetime>;
-DEFINE FIELD date_str ON emails TYPE string;  -- Original date string for parsing failures
+DEFINE FIELD date_str ON emails TYPE string DEFAULT "";  -- Original date string for parsing failures
 DEFINE FIELD subject ON emails TYPE string DEFAULT "";
 DEFINE FIELD body ON emails TYPE string DEFAULT "";
 DEFINE FIELD from_email ON emails TYPE string;
