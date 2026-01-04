@@ -132,9 +132,10 @@ class EmailState:
     user_context: UserContext
 
     # Embeddings (initialized as None, computed during feature extraction)
-    subject_embedding: Optional[np.ndarray] = None
-    body_embedding: Optional[np.ndarray] = None
-    topic_vector: Optional[np.ndarray] = None
+    # Using string annotations to avoid runtime evaluation when numpy not installed
+    subject_embedding: Optional["np.ndarray"] = None
+    body_embedding: Optional["np.ndarray"] = None
+    topic_vector: Optional["np.ndarray"] = None
 
     # Computed scores (0-1 range)
     people_score: float = 0.0
@@ -161,7 +162,7 @@ class EmailState:
             weights['task'] * self.task_score
         )
 
-    def to_feature_vector(self) -> np.ndarray:
+    def to_feature_vector(self) -> "np.ndarray":
         """Convert state to a flat feature vector for the policy network.
 
         Returns:

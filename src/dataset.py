@@ -13,6 +13,7 @@ import torch
 from torch.utils.data import Dataset
 
 from .features import CombinedFeatureExtractor, FEATURE_DIMS
+from dataclasses import dataclass
 
 
 # Action label mapping
@@ -29,6 +30,50 @@ ACTION_TO_IDX = {
 IDX_TO_ACTION = {v: k for k, v in ACTION_TO_IDX.items()}
 
 NUM_ACTIONS = len(ACTION_TO_IDX)
+
+# Timing label mapping
+TIMING_TO_IDX = {
+    'IMMEDIATE': 0,
+    'HOUR': 1,
+    'DAY': 2,
+    'WEEK': 3,
+    'NEVER': 4,
+}
+
+IDX_TO_TIMING = {v: k for k, v in TIMING_TO_IDX.items()}
+
+
+@dataclass
+class EmailSample:
+    """Single email sample for training."""
+    message_id: str
+    features: torch.Tensor
+    action: str
+    timing: str = 'DAY'
+
+
+def action_to_reply_timing(action: str) -> str:
+    """Convert action to default reply timing."""
+    if action == 'REPLIED':
+        return 'HOUR'
+    elif action == 'FORWARDED':
+        return 'DAY'
+    else:
+        return 'NEVER'
+
+
+def response_time_to_timing(hours: float) -> str:
+    """Convert response time in hours to timing category."""
+    if hours < 1:
+        return 'IMMEDIATE'
+    elif hours < 24:
+        return 'HOUR'
+    elif hours < 168:  # 7 days
+        return 'DAY'
+    elif hours < 720:  # 30 days
+        return 'WEEK'
+    else:
+        return 'NEVER'
 
 
 class EmailDataset(Dataset):

@@ -181,6 +181,36 @@ def compute_confusion_matrix(
     return matrix
 
 
+def compute_f1_scores(
+    y_true: list[int],
+    y_pred: list[int],
+    num_classes: int,
+) -> dict[str, float]:
+    """Compute per-class F1 scores.
+
+    Returns:
+        Dict mapping class name to F1 score.
+    """
+    f1_scores = {}
+    for c in range(num_classes):
+        _, _, f1 = compute_precision_recall_f1(y_true, y_pred, c)
+        f1_scores[ACTION_NAMES[c]] = f1
+    return f1_scores
+
+
+def check_accuracy_target(accuracy: float, target: float = 0.70) -> bool:
+    """Check if accuracy meets target threshold.
+
+    Args:
+        accuracy: Current accuracy score (0-1)
+        target: Target accuracy threshold (default 70%)
+
+    Returns:
+        True if accuracy >= target
+    """
+    return accuracy >= target
+
+
 def compute_spearman_correlation(x: list[float], y: list[float]) -> float:
     """Compute Spearman rank correlation coefficient."""
     if len(x) != len(y) or len(x) == 0:
