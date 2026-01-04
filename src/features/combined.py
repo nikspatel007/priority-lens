@@ -21,7 +21,7 @@ from .topic import TopicFeatures, classify_topic, compute_topic_score
 from .task import TaskFeatures, extract_tasks, compute_task_score
 from .people import PeopleFeatures, extract_people_features, compute_people_score
 from .temporal import TemporalFeatures, extract_temporal_features, compute_temporal_score
-from .service import ServiceFeatures, extract_service_features, compute_service_score
+from .service import ServiceFeatures, classify_service, compute_service_score
 from .content import (
     ContentFeatures,
     ContentFeatureExtractor,
@@ -29,6 +29,10 @@ from .content import (
     DEFAULT_EMBEDDING_DIM,
     LARGE_EMBEDDING_DIM,
     MODEL_EMBEDDING_DIMS,
+)
+from .relationship import (
+    RelationshipFeatures,
+    CommunicationGraph,
 )
 
 
@@ -43,6 +47,7 @@ class CombinedFeatures:
     temporal: TemporalFeatures
     service: Optional[ServiceFeatures] = None  # Service email detection
     content: Optional[ContentFeatures] = None  # Optional for backward compat
+    relationship: Optional[RelationshipFeatures] = None  # Relationship features from CommunicationGraph
 
     # Computed scores
     project_score: float = 0.0
@@ -51,6 +56,7 @@ class CombinedFeatures:
     people_score: float = 0.0
     temporal_score: float = 0.0
     service_score: float = 0.0  # Higher = more likely service email
+    relationship_score: float = 0.0  # Relationship strength and priority
     overall_priority: float = 0.0
 
     def to_feature_vector(self, include_content: bool = True) -> Union["np.ndarray", list[float]]:
@@ -64,10 +70,11 @@ class CombinedFeatures:
         - Task features: 12 dims
         - People features: 15 dims
         - Temporal features: 8 dims
-        - Service features: 9 dims
-        - Computed scores: 7 dims (project, topic, task, people, temporal, service, overall)
+        - Service features: 17 dims
+        - Relationship features: 15 dims
+        - Computed scores: 8 dims (project, topic, task, people, temporal, service, relationship, overall)
         - Content embedding: 384 dims (if include_content=True and content is available)
-        - Total: 79 dims (without content) or 463 dims (with content)
+        - Total: 103 dims (without content) or 487 dims (with content)
 
         Args:
             include_content: Whether to include content embeddings (default True)
@@ -81,7 +88,8 @@ class CombinedFeatures:
         task_vec = self.task.to_feature_vector()
         people_vec = self.people.to_feature_vector()
         temporal_vec = self.temporal.to_feature_vector()
-        service_vec = self.service.to_feature_vector() if self.service else [0.0] * 9
+        service_vec = self.service.to_feature_vector() if self.service else [0.0] * 17
+        relationship_vec = self.relationship.to_feature_vector() if self.relationship else [0.0] * 15
 
         # Computed scores
         scores = [
@@ -91,6 +99,7 @@ class CombinedFeatures:
             self.people_score,
             self.temporal_score,
             self.service_score,
+            self.relationship_score,
             self.overall_priority,
         ]
 
@@ -102,6 +111,7 @@ class CombinedFeatures:
                 np.asarray(people_vec),
                 np.asarray(temporal_vec),
                 np.asarray(service_vec, dtype=np.float32),
+                np.asarray(relationship_vec, dtype=np.float32),
                 np.array(scores, dtype=np.float32),
             ])
             # Add content embedding if available and requested
@@ -112,7 +122,7 @@ class CombinedFeatures:
         else:
             # List concatenation
             combined = []
-            for vec in [project_vec, topic_vec, task_vec, people_vec, temporal_vec, service_vec]:
+            for vec in [project_vec, topic_vec, task_vec, people_vec, temporal_vec, service_vec, relationship_vec]:
                 if isinstance(vec, list):
                     combined.extend(vec)
                 else:
@@ -137,6 +147,7 @@ class CombinedFeatures:
                 'people': self.people_score,
                 'temporal': self.temporal_score,
                 'service': self.service_score,
+                'relationship': self.relationship_score,
                 'overall_priority': self.overall_priority,
             },
             'project': {
@@ -193,6 +204,19 @@ class CombinedFeatures:
                 'body_word_count': self.content.body_word_count,
                 'embedding_dim': self.content.embedding_dim,
             }
+        if self.relationship is not None:
+            result['relationship'] = {
+                'sender_response_deviation': self.relationship.sender_response_deviation,
+                'sender_frequency_rank': self.relationship.sender_frequency_rank,
+                'inferred_hierarchy': self.relationship.inferred_hierarchy,
+                'relationship_strength': self.relationship.relationship_strength,
+                'emails_from_sender_7d': self.relationship.emails_from_sender_7d,
+                'emails_from_sender_30d': self.relationship.emails_from_sender_30d,
+                'response_rate_to_sender': self.relationship.response_rate_to_sender,
+                'avg_thread_depth': self.relationship.avg_thread_depth,
+                'days_since_last_email': self.relationship.days_since_last_email,
+                'cc_affinity_score': self.relationship.cc_affinity_score,
+            }
         return result
 
 
@@ -203,6 +227,7 @@ def compute_overall_priority(
     people_score: float,
     temporal_score: float = 0.5,
     service_score: float = 0.0,
+    relationship_score: float = 0.0,
     *,
     weights: Optional[dict[str, float]] = None,
 ) -> float:
@@ -218,6 +243,7 @@ def compute_overall_priority(
         people_score: Score from people analysis
         temporal_score: Score from temporal features (default 0.5 for backward compat)
         service_score: Score indicating service/automated email (0-1, higher = more service-like)
+        relationship_score: Score from relationship analysis (0-1, higher = stronger relationship)
         weights: Optional custom weights (must sum to 1.0)
 
     Returns:
@@ -225,19 +251,21 @@ def compute_overall_priority(
     """
     if weights is None:
         weights = {
-            'people': 0.25,
-            'project': 0.20,
-            'topic': 0.20,
+            'people': 0.20,
+            'project': 0.15,
+            'topic': 0.15,
             'task': 0.20,
-            'temporal': 0.15,
+            'temporal': 0.10,
+            'relationship': 0.20,
         }
 
     priority = (
-        weights.get('people', 0.25) * people_score +
-        weights.get('project', 0.20) * project_score +
-        weights.get('topic', 0.20) * topic_score +
+        weights.get('people', 0.20) * people_score +
+        weights.get('project', 0.15) * project_score +
+        weights.get('topic', 0.15) * topic_score +
         weights.get('task', 0.20) * task_score +
-        weights.get('temporal', 0.15) * temporal_score
+        weights.get('temporal', 0.10) * temporal_score +
+        weights.get('relationship', 0.20) * relationship_score
     )
 
     # Service emails get priority reduction (service_score 1.0 reduces by up to 30%)
@@ -245,6 +273,45 @@ def compute_overall_priority(
     priority = priority * (1.0 - service_penalty)
 
     return min(1.0, max(0.0, priority))
+
+
+def compute_relationship_score(relationship: Optional[RelationshipFeatures]) -> float:
+    """Compute a priority score from relationship features.
+
+    Combines relationship strength, hierarchy, and response patterns into
+    a single 0-1 score indicating how important emails from this sender are.
+
+    Args:
+        relationship: RelationshipFeatures from CommunicationGraph
+
+    Returns:
+        Score 0-1 where higher means more important relationship
+    """
+    if relationship is None:
+        return 0.0
+
+    # Weight the different relationship signals
+    # Hierarchy: manager (0.9) should boost priority more than peer (0.5)
+    hierarchy_weight = relationship.inferred_hierarchy
+
+    # Relationship strength: stronger relationships = higher priority
+    strength_weight = relationship.relationship_strength
+
+    # Response deviation: positive means user responds faster than baseline = important
+    deviation_boost = max(0, relationship.sender_response_deviation) * 0.5
+
+    # Frequency rank: frequent senders are often important
+    frequency_weight = relationship.sender_frequency_rank * 0.5
+
+    # Combine with weights
+    score = (
+        hierarchy_weight * 0.35 +
+        strength_weight * 0.35 +
+        deviation_boost * 0.15 +
+        frequency_weight * 0.15
+    )
+
+    return min(1.0, max(0.0, score))
 
 
 def extract_combined_features(
@@ -257,6 +324,7 @@ def extract_combined_features(
     weights: Optional[dict[str, float]] = None,
     include_content: bool = False,
     content_extractor: Optional[ContentFeatureExtractor] = None,
+    communication_graph: Optional[CommunicationGraph] = None,
 ) -> CombinedFeatures:
     """Extract all features from an email and combine into unified representation.
 
@@ -269,6 +337,7 @@ def extract_combined_features(
         weights: Optional custom priority weights
         include_content: Whether to extract content embeddings (default False for backward compat)
         content_extractor: Optional content extractor instance (uses global if None)
+        communication_graph: Optional CommunicationGraph for relationship feature extraction
 
     Returns:
         CombinedFeatures with all extracted information
@@ -291,8 +360,9 @@ def extract_combined_features(
         thread_context=thread_context,
     )
 
-    # Extract service email features (unsubscribe detection)
-    service_features = extract_service_features(email)
+    # Extract service email features
+    sender_email = email.get('from', '')
+    service_features = classify_service(sender_email, subject, body)
 
     # Extract content features if requested
     content_features = None
@@ -302,6 +372,11 @@ def extract_combined_features(
         else:
             content_features = get_content_extractor().extract(email)
 
+    # Extract relationship features if graph is provided
+    relationship_features = None
+    if communication_graph is not None and user_email:
+        relationship_features = communication_graph.get_relationship_features(email, user_email)
+
     # Compute scores
     # Project score uses the project_features internal score
     project_score = project_features.project_score
@@ -310,6 +385,7 @@ def extract_combined_features(
     people_score = compute_people_score(people_features)
     temporal_score = compute_temporal_score(temporal_features)
     service_score = compute_service_score(service_features)
+    relationship_score = compute_relationship_score(relationship_features)
 
     # Compute overall priority
     overall_priority = compute_overall_priority(
@@ -319,6 +395,7 @@ def extract_combined_features(
         people_score,
         temporal_score,
         service_score,
+        relationship_score,
         weights=weights,
     )
 
@@ -330,12 +407,14 @@ def extract_combined_features(
         temporal=temporal_features,
         service=service_features,
         content=content_features,
+        relationship=relationship_features,
         project_score=project_score,
         topic_score=topic_score,
         task_score=task_score,
         people_score=people_score,
         temporal_score=temporal_score,
         service_score=service_score,
+        relationship_score=relationship_score,
         overall_priority=overall_priority,
     )
 
@@ -350,6 +429,7 @@ def extract_batch(
     weights: Optional[dict[str, float]] = None,
     include_content: bool = False,
     content_extractor: Optional[ContentFeatureExtractor] = None,
+    communication_graph: Optional[CommunicationGraph] = None,
 ) -> list[CombinedFeatures]:
     """Extract features from a batch of emails.
 
@@ -362,6 +442,7 @@ def extract_batch(
         weights: Optional priority weights
         include_content: Whether to extract content embeddings
         content_extractor: Optional content extractor instance
+        communication_graph: Optional CommunicationGraph for relationship features
 
     Returns:
         List of CombinedFeatures, one per email
@@ -393,10 +474,16 @@ def extract_batch(
         )
 
         # Extract service email features
-        service_features = extract_service_features(email)
+        sender_email = email.get('from', '')
+        service_features = classify_service(sender_email, subject, body)
 
         # Get content features from pre-computed batch
         content_features = content_features_list[i] if content_features_list else None
+
+        # Extract relationship features if graph is provided
+        relationship_features = None
+        if communication_graph is not None and user_email:
+            relationship_features = communication_graph.get_relationship_features(email, user_email)
 
         # Compute scores
         project_score = project_features.project_score
@@ -405,10 +492,11 @@ def extract_batch(
         people_score = compute_people_score(people_features)
         temporal_score = compute_temporal_score(temporal_features)
         service_score = compute_service_score(service_features)
+        relationship_score = compute_relationship_score(relationship_features)
 
         overall_priority = compute_overall_priority(
             project_score, topic_score, task_score, people_score, temporal_score,
-            service_score, weights=weights
+            service_score, relationship_score, weights=weights
         )
 
         results.append(CombinedFeatures(
@@ -419,12 +507,14 @@ def extract_batch(
             temporal=temporal_features,
             service=service_features,
             content=content_features,
+            relationship=relationship_features,
             project_score=project_score,
             topic_score=topic_score,
             task_score=task_score,
             people_score=people_score,
             temporal_score=temporal_score,
             service_score=service_score,
+            relationship_score=relationship_score,
             overall_priority=overall_priority,
         ))
 
@@ -476,6 +566,7 @@ class CombinedFeatureExtractor:
         include_content: bool = False,
         content_model: str = 'all-MiniLM-L6-v2',
         device: Optional[str] = None,
+        communication_graph: Optional[CommunicationGraph] = None,
     ):
         """Initialize extractor with user context.
 
@@ -486,12 +577,14 @@ class CombinedFeatureExtractor:
             include_content: Whether to include content embeddings
             content_model: Sentence transformer model name for content embeddings
             device: Device for content model ('cpu', 'cuda', 'mps', or None for auto)
+            communication_graph: Optional CommunicationGraph for relationship features
         """
         self.user_email = user_email
         self.user_context = user_context or {}
         self.weights = weights
         self.include_content = include_content
         self._content_extractor = None
+        self.communication_graph = communication_graph
 
         if include_content:
             self._content_extractor = ContentFeatureExtractor(
@@ -508,6 +601,7 @@ class CombinedFeatureExtractor:
             weights=self.weights,
             include_content=self.include_content,
             content_extractor=self._content_extractor,
+            communication_graph=self.communication_graph,
         )
 
     def extract_batch(self, emails: list[dict]) -> list[CombinedFeatures]:
@@ -519,6 +613,7 @@ class CombinedFeatureExtractor:
             weights=self.weights,
             include_content=self.include_content,
             content_extractor=self._content_extractor,
+            communication_graph=self.communication_graph,
         )
 
     def to_vector(self, email: dict) -> Union["np.ndarray", list[float]]:
@@ -537,11 +632,16 @@ class CombinedFeatureExtractor:
         """Update user context for future extractions."""
         self.user_context.update(user_context)
 
+    def set_communication_graph(self, graph: CommunicationGraph) -> None:
+        """Set or update the communication graph for relationship features."""
+        self.communication_graph = graph
+
     @property
     def feature_dim(self) -> int:
         """Return dimensionality of feature vector."""
-        # Base: 8 + 20 + 12 + 15 + 8 + 9 + 7 = 79
-        base_dim = 79
+        # Base: 8 + 20 + 12 + 15 + 8 + 17 + 15 + 8 = 103
+        # (project + topic + task + people + temporal + service + relationship + scores)
+        base_dim = 103
         if self.include_content:
             # Add content embedding dimension
             if self._content_extractor is not None:
@@ -557,13 +657,14 @@ FEATURE_DIMS = {
     'task': 12,
     'people': 15,
     'temporal': 8,
-    'service': 9,
-    'scores': 7,
+    'service': 17,
+    'relationship': 15,
+    'scores': 8,  # project, topic, task, people, temporal, service, relationship, overall
     'content': DEFAULT_EMBEDDING_DIM,  # 384 for all-MiniLM-L6-v2
     'content_large': LARGE_EMBEDDING_DIM,  # 768 for all-mpnet-base-v2
-    'total_base': 69,  # Without content
-    'total_with_content': 69 + DEFAULT_EMBEDDING_DIM,  # 453 with content
-    'total_with_large_content': 69 + LARGE_EMBEDDING_DIM,  # 837 with large content
+    'total_base': 103,  # Without content (8+20+12+15+8+17+15+8)
+    'total_with_content': 103 + DEFAULT_EMBEDDING_DIM,  # 487 with content
+    'total_with_large_content': 103 + LARGE_EMBEDDING_DIM,  # 871 with large content
 }
 
 
@@ -616,13 +717,14 @@ if __name__ == '__main__':
     print("=" * 60)
     print()
     print("SCORES:")
-    print(f"  Project:  {features.project_score:.2f}")
-    print(f"  Topic:    {features.topic_score:.2f}")
-    print(f"  Task:     {features.task_score:.2f}")
-    print(f"  People:   {features.people_score:.2f}")
-    print(f"  Temporal: {features.temporal_score:.2f}")
-    print(f"  Service:  {features.service_score:.2f}")
-    print(f"  Overall:  {features.overall_priority:.2f}")
+    print(f"  Project:      {features.project_score:.2f}")
+    print(f"  Topic:        {features.topic_score:.2f}")
+    print(f"  Task:         {features.task_score:.2f}")
+    print(f"  People:       {features.people_score:.2f}")
+    print(f"  Temporal:     {features.temporal_score:.2f}")
+    print(f"  Service:      {features.service_score:.2f}")
+    print(f"  Relationship: {features.relationship_score:.2f}")
+    print(f"  Overall:      {features.overall_priority:.2f}")
     print()
     print("PROJECT FEATURES:")
     print(f"  Mentions: {features.project.project_mention_count}")
@@ -667,6 +769,18 @@ if __name__ == '__main__':
         print(f"  Is service email: {features.service.is_service_email}")
     else:
         print("  (not extracted)")
+    print()
+    print("RELATIONSHIP FEATURES:")
+    if features.relationship:
+        print(f"  Sender response deviation: {features.relationship.sender_response_deviation:.2f}")
+        print(f"  Sender frequency rank: {features.relationship.sender_frequency_rank:.2f}")
+        print(f"  Inferred hierarchy: {features.relationship.inferred_hierarchy:.2f}")
+        print(f"  Relationship strength: {features.relationship.relationship_strength:.2f}")
+        print(f"  Emails from sender (30d): {features.relationship.emails_from_sender_30d}")
+        print(f"  Response rate to sender: {features.relationship.response_rate_to_sender:.2f}")
+        print(f"  CC affinity score: {features.relationship.cc_affinity_score:.2f}")
+    else:
+        print("  (not extracted - requires CommunicationGraph)")
     print()
     print("FEATURE VECTOR:")
     vec = features.to_feature_vector()

@@ -55,10 +55,10 @@ from .temporal import (
 
 from .service import (
     ServiceFeatures,
-    extract_service_features,
+    classify_service,
     compute_service_score,
-    detect_list_unsubscribe_header,
-    detect_unsubscribe_links,
+    is_automated_sender,
+    get_service_type_description,
 )
 
 from .content import (
@@ -100,6 +100,7 @@ from .combined import (
     extract_batch,
     build_feature_matrix,
     compute_overall_priority,
+    compute_relationship_score,
     FEATURE_DIMS,
 )
 
@@ -149,12 +150,12 @@ __all__ = [
     'RelationshipDecayFeatures',
     'extract_temporal_features',
     'compute_temporal_score',
-    # Service features
+    # Service features (first import)
     'ServiceFeatures',
-    'extract_service_features',
+    'classify_service',
     'compute_service_score',
-    'detect_list_unsubscribe_header',
-    'detect_unsubscribe_links',
+    'is_automated_sender',
+    'get_service_type_description',
     # Relationship decay features
     'compute_relationship_decay',
     'compute_sender_decay_score',
@@ -190,6 +191,7 @@ __all__ = [
     'extract_batch',
     'build_feature_matrix',
     'compute_overall_priority',
+    'compute_relationship_score',
     'FEATURE_DIMS',
     # Service features
     'ServiceType',
