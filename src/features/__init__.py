@@ -64,6 +64,14 @@ from .relationship import (
     process_email_dataset,
 )
 
+from .sender_frequency import (
+    SenderFrequency,
+    SenderFrequencyIndex,
+    compute_sender_frequency_from_emails,
+    compute_sender_frequency_from_db,
+    compute_sender_frequency_from_db_sync,
+)
+
 from .combined import (
     CombinedFeatures,
     CombinedFeatureExtractor,
@@ -114,6 +122,12 @@ __all__ = [
     'UserBaseline',
     'build_communication_graph',
     'process_email_dataset',
+    # Sender frequency features
+    'SenderFrequency',
+    'SenderFrequencyIndex',
+    'compute_sender_frequency_from_emails',
+    'compute_sender_frequency_from_db',
+    'compute_sender_frequency_from_db_sync',
     # Combined features
     'CombinedFeatures',
     'CombinedFeatureExtractor',

@@ -217,6 +217,39 @@ DEFINE FUNCTION fn::comm_frequency($from_user: string, $to_user: string) {
     RETURN $edge[0];
 };
 
+-- Function to count emails from sender to recipient in a time window
+-- $reference_time: ISO datetime string to compute window from
+-- $window_days: number of days to look back
+DEFINE FUNCTION fn::sender_frequency_window(
+    $sender: string,
+    $recipient: string,
+    $reference_time: datetime,
+    $window_days: int
+) {
+    LET $window_start = $reference_time - ($window_days * 1d);
+    LET $count = (SELECT count() FROM emails
+                  WHERE from_email = $sender
+                    AND $recipient IN to_emails
+                    AND date >= $window_start
+                    AND date < $reference_time
+                  GROUP ALL);
+    RETURN $count[0].count ?? 0;
+};
+
+-- Function to get time-windowed email frequency for all standard windows (7d, 30d, 90d)
+-- Returns object with emails_7d, emails_30d, emails_90d
+DEFINE FUNCTION fn::sender_frequency_all_windows(
+    $sender: string,
+    $recipient: string,
+    $reference_time: datetime
+) {
+    RETURN {
+        emails_7d: fn::sender_frequency_window($sender, $recipient, $reference_time, 7),
+        emails_30d: fn::sender_frequency_window($sender, $recipient, $reference_time, 30),
+        emails_90d: fn::sender_frequency_window($sender, $recipient, $reference_time, 90)
+    };
+};
+
 -- ============================================================================
 -- EVENTS (Auto-update triggers)
 -- ============================================================================

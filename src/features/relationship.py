@@ -23,7 +23,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 try:
     import numpy as np
@@ -33,6 +33,9 @@ except ImportError:
     HAS_NUMPY = False
 
 from email.utils import parsedate_to_datetime
+
+if TYPE_CHECKING:
+    from .sender_frequency import SenderFrequencyIndex
 
 
 # Email parsing utilities
@@ -231,30 +234,36 @@ class RelationshipFeatures:
     inferred_hierarchy: float  # Manager=0.9, Peer=0.5, Report=0.3
     relationship_strength: float  # Based on communication volume and reciprocity
 
-    # Communication patterns
-    emails_from_sender_30d: int  # Volume from this sender (estimated)
-    total_emails_from_sender: int
-    response_rate_to_sender: float  # How often user responds to this sender
-    avg_response_time_to_sender: Optional[float]  # User's typical response time to sender
+    # Time-windowed communication frequency
+    emails_from_sender_7d: int = 0   # Emails from sender in last 7 days
+    emails_from_sender_30d: int = 0  # Emails from sender in last 30 days
+    emails_from_sender_90d: int = 0  # Emails from sender in last 90 days
+    total_emails_from_sender: int = 0
+
+    # Response patterns
+    response_rate_to_sender: float = 0.0  # How often user responds to this sender
+    avg_response_time_to_sender: Optional[float] = None  # User's typical response time
 
     # Recency
-    days_since_last_email: Optional[float]
+    days_since_last_email: Optional[float] = None
 
     # Asymmetry signals
-    communication_asymmetry: float  # >0 if user initiates more, <0 if sender does
-    response_time_asymmetry: float  # >0 if user responds faster than sender
+    communication_asymmetry: float = 0.0  # >0 if user initiates more, <0 if sender does
+    response_time_asymmetry: float = 0.0  # >0 if user responds faster than sender
 
     def to_feature_vector(self) -> list[float]:
         """Convert to numerical vector for ML pipeline.
 
-        Returns 11-dimensional vector.
+        Returns 13-dimensional vector (added 7d and 90d frequency features).
         """
         return [
             self.sender_response_deviation,
             self.sender_frequency_rank,
             self.inferred_hierarchy,
             self.relationship_strength,
+            min(self.emails_from_sender_7d, 50) / 50.0,    # Normalized (cap ~7/day)
             min(self.emails_from_sender_30d, 100) / 100.0,  # Normalized
+            min(self.emails_from_sender_90d, 200) / 200.0,  # Normalized
             min(self.total_emails_from_sender, 500) / 500.0,
             self.response_rate_to_sender,
             (self.avg_response_time_to_sender or 24.0) / 168.0,  # Normalize by week
@@ -551,12 +560,19 @@ class CommunicationGraph:
         strength = (volume_score * 0.4 + reciprocity * 0.3 + response_engagement * 0.3)
         return min(1.0, strength)
 
-    def get_relationship_features(self, email: dict, user: str) -> RelationshipFeatures:
+    def get_relationship_features(
+        self,
+        email: dict,
+        user: str,
+        sender_frequency_index: Optional["SenderFrequencyIndex"] = None,
+    ) -> RelationshipFeatures:
         """Extract relationship features for a single email and user.
 
         Args:
             email: Email dictionary with 'from', 'date', etc.
             user: The user's email address (the recipient)
+            sender_frequency_index: Optional SenderFrequencyIndex for accurate
+                time-windowed frequency computation. If None, uses edge counts.
 
         Returns:
             RelationshipFeatures for this email
@@ -610,12 +626,27 @@ class CommunicationGraph:
         else:
             rt_asymmetry = 0.0
 
+        # Time-windowed frequency computation
+        if sender_frequency_index is not None and email_date is not None:
+            # Use the accurate time-windowed index
+            freq = sender_frequency_index.get_frequency(sender, user, email_date)
+            emails_7d = freq.emails_from_sender_7d
+            emails_30d = freq.emails_from_sender_30d
+            emails_90d = freq.emails_from_sender_90d
+        else:
+            # Fall back to estimates from edge counts
+            emails_7d = min(stats_from.emails_sent // 4, 50)  # Rough estimate
+            emails_30d = min(stats_from.emails_sent, 100)
+            emails_90d = stats_from.emails_sent
+
         return RelationshipFeatures(
             sender_response_deviation=deviation,
             sender_frequency_rank=self.get_sender_frequency_rank(sender, user),
             inferred_hierarchy=self.infer_hierarchy(sender, user),
             relationship_strength=self.compute_relationship_strength(sender, user),
-            emails_from_sender_30d=min(stats_from.emails_sent, 100),  # Rough estimate
+            emails_from_sender_7d=emails_7d,
+            emails_from_sender_30d=emails_30d,
+            emails_from_sender_90d=emails_90d,
             total_emails_from_sender=stats_from.emails_sent,
             response_rate_to_sender=min(1.0, response_rate),
             avg_response_time_to_sender=user_response_to_sender,
