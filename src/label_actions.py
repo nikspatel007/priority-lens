@@ -5,7 +5,8 @@ Infers labels from folder structure and email metadata:
 - REPLIED: Subject starts with "Re:" in sent folders
 - FORWARDED: Subject starts with "Fw:", "Fwd:", "FW:" in sent folders
 - DELETED: Email in deleted_items folder
-- ARCHIVED: Email moved to a project/personal folder
+- ARCHIVED: Email moved to a user-created project/personal folder
+- AUTO_FILED: Email in system auto-filing folder (all_documents, discussion_threads)
 - KEPT: Email still in inbox (no explicit action)
 - COMPOSED: New email in sent folders (not reply/forward)
 """
@@ -24,13 +25,15 @@ SENT_FOLDERS = {'sent', 'sent_items', '_sent_mail', '_sent'}
 DELETED_FOLDERS = {'deleted_items', 'connect_deletes'}
 INBOX_FOLDERS = {'inbox', 'notes_inbox'}
 JUNK_FOLDERS = {'junk', 'junk_file'}
+# System auto-filing folders (not explicit user archive actions)
+AUTO_FILED_FOLDERS = {'all_documents', 'discussion_threads'}
 
 
 def classify_folder(folder: str) -> str:
     """Classify a folder into a category.
 
     Returns:
-        One of: 'sent', 'deleted', 'inbox', 'junk', 'archived'
+        One of: 'sent', 'deleted', 'inbox', 'junk', 'auto_filed', 'archived'
     """
     folder_lower = folder.lower().strip()
 
@@ -42,6 +45,8 @@ def classify_folder(folder: str) -> str:
         return 'inbox'
     elif folder_lower in JUNK_FOLDERS:
         return 'junk'
+    elif folder_lower in AUTO_FILED_FOLDERS:
+        return 'auto_filed'
     else:
         return 'archived'
 
@@ -53,7 +58,7 @@ def infer_action(email: dict) -> str:
         email: Email dictionary with folder, subject, etc.
 
     Returns:
-        Action label: REPLIED, FORWARDED, DELETED, ARCHIVED, KEPT, COMPOSED, JUNK
+        Action label: REPLIED, FORWARDED, DELETED, ARCHIVED, AUTO_FILED, KEPT, COMPOSED, JUNK
     """
     folder = email.get('folder', '')
     subject = email.get('subject', '')
@@ -79,8 +84,12 @@ def infer_action(email: dict) -> str:
     elif folder_type == 'junk':
         return 'JUNK'
 
+    elif folder_type == 'auto_filed':
+        # System auto-filed (all_documents, discussion_threads, etc.)
+        return 'AUTO_FILED'
+
     else:
-        # In a specific folder (project, personal, etc.)
+        # In a user-created folder (project, personal, etc.)
         return 'ARCHIVED'
 
 
