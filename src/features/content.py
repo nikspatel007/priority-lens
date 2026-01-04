@@ -32,6 +32,21 @@ logger = logging.getLogger(__name__)
 DEFAULT_MODEL = 'all-mpnet-base-v2'
 DEFAULT_EMBEDDING_DIM = 768
 
+# Large model: all-mpnet-base-v2
+# - 768-dim embeddings
+# - Slower inference but better semantic quality
+# - Recommended for ensemble's large_embed variant
+LARGE_MODEL = 'all-mpnet-base-v2'
+LARGE_EMBEDDING_DIM = 768
+
+# Model name to embedding dimension mapping
+MODEL_EMBEDDING_DIMS = {
+    'all-MiniLM-L6-v2': 384,
+    'all-mpnet-base-v2': 768,
+    'paraphrase-MiniLM-L6-v2': 384,
+    'paraphrase-mpnet-base-v2': 768,
+}
+
 # Maximum text length to process (chars)
 MAX_SUBJECT_LEN = 256
 MAX_BODY_LEN = 2048
@@ -125,9 +140,9 @@ class ContentFeatureExtractor:
         """Return embedding dimensionality."""
         if self._model is not None:
             return self._model.get_sentence_embedding_dimension()
-        # Return expected dim for default model without loading
-        if self.model_name == DEFAULT_MODEL:
-            return DEFAULT_EMBEDDING_DIM
+        # Return expected dim from known models without loading
+        if self.model_name in MODEL_EMBEDDING_DIMS:
+            return MODEL_EMBEDDING_DIMS[self.model_name]
         # Have to load model to know dimension
         return self.model.get_sentence_embedding_dimension()
 

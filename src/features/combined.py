@@ -26,6 +26,8 @@ from .content import (
     ContentFeatureExtractor,
     get_content_extractor,
     DEFAULT_EMBEDDING_DIM,
+    LARGE_EMBEDDING_DIM,
+    MODEL_EMBEDDING_DIMS,
 )
 
 
@@ -60,8 +62,8 @@ class CombinedFeatures:
         - People features: 15 dims
         - Temporal features: 8 dims
         - Computed scores: 6 dims (project, topic, task, people, temporal, overall)
-        - Content embedding: 768 dims (if include_content=True and content is available)
-        - Total: 69 dims (without content) or 837 dims (with content)
+        - Content embedding: 384 dims (if include_content=True and content is available)
+        - Total: 69 dims (without content) or 453 dims (with content)
 
         Args:
             include_content: Whether to include content embeddings (default True)
@@ -433,7 +435,7 @@ class CombinedFeatureExtractor:
         user_context: Optional[dict] = None,
         weights: Optional[dict[str, float]] = None,
         include_content: bool = False,
-        content_model: str = 'all-mpnet-base-v2',
+        content_model: str = 'all-MiniLM-L6-v2',
         device: Optional[str] = None,
     ):
         """Initialize extractor with user context.
@@ -517,9 +519,11 @@ FEATURE_DIMS = {
     'people': 15,
     'temporal': 8,
     'scores': 6,
-    'content': DEFAULT_EMBEDDING_DIM,  # 768 for all-mpnet-base-v2
+    'content': DEFAULT_EMBEDDING_DIM,  # 384 for all-MiniLM-L6-v2
+    'content_large': LARGE_EMBEDDING_DIM,  # 768 for all-mpnet-base-v2
     'total_base': 69,  # Without content
-    'total_with_content': 69 + DEFAULT_EMBEDDING_DIM,  # 837 with content
+    'total_with_content': 69 + DEFAULT_EMBEDDING_DIM,  # 453 with content
+    'total_with_large_content': 69 + LARGE_EMBEDDING_DIM,  # 837 with large content
 }
 
 
