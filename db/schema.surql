@@ -316,6 +316,75 @@ DEFINE FUNCTION fn::user_response_history(
 };
 
 -- ============================================================================
+-- EMAIL FEATURES TABLE (Pre-computed ML Features)
+-- ============================================================================
+
+-- email_features: Pre-computed feature vectors per email for RL pipeline
+DEFINE TABLE email_features SCHEMAFULL;
+DEFINE FIELD email_id ON email_features TYPE record<emails>;
+DEFINE FIELD message_id ON email_features TYPE string;
+
+-- Relationship features (from CommunicationGraph)
+DEFINE FIELD sender_response_deviation ON email_features TYPE option<float>;
+DEFINE FIELD sender_frequency_rank ON email_features TYPE option<float>;
+DEFINE FIELD inferred_hierarchy ON email_features TYPE option<float>;
+DEFINE FIELD relationship_strength ON email_features TYPE option<float>;
+DEFINE FIELD emails_from_sender_7d ON email_features TYPE int DEFAULT 0;
+DEFINE FIELD emails_from_sender_30d ON email_features TYPE int DEFAULT 0;
+DEFINE FIELD emails_from_sender_90d ON email_features TYPE int DEFAULT 0;
+DEFINE FIELD response_rate_to_sender ON email_features TYPE option<float>;
+DEFINE FIELD avg_thread_depth ON email_features TYPE option<float>;
+DEFINE FIELD days_since_last_email ON email_features TYPE option<float>;
+DEFINE FIELD cc_affinity_score ON email_features TYPE option<float>;
+
+-- Service classification
+DEFINE FIELD is_service_email ON email_features TYPE bool DEFAULT false;
+DEFINE FIELD service_type ON email_features TYPE option<string>;
+DEFINE FIELD service_email_confidence ON email_features TYPE option<float>;
+DEFINE FIELD has_list_unsubscribe_header ON email_features TYPE bool DEFAULT false;
+DEFINE FIELD has_unsubscribe_url ON email_features TYPE bool DEFAULT false;
+DEFINE FIELD unsubscribe_phrase_count ON email_features TYPE int DEFAULT 0;
+
+-- Task features
+DEFINE FIELD task_count ON email_features TYPE int DEFAULT 0;
+DEFINE FIELD has_deadline ON email_features TYPE bool DEFAULT false;
+DEFINE FIELD deadline_urgency ON email_features TYPE option<float>;
+DEFINE FIELD is_assigned_to_user ON email_features TYPE bool DEFAULT false;
+DEFINE FIELD estimated_effort ON email_features TYPE option<string>;
+DEFINE FIELD has_deliverable ON email_features TYPE bool DEFAULT false;
+
+-- Urgency scoring
+DEFINE FIELD urgency_score ON email_features TYPE option<float>;
+DEFINE FIELD urgency_bucket ON email_features TYPE option<string>;
+
+-- Computed priority scores
+DEFINE FIELD project_score ON email_features TYPE option<float>;
+DEFINE FIELD topic_score ON email_features TYPE option<float>;
+DEFINE FIELD task_score ON email_features TYPE option<float>;
+DEFINE FIELD people_score ON email_features TYPE option<float>;
+DEFINE FIELD temporal_score ON email_features TYPE option<float>;
+DEFINE FIELD service_score ON email_features TYPE option<float>;
+DEFINE FIELD relationship_score ON email_features TYPE option<float>;
+DEFINE FIELD overall_priority ON email_features TYPE option<float>;
+
+-- Embeddings (stored as float arrays)
+DEFINE FIELD feature_vector ON email_features TYPE option<array<float>>;
+DEFINE FIELD content_embedding ON email_features TYPE option<array<float>>;
+DEFINE FIELD embedding_model ON email_features TYPE option<string>;
+DEFINE FIELD embedding_dim ON email_features TYPE option<int>;
+
+-- Processing metadata
+DEFINE FIELD computed_at ON email_features TYPE datetime DEFAULT time::now();
+DEFINE FIELD feature_version ON email_features TYPE int DEFAULT 1;
+DEFINE FIELD created_at ON email_features TYPE datetime DEFAULT time::now();
+
+DEFINE INDEX email_features_email_id ON email_features COLUMNS email_id UNIQUE;
+DEFINE INDEX email_features_message_id ON email_features COLUMNS message_id;
+DEFINE INDEX email_features_is_service ON email_features COLUMNS is_service_email;
+DEFINE INDEX email_features_urgency ON email_features COLUMNS urgency_score;
+DEFINE INDEX email_features_priority ON email_features COLUMNS overall_priority;
+
+-- ============================================================================
 -- EVENTS (Auto-update triggers)
 -- ============================================================================
 

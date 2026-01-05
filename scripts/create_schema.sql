@@ -205,6 +205,78 @@ CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_is_you ON users(is_you);
 
 -- ============================================
+-- email_features (Pre-computed ML Features)
+-- Per-email feature vectors for RL pipeline
+-- ============================================
+CREATE TABLE email_features (
+    id SERIAL PRIMARY KEY,
+    email_id INTEGER REFERENCES emails(id) ON DELETE CASCADE,
+    message_id TEXT NOT NULL,
+
+    -- Relationship features (from CommunicationGraph)
+    sender_response_deviation FLOAT,
+    sender_frequency_rank FLOAT,
+    inferred_hierarchy FLOAT,
+    relationship_strength FLOAT,
+    emails_from_sender_7d INTEGER DEFAULT 0,
+    emails_from_sender_30d INTEGER DEFAULT 0,
+    emails_from_sender_90d INTEGER DEFAULT 0,
+    response_rate_to_sender FLOAT,
+    avg_thread_depth FLOAT,
+    days_since_last_email FLOAT,
+    cc_affinity_score FLOAT,
+
+    -- Service classification
+    is_service_email BOOLEAN DEFAULT FALSE,
+    service_type TEXT,
+    service_email_confidence FLOAT,
+    has_list_unsubscribe_header BOOLEAN DEFAULT FALSE,
+    has_unsubscribe_url BOOLEAN DEFAULT FALSE,
+    unsubscribe_phrase_count INTEGER DEFAULT 0,
+
+    -- Task features
+    task_count INTEGER DEFAULT 0,
+    has_deadline BOOLEAN DEFAULT FALSE,
+    deadline_urgency FLOAT,
+    is_assigned_to_user BOOLEAN DEFAULT FALSE,
+    estimated_effort TEXT,
+    has_deliverable BOOLEAN DEFAULT FALSE,
+
+    -- Urgency scoring
+    urgency_score FLOAT,
+    urgency_bucket TEXT,
+
+    -- Computed priority scores
+    project_score FLOAT,
+    topic_score FLOAT,
+    task_score FLOAT,
+    people_score FLOAT,
+    temporal_score FLOAT,
+    service_score FLOAT,
+    relationship_score FLOAT,
+    overall_priority FLOAT,
+
+    -- Embeddings (stored as arrays)
+    feature_vector FLOAT[],
+    content_embedding FLOAT[],
+    embedding_model TEXT,
+    embedding_dim INTEGER,
+
+    -- Processing metadata
+    computed_at TIMESTAMPTZ DEFAULT NOW(),
+    feature_version INTEGER DEFAULT 1,
+
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE UNIQUE INDEX idx_email_features_email_id ON email_features(email_id);
+CREATE INDEX idx_email_features_message_id ON email_features(message_id);
+CREATE INDEX idx_email_features_is_service ON email_features(is_service_email);
+CREATE INDEX idx_email_features_urgency ON email_features(urgency_score);
+CREATE INDEX idx_email_features_priority ON email_features(overall_priority);
+CREATE INDEX idx_email_features_service_type ON email_features(service_type);
+
+-- ============================================
 -- Summary
 -- ============================================
 -- Tables created:
@@ -213,3 +285,4 @@ CREATE INDEX idx_users_is_you ON users(is_you);
 --   attachments: Attachment metadata
 --   threads: Thread-level aggregations
 --   users: Communication stats per user
+--   email_features: Pre-computed ML features per email

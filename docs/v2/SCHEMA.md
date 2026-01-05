@@ -218,6 +218,79 @@ CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_is_you ON users(is_you);
 ```
 
+### `email_features` (Pre-computed ML Features)
+Per-email feature vectors for the RL pipeline. Stores pre-computed features to avoid
+re-computation during training and inference.
+
+```sql
+CREATE TABLE email_features (
+    id SERIAL PRIMARY KEY,
+    email_id INTEGER REFERENCES emails(id) ON DELETE CASCADE,
+    message_id TEXT NOT NULL,
+
+    -- Relationship features (from CommunicationGraph)
+    sender_response_deviation FLOAT,     -- How user's response time differs from baseline
+    sender_frequency_rank FLOAT,         -- Sender's rank by email frequency (0-1)
+    inferred_hierarchy FLOAT,            -- Inferred org hierarchy (0=peer, 1=manager)
+    relationship_strength FLOAT,         -- Overall relationship strength (0-1)
+    emails_from_sender_7d INTEGER,       -- Email count from sender in last 7 days
+    emails_from_sender_30d INTEGER,      -- Email count from sender in last 30 days
+    emails_from_sender_90d INTEGER,      -- Email count from sender in last 90 days
+    response_rate_to_sender FLOAT,       -- User's reply rate to this sender
+    avg_thread_depth FLOAT,              -- Average thread depth with sender
+    days_since_last_email FLOAT,         -- Days since last email from sender
+    cc_affinity_score FLOAT,             -- How often user is CC'd with sender
+
+    -- Service classification
+    is_service_email BOOLEAN,            -- Classified as service/automated email
+    service_type TEXT,                   -- newsletter, notification, billing, etc.
+    service_email_confidence FLOAT,      -- Confidence of service classification (0-1)
+    has_list_unsubscribe_header BOOLEAN, -- Has List-Unsubscribe header
+    has_unsubscribe_url BOOLEAN,         -- Contains unsubscribe URL in body
+    unsubscribe_phrase_count INTEGER,    -- Count of unsubscribe-related phrases
+
+    -- Task features
+    task_count INTEGER,                  -- Number of tasks/action items detected
+    has_deadline BOOLEAN,                -- Contains deadline
+    deadline_urgency FLOAT,              -- Urgency of detected deadline (0-1)
+    is_assigned_to_user BOOLEAN,         -- Task is assigned to user
+    estimated_effort TEXT,               -- low, medium, high
+    has_deliverable BOOLEAN,             -- Requires a deliverable
+
+    -- Urgency scoring
+    urgency_score FLOAT,                 -- Overall urgency score (0-1)
+    urgency_bucket TEXT,                 -- critical, high, medium, low
+
+    -- Computed priority scores
+    project_score FLOAT,                 -- Score from project features (0-1)
+    topic_score FLOAT,                   -- Score from topic classification (0-1)
+    task_score FLOAT,                    -- Score from task extraction (0-1)
+    people_score FLOAT,                  -- Score from people analysis (0-1)
+    temporal_score FLOAT,                -- Score from temporal features (0-1)
+    service_score FLOAT,                 -- Score indicating service email (0-1)
+    relationship_score FLOAT,            -- Score from relationship analysis (0-1)
+    overall_priority FLOAT,              -- Combined weighted priority (0-1)
+
+    -- Embeddings
+    feature_vector FLOAT[],              -- Combined feature vector (103 dims)
+    content_embedding FLOAT[],           -- Content embedding (384 dims)
+    embedding_model TEXT,                -- Model used for embeddings
+    embedding_dim INTEGER,               -- Dimension of content embedding
+
+    -- Processing metadata
+    computed_at TIMESTAMPTZ,             -- When features were computed
+    feature_version INTEGER,             -- Version for cache invalidation
+
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE UNIQUE INDEX idx_email_features_email_id ON email_features(email_id);
+CREATE INDEX idx_email_features_message_id ON email_features(message_id);
+CREATE INDEX idx_email_features_is_service ON email_features(is_service_email);
+CREATE INDEX idx_email_features_urgency ON email_features(urgency_score);
+CREATE INDEX idx_email_features_priority ON email_features(overall_priority);
+```
+
 ---
 
 ## Parallel Processing Design
