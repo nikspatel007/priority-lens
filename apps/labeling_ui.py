@@ -305,27 +305,30 @@ def main():
                         st.caption(f"Type: {task.get('task_type', 'unknown')}")
 
                     with task_cols[1]:
-                        triage = st.selectbox(
+                        triage = st.radio(
                             "Triage Category",
                             options=[t[0] for t in TRIAGE_CATEGORIES],
                             format_func=lambda x: next((t[1] for t in TRIAGE_CATEGORIES if t[0] == x), x),
-                            key=f"triage_{email['id']}_{idx}"
+                            key=f"triage_{email['id']}_{idx}",
+                            horizontal=False
                         )
 
                     with task_cols[2]:
-                        relevancy = st.selectbox(
+                        relevancy = st.radio(
                             "Project Relevancy",
                             options=[r[0] for r in RELEVANCY_OPTIONS],
                             format_func=lambda x: next((r[1] for r in RELEVANCY_OPTIONS if r[0] == x), x),
-                            key=f"relevancy_{email['id']}_{idx}"
+                            key=f"relevancy_{email['id']}_{idx}",
+                            horizontal=False
                         )
 
                     with task_cols[3]:
-                        quality = st.selectbox(
+                        quality = st.radio(
                             "Extraction Quality",
                             options=[q[0] for q in EXTRACTION_QUALITY],
                             format_func=lambda x: next((q[1] for q in EXTRACTION_QUALITY if q[0] == x), x),
-                            key=f"quality_{email['id']}_{idx}"
+                            key=f"quality_{email['id']}_{idx}",
+                            horizontal=False
                         )
 
                     notes = st.text_input("Notes (optional)", key=f"notes_{email['id']}_{idx}")
