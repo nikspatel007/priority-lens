@@ -306,6 +306,42 @@ CREATE INDEX idx_tasks_deadline ON tasks(deadline);
 CREATE INDEX idx_tasks_urgency_score ON tasks(urgency_score);
 
 -- ============================================
+-- email_features
+-- Extracted ML features per email
+-- ============================================
+CREATE TABLE email_features (
+    id SERIAL PRIMARY KEY,
+    email_id INTEGER REFERENCES emails(id) ON DELETE CASCADE UNIQUE NOT NULL,
+
+    -- Computed scores (0-1 range)
+    project_score FLOAT NOT NULL,
+    topic_score FLOAT NOT NULL,
+    task_score FLOAT NOT NULL,
+    people_score FLOAT NOT NULL,
+    temporal_score FLOAT NOT NULL,
+    service_score FLOAT NOT NULL,
+    relationship_score FLOAT NOT NULL,
+    overall_priority FLOAT NOT NULL,
+
+    -- Feature vector (103 dims without content, 487 with content)
+    feature_vector FLOAT[] NOT NULL,
+    feature_dim INTEGER NOT NULL,
+
+    -- Content embedding (384 dims, optional)
+    content_embedding FLOAT[],
+    content_dim INTEGER,
+
+    -- Metadata
+    extraction_version INTEGER DEFAULT 1,
+    extracted_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_email_features_email_id ON email_features(email_id);
+CREATE INDEX idx_email_features_overall_priority ON email_features(overall_priority DESC);
+CREATE INDEX idx_email_features_project_score ON email_features(project_score);
+CREATE INDEX idx_email_features_task_score ON email_features(task_score);
+
+-- ============================================
 -- Summary
 -- ============================================
 -- Tables created:
@@ -316,3 +352,4 @@ CREATE INDEX idx_tasks_urgency_score ON tasks(urgency_score);
 --   users: Communication stats per user
 --   email_features: Pre-computed ML features per email
 --   tasks: Extracted tasks from emails
+--   email_features: Extracted ML features per email
