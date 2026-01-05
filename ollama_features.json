@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-01-05T00:00:26.184677",
+  "generated_at": "2026-01-05T00:04:14.411788",
   "model": "gpt-oss:20b",
   "workers": 4,
-  "email_count": 10,
+  "email_count": 20,
   "timing": {
-    "total_seconds": 80.8,
-    "effective_per_email": 8.08,
-    "throughput": 0.124,
-    "avg_llm_ms": 39434.4,
+    "total_seconds": 95.14,
+    "effective_per_email": 4.757,
+    "throughput": 0.21,
+    "avg_llm_ms": 51850.8,
     "target_met": false
   },
   "quality": {
-    "parse_success_rate": 90.0,
-    "total_tasks": 5
+    "parse_success_rate": 95.0,
+    "total_tasks": 4
   },
   "results": [
     {
@@ -20,11 +20,11 @@
       "is_service_email": true,
       "service_type": "notification",
       "tasks": [],
-      "overall_urgency": 0.8,
+      "overall_urgency": 0.4,
       "requires_response": false,
-      "topic_category": "fyi",
-      "summary": "Amazon account sign-in notification",
-      "extraction_time_ms": 3728,
+      "topic_category": "admin",
+      "summary": "Amazon sign-in notification for account activity.",
+      "extraction_time_ms": 9121,
       "parse_success": true
     },
     {
@@ -34,9 +34,9 @@
       "tasks": [],
       "overall_urgency": 0.2,
       "requires_response": false,
-      "topic_category": "admin",
+      "topic_category": "fyi",
       "summary": "Out-of-office auto-reply indicating return on Jan 5, 2025.",
-      "extraction_time_ms": 23896,
+      "extraction_time_ms": 5525,
       "parse_success": true
     },
     {
@@ -47,8 +47,8 @@
       "overall_urgency": 0.1,
       "requires_response": false,
       "topic_category": "admin",
-      "summary": "License granted for PostgreSQL boilerplate for Priority Lens.",
-      "extraction_time_ms": 15499,
+      "summary": "License granted for PostgreSQL boilerplate.",
+      "extraction_time_ms": 12561,
       "parse_success": true
     },
     {
@@ -60,28 +60,20 @@
       "requires_response": false,
       "topic_category": "admin",
       "summary": "License granted for PostgreSQL boilerplate for Priority Lens.",
-      "extraction_time_ms": 8778,
+      "extraction_time_ms": 16638,
       "parse_success": true
     },
     {
       "email_id": "<6959ac74a7c94_11410d01466858@sharedworker-6fb6db4dd-gdnz8.mail>",
-      "is_service_email": true,
-      "service_type": "notification",
-      "tasks": [
-        {
-          "description": "Accept or decline the GitHub repository invitation for uevc/uev-next-boilerplate-postgresql",
-          "deadline": "2026-01-11",
-          "assignee": "user",
-          "task_type": "decision",
-          "urgency": 0.7
-        }
-      ],
-      "overall_urgency": 0.6,
-      "requires_response": true,
-      "topic_category": "request",
-      "summary": "GitHub invitation to collaborate on uevc/uev-next-boilerplate-postgresql, expires in 7 days.",
-      "extraction_time_ms": 34054,
-      "parse_success": true
+      "is_service_email": false,
+      "service_type": null,
+      "tasks": [],
+      "overall_urgency": 0.0,
+      "requires_response": false,
+      "topic_category": "fyi",
+      "summary": "JSON parse failed",
+      "extraction_time_ms": 23303,
+      "parse_success": false
     },
     {
       "email_id": "<FZTueiaBQr6GMqZ4Bortyw@geopod-ismtpd-0>",
@@ -89,38 +81,30 @@
       "service_type": "notification",
       "tasks": [
         {
-          "description": "Subscribe to Premium Connectivity via Tesla app",
+          "description": "Subscribe to Premium Connectivity before trial ends",
           "deadline": "2026-01-18",
           "assignee": "user",
           "task_type": "send",
-          "urgency": 0.6
+          "urgency": 0.7
         }
       ],
-      "overall_urgency": 0.6,
+      "overall_urgency": 0.7,
       "requires_response": false,
       "topic_category": "request",
       "summary": "Premium Connectivity trial ending Jan 18, 2026 \u2013 subscribe to continue service.",
-      "extraction_time_ms": 43141,
+      "extraction_time_ms": 30164,
       "parse_success": true
     },
     {
       "email_id": "<1082147023.96518100.1767482981915@lva1-app184386.prod.linkedin.com>",
       "is_service_email": true,
       "service_type": "notification",
-      "tasks": [
-        {
-          "description": "Read Mark Mroczkowski's new message",
-          "deadline": null,
-          "assignee": "user",
-          "task_type": "review",
-          "urgency": 0.5
-        }
-      ],
-      "overall_urgency": 0.4,
+      "tasks": [],
+      "overall_urgency": 0.2,
       "requires_response": false,
       "topic_category": "fyi",
-      "summary": "LinkedIn digest: Mark Mroczkowski sent you a new message.",
-      "extraction_time_ms": 52619,
+      "summary": "LinkedIn message digest notifying you of a new message from Mark Mroczkowski.",
+      "extraction_time_ms": 34400,
       "parse_success": true
     },
     {
@@ -129,7 +113,7 @@
       "service_type": "notification",
       "tasks": [
         {
-          "description": "Review the new Neighborhood images screenshot and compare with the previous one to determine if any action is required.",
+          "description": "Review the new Neighborhood images screenshot and decide whether to adjust monitor settings or pause the monitor.",
           "deadline": null,
           "assignee": "user",
           "task_type": "review",
@@ -137,42 +121,170 @@
         }
       ],
       "overall_urgency": 0.5,
-      "requires_response": false,
-      "topic_category": "admin",
-      "summary": "Automated notification that Neighborhood images screenshot changed, review new screenshot.",
-      "extraction_time_ms": 60970,
+      "requires_response": true,
+      "topic_category": "request",
+      "summary": "Automated notification of changes in Neighborhood images screenshot; review and adjust monitor if ne",
+      "extraction_time_ms": 40255,
       "parse_success": true
     },
     {
       "email_id": "<CAG7y5KhDwVibMKNukiWfh9OJLdM2MoqXyJsJ76a0j9+7n2uAhA@mail.gmail.com>",
       "is_service_email": false,
       "service_type": null,
-      "tasks": [],
-      "overall_urgency": 0.0,
-      "requires_response": false,
-      "topic_category": "fyi",
-      "summary": "JSON parse failed",
-      "extraction_time_ms": 70858,
-      "parse_success": false
-    },
-    {
-      "email_id": "<6959954b24ba0_f210d0341b2@flexworker-5df6cccc7-gb28h.mail>",
-      "is_service_email": true,
-      "service_type": "system",
       "tasks": [
         {
-          "description": "Accept the GitHub organization invitation to @uevc",
-          "deadline": null,
+          "description": "complete the light order",
+          "deadline": "2026-01-05",
           "assignee": "user",
-          "task_type": "decision",
+          "task_type": "create",
           "urgency": 0.5
         }
       ],
       "overall_urgency": 0.5,
+      "requires_response": false,
+      "topic_category": "request",
+      "summary": "Complete the light order today",
+      "extraction_time_ms": 46869,
+      "parse_success": true
+    },
+    {
+      "email_id": "<6959954b24ba0_f210d0341b2@flexworker-5df6cccc7-gb28h.mail>",
+      "is_service_email": true,
+      "service_type": "notification",
+      "tasks": [
+        {
+          "description": "Accept GitHub organization invitation",
+          "deadline": "2026-01-12",
+          "assignee": "user",
+          "task_type": "decision",
+          "urgency": 0.7
+        }
+      ],
+      "overall_urgency": 0.6,
       "requires_response": true,
       "topic_category": "request",
-      "summary": "GitHub invites you to join the @uevc organization; accept the invitation within 7 days.",
-      "extraction_time_ms": 80801,
+      "summary": "GitHub invites you to join @uevc organization, accept invitation within 7 days.",
+      "extraction_time_ms": 52569,
+      "parse_success": true
+    },
+    {
+      "email_id": "<00.71.61222.84399596@mr29p01nt-txnmsbadger004.ise.apple.com>",
+      "is_service_email": true,
+      "service_type": "notification",
+      "tasks": [],
+      "overall_urgency": 0.2,
+      "requires_response": false,
+      "topic_category": "admin",
+      "summary": "Pickup for order W1316438739 canceled, refund processed.",
+      "extraction_time_ms": 56897,
+      "parse_success": true
+    },
+    {
+      "email_id": "<20260103214035.14802e637943944d@mailer.humblebundle.com>",
+      "is_service_email": true,
+      "service_type": "marketing",
+      "tasks": [],
+      "overall_urgency": 0.1,
+      "requires_response": false,
+      "topic_category": "fyi",
+      "summary": "Marketing email offering royalty\u2011free music gifts.",
+      "extraction_time_ms": 61197,
+      "parse_success": true
+    },
+    {
+      "email_id": "<ecBT5Yu7T6iNC9mXY2uxqw@geopod-ismtpd-13>",
+      "is_service_email": true,
+      "service_type": "marketing",
+      "tasks": [],
+      "overall_urgency": 0.1,
+      "requires_response": false,
+      "topic_category": "fyi",
+      "summary": "Marketing email about 6 groundbreaking engagement rings for 2026",
+      "extraction_time_ms": 65351,
+      "parse_success": true
+    },
+    {
+      "email_id": "<139747780.10158420.1767471495575.JavaMail.webuser@iaasn00692072>",
+      "is_service_email": true,
+      "service_type": "notification",
+      "tasks": [],
+      "overall_urgency": 0.3,
+      "requires_response": false,
+      "topic_category": "fyi",
+      "summary": "Chase transaction alert for a Starbucks purchase.",
+      "extraction_time_ms": 68897,
+      "parse_success": true
+    },
+    {
+      "email_id": "<20260103192712.1a02376850cc5c56@mailer.humblebundle.com>",
+      "is_service_email": true,
+      "service_type": "marketing",
+      "tasks": [],
+      "overall_urgency": 0.0,
+      "requires_response": false,
+      "topic_category": "fyi",
+      "summary": "Promotional email offering Lone Wolf & Cub and other comics from Dark Horse via Humble Bundle.",
+      "extraction_time_ms": 75085,
+      "parse_success": true
+    },
+    {
+      "email_id": "<75.B7.50804.38969596@i-0a220bb3f131580d3.mta1vrest.sd.prd.sparkpost>",
+      "is_service_email": true,
+      "service_type": "marketing",
+      "tasks": [],
+      "overall_urgency": 0.1,
+      "requires_response": false,
+      "topic_category": "fyi",
+      "summary": "LendingTree offers a 21\u2011month 0% APR balance transfer to help you get out of debt.",
+      "extraction_time_ms": 79346,
+      "parse_success": true
+    },
+    {
+      "email_id": "<z044jYnTQhSR4CUGFxyVXg@geopod-ismtpd-65>",
+      "is_service_email": true,
+      "service_type": "marketing",
+      "tasks": [],
+      "overall_urgency": 0.2,
+      "requires_response": false,
+      "topic_category": "fyi",
+      "summary": "Sotheby's Motorsport auction listings ending next week.",
+      "extraction_time_ms": 83866,
+      "parse_success": true
+    },
+    {
+      "email_id": "<1048692470.3549271.1767466414241@mail.yahoo.com>",
+      "is_service_email": false,
+      "service_type": null,
+      "tasks": [],
+      "overall_urgency": 0.1,
+      "requires_response": false,
+      "topic_category": "admin",
+      "summary": "License uploaded to Drive",
+      "extraction_time_ms": 88392,
+      "parse_success": true
+    },
+    {
+      "email_id": "<0100019b85152357-36cb503d-974b-4fa7-bf21-5876f4e4c553-000000@email.amazonses.com>",
+      "is_service_email": true,
+      "service_type": "notification",
+      "tasks": [],
+      "overall_urgency": 0.1,
+      "requires_response": false,
+      "topic_category": "fyi",
+      "summary": "Package delivered notification from Amazon.",
+      "extraction_time_ms": 91442,
+      "parse_success": true
+    },
+    {
+      "email_id": "<0100019b851523db-6ebd39e2-9dcb-4cd0-b000-ac2decf3263e-000000@email.amazonses.com>",
+      "is_service_email": true,
+      "service_type": "notification",
+      "tasks": [],
+      "overall_urgency": 0.2,
+      "requires_response": false,
+      "topic_category": "fyi",
+      "summary": "Package delivered: Reusable Sticker Book for Kids",
+      "extraction_time_ms": 95139,
       "parse_success": true
     }
   ]
