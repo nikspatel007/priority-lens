@@ -1,0 +1,132 @@
+{
+  "generated_at": "2026-01-04T23:26:58.645410",
+  "model": "openai/gpt-oss-120b",
+  "email_count": 10,
+  "total_tasks": 4,
+  "results": [
+    {
+      "email_id": "<0100019b86c47d20-3bd2d74b-3c82-4a95-9f16-22b0afe2102c-000000@email.amazonses.com>",
+      "subject": "amazon.com: Sign-in",
+      "from": "account-update@amazon.com",
+      "date": "2026-01-04 02:09:42+00:00",
+      "task_count": 1,
+      "tasks": [
+        {
+          "task_id": "<0100019_00",
+          "description": "Notify Amazon that the sign-in was NOT performed by you",
+          "deadline": null,
+          "assignee_hint": "you",
+          "task_type": "information",
+          "urgency_score": 0.65,
+          "source_text": "\"Otherwise, please let us know.\"",
+          "email_id": "<0100019b86c47d20-3bd2d74b-3c82-4a95-9f16-22b0afe2102c-000000@email.amazonses.com>"
+        }
+      ]
+    },
+    {
+      "email_id": "<974aa692be8d46198cbee609a654468e@BYAPR15MB4246.namprd15.prod.outlook.com>",
+      "subject": "Automatic reply: License Granted: UEV Next Boilerplate PostgreSQL",
+      "from": "bo@ue.ventures",
+      "date": "2026-01-04 02:09:25+00:00",
+      "task_count": 0,
+      "tasks": []
+    },
+    {
+      "email_id": "<BYAPR15MB4246AAB1EC494D3A8BF8A221D1B9A@BYAPR15MB4246.namprd15.prod.outlook.com>",
+      "subject": "License Granted: UEV Next Boilerplate PostgreSQL",
+      "from": "bo@ue.ventures",
+      "date": "2026-01-04 01:44:24+00:00",
+      "task_count": 0,
+      "tasks": []
+    },
+    {
+      "email_id": "<6959ac74a7c94_11410d01466858@sharedworker-6fb6db4dd-gdnz8.mail>",
+      "subject": "theBoEffect invited you to uevc/uev-next-boilerplate-postgresql",
+      "from": "noreply@github.com",
+      "date": "2026-01-03 23:55:32+00:00",
+      "task_count": 1,
+      "tasks": [
+        {
+          "task_id": "<6959ac7_00",
+          "description": "Accept or decline the invitation to collaborate on the uevc/uev-next-boilerplate-postgresql repository",
+          "deadline": "in 7 days",
+          "assignee_hint": "you",
+          "task_type": "action",
+          "urgency_score": 0.4,
+          "source_text": "Visit https://github.com/uevc/uev-next-boilerplate-postgresql/invitations to accept or decline this ",
+          "email_id": "<6959ac74a7c94_11410d01466858@sharedworker-6fb6db4dd-gdnz8.mail>"
+        }
+      ]
+    },
+    {
+      "email_id": "<FZTueiaBQr6GMqZ4Bortyw@geopod-ismtpd-0>",
+      "subject": "Premium Connectivity Ending January 18, 2026",
+      "from": "noreply@tesla.com",
+      "date": "2026-01-03 23:49:23+00:00",
+      "task_count": 1,
+      "tasks": [
+        {
+          "task_id": "<FZTueia_00",
+          "description": "Subscribe to Premium Connectivity through the Tesla app to avoid service interruption",
+          "deadline": "January 18, 2026",
+          "assignee_hint": "you",
+          "task_type": "action",
+          "urgency_score": 0.5,
+          "source_text": "Premium Connectivity trial for your Model Y ... is ending on January 18, 2026.",
+          "email_id": "<FZTueiaBQr6GMqZ4Bortyw@geopod-ismtpd-0>"
+        }
+      ]
+    },
+    {
+      "email_id": "<1082147023.96518100.1767482981915@lva1-app184386.prod.linkedin.com>",
+      "subject": "Mark just messaged you",
+      "from": "messaging-digest-noreply@linkedin.com",
+      "date": "2026-01-03 23:29:41+00:00",
+      "task_count": 0,
+      "tasks": []
+    },
+    {
+      "email_id": "<20260103223938.79757e7349bd82bc@cio78617.browse.ai>",
+      "subject": "Detected changes in the Neighborhood images screenshot on your DRHomesList\r\n task (Default monitor)",
+      "from": "notifications@browse.ai",
+      "date": "2026-01-03 22:39:38+00:00",
+      "task_count": 0,
+      "tasks": []
+    },
+    {
+      "email_id": "<6959954b24ba0_f210d0341b2@flexworker-5df6cccc7-gb28h.mail>",
+      "subject": "[GitHub] @theBoEffect has invited you to join the @uevc organization",
+      "from": "noreply@github.com",
+      "date": "2026-01-03 22:16:43+00:00",
+      "task_count": 1,
+      "tasks": [
+        {
+          "task_id": "<6959954_00",
+          "description": "Accept the invitation to join the @uevc organization on GitHub before it expires",
+          "deadline": "in 7 days",
+          "assignee_hint": "you",
+          "task_type": "action",
+          "urgency_score": 0.65,
+          "source_text": "This invitation will expire in 7 days.",
+          "email_id": "<6959954b24ba0_f210d0341b2@flexworker-5df6cccc7-gb28h.mail>"
+        }
+      ]
+    },
+    {
+      "email_id": "<00.71.61222.84399596@mr29p01nt-txnmsbadger004.ise.apple.com>",
+      "subject": "Your pickup for order W1316438739 has been canceled.",
+      "from": "order_acknowledgment@orders.apple.com",
+      "date": "2026-01-03 22:08:08+00:00",
+      "task_count": 0,
+      "tasks": []
+    },
+    {
+      "email_id": "<20260103214035.14802e637943944d@mailer.humblebundle.com>",
+      "subject": "Get 100+ musical gifts within Santa's Phat Sack of Royalty-Free Music",
+      "from": "contact@mailer.humblebundle.com",
+      "date": "2026-01-03 21:40:35+00:00",
+      "task_count": 0,
+      "tasks": []
+    }
+  ]
+}
