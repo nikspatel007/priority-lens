@@ -18,6 +18,7 @@ Usage:
 import argparse
 import asyncio
 import json
+import os
 import random
 import sys
 from datetime import datetime
@@ -25,7 +26,11 @@ from pathlib import Path
 from typing import Optional
 
 import streamlit as st
+from dotenv import load_dotenv
 from surrealdb import AsyncSurreal
+
+# Load environment variables from .env file
+load_dotenv()
 
 
 # Preference labels
@@ -101,14 +106,16 @@ class EmailLoader:
 
     def __init__(
         self,
-        url: str = 'ws://localhost:8001/rpc',
-        namespace: str = 'rl_emails',
+        url: str = None,
+        namespace: str = None,
         database: str = 'gmail',
     ):
-        self.url = url
-        self.namespace = namespace
+        self.url = url or os.environ.get('SURREALDB_GMAIL_URL', 'ws://localhost:8001/rpc')
+        self.namespace = namespace or os.environ.get('SURREALDB_NAMESPACE', 'rl_emails')
         self.database = database
         self._emails_cache = {}
+        self._username = os.environ.get('SURREALDB_USER', 'root')
+        self._password = os.environ.get('SURREALDB_PASS', 'root')
 
     async def load_email(self, message_id: str) -> Optional[dict]:
         """Load a single email by message_id."""
@@ -118,7 +125,7 @@ class EmailLoader:
         db = AsyncSurreal(self.url)
         try:
             await db.connect()
-            await db.signin({'username': 'root', 'password': 'root'})
+            await db.signin({'username': self._username, 'password': self._password})
             await db.use(self.namespace, self.database)
 
             result = await db.query(
