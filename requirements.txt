@@ -63,6 +63,7 @@ wandb>=0.16.0
 tensorboard>=2.15.0
 
 python-dotenv>=1.0.0  # Environment variable management
+pydantic>=2.5.0  # Data validation
 
 # Hugging Face
 datasets>=2.15.0
