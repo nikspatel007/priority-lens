@@ -417,6 +417,7 @@ CREATE TABLE human_task_labels (
     project_relevancy TEXT,
     triage_category TEXT,
     extraction_quality TEXT,
+    action TEXT,  -- User's intended action: delete, archive, reply_now, reply_later, forward, create_task, snooze
     notes TEXT,
     labeler TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW()

@@ -54,6 +54,18 @@ EMAIL_STATUSES = [
     "inbox", "spam", "trash", "draft", "sent",
 ]
 
+# Action types - what the user will DO with this email
+# Separate from Triage (categorization) - this is the intended action
+ACTION_TYPES = [
+    ("delete", "Delete"),
+    ("archive", "Archive"),
+    ("reply_now", "Reply Now"),
+    ("reply_later", "Reply Later"),
+    ("forward", "Forward"),
+    ("create_task", "Create Task"),
+    ("snooze", "Snooze"),
+]
+
 # Custom CSS for better styling
 CUSTOM_CSS = """
 <style>
@@ -287,28 +299,36 @@ def get_labeling_stats(conn):
 def save_task_label(conn, email_id: int, task_index: int, task_description: str,
                     project_id: int, project_relevancy: str, triage_category: str,
                     extraction_quality: str, notes: str, labeler: str,
-                    ai_agreed: bool = True):
-    """Save a task label to the database."""
+                    action: str = None, ai_agreed: bool = True):
+    """Save a task label to the database.
+
+    Args:
+        action: What the user will DO with the email (delete, archive, reply_now, etc.)
+    """
     with conn.cursor() as cur:
         cur.execute("""
             INSERT INTO human_task_labels (
                 email_id, task_index, task_description, project_id,
                 project_relevancy, triage_category, extraction_quality,
-                notes, labeler, created_at
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
+                notes, labeler, action, created_at
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())
             ON CONFLICT DO NOTHING
             RETURNING id
         """, (email_id, task_index, task_description, project_id,
               project_relevancy, triage_category, extraction_quality,
-              notes, labeler))
+              notes, labeler, action))
         conn.commit()
         result = cur.fetchone()
         return result[0] if result else None
 
 
 def save_all_tasks_approved(conn, email_id: int, tasks: list, project_id: int,
-                            labeler: str):
-    """Save all tasks for an email as approved (AI was correct)."""
+                            labeler: str, action: str = None):
+    """Save all tasks for an email as approved (AI was correct).
+
+    Args:
+        action: What the user will DO with the email (delete, archive, reply_now, etc.)
+    """
     saved_count = 0
     for idx, task in enumerate(tasks):
         label_id = save_task_label(
@@ -322,6 +342,7 @@ def save_all_tasks_approved(conn, email_id: int, tasks: list, project_id: int,
             extraction_quality='good',
             notes='Quick approved - AI correct',
             labeler=labeler,
+            action=action,
             ai_agreed=True
         )
         if label_id:
@@ -563,6 +584,25 @@ def main():
 
         st.divider()
 
+        # Email Action - what will the user DO with this email
+        st.subheader("Email Action")
+        st.caption("What will you DO with this email? (Triage = category, Action = intent)")
+
+        action_col1, action_col2 = st.columns(2)
+        with action_col1:
+            selected_action = st.selectbox(
+                "Action:",
+                options=[a[0] for a in ACTION_TYPES],
+                format_func=lambda x: next((a[1] for a in ACTION_TYPES if a[0] == x), x),
+                key=f"action_{email['id']}"
+            )
+        with action_col2:
+            st.caption("**Examples:**")
+            st.caption("• Promo email → Triage=FYI, Action=Delete")
+            st.caption("• Meeting request → Triage=Quick Win, Action=Reply Now")
+
+        st.divider()
+
         # 3-Column Task Verification Layout
         st.subheader("Task Verification")
 
@@ -589,12 +629,15 @@ def main():
             with approve_col2:
                 if st.button("✓ All Correct (y)", type="primary", use_container_width=True):
                     project_id = selected_project_id if selected_project_id > 0 else None
-                    saved = save_all_tasks_approved(conn, email['id'], tasks, project_id, labeler)
+                    saved = save_all_tasks_approved(
+                        conn, email['id'], tasks, project_id, labeler,
+                        action=selected_action
+                    )
 
                     if project_id:
                         update_email_project_link(conn, email['id'], project_id)
 
-                    st.success(f"Saved {saved} task(s) as approved!")
+                    st.success(f"Saved {saved} task(s) with action '{selected_action}'!")
 
                     # Move to next
                     if st.session_state.current_idx < len(emails) - 1:
@@ -664,6 +707,7 @@ def main():
                                     extraction_quality=quality,
                                     notes=notes,
                                     labeler=labeler,
+                                    action=selected_action,
                                     ai_agreed=(quality == 'good')
                                 )
 
@@ -671,7 +715,7 @@ def main():
                                     update_email_project_link(conn, email['id'], project_id)
 
                                 if label_id:
-                                    st.success(f"Saved!")
+                                    st.success(f"Saved with action '{selected_action}'!")
                                 else:
                                     st.warning("Already labeled")
 
