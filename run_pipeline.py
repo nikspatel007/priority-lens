@@ -16,7 +16,7 @@ Pipeline stages:
     6. discover_participant_projects.py - Find recurring groups
     7. cluster_embeddings.py - Semantic topic clustering
     8. dedupe_projects.py    - Merge duplicate projects
-    9. detect_priority_contexts.py - Find high-engagement periods
+    9. compute_priority_contexts.py - Compute priority contexts from patterns
 
 After pipeline completes, run the labeling UI:
     streamlit run apps/labeling_ui.py
@@ -196,8 +196,8 @@ def main():
         # Step 8: Dedupe projects
         (8, "dedupe_projects.py", [], "Merge duplicates"),
 
-        # Step 9: Detect priority contexts
-        (9, "detect_priority_contexts.py", [], "Find high-engagement periods"),
+        # Step 9: Compute priority contexts (response time, recurring, bursts)
+        (9, "compute_priority_contexts.py", [], "Compute priority contexts"),
     ]
 
     failed = False

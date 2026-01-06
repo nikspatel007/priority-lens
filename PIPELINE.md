@@ -25,7 +25,7 @@ Gmail MBOX
     ↓
 [9] Dedupe Projects (merge duplicates)
     ↓
-[10] Detect Priority Contexts (response time analysis)
+[10] Compute Priority Contexts (response time + recurring patterns + bursts)
     ↓
 Labeling UI (Streamlit)
 ```
@@ -209,16 +209,23 @@ Merges duplicate projects based on participant overlap and name similarity.
 uv run python scripts/dedupe_projects.py [--dry-run]
 ```
 
-### Stage 10: Detect Priority Contexts (`scripts/detect_priority_contexts.py`)
+### Stage 10: Compute Priority Contexts (`scripts/compute_priority_contexts.py`)
 
-Analyzes response times to find periods of heightened engagement.
+Computes priority contexts from email patterns using three detection methods:
+1. **Response Time Analysis** - Fast-response periods indicating high engagement
+2. **Recurring Patterns** - Calendar-based patterns (Q4 planning, annual reviews, board meetings)
+3. **Participant Bursts** - Domain activity spikes (job search, real estate, etc.)
 
-**Input:** Emails with response times
-**Output:** `priority_contexts` table populated
+**Input:** Emails with response times, timestamps, and sender domains
+**Output:** `priority_contexts` table populated with detected contexts
 
 ```bash
-uv run python scripts/detect_priority_contexts.py [--dry-run]
+uv run python scripts/compute_priority_contexts.py [--dry-run] [--force]
 ```
+
+Options:
+- `--dry-run`: Show detected contexts without saving to database
+- `--force`: Clear existing contexts before computing new ones
 
 ## Post-Pipeline: Labeling UI
 
