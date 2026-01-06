@@ -4,33 +4,40 @@ Extract attachments from Gmail MBOX and import to PostgreSQL.
 
 This script:
 1. Parses the MBOX file to extract attachments
-2. Saves attachment files to data/nik_gmail/attachments/
+2. Saves attachment files to specified attachments directory
 3. Inserts attachment records into PostgreSQL
 4. Updates emails table with attachment metadata
 
 Usage:
     python scripts/extract_attachments.py
+    python scripts/extract_attachments.py --db-url postgresql://user:pass@host:port/db
+    python scripts/extract_attachments.py --mbox-path /path/to/file.mbox --attachments-dir /path/to/attachments
+
+Environment variables (used as defaults):
+    DB_URL - PostgreSQL connection URL
+    MBOX_PATH - Path to MBOX file
+    ATTACHMENTS_DIR - Directory to store extracted attachments
 
 Requirements:
     pip install asyncpg
 """
 
+import argparse
 import asyncio
 import hashlib
 import mailbox
-import mimetypes
+import os
 import sys
 from collections import defaultdict
-from email.message import EmailMessage
 from pathlib import Path
 from typing import Optional
 
 import asyncpg
 
-# Configuration
-DB_URL = "postgresql://postgres:postgres@localhost:5433/rl_emails"
-MBOX_PATH = Path("/Users/nikpatel/Documents/GitHub/rl-emails/data/nik_gmail/takeout/extracted/All mail Including Spam and Trash.mbox")
-ATTACHMENTS_DIR = Path("/Users/nikpatel/Documents/GitHub/rl-emails/data/nik_gmail/attachments")
+# Default configuration (can be overridden by env vars or CLI args)
+DEFAULT_DB_URL = "postgresql://postgres:postgres@localhost:5433/rl_emails"
+DEFAULT_MBOX_PATH = "/Users/nikpatel/Documents/GitHub/rl-emails/data/nik_gmail/takeout/extracted/All mail Including Spam and Trash.mbox"
+DEFAULT_ATTACHMENTS_DIR = "/Users/nikpatel/Documents/GitHub/rl-emails/data/nik_gmail/attachments"
 BATCH_SIZE = 100
 
 
@@ -316,15 +323,39 @@ async def verify_results(conn: asyncpg.Connection):
 
 async def main():
     """Main entry point."""
+    parser = argparse.ArgumentParser(
+        description='Extract attachments from Gmail MBOX and import to PostgreSQL'
+    )
+    parser.add_argument(
+        '--db-url',
+        default=os.environ.get('DB_URL', DEFAULT_DB_URL),
+        help='PostgreSQL connection URL (default: $DB_URL or built-in default)'
+    )
+    parser.add_argument(
+        '--mbox-path',
+        default=os.environ.get('MBOX_PATH', DEFAULT_MBOX_PATH),
+        help='Path to MBOX file (default: $MBOX_PATH or built-in default)'
+    )
+    parser.add_argument(
+        '--attachments-dir',
+        default=os.environ.get('ATTACHMENTS_DIR', DEFAULT_ATTACHMENTS_DIR),
+        help='Directory to store extracted attachments (default: $ATTACHMENTS_DIR or built-in default)'
+    )
+
+    args = parser.parse_args()
+
+    mbox_path = Path(args.mbox_path)
+    attachments_dir = Path(args.attachments_dir)
+
     print("Extract Attachments from Gmail MBOX")
     print("=" * 40)
 
-    if not MBOX_PATH.exists():
-        print(f"Error: MBOX file not found: {MBOX_PATH}")
+    if not mbox_path.exists():
+        print(f"Error: MBOX file not found: {mbox_path}")
         sys.exit(1)
 
-    print(f"\nConnecting to {DB_URL}...")
-    conn = await asyncpg.connect(DB_URL)
+    print(f"\nConnecting to {args.db_url}...")
+    conn = await asyncpg.connect(args.db_url)
 
     try:
         # Check if attachments table exists
@@ -340,7 +371,7 @@ async def main():
             sys.exit(1)
 
         # Process MBOX
-        await process_mbox(conn, MBOX_PATH, ATTACHMENTS_DIR)
+        await process_mbox(conn, mbox_path, attachments_dir)
 
         # Verify
         await verify_results(conn)
