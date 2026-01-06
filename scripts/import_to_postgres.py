@@ -1,105 +1,111 @@
-#!/usr/bin/env python3
-"""
-Stage 6: Import enriched emails to PostgreSQL.
-
-Reads enriched_emails.jsonl and imports to:
-- raw_emails (immutable source data)
-- emails (enriched/derived data)
-
-Usage:
-    python scripts/import_to_postgres.py
-
-Requirements:
-    pip install asyncpg
-"""
-
+"""Import parsed email data into PostgreSQL database."""
 import asyncio
 import json
-import os
 import re
-import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
+from zoneinfo import ZoneInfo
 
 import asyncpg
 
-# Configuration - read from environment variables with fallbacks
-DB_URL = os.environ.get("DB_URL", "postgresql://postgres:postgres@localhost:5433/rl_emails")
-# Try PARSED_JSONL first (direct from parse), then ENRICHED_JSONL, then default
-JSONL_PATH = Path(os.environ.get("PARSED_JSONL", os.environ.get("ENRICHED_JSONL", "/Users/nikpatel/Documents/GitHub/rl-emails/data/nik_gmail/parsed_emails.jsonl")))
-BATCH_SIZE = 1000
+# Batch size for processing
+BATCH_SIZE = 500
 
-# Email parsing regex
-EMAIL_PATTERN = re.compile(r'[\w\.-]+@[\w\.-]+\.\w+')
-EMAIL_WITH_NAME_PATTERN = re.compile(r'"?([^"<]*)"?\s*<([^>]+)>|([^\s,<]+@[^\s,>]+)')
+
+def sanitize_text(text: Optional[str]) -> Optional[str]:
+    """Remove null bytes and other problematic characters from text."""
+    if text is None:
+        return None
+    # Remove null bytes
+    text = text.replace('\x00', '')
+    # Normalize line endings
+    text = text.replace('\r\n', '\n').replace('\r', '\n')
+    return text
 
 
 def parse_email_address(raw: str) -> tuple[Optional[str], Optional[str]]:
-    """Extract email and name from a raw address like 'Name <email>' or just 'email'."""
+    """Extract email and name from a raw address string."""
     if not raw:
         return None, None
 
-    raw = raw.strip()
+    raw = sanitize_text(raw)
 
-    # Try "Name <email>" format
-    match = re.match(r'"?([^"<]*)"?\s*<([^>]+)>', raw)
+    # Pattern: "Name" <email@example.com> or Name <email@example.com>
+    match = re.search(r'([^<]*)<([^>]+)>', raw)
     if match:
-        name = match.group(1).strip() or None
+        name = match.group(1).strip().strip('"\'')
         email = match.group(2).strip().lower()
-        return email, name
+        return email, name if name else None
 
     # Just an email address
     if '@' in raw:
-        email = raw.strip().lower()
-        # Remove quotes if present
-        email = email.strip('"\'')
-        return email, None
+        return raw.strip().lower(), None
 
     return None, None
 
 
 def extract_all_emails(raw: str) -> list[str]:
-    """Extract all email addresses from a raw header (to, cc, etc.)."""
+    """Extract all email addresses from a comma/semicolon separated string."""
     if not raw:
         return []
 
+    raw = sanitize_text(raw)
     emails = []
-    # Split by comma and process each
-    for part in raw.split(','):
-        email, _ = parse_email_address(part)
+
+    # Split by common delimiters
+    parts = re.split(r'[,;]', raw)
+    for part in parts:
+        email, _ = parse_email_address(part.strip())
         if email:
             emails.append(email)
 
     return emails
 
 
-def parse_date(date_str: str) -> Optional[datetime]:
-    """Parse ISO date string to datetime."""
+def parse_date(date_str: Optional[str]) -> Optional[datetime]:
+    """Parse date string to datetime, handling various formats."""
     if not date_str:
         return None
-    try:
-        # Handle ISO format with Z suffix
-        if date_str.endswith('Z'):
-            date_str = date_str[:-1] + '+00:00'
-        return datetime.fromisoformat(date_str)
-    except (ValueError, TypeError):
+
+    date_str = sanitize_text(date_str)
+
+    # Common date formats
+    formats = [
+        '%a, %d %b %Y %H:%M:%S %z',  # RFC 2822
+        '%d %b %Y %H:%M:%S %z',
+        '%Y-%m-%d %H:%M:%S%z',
+        '%Y-%m-%dT%H:%M:%S%z',
+        '%Y-%m-%d %H:%M:%S',
+        '%Y-%m-%dT%H:%M:%S',
+    ]
+
+    # Clean up timezone notation
+    date_str = re.sub(r'\s*\([^)]+\)\s*$', '', date_str)  # Remove (PST) etc
+    date_str = re.sub(r'\s+', ' ', date_str).strip()
+
+    for fmt in formats:
+        try:
+            return datetime.strptime(date_str, fmt)
+        except ValueError:
+            continue
+
+    return None
+
+
+def generate_preview(body: Optional[str], max_length: int = 200) -> Optional[str]:
+    """Generate a preview from body text."""
+    if not body:
         return None
 
-
-def generate_preview(body: str, max_length: int = 500) -> str:
-    """Generate a preview of the body text."""
-    if not body:
-        return ""
-
-    # Strip whitespace and limit length
-    preview = ' '.join(body.split())[:max_length]
-    if len(body) > max_length:
-        preview += "..."
+    # Remove excessive whitespace
+    preview = ' '.join(body.split())
+    if len(preview) > max_length:
+        preview = preview[:max_length] + '...'
     return preview
 
 
-def count_words(text: str) -> int:
+def count_words(text: Optional[str]) -> int:
     """Count words in text."""
     if not text:
         return 0
@@ -107,12 +113,10 @@ def count_words(text: str) -> int:
 
 
 def is_sent_email(from_email: Optional[str], labels: list[str]) -> bool:
-    """Determine if this is a sent email."""
-    if 'SENT' in labels:
-        return True
-    if from_email and any(addr in from_email for addr in ['me@nik-patel.com', 'nik@', 'nikpatel']):
-        return True
-    return False
+    """Determine if email was sent by user."""
+    if not labels:
+        return False
+    return 'SENT' in labels or 'Sent' in [l.title() for l in labels]
 
 
 async def create_schema(conn: asyncpg.Connection, schema_path: Path):
@@ -136,89 +140,89 @@ async def import_emails(conn: asyncpg.Connection, jsonl_path: Path):
     total = len(emails)
     print(f"Loaded {total} emails")
 
-    # Process in batches
+    # Process in batches (no transaction wrapper - autocommit each insert for reliability)
     imported = 0
     for batch_start in range(0, total, BATCH_SIZE):
         batch = emails[batch_start:batch_start + BATCH_SIZE]
 
-        async with conn.transaction():
-            for email in batch:
-                # Parse fields
-                from_email, from_name = parse_email_address(email.get('from', ''))
-                to_emails = extract_all_emails(email.get('to', ''))
-                cc_emails = extract_all_emails(email.get('cc', ''))
-                labels = email.get('labels', [])
-                date_parsed = parse_date(email.get('date'))
-                body = email.get('body', '')
+        for email in batch:
+            # Parse fields
+            from_email, from_name = parse_email_address(email.get('from', ''))
+            to_emails = extract_all_emails(email.get('to', ''))
+            cc_emails = extract_all_emails(email.get('cc', ''))
+            labels = email.get('labels', [])
+            date_parsed = parse_date(email.get('date'))
+            body = sanitize_text(email.get('body', ''))
+            subject = sanitize_text(email.get('subject', ''))
 
-                # Insert into raw_emails
-                raw_id = await conn.fetchval("""
-                    INSERT INTO raw_emails (
-                        message_id, thread_id, in_reply_to, references_raw,
-                        date_raw, from_raw, to_raw, cc_raw, bcc_raw,
-                        subject_raw, body_text, body_html, labels_raw,
-                        mbox_offset, raw_size_bytes
-                    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
-                    ON CONFLICT (message_id) DO NOTHING
-                    RETURNING id
-                """,
-                    email.get('message_id'),
-                    email.get('thread_id'),
-                    email.get('in_reply_to') or None,
-                    email.get('references') or None,
-                    email.get('date') or email.get('date_original'),
-                    email.get('from'),
-                    email.get('to'),
-                    email.get('cc'),
-                    email.get('bcc') or None,
-                    email.get('subject'),
-                    body,
-                    email.get('body_html') or None,
-                    ','.join(labels) if labels else None,
-                    email.get('mbox_offset'),
-                    email.get('raw_size_bytes'),
+            # Insert into raw_emails
+            raw_id = await conn.fetchval("""
+                INSERT INTO raw_emails (
+                    message_id, thread_id, in_reply_to, references_raw,
+                    date_raw, from_raw, to_raw, cc_raw, bcc_raw,
+                    subject_raw, body_text, body_html, labels_raw,
+                    mbox_offset, raw_size_bytes
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+                ON CONFLICT (message_id) DO NOTHING
+                RETURNING id
+            """,
+                email.get('message_id'),
+                email.get('thread_id'),
+                sanitize_text(email.get('in_reply_to')) or None,
+                sanitize_text(email.get('references')) or None,
+                email.get('date') or email.get('date_original'),
+                email.get('from'),
+                email.get('to'),
+                email.get('cc'),
+                email.get('bcc') or None,
+                email.get('subject'),
+                body,
+                email.get('body_html') or None,
+                ','.join(labels) if labels else None,
+                email.get('mbox_offset'),
+                email.get('raw_size_bytes'),
+            )
+
+            if raw_id is None:
+                # Already exists, skip
+                continue
+
+            # Insert into emails (enriched)
+            await conn.execute("""
+                INSERT INTO emails (
+                    raw_email_id, message_id, thread_id, in_reply_to, date_parsed,
+                    from_email, from_name, to_emails, cc_emails, subject,
+                    body_text, body_preview, word_count, labels,
+                    has_attachments, is_sent, action, timing,
+                    response_time_seconds, enriched_at
+                ) VALUES (
+                    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,
+                    $15, $16, $17, $18, $19, NOW()
                 )
+                ON CONFLICT (message_id) DO NOTHING
+            """,
+                raw_id,
+                email.get('message_id'),
+                email.get('thread_id'),
+                sanitize_text(email.get('in_reply_to')) or None,
+                date_parsed,
+                from_email,
+                from_name,
+                to_emails if to_emails else None,
+                cc_emails if cc_emails else None,
+                subject,
+                body,
+                generate_preview(body),
+                count_words(body),
+                labels if labels else None,
+                email.get('has_attachments', False),
+                is_sent_email(from_email, labels),
+                email.get('action'),
+                email.get('response_timing'),
+                email.get('response_time_seconds')
+            )
 
-                if raw_id is None:
-                    # Already exists, skip
-                    continue
-
-                # Insert into emails (enriched)
-                await conn.execute("""
-                    INSERT INTO emails (
-                        raw_email_id, message_id, thread_id, in_reply_to, date_parsed,
-                        from_email, from_name, to_emails, cc_emails, subject,
-                        body_text, body_preview, word_count, labels,
-                        has_attachments, is_sent, action, timing,
-                        response_time_seconds, enriched_at
-                    ) VALUES (
-                        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,
-                        $15, $16, $17, $18, $19, NOW()
-                    )
-                    ON CONFLICT (message_id) DO NOTHING
-                """,
-                    raw_id,
-                    email.get('message_id'),
-                    email.get('thread_id'),
-                    email.get('in_reply_to') or None,
-                    date_parsed,
-                    from_email,
-                    from_name,
-                    to_emails if to_emails else None,
-                    cc_emails if cc_emails else None,
-                    email.get('subject'),
-                    body,
-                    generate_preview(body),
-                    count_words(body),
-                    labels if labels else None,
-                    email.get('has_attachments', False),
-                    is_sent_email(from_email, labels),
-                    email.get('action'),
-                    email.get('response_timing'),
-                    email.get('response_time_seconds')
-                )
-
-                imported += 1
+            imported += 1
 
         print(f"  Imported {min(batch_start + BATCH_SIZE, total)}/{total} emails...")
 
@@ -227,101 +231,65 @@ async def import_emails(conn: asyncpg.Connection, jsonl_path: Path):
 
 
 async def verify_import(conn: asyncpg.Connection):
-    """Verify the import was successful."""
-    print("\n=== Verification ===")
-
-    # Count emails
+    """Verify import by checking counts and sample data."""
     raw_count = await conn.fetchval("SELECT COUNT(*) FROM raw_emails")
-    emails_count = await conn.fetchval("SELECT COUNT(*) FROM emails")
-    print(f"raw_emails: {raw_count}")
-    print(f"emails: {emails_count}")
+    email_count = await conn.fetchval("SELECT COUNT(*) FROM emails")
 
-    # Check previously null columns in raw_emails
-    print("\nPreviously null columns (raw_emails):")
-    null_checks = [
-        ('in_reply_to', 'SELECT COUNT(*) FROM raw_emails WHERE in_reply_to IS NOT NULL'),
-        ('references_raw', 'SELECT COUNT(*) FROM raw_emails WHERE references_raw IS NOT NULL'),
-        ('bcc_raw', 'SELECT COUNT(*) FROM raw_emails WHERE bcc_raw IS NOT NULL'),
-        ('body_html', 'SELECT COUNT(*) FROM raw_emails WHERE body_html IS NOT NULL'),
-        ('mbox_offset', 'SELECT COUNT(*) FROM raw_emails WHERE mbox_offset IS NOT NULL'),
-        ('raw_size_bytes', 'SELECT COUNT(*) FROM raw_emails WHERE raw_size_bytes IS NOT NULL'),
-    ]
-    for col, query in null_checks:
-        count = await conn.fetchval(query)
-        pct = (count / raw_count * 100) if raw_count > 0 else 0
-        print(f"  {col}: {count:,} ({pct:.1f}%)")
+    print(f"\nVerification:")
+    print(f"  Raw emails: {raw_count}")
+    print(f"  Enriched emails: {email_count}")
 
-    # Top labels
-    print("\nTop labels:")
-    labels = await conn.fetch("""
-        SELECT unnest(labels) as label, COUNT(*) as cnt
+    # Sample some data
+    sample = await conn.fetch("""
+        SELECT message_id, subject, from_email, date_parsed
         FROM emails
-        WHERE labels IS NOT NULL
-        GROUP BY label
-        ORDER BY cnt DESC
-        LIMIT 10
+        ORDER BY date_parsed DESC
+        LIMIT 5
     """)
-    for row in labels:
-        print(f"  {row['label']}: {row['cnt']}")
 
-    # Action distribution
-    print("\nAction distribution:")
-    actions = await conn.fetch("""
-        SELECT action, COUNT(*) as cnt
-        FROM emails
-        GROUP BY action
-        ORDER BY cnt DESC
-    """)
-    for row in actions:
-        print(f"  {row['action'] or 'NULL'}: {row['cnt']}")
-
-    # Date range
-    date_range = await conn.fetchrow("""
-        SELECT MIN(date_parsed) as earliest, MAX(date_parsed) as latest
-        FROM emails
-        WHERE date_parsed IS NOT NULL
-    """)
-    print(f"\nDate range: {date_range['earliest']} to {date_range['latest']}")
+    print(f"\nRecent emails:")
+    for row in sample:
+        print(f"  {row['date_parsed']}: {row['from_email']} - {row['subject'][:50] if row['subject'] else '(no subject)'}...")
 
 
 async def main():
-    """Main entry point."""
-    print("Stage 6: Import to PostgreSQL")
-    print("=" * 40)
+    import argparse
 
-    # Get schema path
-    script_dir = Path(__file__).parent
-    schema_path = script_dir / "create_schema.sql"
+    parser = argparse.ArgumentParser(description='Import emails to PostgreSQL')
+    parser.add_argument('--jsonl', type=Path, required=True, help='Path to JSONL file')
+    parser.add_argument('--schema', type=Path, default=Path('scripts/create_schema.sql'),
+                        help='Path to schema SQL file')
+    parser.add_argument('--database', default='emails', help='Database name')
+    parser.add_argument('--host', default='localhost', help='Database host')
+    parser.add_argument('--port', type=int, default=5432, help='Database port')
+    parser.add_argument('--user', default='postgres', help='Database user')
+    parser.add_argument('--password', default='', help='Database password')
+    parser.add_argument('--create-schema', action='store_true', help='Create schema before import')
+    parser.add_argument('--verify', action='store_true', help='Verify import after completion')
 
-    if not schema_path.exists():
-        print(f"Error: Schema file not found: {schema_path}")
-        sys.exit(1)
-
-    if not JSONL_PATH.exists():
-        print(f"Error: JSONL file not found: {JSONL_PATH}")
-        sys.exit(1)
+    args = parser.parse_args()
 
     # Connect to database
-    print(f"\nConnecting to {DB_URL}...")
-    conn = await asyncpg.connect(DB_URL)
+    conn = await asyncpg.connect(
+        host=args.host,
+        port=args.port,
+        user=args.user,
+        password=args.password,
+        database=args.database
+    )
 
     try:
-        # Create schema
-        print("\nCreating schema...")
-        await create_schema(conn, schema_path)
+        if args.create_schema:
+            await create_schema(conn, args.schema)
 
-        # Import emails
-        print("\nImporting emails...")
-        await import_emails(conn, JSONL_PATH)
+        await import_emails(conn, args.jsonl)
 
-        # Verify
-        await verify_import(conn)
+        if args.verify:
+            await verify_import(conn)
 
     finally:
         await conn.close()
 
-    print("\nDone!")
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     asyncio.run(main())
