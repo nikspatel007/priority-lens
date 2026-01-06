@@ -57,6 +57,7 @@ class CombinedFeatures:
     temporal_score: float = 0.0
     service_score: float = 0.0  # Higher = more likely service email
     relationship_score: float = 0.0  # Relationship strength and priority
+    sender_importance: float = 0.0  # Combined sender importance score (0-1)
     overall_priority: float = 0.0
 
     def to_feature_vector(self, include_content: bool = True) -> Union["np.ndarray", list[float]]:
@@ -148,6 +149,7 @@ class CombinedFeatures:
                 'temporal': self.temporal_score,
                 'service': self.service_score,
                 'relationship': self.relationship_score,
+                'sender_importance': self.sender_importance,
                 'overall_priority': self.overall_priority,
             },
             'project': {
@@ -314,6 +316,102 @@ def compute_relationship_score(relationship: Optional[RelationshipFeatures]) -> 
     return min(1.0, max(0.0, score))
 
 
+def compute_sender_importance(
+    people: PeopleFeatures,
+    relationship: Optional[RelationshipFeatures] = None,
+) -> float:
+    """Compute sender importance score combining people and relationship features.
+
+    This is the authoritative function for computing sender importance.
+    It combines:
+    - Static signals (org level, automated sender, internal/external)
+    - Dynamic relationship signals (when available from CommunicationGraph)
+
+    The score represents how important emails from this sender are to the user.
+    Higher scores indicate senders the user should prioritize.
+
+    Args:
+        people: PeopleFeatures from people extraction
+        relationship: Optional RelationshipFeatures from CommunicationGraph
+
+    Returns:
+        Score 0-1 where higher means more important sender
+    """
+    # Base case: automated senders are low importance
+    if people.sender_is_automated:
+        return 0.1
+
+    # === Component 1: Organizational hierarchy (from people features) ===
+    # Executive (3) = 0.9, Manager (2) = 0.7, Peer (1) = 0.5, External (0) = 0.3
+    org_level_score = {0: 0.3, 1: 0.5, 2: 0.7, 3: 0.9}.get(people.sender_org_level, 0.5)
+
+    # Internal senders get a small boost
+    if people.sender_is_internal:
+        org_level_score = min(1.0, org_level_score + 0.05)
+
+    # === Component 2: Relationship-based signals (when available) ===
+    if relationship is not None:
+        # Inferred hierarchy from response patterns (may differ from title-based)
+        inferred_hierarchy = relationship.inferred_hierarchy
+
+        # Relationship strength from communication patterns
+        relationship_strength = relationship.relationship_strength
+
+        # Response deviation: positive = user responds faster than baseline
+        # This indicates prioritization behavior
+        response_boost = max(0, relationship.sender_response_deviation) * 0.3
+
+        # Frequency rank: how common is this sender relative to others
+        frequency_factor = relationship.sender_frequency_rank
+
+        # Reciprocity: balanced two-way communication indicates importance
+        reciprocity_factor = relationship.reciprocity_score * 0.5
+
+        # Recent communication is more relevant
+        recency_factor = 1.0
+        if relationship.days_since_last_email is not None:
+            if relationship.days_since_last_email > 90:
+                recency_factor = 0.7
+            elif relationship.days_since_last_email > 30:
+                recency_factor = 0.85
+            elif relationship.days_since_last_email < 7:
+                recency_factor = 1.0
+
+        # Combine relationship signals
+        # Use weighted average where hierarchy from both sources contributes
+        combined_hierarchy = (org_level_score * 0.4 + inferred_hierarchy * 0.6)
+
+        importance = (
+            combined_hierarchy * 0.35 +            # Hierarchy (title + inferred)
+            relationship_strength * 0.25 +         # Relationship strength
+            response_boost +                       # Response prioritization
+            frequency_factor * 0.15 +              # How frequent
+            reciprocity_factor                     # Two-way communication
+        )
+
+        # Apply recency adjustment
+        importance *= recency_factor
+
+        # High volume senders get slight penalty (many emails = less important per email)
+        if relationship.emails_from_sender_30d > 50:
+            importance *= 0.85
+        elif relationship.emails_from_sender_30d > 20:
+            importance *= 0.95
+
+    else:
+        # Fallback: only use people-based signals
+        # This matches the legacy behavior from people.py
+        importance = org_level_score
+
+        # Volume penalty from people features (legacy fallback)
+        if people.emails_from_sender_30d > 50:
+            importance *= 0.8
+        elif people.emails_from_sender_30d > 20:
+            importance *= 0.9
+
+    return min(1.0, max(0.0, importance))
+
+
 def extract_combined_features(
     email: dict,
     *,
@@ -387,6 +485,9 @@ def extract_combined_features(
     service_score = compute_service_score(service_features)
     relationship_score = compute_relationship_score(relationship_features)
 
+    # Compute sender importance (combines people + relationship features)
+    sender_importance = compute_sender_importance(people_features, relationship_features)
+
     # Compute overall priority
     overall_priority = compute_overall_priority(
         project_score,
@@ -415,6 +516,7 @@ def extract_combined_features(
         temporal_score=temporal_score,
         service_score=service_score,
         relationship_score=relationship_score,
+        sender_importance=sender_importance,
         overall_priority=overall_priority,
     )
 

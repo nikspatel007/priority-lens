@@ -218,6 +218,7 @@ CREATE TABLE email_features (
     sender_frequency_rank FLOAT,
     inferred_hierarchy FLOAT,
     relationship_strength FLOAT,
+    sender_importance FLOAT,  -- Combined sender priority score (0-1)
     emails_from_sender_7d INTEGER DEFAULT 0,
     emails_from_sender_30d INTEGER DEFAULT 0,
     emails_from_sender_90d INTEGER DEFAULT 0,

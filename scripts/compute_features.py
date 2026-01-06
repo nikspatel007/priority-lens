@@ -27,6 +27,7 @@ from src.features.combined import (
     extract_combined_features,
     CombinedFeatureExtractor,
     FEATURE_DIMS,
+    compute_sender_importance,
 )
 from src.features.relationship import (
     CommunicationGraph,
@@ -169,7 +170,7 @@ async def store_features_batch(
                 email_id, message_id,
                 -- Relationship features
                 sender_response_deviation, sender_frequency_rank,
-                inferred_hierarchy, relationship_strength,
+                inferred_hierarchy, relationship_strength, sender_importance,
                 emails_from_sender_7d, emails_from_sender_30d,
                 emails_from_sender_90d, response_rate_to_sender,
                 avg_thread_depth, days_since_last_email, cc_affinity_score,
@@ -192,19 +193,20 @@ async def store_features_batch(
                 computed_at, feature_version
             ) VALUES (
                 $1, $2,
-                $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,
-                $14, $15, $16, $17, $18, $19,
-                $20, $21, $22, $23, $24, $25,
-                $26, $27,
-                $28, $29, $30, $31, $32, $33, $34, $35,
-                $36, $37, $38,
-                $39, $40
+                $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,
+                $15, $16, $17, $18, $19, $20,
+                $21, $22, $23, $24, $25, $26,
+                $27, $28,
+                $29, $30, $31, $32, $33, $34, $35, $36,
+                $37, $38, $39,
+                $40, $41
             )
             ON CONFLICT (email_id) DO UPDATE SET
                 sender_response_deviation = EXCLUDED.sender_response_deviation,
                 sender_frequency_rank = EXCLUDED.sender_frequency_rank,
                 inferred_hierarchy = EXCLUDED.inferred_hierarchy,
                 relationship_strength = EXCLUDED.relationship_strength,
+                sender_importance = EXCLUDED.sender_importance,
                 emails_from_sender_7d = EXCLUDED.emails_from_sender_7d,
                 emails_from_sender_30d = EXCLUDED.emails_from_sender_30d,
                 emails_from_sender_90d = EXCLUDED.emails_from_sender_90d,
@@ -243,7 +245,7 @@ async def store_features_batch(
             (
                 d['email_id'], d['message_id'],
                 d['sender_response_deviation'], d['sender_frequency_rank'],
-                d['inferred_hierarchy'], d['relationship_strength'],
+                d['inferred_hierarchy'], d['relationship_strength'], d['sender_importance'],
                 d['emails_from_sender_7d'], d['emails_from_sender_30d'],
                 d['emails_from_sender_90d'], d['response_rate_to_sender'],
                 d['avg_thread_depth'], d['days_since_last_email'], d['cc_affinity_score'],
@@ -305,6 +307,7 @@ def extract_features_for_email(
         'sender_frequency_rank': rel.sender_frequency_rank if rel else 0.0,
         'inferred_hierarchy': rel.inferred_hierarchy if rel else 0.5,
         'relationship_strength': rel.relationship_strength if rel else 0.0,
+        'sender_importance': combined.sender_importance,  # From combined features
         'emails_from_sender_7d': rel.emails_from_sender_7d if rel else 0,
         'emails_from_sender_30d': rel.emails_from_sender_30d if rel else 0,
         'emails_from_sender_90d': rel.emails_from_sender_90d if rel else 0,
