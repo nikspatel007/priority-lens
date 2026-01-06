@@ -146,21 +146,38 @@ async def compute_starred_actions(conn: asyncpg.Connection) -> int:
 
 
 async def compute_archived_actions(conn: asyncpg.Connection, reference_date: datetime) -> int:
-    """Mark ARCHIVED emails - read but not replied, older than threshold."""
+    """Mark ARCHIVED emails - read but not replied, older than threshold.
+
+    Includes:
+    - Group/FYI emails (has CC or multiple TO recipients)
+    - Emails from frequent senders (>20 emails total)
+    - Read emails (not unread)
+    """
 
     cutoff_date = reference_date - timedelta(days=IGNORED_AGE_DAYS)
 
     result = await conn.execute("""
-        UPDATE emails
+        UPDATE emails e
         SET action = 'ARCHIVED',
             timing = 'NEVER',
             enriched_at = NOW()
-        WHERE is_sent = FALSE
-          AND action IS NULL
-          AND date_parsed < $1
+        WHERE e.is_sent = FALSE
+          AND e.action IS NULL
+          AND e.date_parsed < $1
           AND (
-              'Archived' = ANY(labels)
-              OR ('Unread' != ALL(labels) AND 'Inbox' != ALL(labels))
+              -- Explicit archive label
+              'Archived' = ANY(e.labels)
+              -- Read emails (not unread, not in inbox)
+              OR ('Unread' != ALL(e.labels) AND 'Inbox' != ALL(e.labels))
+              -- Group/FYI emails (has CC or multiple TO)
+              OR (e.cc_emails IS NOT NULL AND array_length(e.cc_emails, 1) >= 1)
+              OR (e.to_emails IS NOT NULL AND array_length(e.to_emails, 1) > 1)
+              -- From frequent senders (>20 emails)
+              OR EXISTS (
+                  SELECT 1 FROM users u
+                  WHERE LOWER(u.email) = LOWER(e.from_email)
+                    AND u.emails_from > 20
+              )
           )
     """, cutoff_date)
 
@@ -169,19 +186,36 @@ async def compute_archived_actions(conn: asyncpg.Connection, reference_date: dat
 
 
 async def compute_ignored_actions(conn: asyncpg.Connection, reference_date: datetime) -> int:
-    """Mark IGNORED emails - unread and older than threshold."""
+    """Mark IGNORED emails - truly ignored 1:1 emails.
+
+    Only marks as IGNORED if:
+    - Unread and old
+    - 1:1 communication (no CC, single TO recipient)
+    - NOT from frequent senders (relationship exists but chose not to engage)
+
+    This excludes group/FYI emails from close contacts.
+    """
 
     cutoff_date = reference_date - timedelta(days=IGNORED_AGE_DAYS)
 
     result = await conn.execute("""
-        UPDATE emails
+        UPDATE emails e
         SET action = 'IGNORED',
             timing = 'NEVER',
             enriched_at = NOW()
-        WHERE is_sent = FALSE
-          AND action IS NULL
-          AND date_parsed < $1
-          AND 'Unread' = ANY(labels)
+        WHERE e.is_sent = FALSE
+          AND e.action IS NULL
+          AND e.date_parsed < $1
+          AND 'Unread' = ANY(e.labels)
+          -- Must be 1:1 (no CC, single TO)
+          AND (e.cc_emails IS NULL OR array_length(e.cc_emails, 1) = 0)
+          AND (e.to_emails IS NULL OR array_length(e.to_emails, 1) = 1)
+          -- NOT from frequent senders (those go to ARCHIVED)
+          AND NOT EXISTS (
+              SELECT 1 FROM users u
+              WHERE LOWER(u.email) = LOWER(e.from_email)
+                AND u.emails_from > 20
+          )
     """, cutoff_date)
 
     count = int(result.split()[-1]) if result else 0
