@@ -79,12 +79,16 @@ def parse_labels(labels_str: str | None) -> list[str]:
     return labels
 
 
-def get_body(msg: mailbox.mboxMessage) -> str:
-    """Extract the body text from an email message.
+def get_body(msg: mailbox.mboxMessage) -> tuple[str, str]:
+    """Extract body text and HTML from an email message.
 
-    Handles multipart messages by preferring plain text, falling back to HTML.
+    Handles multipart messages, extracting both plain text and HTML separately.
+
+    Returns:
+        Tuple of (body_text, body_html)
     """
-    body_parts = []
+    text_parts = []
+    html_parts = []
 
     if msg.is_multipart():
         for part in msg.walk():
@@ -101,38 +105,53 @@ def get_body(msg: mailbox.mboxMessage) -> str:
                     if payload:
                         charset = part.get_content_charset() or 'utf-8'
                         try:
-                            body_parts.append(payload.decode(charset, errors='replace'))
+                            text_parts.append(payload.decode(charset, errors='replace'))
                         except (LookupError, UnicodeDecodeError):
-                            body_parts.append(payload.decode('utf-8', errors='replace'))
+                            text_parts.append(payload.decode('utf-8', errors='replace'))
                 except Exception:
                     pass
-            elif content_type == "text/html" and not body_parts:
-                # Only use HTML if we don't have plain text
+            elif content_type == "text/html":
                 try:
                     payload = part.get_payload(decode=True)
                     if payload:
                         charset = part.get_content_charset() or 'utf-8'
                         try:
-                            body_parts.append(payload.decode(charset, errors='replace'))
+                            html_parts.append(payload.decode(charset, errors='replace'))
                         except (LookupError, UnicodeDecodeError):
-                            body_parts.append(payload.decode('utf-8', errors='replace'))
+                            html_parts.append(payload.decode('utf-8', errors='replace'))
                 except Exception:
                     pass
     else:
+        content_type = msg.get_content_type()
         try:
             payload = msg.get_payload(decode=True)
             if payload:
                 charset = msg.get_content_charset() or 'utf-8'
                 try:
-                    body_parts.append(payload.decode(charset, errors='replace'))
+                    decoded = payload.decode(charset, errors='replace')
                 except (LookupError, UnicodeDecodeError):
-                    body_parts.append(payload.decode('utf-8', errors='replace'))
+                    decoded = payload.decode('utf-8', errors='replace')
+
+                if content_type == "text/html":
+                    html_parts.append(decoded)
+                else:
+                    text_parts.append(decoded)
             elif isinstance(msg.get_payload(), str):
-                body_parts.append(msg.get_payload())
+                if content_type == "text/html":
+                    html_parts.append(msg.get_payload())
+                else:
+                    text_parts.append(msg.get_payload())
         except Exception:
             pass
 
-    return '\n'.join(body_parts)
+    body_text = '\n'.join(text_parts)
+    body_html = '\n'.join(html_parts)
+
+    # If no plain text but we have HTML, use HTML as fallback for text
+    if not body_text and body_html:
+        body_text = body_html
+
+    return body_text, body_html
 
 
 def has_attachments(msg: mailbox.mboxMessage) -> bool:
@@ -154,19 +173,33 @@ def has_attachments(msg: mailbox.mboxMessage) -> bool:
     return False
 
 
-def parse_email(msg: mailbox.mboxMessage) -> dict:
-    """Parse a single email message to normalized dict."""
+def parse_email(msg: mailbox.mboxMessage, mbox_offset: int = 0, raw_size_bytes: int = 0) -> dict:
+    """Parse a single email message to normalized dict.
+
+    Args:
+        msg: The mailbox message to parse
+        mbox_offset: Byte offset in mbox file where message starts
+        raw_size_bytes: Size of raw message in bytes
+    """
+    body_text, body_html = get_body(msg)
+
     return {
         'message_id': msg.get('Message-ID', ''),
         'thread_id': msg.get('X-GM-THRID', ''),
+        'in_reply_to': msg.get('In-Reply-To', ''),
+        'references': msg.get('References', ''),
         'labels': parse_labels(msg.get('X-Gmail-Labels', '')),
         'date': msg.get('Date', ''),
         'from': decode_header_value(msg.get('From', '')),
         'to': decode_header_value(msg.get('To', '')),
         'cc': decode_header_value(msg.get('Cc', '')),
+        'bcc': decode_header_value(msg.get('Bcc', '')),
         'subject': decode_header_value(msg.get('Subject', '')),
-        'body': get_body(msg),
+        'body': body_text,
+        'body_html': body_html if body_html else None,
         'has_attachments': has_attachments(msg),
+        'mbox_offset': mbox_offset,
+        'raw_size_bytes': raw_size_bytes,
     }
 
 
@@ -183,30 +216,55 @@ def parse_mbox():
     stats = {
         'total_emails': 0,
         'emails_with_body': 0,
+        'emails_with_body_html': 0,
         'emails_with_attachments': 0,
         'emails_with_message_id': 0,
         'emails_with_thread_id': 0,
+        'emails_with_in_reply_to': 0,
+        'emails_with_references': 0,
+        'emails_with_bcc': 0,
         'unique_labels': set(),
         'label_counts': Counter(),
         'errors': 0,
         'start_time': datetime.now().isoformat(),
     }
 
+    # Track byte offset by reading mbox file positions
+    current_offset = 0
+
     with open(OUTPUT_PATH, 'w', encoding='utf-8') as f:
         for i, msg in enumerate(mbox):
             try:
-                email_data = parse_email(msg)
+                # Get raw message size
+                try:
+                    raw_bytes = msg.as_bytes()
+                    raw_size = len(raw_bytes)
+                except Exception:
+                    raw_size = 0
+
+                email_data = parse_email(msg, mbox_offset=current_offset, raw_size_bytes=raw_size)
+
+                # Update offset for next message (approximate - mbox format adds "From " line)
+                current_offset += raw_size + 1  # +1 for newline separator
 
                 # Update stats
                 stats['total_emails'] += 1
                 if email_data['body']:
                     stats['emails_with_body'] += 1
+                if email_data.get('body_html'):
+                    stats['emails_with_body_html'] += 1
                 if email_data['has_attachments']:
                     stats['emails_with_attachments'] += 1
                 if email_data['message_id']:
                     stats['emails_with_message_id'] += 1
                 if email_data['thread_id']:
                     stats['emails_with_thread_id'] += 1
+                if email_data.get('in_reply_to'):
+                    stats['emails_with_in_reply_to'] += 1
+                if email_data.get('references'):
+                    stats['emails_with_references'] += 1
+                if email_data.get('bcc'):
+                    stats['emails_with_bcc'] += 1
 
                 for label in email_data['labels']:
                     stats['unique_labels'].add(label)
@@ -232,7 +290,11 @@ def parse_mbox():
     print(f"\nCompleted!")
     print(f"Total emails: {stats['total_emails']}")
     print(f"Emails with body: {stats['emails_with_body']}")
+    print(f"Emails with body_html: {stats['emails_with_body_html']}")
     print(f"Emails with message_id: {stats['emails_with_message_id']}")
+    print(f"Emails with in_reply_to: {stats['emails_with_in_reply_to']}")
+    print(f"Emails with references: {stats['emails_with_references']}")
+    print(f"Emails with bcc: {stats['emails_with_bcc']}")
     print(f"Emails with attachments: {stats['emails_with_attachments']}")
     print(f"Unique labels: {len(stats['unique_labels'])}")
     print(f"Errors: {stats['errors']}")

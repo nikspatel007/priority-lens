@@ -154,21 +154,29 @@ async def import_emails(conn: asyncpg.Connection, jsonl_path: Path):
                 # Insert into raw_emails
                 raw_id = await conn.fetchval("""
                     INSERT INTO raw_emails (
-                        message_id, thread_id, date_raw, from_raw, to_raw, cc_raw,
-                        subject_raw, body_text, labels_raw
-                    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+                        message_id, thread_id, in_reply_to, references_raw,
+                        date_raw, from_raw, to_raw, cc_raw, bcc_raw,
+                        subject_raw, body_text, body_html, labels_raw,
+                        mbox_offset, raw_size_bytes
+                    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
                     ON CONFLICT (message_id) DO NOTHING
                     RETURNING id
                 """,
                     email.get('message_id'),
                     email.get('thread_id'),
-                    email.get('date_original'),
+                    email.get('in_reply_to') or None,
+                    email.get('references') or None,
+                    email.get('date') or email.get('date_original'),
                     email.get('from'),
                     email.get('to'),
                     email.get('cc'),
+                    email.get('bcc') or None,
                     email.get('subject'),
                     body,
-                    ','.join(labels) if labels else None
+                    email.get('body_html') or None,
+                    ','.join(labels) if labels else None,
+                    email.get('mbox_offset'),
+                    email.get('raw_size_bytes'),
                 )
 
                 if raw_id is None:
@@ -178,20 +186,21 @@ async def import_emails(conn: asyncpg.Connection, jsonl_path: Path):
                 # Insert into emails (enriched)
                 await conn.execute("""
                     INSERT INTO emails (
-                        raw_email_id, message_id, thread_id, date_parsed,
+                        raw_email_id, message_id, thread_id, in_reply_to, date_parsed,
                         from_email, from_name, to_emails, cc_emails, subject,
                         body_text, body_preview, word_count, labels,
                         has_attachments, is_sent, action, timing,
                         response_time_seconds, enriched_at
                     ) VALUES (
-                        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,
-                        $14, $15, $16, $17, $18, NOW()
+                        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,
+                        $15, $16, $17, $18, $19, NOW()
                     )
                     ON CONFLICT (message_id) DO NOTHING
                 """,
                     raw_id,
                     email.get('message_id'),
                     email.get('thread_id'),
+                    email.get('in_reply_to') or None,
                     date_parsed,
                     from_email,
                     from_name,
@@ -226,6 +235,21 @@ async def verify_import(conn: asyncpg.Connection):
     emails_count = await conn.fetchval("SELECT COUNT(*) FROM emails")
     print(f"raw_emails: {raw_count}")
     print(f"emails: {emails_count}")
+
+    # Check previously null columns in raw_emails
+    print("\nPreviously null columns (raw_emails):")
+    null_checks = [
+        ('in_reply_to', 'SELECT COUNT(*) FROM raw_emails WHERE in_reply_to IS NOT NULL'),
+        ('references_raw', 'SELECT COUNT(*) FROM raw_emails WHERE references_raw IS NOT NULL'),
+        ('bcc_raw', 'SELECT COUNT(*) FROM raw_emails WHERE bcc_raw IS NOT NULL'),
+        ('body_html', 'SELECT COUNT(*) FROM raw_emails WHERE body_html IS NOT NULL'),
+        ('mbox_offset', 'SELECT COUNT(*) FROM raw_emails WHERE mbox_offset IS NOT NULL'),
+        ('raw_size_bytes', 'SELECT COUNT(*) FROM raw_emails WHERE raw_size_bytes IS NOT NULL'),
+    ]
+    for col, query in null_checks:
+        count = await conn.fetchval(query)
+        pct = (count / raw_count * 100) if raw_count > 0 else 0
+        print(f"  {col}: {count:,} ({pct:.1f}%)")
 
     # Top labels
     print("\nTop labels:")
