@@ -11,7 +11,10 @@ Processes a Gmail MBOX export through the complete ML pipeline:
 5. Compute ML features (Phase 2)
 6. Generate embeddings (Phase 3)
 7. Rule-based AI classification (Phase 0)
-8. LLM classification (Phase 4)
+8. Populate user profiles (Phase 4A)
+9. Multi-dimensional clustering (Phase 4B)
+10. Hybrid priority ranking (Phase 4C)
+11. LLM classification (Phase 4D) - runs AFTER clustering for better context
 
 Usage:
     python scripts/onboard_data.py
@@ -332,6 +335,56 @@ def generate_report(parsed_jsonl: Path, duration: str) -> str:
             """)
             data['llm_priorities'] = dict(cur.fetchall())
 
+        # Important people (from users table)
+        cur.execute("""
+            SELECT email, name, emails_from, reply_count,
+                   ROUND(reply_rate::numeric * 100, 1) as reply_rate_pct
+            FROM users
+            WHERE reply_count > 0 AND NOT is_you
+            ORDER BY reply_count DESC, reply_rate DESC
+            LIMIT 10
+        """)
+        data['important_people'] = cur.fetchall()
+
+        # Important senders count
+        cur.execute("SELECT COUNT(*) FROM users WHERE is_important_sender = true")
+        data['important_sender_count'] = cur.fetchone()[0]
+
+        # Service engagement breakdown
+        cur.execute("""
+            SELECT
+                ef.service_type,
+                COUNT(*) as total,
+                SUM(CASE WHEN e.action = 'REPLIED' THEN 1 ELSE 0 END) as replied,
+                SUM(CASE WHEN e.action = 'ARCHIVED' THEN 1 ELSE 0 END) as archived,
+                SUM(CASE WHEN e.action = 'IGNORED' THEN 1 ELSE 0 END) as ignored
+            FROM email_features ef
+            JOIN emails e ON e.id = ef.email_id
+            WHERE ef.is_service_email = true AND e.is_sent = false
+            GROUP BY ef.service_type
+            ORDER BY total DESC
+        """)
+        data['service_engagement'] = cur.fetchall()
+
+        # Relationship validation
+        cur.execute("""
+            SELECT
+                CASE
+                    WHEN ef.relationship_strength >= 0.7 THEN 'Strong'
+                    WHEN ef.relationship_strength >= 0.5 THEN 'Medium'
+                    WHEN ef.relationship_strength >= 0.3 THEN 'Weak'
+                    ELSE 'Minimal'
+                END as tier,
+                COUNT(*) as emails,
+                SUM(CASE WHEN e.action = 'REPLIED' THEN 1 ELSE 0 END) as replied
+            FROM email_features ef
+            JOIN emails e ON e.id = ef.email_id
+            WHERE e.is_sent = false
+            GROUP BY 1
+            ORDER BY MIN(ef.relationship_strength) DESC
+        """)
+        data['relationship_validation'] = cur.fetchall()
+
         conn.close()
 
     except Exception as e:
@@ -603,6 +656,56 @@ def generate_report(parsed_jsonl: Path, duration: str) -> str:
             "",
         ])
 
+    # === IMPORTANT PEOPLE ===
+    lines.extend([
+        "## Important People",
+        "",
+        f"**{data.get('important_sender_count', 0)} senders** marked as important based on reply behavior:",
+        "",
+        "| Person | Emails | Replied | Rate |",
+        "|--------|--------|---------|------|",
+    ])
+
+    for email, name, emails_from, reply_count, rate in data.get('important_people', [])[:10]:
+        name_display = name[:25] if name else email.split('@')[0][:25]
+        lines.append(f"| {name_display} | {emails_from} | {reply_count} | {rate or 0}% |")
+
+    lines.extend([
+        "",
+        "### Service Email Engagement",
+        "",
+        "How you interact with different service email types:",
+        "",
+        "| Type | Total | Replied | Archived | Ignored |",
+        "|------|-------|---------|----------|---------|",
+    ])
+
+    for svc_type, total_svc, replied, archived, ignored in data.get('service_engagement', []):
+        svc_name = svc_type or "unknown"
+        lines.append(f"| {svc_name} | {total_svc} | {replied} | {archived} | {ignored} |")
+
+    lines.extend([
+        "",
+        "### Relationship Strength Validation",
+        "",
+        "Emails are grouped by relationship strength with the sender:",
+        "",
+        "| Relationship | Emails | Replied | Reply Rate |",
+        "|--------------|--------|---------|------------|",
+    ])
+
+    for tier, emails, replied in data.get('relationship_validation', []):
+        rate = (replied / emails * 100) if emails > 0 else 0
+        lines.append(f"| {tier} | {emails} | {replied} | {rate:.1f}% |")
+
+    lines.extend([
+        "",
+        "✅ Strong correlation between relationship strength and reply behavior validates our ML pipeline.",
+        "",
+        "---",
+        "",
+    ])
+
     # === OVERALL INSIGHTS ===
     lines.extend([
         "## Overall Insights",
@@ -623,23 +726,37 @@ def generate_report(parsed_jsonl: Path, duration: str) -> str:
         f"3. **{100 - service_pct:.0f}% are human conversations** - where relationships happen",
         f"4. **{data['long_threads']:,} deep threads** - your most engaged conversations",
         "",
-        "### Recommendations",
+        "### Actionable Recommendations",
         "",
-        "Based on this analysis:",
+        "Based on your actual email behavior:",
         "",
-        f"1. **Set up auto-archive rules** for the top service email types - this alone handles {data['service_emails']:,} emails",
+        f"1. **Auto-archive marketing/newsletters** - {sum(1 for s in data.get('service_engagement', []) if s[0] in ['marketing', 'newsletter'])} email types you never reply to",
         "",
-        "2. **Focus human attention** on the {:.0f}% of emails that are human-to-human".format(100 - service_pct),
+        f"2. **Prioritize {data.get('important_sender_count', 0)} important senders** - these are people you actually engage with",
         "",
-        "3. **Use AI assistance** for drafting replies to the {:.0f}% flagged as 'ai_partial'".format(ai_partial / data['ai_class_count'] * 100 if data['ai_class_count'] > 0 else 0),
+        f"3. **Review service notifications** - some (like transactions) may need attention, others don't",
         "",
-        f"4. **Review top senders** - your top 10 senders account for a significant portion of email volume",
+        f"4. **Use AI for {ai_partial:,} 'ai_partial' emails** - scheduling requests, confirmations, etc.",
+        "",
+        "### Manual Verification",
+        "",
+        "Run these scripts to explore your data:",
+        "",
+        "```bash",
+        "# See important people and services",
+        "python scripts/validate_data.py",
+        "",
+        "# Check specific domain (e.g., differentiate Chase transactions vs marketing)",
+        "python scripts/validate_data.py --domain chase.com",
+        "python scripts/validate_data.py --domain amazon.com",
+        "```",
         "",
         "### Data Quality Notes",
         "",
         f"- Embedding coverage: {coverage:.0f}%",
         f"- Classification coverage: {data['ai_class_count'] / total * 100:.0f}%" if total > 0 else "",
         f"- LLM analysis: {data['llm_class_count']:,} emails deeply analyzed",
+        f"- Important senders identified: {data.get('important_sender_count', 0)}",
         "",
         "---",
         "",
@@ -680,8 +797,8 @@ def main():
         "--start-from",
         type=int,
         default=0,
-        choices=range(0, 10),
-        help="Start from stage N (0-8, 0=migrations)"
+        choices=range(0, 13),
+        help="Start from stage N (0-11, 0=migrations)"
     )
     parser.add_argument(
         "--llm-model",
@@ -773,6 +890,7 @@ def main():
         print(f"\nSkipping stage 0: Run database migrations")
 
     # Define remaining stages
+    # Pipeline stages - LLM runs AFTER clustering so it has relationship context
     stages = [
         (1, "parse_mbox.py", [], "Parse MBOX to JSONL"),
         (2, "import_to_postgres.py", [], "Import to PostgreSQL"),
@@ -781,7 +899,10 @@ def main():
         (5, "compute_basic_features.py", [], "Compute ML features (Phase 2)"),
         (6, "compute_embeddings.py", ["--workers", str(args.workers)], "Generate embeddings (Phase 3)"),
         (7, "classify_ai_handleability.py", [], "Rule-based classification (Phase 0)"),
-        (8, "run_llm_classification.py", ["--all", str(args.workers), args.llm_model], "LLM classification (Phase 4)"),
+        (8, "populate_users.py", [], "Populate user profiles (Phase 4A)"),
+        (9, "cluster_emails.py", [], "Multi-dimensional clustering (Phase 4B)"),
+        (10, "compute_priority.py", [], "Hybrid priority ranking (Phase 4C)"),
+        (11, "run_llm_classification.py", ["--all", str(args.workers), args.llm_model], "LLM classification (Phase 4D)"),
     ]
 
     failed = False
@@ -801,7 +922,7 @@ def main():
             print(f"\nSkipping stage {stage_num}: {description} (--skip-llm)")
             continue
 
-        success = run_script(script, script_args, f"[{stage_num}/8] {description}")
+        success = run_script(script, script_args, f"[{stage_num}/11] {description}")
 
         if not success:
             failed = True

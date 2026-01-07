@@ -58,11 +58,11 @@ Moved to `archive/` subdirectories:
 
 ## Current Scripts Directory
 
-After cleanup, `scripts/` contains **11 essential files**:
+After cleanup, `scripts/` contains **14 files** (11 pipeline stages + 3 utilities):
 
 ```
 scripts/
-├── onboard_data.py              # Main orchestrator (8 stages)
+├── onboard_data.py              # Main orchestrator (11 stages)
 ├── parse_mbox.py                # Stage 1: Parse MBOX → JSONL
 ├── import_to_postgres.py        # Stage 2: Import to PostgreSQL
 ├── populate_threads.py          # Stage 3: Build thread relationships
@@ -70,7 +70,10 @@ scripts/
 ├── compute_basic_features.py    # Stage 5: Phase 2 - ML Features
 ├── compute_embeddings.py        # Stage 6: Phase 3 - Embeddings
 ├── classify_ai_handleability.py # Stage 7: Phase 0 - Rule-based classification
-├── run_llm_classification.py    # Stage 8: Phase 4 - LLM classification (gpt-5-mini)
+├── populate_users.py            # Stage 8: Phase 4A - User profiles
+├── cluster_emails.py            # Stage 9: Phase 4B - Multi-dimensional clustering
+├── compute_priority.py          # Stage 10: Phase 4C - Hybrid priority ranking
+├── run_llm_classification.py    # Stage 11: Phase 4D - LLM classification (after clustering)
 ├── checkpoint.py                # Utility: Checkpoint/restore
 └── query_db.py                  # Utility: Database queries
 ```
@@ -83,7 +86,7 @@ Pipeline executed successfully on 1-month MBOX (1,925 emails):
 
 ```
 ============================================================
-PIPELINE COMPLETED
+PIPELINE COMPLETED (11 stages)
 
 Emails imported:        1,795 (received), 130 (sent)
 Action labels:          68 REPLIED, 662 ARCHIVED, 529 IGNORED
@@ -91,6 +94,9 @@ ML features computed:   1,795
 Embeddings generated:   1,795 (58.4s @ 30.8 emails/sec)
 Rule-based classified:  1,795
 LLM classified:         781 (gpt-5-mini)
+User profiles:          429
+Email clusters:         1,795
+Email priorities:       1,795
 
 Reply rate validation:
   human_required:  24.6% (44/179)

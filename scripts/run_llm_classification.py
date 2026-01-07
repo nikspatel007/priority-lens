@@ -56,10 +56,12 @@ Date: {date}
 {body_preview}
 ---
 
-## Known Context
+## Known Context (from ML pipeline)
 - Sender relationship: {relationship_level} ({reply_rate}% reply rate to this sender)
+- Important sender: {is_important}
 - Is service/automated email: {is_service}
-- LLM Priority: {llm_priority}
+- Computed priority score: {priority_score} (rank #{priority_rank})
+- LLM Priority tier: {llm_priority}
 
 ## Classify (respond with valid JSON only, no markdown):
 {{
@@ -110,7 +112,7 @@ def get_status(conn):
 
 
 def get_emails_to_process(conn, limit=50):
-    """Get emails that need LLM classification."""
+    """Get emails that need LLM classification with user/priority context."""
     cur = conn.cursor()
 
     cur.execute("""
@@ -125,10 +127,15 @@ def get_emails_to_process(conn, limit=50):
             ef.is_service_email,
             ac.llm_priority,
             e.action as actual_action,
-            e.thread_id
+            e.thread_id,
+            COALESCE(u.is_important_sender, FALSE) as is_important_sender,
+            COALESCE(ep.priority_score, 0) as priority_score,
+            COALESCE(ep.priority_rank, 9999) as priority_rank
         FROM emails e
         JOIN email_features ef ON ef.email_id = e.id
         JOIN email_ai_classification ac ON ac.email_id = e.id
+        LEFT JOIN users u ON LOWER(u.email) = LOWER(e.from_email)
+        LEFT JOIN email_priority ep ON ep.email_id = e.id
         WHERE ac.predicted_handleability = 'needs_llm'
         AND e.is_sent = FALSE
         AND LENGTH(e.body_text) > 50
@@ -141,9 +148,10 @@ def get_emails_to_process(conn, limit=50):
 
 
 def build_prompt(email_data):
-    """Build the LLM prompt for an email."""
+    """Build the LLM prompt for an email with ML context."""
     email_id, from_email, subject, date_parsed, body_preview, \
-        relationship, reply_rate, is_service, llm_priority, actual_action, thread_id = email_data
+        relationship, reply_rate, is_service, llm_priority, actual_action, thread_id, \
+        is_important_sender, priority_score, priority_rank = email_data
 
     # Clean body preview
     body_clean = body_preview or ""
@@ -168,7 +176,10 @@ def build_prompt(email_data):
         body_preview=body_clean[:500] if body_clean else "(empty body)",
         relationship_level=rel_level,
         reply_rate=round((reply_rate or 0) * 100, 1),
+        is_important="Yes (high engagement history)" if is_important_sender else "No",
         is_service="Yes" if is_service else "No",
+        priority_score=round(priority_score, 2) if priority_score else 0,
+        priority_rank=priority_rank if priority_rank < 9999 else "N/A",
         llm_priority=llm_priority
     )
 
@@ -178,7 +189,7 @@ def build_prompt(email_data):
 def classify_email(email_data):
     """Run LLM classification on a single email."""
     email_id = email_data[0]
-    thread_id = email_data[10]
+    thread_id = email_data[10]  # thread_id is still at index 10
 
     prompt = build_prompt(email_data)
 
