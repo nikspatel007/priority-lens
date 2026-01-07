@@ -1,4 +1,5 @@
 """Configuration management."""
+
 from __future__ import annotations
 
 import os
@@ -53,7 +54,8 @@ class Config:
             parsed_jsonl=Path(parsed_jsonl_str) if parsed_jsonl_str else None,
             your_email=os.environ.get("YOUR_EMAIL") or config.get("YOUR_EMAIL"),
             openai_api_key=os.environ.get("OPENAI_API_KEY") or config.get("OPENAI_API_KEY"),
-            anthropic_api_key=os.environ.get("ANTHROPIC_API_KEY") or config.get("ANTHROPIC_API_KEY"),
+            anthropic_api_key=os.environ.get("ANTHROPIC_API_KEY")
+            or config.get("ANTHROPIC_API_KEY"),
         )
 
     def validate(self) -> list[str]:

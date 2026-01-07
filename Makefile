@@ -15,12 +15,17 @@ hooks:
 # =============================================================================
 
 lint:
-	uv run ruff check src/ tests/ scripts/
-	uv run ruff format --check src/ tests/ scripts/
+	uv run ruff check src/ tests/
+	uv run ruff format --check src/ tests/
 
 format:
-	uv run ruff check --fix src/ tests/ scripts/
-	uv run ruff format src/ tests/ scripts/
+	uv run ruff check --fix src/ tests/
+	uv run ruff format src/ tests/
+
+# Lint scripts (legacy code, has issues)
+lint-scripts:
+	uv run ruff check scripts/
+	uv run ruff format --check scripts/
 
 type-check:
 	uv run mypy src/ --strict

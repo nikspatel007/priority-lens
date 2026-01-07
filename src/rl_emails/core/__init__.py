@@ -1,4 +1,5 @@
 """Core utilities for rl-emails."""
+
 from __future__ import annotations
 
 from rl_emails.core.config import Config

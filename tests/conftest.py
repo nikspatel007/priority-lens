@@ -1,8 +1,10 @@
 """Shared test fixtures for rl-emails."""
+
 from __future__ import annotations
 
 import os
-from typing import Any, Generator
+from collections.abc import Generator
+from typing import Any
 
 import pytest
 
@@ -14,8 +16,7 @@ def test_db_url() -> str:
     Uses TEST_DATABASE_URL env var if set, otherwise uses a default test database.
     """
     return os.environ.get(
-        "TEST_DATABASE_URL",
-        "postgresql://postgres:postgres@localhost:5433/test_rl_emails"
+        "TEST_DATABASE_URL", "postgresql://postgres:postgres@localhost:5433/test_rl_emails"
     )
 
 

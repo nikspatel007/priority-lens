@@ -1,9 +1,8 @@
 """Tests for rl_emails.core.config."""
+
 from __future__ import annotations
 
-import os
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 
@@ -83,11 +82,37 @@ class TestConfig:
         assert config_anthropic.has_llm() is True
 
         config_both = Config(
-            database_url="test",
-            openai_api_key="sk-test",
-            anthropic_api_key="ant-test"
+            database_url="test", openai_api_key="sk-test", anthropic_api_key="ant-test"
         )
         assert config_both.has_llm() is True
 
         config_none = Config(database_url="test")
         assert config_none.has_llm() is False
+
+    def test_from_env_with_env_file(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+        """Test loading config from .env file."""
+        # Create a temp .env file
+        env_file = tmp_path / ".env"
+        env_file.write_text("DATABASE_URL=postgresql://from_file/db\nYOUR_EMAIL=file@example.com\n")
+
+        # Clear environment variables
+        monkeypatch.delenv("DATABASE_URL", raising=False)
+        monkeypatch.delenv("YOUR_EMAIL", raising=False)
+
+        config = Config.from_env(env_file=env_file)
+
+        assert config.database_url == "postgresql://from_file/db"
+        assert config.your_email == "file@example.com"
+
+    def test_env_overrides_file(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+        """Test that environment variables override .env file."""
+        # Create a temp .env file
+        env_file = tmp_path / ".env"
+        env_file.write_text("DATABASE_URL=postgresql://from_file/db\n")
+
+        # Set environment variable (should override file)
+        monkeypatch.setenv("DATABASE_URL", "postgresql://from_env/db")
+
+        config = Config.from_env(env_file=env_file)
+
+        assert config.database_url == "postgresql://from_env/db"

@@ -54,8 +54,8 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/rl_emails"]
 
-[project.scripts]
-rl-emails = "rl_emails.cli:main"
+# CLI provided via scripts/onboard_data.py
+# Package provides core utilities only
 
 [tool.mypy]
 python_version = "3.11"
