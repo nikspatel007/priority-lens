@@ -219,10 +219,10 @@ Add Gmail API as alternative data source alongside existing MBOX pipeline.
 | 4 | AuthService Implementation | ✅ Complete | OAuth flow orchestration, token refresh |
 | 5 | CLI Auth Commands | ✅ Complete | connect, status, disconnect commands |
 | 6 | Gmail Integration Module | ✅ Complete | Models, rate limiter |
-| 7 | GmailClient Implementation | Pending | list, get, batch operations |
-| 8 | Gmail Parser | Pending | Gmail to EmailData conversion |
-| 9 | SyncService + Stage 00 | Pending | Initial sync implementation |
-| 10 | Incremental Sync | Pending | History API, delta processing |
+| 7 | GmailClient Implementation | ✅ Complete | list, get, batch, history operations |
+| 8 | Gmail Parser | ✅ Complete | Gmail to EmailData conversion |
+| 9 | SyncService + Stage 00 | ✅ Complete | Initial sync, Gmail pipeline stage |
+| 10 | Incremental Sync | 🔄 In Progress | History API, delta processing |
 
 ### Iteration 1 Deliverables
 - [x] `src/rl_emails/auth/` module structure
@@ -268,6 +268,39 @@ Add Gmail API as alternative data source alongside existing MBOX pipeline.
 - [x] `RateLimiter` token bucket rate limiter for API throttling
 - [x] Tests for models (15 tests) and rate limiter (12 tests)
 - [x] 100% test coverage maintained (759 tests)
+
+### Iteration 7 Deliverables
+- [x] `GmailClient` async context manager with httpx client
+- [x] `list_messages()` with pagination and max_results support
+- [x] `list_all_messages()` async generator for full listing
+- [x] `get_message()` and `batch_get_messages()` for fetching full content
+- [x] `get_history()` for incremental sync support
+- [x] `GmailApiError` exception with status_code attribute
+- [x] Tests for GmailClient (37 tests)
+- [x] 100% test coverage maintained (796 tests)
+
+### Iteration 8 Deliverables
+- [x] `GmailParseError` exception class with field attribute
+- [x] `parse_email_address()` for extracting email and name from address
+- [x] `parse_raw_message()` for converting Gmail API responses to GmailMessage
+- [x] `gmail_to_email_data()` for converting to internal EmailData format
+- [x] Helper functions: header parsing, date parsing, body decoding, attachment detection
+- [x] Base64url decoding for Gmail message bodies
+- [x] Tests for parser (48 tests)
+- [x] 100% test coverage maintained (850 tests)
+
+### Iteration 9 Deliverables
+- [x] `SyncService` for orchestrating Gmail sync operations
+- [x] `SyncResult` dataclass for sync outcomes
+- [x] `initial_sync()` for full email sync with date filtering
+- [x] `incremental_sync()` for history-based updates
+- [x] `get_sync_status()` for user sync state queries
+- [x] Progress callback support for UI updates
+- [x] `stage_00_gmail_sync` pipeline stage (replaces stages 1-2 for Gmail)
+- [x] Multi-tenant mode requirement enforcement
+- [x] Database storage in raw_emails and emails tables
+- [x] Tests for SyncService (40 tests) and stage_00 (12 tests)
+- [x] 100% test coverage maintained (892 tests)
 
 ### Documentation
 - `docs/PHASE2_ITERATIONS.md` - Phase 2 detailed iteration specs

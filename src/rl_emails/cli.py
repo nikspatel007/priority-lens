@@ -7,6 +7,8 @@ Usage:
     rl-emails auth connect       # Connect Gmail via OAuth
     rl-emails auth status        # Check OAuth connection status
     rl-emails auth disconnect    # Disconnect Gmail
+    rl-emails sync --user UUID   # Sync emails from Gmail
+    rl-emails sync --status      # Check sync status
     rl-emails --help             # Show all options
 """
 
@@ -83,6 +85,33 @@ def parse_args() -> argparse.Namespace:
         required=True,
         metavar="UUID",
         help="User ID to disconnect",
+    )
+
+    # Sync subcommand
+    sync_parser = subparsers.add_parser("sync", help="Sync emails from Gmail")
+    sync_parser.add_argument(
+        "--user",
+        type=str,
+        required=True,
+        metavar="UUID",
+        help="User ID to sync emails for",
+    )
+    sync_parser.add_argument(
+        "--days",
+        type=int,
+        default=30,
+        help="Number of days to sync (default: 30)",
+    )
+    sync_parser.add_argument(
+        "--max-messages",
+        type=int,
+        default=None,
+        help="Maximum messages to sync (default: all)",
+    )
+    sync_parser.add_argument(
+        "--status",
+        action="store_true",
+        help="Show sync status instead of syncing",
     )
 
     # Pipeline arguments (for default command)
@@ -314,6 +343,114 @@ def auth_disconnect(args: argparse.Namespace, config: Config) -> None:
     print("=" * 60)
 
 
+def sync_emails(args: argparse.Namespace, config: Config) -> None:
+    """Handle sync command - sync emails from Gmail."""
+    # Validate user UUID
+    try:
+        user_id = UUID(args.user)
+    except ValueError:
+        print(f"Invalid UUID format: {args.user}", file=sys.stderr)
+        sys.exit(1)
+
+    # Apply user to config
+    config = config.with_user(user_id)
+
+    if args.status:
+        # Show sync status
+        _show_sync_status(user_id, config)
+    else:
+        # Run sync
+        _run_sync(user_id, config, args.days, args.max_messages)
+
+
+def _show_sync_status(user_id: UUID, config: Config) -> None:
+    """Show sync status for a user."""
+
+    async def _get_status() -> dict[str, object]:  # pragma: no cover
+        from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+
+        from rl_emails.integrations.gmail.client import GmailClient
+        from rl_emails.repositories.oauth_token import OAuthTokenRepository
+        from rl_emails.repositories.sync_state import SyncStateRepository
+        from rl_emails.services.sync_service import SyncService
+
+        # Convert database URL for async
+        db_url = config.database_url
+        if db_url.startswith("postgresql://"):
+            db_url = db_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+
+        engine = create_async_engine(db_url)
+        async with AsyncSession(engine) as session:
+            # Check OAuth token
+            token_repo = OAuthTokenRepository(session)
+            token = await token_repo.get_by_user(user_id)
+
+            if token is None:
+                return {
+                    "connected": False,
+                    "sync_status": "not_connected",
+                    "message": "No Gmail connection. Run 'rl-emails auth connect' first.",
+                }
+
+            # Get sync status
+            async with GmailClient(access_token=token.access_token) as gmail_client:
+                sync_repo = SyncStateRepository(session)
+                service = SyncService(gmail_client=gmail_client, sync_repo=sync_repo)
+                return await service.get_sync_status(user_id)
+
+    status = asyncio.run(_get_status())
+
+    print("Gmail Sync Status")
+    print("=" * 60)
+    print(f"\nUser ID: {user_id}")
+    print(f"Status: {status.get('status', 'unknown')}")
+
+    if status.get("emails_synced"):
+        print(f"Emails Synced: {status['emails_synced']}")
+
+    if status.get("last_sync_at"):
+        print(f"Last Sync: {status['last_sync_at']}")
+
+    if status.get("last_history_id"):
+        print(f"History ID: {status['last_history_id']}")
+
+    if status.get("error"):
+        print(f"Error: {status['error']}")
+
+    if status.get("message"):
+        print(f"\n{status['message']}")
+
+    print("=" * 60)
+
+
+def _run_sync(user_id: UUID, config: Config, days: int, max_messages: int | None) -> None:
+    """Run Gmail sync for a user."""
+    from rl_emails.pipeline.stages import stage_00_gmail_sync
+
+    print("Gmail Sync")
+    print("=" * 60)
+    print(f"\nUser ID: {user_id}")
+    print(f"Days: {days}")
+    if max_messages:
+        print(f"Max Messages: {max_messages}")
+    print("\nSyncing emails...")
+
+    result = stage_00_gmail_sync.run(config, days=days, max_messages=max_messages)
+
+    if result.success:
+        print("\nSync completed successfully!")
+        print(f"Emails stored: {result.records_processed}")
+        print(f"Duration: {result.duration_seconds:.1f}s")
+        if result.metadata:
+            if result.metadata.get("synced"):
+                print(f"Total synced from Gmail: {result.metadata['synced']}")
+    else:
+        print(f"\nSync failed: {result.message}", file=sys.stderr)
+        sys.exit(1)
+
+    print("=" * 60)
+
+
 def run_pipeline(args: argparse.Namespace, config: Config) -> None:
     """Run the main pipeline."""
     # Apply multi-tenant context if provided
@@ -419,6 +556,8 @@ def main() -> None:
         else:
             print("Usage: rl-emails auth {connect|status|disconnect} --user UUID")
             sys.exit(1)
+    elif args.command == "sync":
+        sync_emails(args, config)
     else:
         run_pipeline(args, config)
 

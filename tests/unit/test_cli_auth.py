@@ -349,3 +349,280 @@ class TestMainFunction:
                 with patch("rl_emails.cli.run_pipeline") as mock_pipeline:
                     main()
                     mock_pipeline.assert_called_once()
+
+    def test_routes_to_sync(self) -> None:
+        """Test main routes to sync command."""
+        from rl_emails.cli import main
+
+        test_uuid = str(uuid.uuid4())
+        with patch("sys.argv", ["rl-emails", "sync", "--user", test_uuid]):
+            with patch("rl_emails.cli.Config.from_env") as mock_config:
+                mock_config.return_value = Config(database_url="test")
+                with patch("rl_emails.cli.sync_emails") as mock_sync:
+                    main()
+                    mock_sync.assert_called_once()
+
+
+class TestParseArgsSync:
+    """Tests for sync subcommand parsing."""
+
+    def test_sync_requires_user(self) -> None:
+        """Test that sync requires --user."""
+        with pytest.raises(SystemExit):
+            with patch("sys.argv", ["rl-emails", "sync"]):
+                parse_args()
+
+    def test_sync_with_user(self) -> None:
+        """Test sync with --user."""
+        test_uuid = str(uuid.uuid4())
+        with patch("sys.argv", ["rl-emails", "sync", "--user", test_uuid]):
+            args = parse_args()
+            assert args.command == "sync"
+            assert args.user == test_uuid
+            assert args.days == 30  # Default
+
+    def test_sync_with_days(self) -> None:
+        """Test sync with --days."""
+        test_uuid = str(uuid.uuid4())
+        with patch("sys.argv", ["rl-emails", "sync", "--user", test_uuid, "--days", "60"]):
+            args = parse_args()
+            assert args.days == 60
+
+    def test_sync_with_max_messages(self) -> None:
+        """Test sync with --max-messages."""
+        test_uuid = str(uuid.uuid4())
+        with patch(
+            "sys.argv",
+            ["rl-emails", "sync", "--user", test_uuid, "--max-messages", "1000"],
+        ):
+            args = parse_args()
+            assert args.max_messages == 1000
+
+    def test_sync_with_status_flag(self) -> None:
+        """Test sync with --status flag."""
+        test_uuid = str(uuid.uuid4())
+        with patch("sys.argv", ["rl-emails", "sync", "--user", test_uuid, "--status"]):
+            args = parse_args()
+            assert args.status is True
+
+
+class TestSyncEmails:
+    """Tests for sync_emails command."""
+
+    def test_invalid_uuid_exits(self) -> None:
+        """Test that invalid UUID exits with error."""
+        from rl_emails.cli import sync_emails
+
+        args = argparse.Namespace(user="not-a-uuid", status=False, days=30, max_messages=None)
+        config = Config(database_url="test")
+
+        with pytest.raises(SystemExit):
+            sync_emails(args, config)
+
+    def test_sync_status_calls_helper(self) -> None:
+        """Test that --status calls _show_sync_status."""
+        from rl_emails.cli import sync_emails
+
+        test_uuid = str(uuid.uuid4())
+        args = argparse.Namespace(user=test_uuid, status=True, days=30, max_messages=None)
+        config = Config(database_url="postgresql://localhost/test")
+
+        with patch("rl_emails.cli._show_sync_status") as mock_status:
+            sync_emails(args, config)
+            mock_status.assert_called_once()
+
+    def test_sync_run_calls_helper(self) -> None:
+        """Test that sync without --status calls _run_sync."""
+        from rl_emails.cli import sync_emails
+
+        test_uuid = str(uuid.uuid4())
+        args = argparse.Namespace(user=test_uuid, status=False, days=30, max_messages=None)
+        config = Config(database_url="postgresql://localhost/test")
+
+        with patch("rl_emails.cli._run_sync") as mock_run:
+            sync_emails(args, config)
+            mock_run.assert_called_once()
+
+    def test_run_sync_success(self, capsys: pytest.CaptureFixture[str]) -> None:
+        """Test _run_sync with successful sync."""
+        from rl_emails.cli import _run_sync
+        from rl_emails.pipeline.stages.base import StageResult
+
+        test_uuid = uuid.UUID(str(uuid.uuid4()))
+        config = Config(database_url="postgresql://localhost/test")
+        config = config.with_user(test_uuid)
+
+        with patch("rl_emails.pipeline.stages.stage_00_gmail_sync.run") as mock_run:
+            mock_run.return_value = StageResult(
+                success=True,
+                records_processed=100,
+                duration_seconds=5.0,
+                message="Sync complete",
+                metadata={"synced": 100, "stored": 100},
+            )
+
+            _run_sync(test_uuid, config, days=30, max_messages=None)
+
+            captured = capsys.readouterr()
+            assert "Sync completed successfully" in captured.out
+            assert "Emails stored: 100" in captured.out
+
+    def test_run_sync_failure_exits(self) -> None:
+        """Test _run_sync exits on failure."""
+        from rl_emails.cli import _run_sync
+        from rl_emails.pipeline.stages.base import StageResult
+
+        test_uuid = uuid.UUID(str(uuid.uuid4()))
+        config = Config(database_url="postgresql://localhost/test")
+        config = config.with_user(test_uuid)
+
+        with patch("rl_emails.pipeline.stages.stage_00_gmail_sync.run") as mock_run:
+            mock_run.return_value = StageResult(
+                success=False,
+                records_processed=0,
+                duration_seconds=0.1,
+                message="No OAuth token found",
+            )
+
+            with pytest.raises(SystemExit):
+                _run_sync(test_uuid, config, days=30, max_messages=None)
+
+    def test_run_sync_with_max_messages(self, capsys: pytest.CaptureFixture[str]) -> None:
+        """Test _run_sync with max_messages specified."""
+        from rl_emails.cli import _run_sync
+        from rl_emails.pipeline.stages.base import StageResult
+
+        test_uuid = uuid.UUID(str(uuid.uuid4()))
+        config = Config(database_url="postgresql://localhost/test")
+        config = config.with_user(test_uuid)
+
+        with patch("rl_emails.pipeline.stages.stage_00_gmail_sync.run") as mock_run:
+            mock_run.return_value = StageResult(
+                success=True,
+                records_processed=50,
+                duration_seconds=2.0,
+                message="Sync complete",
+                metadata={"synced": 50, "stored": 50},
+            )
+
+            _run_sync(test_uuid, config, days=30, max_messages=50)
+
+            captured = capsys.readouterr()
+            assert "Max Messages: 50" in captured.out
+            assert "Total synced from Gmail: 50" in captured.out
+
+    def test_run_sync_without_metadata(self, capsys: pytest.CaptureFixture[str]) -> None:
+        """Test _run_sync when metadata is None."""
+        from rl_emails.cli import _run_sync
+        from rl_emails.pipeline.stages.base import StageResult
+
+        test_uuid = uuid.UUID(str(uuid.uuid4()))
+        config = Config(database_url="postgresql://localhost/test")
+        config = config.with_user(test_uuid)
+
+        with patch("rl_emails.pipeline.stages.stage_00_gmail_sync.run") as mock_run:
+            mock_run.return_value = StageResult(
+                success=True,
+                records_processed=50,
+                duration_seconds=2.0,
+                message="Sync complete",
+                metadata=None,  # No metadata
+            )
+
+            _run_sync(test_uuid, config, days=30, max_messages=None)
+
+            captured = capsys.readouterr()
+            assert "Sync completed successfully" in captured.out
+            assert "Total synced from Gmail" not in captured.out
+
+    def test_run_sync_with_zero_synced(self, capsys: pytest.CaptureFixture[str]) -> None:
+        """Test _run_sync when synced is 0 (falsy)."""
+        from rl_emails.cli import _run_sync
+        from rl_emails.pipeline.stages.base import StageResult
+
+        test_uuid = uuid.UUID(str(uuid.uuid4()))
+        config = Config(database_url="postgresql://localhost/test")
+        config = config.with_user(test_uuid)
+
+        with patch("rl_emails.pipeline.stages.stage_00_gmail_sync.run") as mock_run:
+            mock_run.return_value = StageResult(
+                success=True,
+                records_processed=0,
+                duration_seconds=0.5,
+                message="No new emails",
+                metadata={"synced": 0, "stored": 0},  # synced is 0 (falsy)
+            )
+
+            _run_sync(test_uuid, config, days=30, max_messages=None)
+
+            captured = capsys.readouterr()
+            assert "Sync completed successfully" in captured.out
+            assert "Total synced from Gmail" not in captured.out  # Not printed when synced is 0
+
+
+class TestShowSyncStatus:
+    """Tests for _show_sync_status helper."""
+
+    def test_show_sync_status_full(self, capsys: pytest.CaptureFixture[str]) -> None:
+        """Test _show_sync_status with all fields."""
+        from rl_emails.cli import _show_sync_status
+
+        test_uuid = uuid.UUID(str(uuid.uuid4()))
+        config = Config(database_url="postgresql://localhost/test")
+
+        with patch("rl_emails.cli.asyncio.run") as mock_run:
+            mock_run.return_value = {
+                "status": "completed",
+                "emails_synced": 500,
+                "last_sync_at": "2024-01-15T12:00:00",
+                "last_history_id": "12345",
+                "error": None,
+            }
+
+            _show_sync_status(test_uuid, config)
+
+            captured = capsys.readouterr()
+            assert "Status: completed" in captured.out
+            assert "Emails Synced: 500" in captured.out
+            assert "Last Sync: 2024-01-15T12:00:00" in captured.out
+            assert "History ID: 12345" in captured.out
+
+    def test_show_sync_status_with_error(self, capsys: pytest.CaptureFixture[str]) -> None:
+        """Test _show_sync_status with error."""
+        from rl_emails.cli import _show_sync_status
+
+        test_uuid = uuid.UUID(str(uuid.uuid4()))
+        config = Config(database_url="postgresql://localhost/test")
+
+        with patch("rl_emails.cli.asyncio.run") as mock_run:
+            mock_run.return_value = {
+                "status": "error",
+                "emails_synced": 0,
+                "last_sync_at": None,
+                "last_history_id": None,
+                "error": "Connection failed",
+            }
+
+            _show_sync_status(test_uuid, config)
+
+            captured = capsys.readouterr()
+            assert "Status: error" in captured.out
+            assert "Error: Connection failed" in captured.out
+
+    def test_show_sync_status_with_message(self, capsys: pytest.CaptureFixture[str]) -> None:
+        """Test _show_sync_status with message."""
+        from rl_emails.cli import _show_sync_status
+
+        test_uuid = uuid.UUID(str(uuid.uuid4()))
+        config = Config(database_url="postgresql://localhost/test")
+
+        with patch("rl_emails.cli.asyncio.run") as mock_run:
+            mock_run.return_value = {
+                "status": "not_connected",
+                "message": "No Gmail connection. Run 'rl-emails auth connect' first.",
+            }
+
+            _show_sync_status(test_uuid, config)
+
+            captured = capsys.readouterr()
+            assert "No Gmail connection" in captured.out
