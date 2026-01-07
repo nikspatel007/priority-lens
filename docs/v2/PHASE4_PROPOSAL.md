@@ -42,60 +42,226 @@ We can't afford LLM on every email at scale. Solution: **use cheap operations (e
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-## Phase 4A: Topic Clustering
+## Phase 4A: Multi-Dimensional Clustering
 
-### What It Does
-Group semantically similar emails into clusters. Instead of LLM processing 100 similar "Amazon order" emails, we:
-1. Cluster them together
-2. Process 1 representative per cluster
-3. Apply learnings to entire cluster
+### Design Decision: Separate Clusterings (Approach 3)
 
-### Algorithm: HDBSCAN
-- Density-based clustering (auto-discovers cluster count)
-- Handles noise (not everything belongs to a cluster)
-- Works well with high-dimensional embeddings
+We considered three approaches:
+1. **Hierarchical**: People/Service → Relationship → Content
+2. **Multi-View**: Combined feature vector (embedding + features)
+3. **Separate Clusterings**: Independent clusters per dimension, then cross-analyze
 
-### Output: `email_clusters` Table
+**Chosen: Approach 3 (Separate Clusterings)** because:
+- We can see what each dimension contributes independently
+- We can weight dimensions later based on predictive power
+- It's interpretable: "this person cluster" vs "this content cluster"
+- Enables analysis: "For content cluster X, what predicts reply?"
+
+### Why Multiple Dimensions Matter
+
+Data analysis revealed clear dimension separation:
+
+| Dimension | Signal | Evidence |
+|-----------|--------|----------|
+| **People** | 22x | HIGH relationship: 77.8% reply vs MINIMAL: 3.5% |
+| **Service Type** | 2x | Transactional 0.61 importance vs Marketing 0.28 |
+| **Content** | TBD | Semantic similarity (embeddings) |
+| **Behavior** | TBD | Action patterns + response times |
+
+**Problem with pure content clustering**: Embeddings group "Amazon order" with "Amazon marketing", mix high-relationship person with low-relationship person on same topic. Content similarity ≠ importance similarity.
+
+### The Five Clustering Dimensions
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                  Multi-Dimensional Clustering                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
+│  │ PEOPLE   │  │ CONTENT  │  │ BEHAVIOR │  │ SERVICE  │  │ TEMPORAL │
+│  │ Clusters │  │ Clusters │  │ Clusters │  │ Clusters │  │ Clusters │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘
+│       │             │             │             │             │
+│       ▼             ▼             ▼             ▼             ▼
+│  Who matters   What topics   How you act   Service types  When patterns
+│  Relationship  Projects      Reply/Ignore  Trans/Notif    Day/Hour
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+                    Cross-Dimensional Analysis
+                    "For person cluster A + content cluster B,
+                     what's the reply rate?"
+```
+
+### Cluster Types
+
+#### 1. People Clusters
+Group senders by relationship pattern, not just email address.
+
+**Features**:
+- relationship_strength
+- user_replied_to_sender_rate
+- avg_response_time_hours
+- emails_from_sender_all
+- sender_replies_to_you_rate
+
+**Expected clusters**:
+- Close collaborators (high interaction, fast response)
+- Acquaintances (occasional, slower response)
+- One-way senders (they email you, you rarely reply)
+- New contacts (recent, pattern unknown)
+
+#### 2. Content Clusters
+Group by semantic similarity (what the email is about).
+
+**Features**:
+- Embedding vectors (reduced via UMAP to ~50 dims)
+
+**Expected clusters**:
+- Project-specific threads
+- Meeting coordination
+- Financial/orders
+- News/updates
+- Personal conversations
+
+#### 3. Behavior Clusters
+Group by how YOU responded (outcome patterns).
+
+**Features**:
+- action (REPLIED, ARCHIVED, IGNORED)
+- response_time_seconds
+- timing (immediate, same_day, delayed)
+
+**Expected clusters**:
+- Quick responders (replied < 1 hour)
+- Delayed responders (replied > 24 hours)
+- Archive-and-forget
+- Ignored despite features
+
+#### 4. Service Clusters
+Group automated/service emails by type.
+
+**Features**:
+- service_type
+- service_importance
+- from_common_service_domain
+- has_unsubscribe_link
+
+**Expected clusters**:
+- Transactional (orders, receipts) - important
+- Notifications (alerts, updates) - sometimes important
+- Newsletters (content) - rarely urgent
+- Marketing (promotions) - low importance
+
+#### 5. Temporal Clusters
+Group by time patterns.
+
+**Features**:
+- hour_of_day
+- day_of_week
+- is_business_hours
+- is_weekend
+
+**Expected clusters**:
+- Business hours senders
+- After-hours/weekend
+- Batch senders (same time daily)
+
+### Output Tables
 
 ```sql
+-- Main clustering results (one row per email per dimension)
 CREATE TABLE email_clusters (
     id SERIAL PRIMARY KEY,
-    email_id INTEGER REFERENCES emails(id) UNIQUE,
+    email_id INTEGER REFERENCES emails(id),
 
-    -- Cluster assignment
-    cluster_id INTEGER,              -- -1 for noise/outliers
-    cluster_probability FLOAT,       -- Confidence of assignment
+    -- Cluster assignments per dimension
+    people_cluster_id INTEGER,
+    content_cluster_id INTEGER,
+    behavior_cluster_id INTEGER,
+    service_cluster_id INTEGER,
+    temporal_cluster_id INTEGER,
 
-    -- Cluster metadata (denormalized for query speed)
-    cluster_size INTEGER,            -- How many emails in this cluster
-    is_representative BOOLEAN,       -- Is this the centroid email?
+    -- Confidence scores
+    people_cluster_prob FLOAT,
+    content_cluster_prob FLOAT,
 
-    created_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMP DEFAULT NOW(),
+
+    UNIQUE(email_id)
 );
 
--- Cluster summaries
+-- Cluster metadata per dimension
 CREATE TABLE cluster_metadata (
-    cluster_id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
+    dimension TEXT,              -- 'people', 'content', 'behavior', etc.
+    cluster_id INTEGER,
+
+    -- Size and stats
     size INTEGER,
     representative_email_id INTEGER,
 
-    -- Auto-generated labels (from keywords or LLM)
-    auto_label TEXT,                 -- "Amazon Orders", "Meeting Requests"
+    -- Auto-generated label
+    auto_label TEXT,
 
-    -- Aggregate stats
+    -- Behavioral stats for this cluster
+    pct_replied FLOAT,
+    avg_response_time_hours FLOAT,
     avg_relationship_strength FLOAT,
-    avg_urgency_score FLOAT,
-    pct_replied FLOAT,               -- What % of cluster was replied to?
 
-    created_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMP DEFAULT NOW(),
+
+    UNIQUE(dimension, cluster_id)
+);
+
+-- Cross-dimensional analysis cache
+CREATE TABLE cluster_cross_stats (
+    id SERIAL PRIMARY KEY,
+
+    -- Dimension pair
+    dim1 TEXT,
+    cluster1_id INTEGER,
+    dim2 TEXT,
+    cluster2_id INTEGER,
+
+    -- Stats for this intersection
+    email_count INTEGER,
+    pct_replied FLOAT,
+    avg_response_time_hours FLOAT,
+
+    created_at TIMESTAMP DEFAULT NOW(),
+
+    UNIQUE(dim1, cluster1_id, dim2, cluster2_id)
 );
 ```
 
+### Algorithm Choice
+
+| Dimension | Algorithm | Why |
+|-----------|-----------|-----|
+| People | K-Means (k=10-20) | Clear relationship tiers |
+| Content | HDBSCAN | Auto-discover topic count |
+| Behavior | K-Means (k=5) | Known outcome categories |
+| Service | Rule-based + K-Means | Service types known |
+| Temporal | K-Means (k=5) | Time patterns are cyclic |
+
 ### Expected Results
-- ~50-200 clusters from 22K emails
-- Large clusters: "Amazon orders", "GitHub notifications", "Calendar invites"
-- Small clusters: Specific projects, conversations with specific people
-- Noise: Unique one-off emails (actually interesting for LLM!)
+
+| Dimension | Expected Clusters | Key Insight |
+|-----------|-------------------|-------------|
+| People | 10-20 | "These 5 people get 80% of your replies" |
+| Content | 50-200 | "Project X emails vs newsletters vs orders" |
+| Behavior | 5-10 | "Quick reply vs slow reply vs ignore" |
+| Service | 5-10 | "Transactional vs marketing vs social" |
+| Temporal | 5 | "Business hours vs evenings vs weekends" |
+
+### Cross-Dimensional Questions
+
+After clustering, we can answer:
+- "For emails from people cluster 'close collaborators' about content cluster 'project X', what's the reply rate?"
+- "Are 'notification' service emails more likely to be replied to during business hours?"
+- "Which content clusters have the most 'quick reply' behavior?"
 
 ### Cost: FREE (local computation)
 
