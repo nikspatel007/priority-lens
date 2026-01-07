@@ -358,6 +358,287 @@ Not all emails need LLM. Select based on:
 
 ---
 
+## Phase 4B.5: Pre-LLM AI Handleability Classification
+
+### Why Pre-Classify Before LLM?
+
+LLM extraction is expensive. Before spending on LLM, we can use rule-based classification to:
+1. **Skip emails that don't need LLM** (newsletters, auto-file candidates)
+2. **Identify emails that definitely need human** (approvals, high-relationship)
+3. **Focus LLM budget on ambiguous cases** where we genuinely need understanding
+
+### Rule-Based AI Handleability Results
+
+Analysis of 22,618 emails shows clear segmentation:
+
+| Category | Count | % of Emails | Reply Rate | What This Means |
+|----------|-------|-------------|------------|-----------------|
+| **ai_full** | 6,983 | 30.9% | 0.5% | AI could fully handle (file, skip) |
+| **ai_partial** | 3,883 | 17.2% | 9.5% | AI could help (draft, schedule) |
+| **human_required** | 1,674 | 7.4% | 20.1% | Needs human (decision, personal) |
+| **needs_llm** | 10,078 | 44.6% | 3.3% | Need LLM to understand |
+
+### Classification Rules
+
+```python
+def predict_ai_handleability(email, features):
+    """
+    Rule-based prediction of what AI could do with this email.
+    Runs BEFORE LLM to reduce LLM volume.
+    """
+
+    # ═══════════════════════════════════════════════════════════════
+    # AI_FULL: Can be completely handled by AI without human
+    # ═══════════════════════════════════════════════════════════════
+
+    # Newsletters, marketing, notifications - just file them
+    if features.is_service_email and features.service_type in ['marketing', 'newsletter', 'notification']:
+        return 'ai_full', {'action': 'file', 'folder': 'Promotions' if features.service_type == 'marketing' else 'Updates'}
+
+    # Order confirmations, receipts - file to reference
+    if features.is_service_email and features.service_type == 'transactional':
+        if any(word in email.body.lower() for word in ['order', 'receipt', 'confirmation', 'shipped']):
+            return 'ai_full', {'action': 'file', 'folder': 'Orders', 'track_delivery': 'shipped' in email.body.lower()}
+
+    # ═══════════════════════════════════════════════════════════════
+    # AI_PARTIAL: AI can prepare, human finishes
+    # ═══════════════════════════════════════════════════════════════
+
+    # Scheduling requests from non-close relationships
+    if any(word in email.body.lower() for word in ['meeting', 'schedule', 'calendar']):
+        if features.relationship_strength < 0.5:
+            return 'ai_partial', {'action': 'draft_schedule', 'needs_approval': True}
+
+    # Confirmation requests from services/weak relationships
+    if 'confirm' in email.body.lower() and features.relationship_strength < 0.3:
+        return 'ai_partial', {'action': 'draft_confirmation', 'needs_approval': True}
+
+    # ═══════════════════════════════════════════════════════════════
+    # HUMAN_REQUIRED: Only human can handle
+    # ═══════════════════════════════════════════════════════════════
+
+    # Approval/decision requests - always need human
+    if any(word in email.body.lower() for word in ['approve', 'approval', 'decision', 'sign off']):
+        return 'human_required', {'reason': 'decision_needed', 'priority': 'high'}
+
+    # High-relationship personal emails - human connection matters
+    if features.relationship_strength > 0.6 and not features.is_service_email:
+        return 'human_required', {'reason': 'important_relationship'}
+
+    # Explicit reply requests from real people
+    if not features.is_service_email:
+        if any(phrase in email.body.lower() for phrase in ['let me know', 'please reply', 'get back to me']):
+            return 'human_required', {'reason': 'explicit_reply_request'}
+
+    # ═══════════════════════════════════════════════════════════════
+    # NEEDS_LLM: Can't determine from rules alone
+    # ═══════════════════════════════════════════════════════════════
+
+    return 'needs_llm', {'reason': 'ambiguous'}
+```
+
+### Output: `email_ai_classification` Table
+
+```sql
+CREATE TABLE email_ai_classification (
+    email_id INTEGER PRIMARY KEY REFERENCES emails(id),
+
+    -- Rule-based classification (pre-LLM)
+    predicted_handleability TEXT,      -- 'ai_full', 'ai_partial', 'human_required', 'needs_llm'
+    classification_reason TEXT,        -- Why this classification
+    classification_metadata JSONB,     -- Additional context (suggested folder, etc.)
+
+    -- Sub-patterns detected
+    has_question BOOLEAN,
+    has_request_words BOOLEAN,
+    has_scheduling_words BOOLEAN,
+    has_deadline_words BOOLEAN,
+    has_approval_words BOOLEAN,
+    is_newsletter_pattern BOOLEAN,
+    is_fyi_pattern BOOLEAN,
+
+    -- LLM processing flags
+    needs_llm_classification BOOLEAN,  -- Should Phase 1 LLM run?
+    needs_llm_deep_extraction BOOLEAN, -- Should Phase 2 LLM run?
+    llm_priority INTEGER,              -- Priority for LLM processing (1-5)
+
+    created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+### Cost: FREE (local pattern matching)
+
+---
+
+## Multi-Phase LLM Extraction Strategy
+
+### The Problem with Single-Pass LLM
+
+Original plan: Run full extraction on ~4,400 emails = ~$3-8
+
+**Issues**:
+1. Full extraction is overkill for many emails (newsletters just need "file it")
+2. Some emails need deep context that requires expensive processing
+3. Actual user behavior should inform what's worth extracting
+
+### The Multi-Phase Approach
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    MULTI-PHASE LLM EXTRACTION                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ALL EMAILS (22,618)                                                        │
+│       │                                                                     │
+│       ▼                                                                     │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ PHASE 0: Rule-Based Classification (FREE)                            │   │
+│  │ ─────────────────────────────────────────────────────────────────── │   │
+│  │ • ai_full (30.9%) → Skip LLM, just file                             │   │
+│  │ • ai_partial (17.2%) → Light LLM for draft suggestions              │   │
+│  │ • human_required (7.4%) → Full LLM for context extraction           │   │
+│  │ • needs_llm (44.6%) → Run Phase 1 classification                    │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│       │                                                                     │
+│       ▼                                                                     │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ PHASE 1: Quick Classification (Haiku, ~$1-2)                         │   │
+│  │ ─────────────────────────────────────────────────────────────────── │   │
+│  │ Target: ~10,000 'needs_llm' emails                                  │   │
+│  │ Extract: action_type, urgency, ai_handleability (simple fields)     │   │
+│  │ Purpose: Decide which emails need deep extraction                   │   │
+│  │                                                                     │   │
+│  │ Output categories:                                                  │   │
+│  │ • 'skip' → Auto-file, no further processing                         │   │
+│  │ • 'quick_action' → Simple AI action, no deep context needed        │   │
+│  │ • 'needs_context' → Proceed to Phase 2                              │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│       │                                                                     │
+│       ▼                                                                     │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ PHASE 2: Deep Extraction (Haiku/Sonnet, ~$2-4)                       │   │
+│  │ ─────────────────────────────────────────────────────────────────── │   │
+│  │ Target: ~2,000-3,000 high-value emails                              │   │
+│  │ • human_required (1,674)                                            │   │
+│  │ • Phase 1 'needs_context' (~1,000-2,000)                            │   │
+│  │ • User replied quickly (training signal)                            │   │
+│  │ • High priority + ignored (learn why)                               │   │
+│  │                                                                     │   │
+│  │ Extract: Full 7-dimension schema                                    │   │
+│  │ • Task details, deadlines, dependencies                             │   │
+│  │ • Context requirements (person, project, thread)                    │   │
+│  │ • AI capability assessment                                          │   │
+│  │ • Briefing one-liner and key points                                 │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│       │                                                                     │
+│       ▼                                                                     │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │ PHASE 3: Cluster Propagation (FREE)                                  │   │
+│  │ ─────────────────────────────────────────────────────────────────── │   │
+│  │ For emails similar to Phase 2 emails:                               │   │
+│  │ • Find nearest neighbors by embedding                               │   │
+│  │ • Propagate labels from extracted emails                            │   │
+│  │ • Validate against actual user behavior                             │   │
+│  │                                                                     │   │
+│  │ Extends coverage from 3,000 → 15,000+ emails                        │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Phase 1: Quick Classification Prompt
+
+**Goal**: Simple classification to route emails, not full extraction.
+
+```markdown
+Classify this email for an AI assistant. Respond with JSON only.
+
+Email:
+From: {sender}
+Subject: {subject}
+Preview: {first_500_chars}
+
+Respond with:
+{
+  "action_type": "reply|task|decision|fyi|none",
+  "urgency": "immediate|today|this_week|whenever|none",
+  "ai_can_handle": "fully|partially|not_at_all",
+  "next_step": "skip|quick_action|needs_context",
+  "quick_action": "file|acknowledge|schedule|forward|null",
+  "one_liner": "Brief summary (10 words max)"
+}
+```
+
+**Cost**: ~100 tokens per email × 10,000 emails = ~$0.25-0.50 (Haiku)
+
+### Phase 2: Deep Extraction (Selective)
+
+**Selection criteria**:
+1. `human_required` from Phase 0 (all 1,674)
+2. `needs_context` from Phase 1 (~1,500)
+3. User replied within 1 hour (training: what made it urgent?)
+4. High priority score but ignored (training: what made it ignorable?)
+
+**Prompt**: Use full 7-dimension schema from Phase 4C design.
+
+**Cost**: ~500 tokens per email × 3,000 emails = ~$1.50-3.00 (Haiku)
+
+### Phase 3: Cluster Propagation
+
+For emails NOT processed by LLM, use embedding similarity to propagate labels:
+
+```python
+def propagate_labels(unprocessed_emails, processed_emails):
+    """
+    For each unprocessed email, find similar processed emails
+    and inherit their labels.
+    """
+    for email in unprocessed_emails:
+        # Find 5 nearest neighbors by embedding
+        neighbors = find_nearest_by_embedding(email, processed_emails, k=5)
+
+        # If neighbors agree (>80% same label), propagate
+        if label_agreement(neighbors) > 0.8:
+            email.predicted_label = majority_label(neighbors)
+            email.label_confidence = label_agreement(neighbors)
+            email.label_source = 'propagated'
+        else:
+            # Neighbors disagree - this is an interesting case
+            email.predicted_label = None
+            email.needs_human_review = True
+```
+
+**Validation**: Compare propagated labels against actual user behavior.
+
+### Expected Outcomes
+
+| Phase | Emails | LLM Calls | Cost | Coverage |
+|-------|--------|-----------|------|----------|
+| Phase 0 | 22,618 | 0 | FREE | 55% classified |
+| Phase 1 | ~10,000 | 10,000 | ~$0.50 | +45% classified |
+| Phase 2 | ~3,000 | 3,000 | ~$2.00 | Full extraction |
+| Phase 3 | ~15,000 | 0 | FREE | Labels propagated |
+| **Total** | 22,618 | 13,000 | ~$2.50 | 100% |
+
+### Key Insight: What AI COULD Do vs What User Did
+
+**The goal is not to replicate user behavior.** The goal is to understand:
+
+1. **For each email**: What COULD AI have done?
+   - Fully handle? (file, auto-reply, schedule)
+   - Partially help? (draft, prepare context, extract tasks)
+   - Nothing? (human decision required)
+
+2. **The user took all actions**: We're not training AI to predict user actions.
+   We're training AI to understand which emails need human attention.
+
+3. **Learning from behavior**: User behavior tells us what mattered:
+   - Quick reply → This email deserved human attention
+   - Ignored → AI could have handled this
+   - Slow reply → Borderline case, learn the nuance
+
+---
+
 ## Phase 4C: LLM Feature Extraction (AI Assistant Pipeline)
 
 ### What It Does
