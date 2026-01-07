@@ -58,20 +58,21 @@ Moved to `archive/` subdirectories:
 
 ## Current Scripts Directory
 
-After cleanup, `scripts/` contains only **10 essential files**:
+After cleanup, `scripts/` contains **11 essential files**:
 
 ```
 scripts/
-├── onboard_data.py          # Main orchestrator
-├── parse_mbox.py            # Stage 1: MBOX → JSONL
-├── import_to_postgres.py    # Stage 2: Import to DB
-├── populate_threads.py      # Stage 3: Thread relationships
-├── compute_basic_features.py # Stage 4: ML features
-├── compute_embeddings.py    # Stage 5: Embeddings
-├── classify_ai_handleability.py # Stage 6: Rule-based
-├── run_llm_classification.py # Stage 7: LLM classification
-├── checkpoint.py            # Utility: Checkpoint/restore
-└── query_db.py              # Utility: Database queries
+├── onboard_data.py              # Main orchestrator (8 stages)
+├── parse_mbox.py                # Stage 1: Parse MBOX → JSONL
+├── import_to_postgres.py        # Stage 2: Import to PostgreSQL
+├── populate_threads.py          # Stage 3: Build thread relationships
+├── enrich_emails_db.py          # Stage 4: Phase 1 - Action Labels (REPLIED, etc.)
+├── compute_basic_features.py    # Stage 5: Phase 2 - ML Features
+├── compute_embeddings.py        # Stage 6: Phase 3 - Embeddings
+├── classify_ai_handleability.py # Stage 7: Phase 0 - Rule-based classification
+├── run_llm_classification.py    # Stage 8: Phase 4 - LLM classification (gpt-5-mini)
+├── checkpoint.py                # Utility: Checkpoint/restore
+└── query_db.py                  # Utility: Database queries
 ```
 
 ---
@@ -82,17 +83,26 @@ Pipeline executed successfully on 1-month MBOX (1,925 emails):
 
 ```
 ============================================================
-PIPELINE COMPLETED in 0:00:13.380684
+PIPELINE COMPLETED
 
-Emails imported:        1,795
+Emails imported:        1,795 (received), 130 (sent)
+Action labels:          68 REPLIED, 662 ARCHIVED, 529 IGNORED
 ML features computed:   1,795
-Embeddings generated:   1,795
+Embeddings generated:   1,795 (58.4s @ 30.8 emails/sec)
 Rule-based classified:  1,795
-LLM classified:         781
+LLM classified:         781 (gpt-5-mini)
+
+Reply rate validation:
+  human_required:  24.6% (44/179)
+  ai_partial:      13.9% (17/122)
+  needs_llm:        0.5% (4/787)
+  ai_full:          0.4% (3/707)
 ============================================================
 ```
 
 Report generated at `data/onboarding/onboarding_report.md`.
+
+**Tests**: 377 passed, 97 skipped (PyTorch not installed)
 
 ---
 
