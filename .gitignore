@@ -1,17 +1,20 @@
 # Data files (large datasets)
 data/
 
-# Model checkpoints (binary, large)
+# Model checkpoints and binaries
 checkpoints/
+*.pt
+*.onnx
+*.safetensors
+*.pkl
 
 # Runtime files
 .runtime/
-
-# Claude settings (local)
-.claude/
-
-# Beads redirect (local runtime)
 .beads/
+
+# Claude settings (local only - settings.json is committed)
+.claude/settings.local.json
+.claude/*.local.md
 
 # Environment variables (contains secrets)
 .env
@@ -26,10 +29,25 @@ venv/
 .idea/
 .vscode/
 .DS_Store
-backups/
 
-# Local ad-hoc test artifacts (may contain PII)
+# Backups and archives
+backups/
+archive/
+
+# Test/Coverage artifacts
+.coverage
+htmlcov/
 /test.json
 
-# Archived scripts (removed during cleanup)
-archive/
+# Old/unused directories (removed in cleanup)
+db/
+eval_results/
+models/
+results/
+
+# Old shell scripts (SurrealDB, Enron, etc.)
+scripts/*_surreal.sh
+scripts/download_*.sh
+scripts/import_all.sh
+scripts/*.sql
+PIPELINE.md
