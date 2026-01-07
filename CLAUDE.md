@@ -218,7 +218,7 @@ Add Gmail API as alternative data source alongside existing MBOX pipeline.
 | 3 | OAuthToken Repository | ✅ Complete | CRUD operations, Pydantic schemas |
 | 4 | AuthService Implementation | ✅ Complete | OAuth flow orchestration, token refresh |
 | 5 | CLI Auth Commands | ✅ Complete | connect, status, disconnect commands |
-| 6 | Gmail Integration Module | Pending | Models, rate limiter |
+| 6 | Gmail Integration Module | ✅ Complete | Models, rate limiter |
 | 7 | GmailClient Implementation | Pending | list, get, batch operations |
 | 8 | Gmail Parser | Pending | Gmail to EmailData conversion |
 | 9 | SyncService + Stage 00 | Pending | Initial sync implementation |
@@ -260,7 +260,14 @@ Add Gmail API as alternative data source alongside existing MBOX pipeline.
 - [x] CLI `auth status --user UUID` command
 - [x] CLI `auth disconnect --user UUID` command
 - [x] Tests for Config Google OAuth (8 tests) and CLI auth (25 tests)
-- [x] 100% test coverage maintained (732 tests)
+
+### Iteration 6 Deliverables
+- [x] `src/rl_emails/integrations/gmail/` module structure
+- [x] `GmailMessageRef` dataclass (id, thread_id)
+- [x] `GmailMessage` dataclass with label helpers (is_sent, is_inbox, etc.)
+- [x] `RateLimiter` token bucket rate limiter for API throttling
+- [x] Tests for models (15 tests) and rate limiter (12 tests)
+- [x] 100% test coverage maintained (759 tests)
 
 ### Documentation
 - `docs/PHASE2_ITERATIONS.md` - Phase 2 detailed iteration specs
