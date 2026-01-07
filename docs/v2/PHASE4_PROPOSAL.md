@@ -639,6 +639,260 @@ def propagate_labels(unprocessed_emails, processed_emails):
 
 ---
 
+## AI Action Toolkit: Getting to 80-90% Automation
+
+### The Full Picture
+
+Classification is not enough. For AI to handle 80-90% of emails, it needs:
+1. **Tools** to take actions (APIs, capabilities)
+2. **Information** to decide (email content + attachments + context)
+3. **Approval flows** (auto-execute vs human-in-loop)
+
+### Available Data for Decision Making
+
+| Source | What We Have | How It Helps |
+|--------|--------------|--------------|
+| **Email body** | Full text, 22,618 emails | Understand request/intent |
+| **Attachments** | 7,648 files stored on disk | Process PDFs, calendars, docs |
+| **ICS files** | 1,046 calendar invites | Auto-add to calendar |
+| **PDFs** | 1,110 documents | Extract text, find action items |
+| **Word/Excel** | 107 documents | Extract data, find requests |
+| **Sender context** | Relationship, history, cluster | Know importance level |
+| **Thread context** | in_reply_to, thread_id | Understand conversation flow |
+
+### AI Action Toolkit
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         AI ACTION TOOLKIT                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  TIER 1: AUTO-EXECUTE (No approval needed)                                  │
+│  ─────────────────────────────────────────────────────────────────────────  │
+│                                                                             │
+│  📁 FILE_TO_FOLDER                                                          │
+│     Input: email_id, folder_name                                            │
+│     Action: Move email to specified folder                                  │
+│     Use case: Newsletters → Promotions, Receipts → Orders                   │
+│                                                                             │
+│  📅 PARSE_CALENDAR_INVITE                                                   │
+│     Input: ICS attachment                                                   │
+│     Action: Extract event details, check conflicts                          │
+│     Output: {event_name, datetime, attendees, conflicts}                    │
+│                                                                             │
+│  📄 EXTRACT_PDF_TEXT                                                        │
+│     Input: PDF attachment                                                   │
+│     Action: OCR/extract text, summarize                                     │
+│     Output: {text, summary, detected_action_items}                          │
+│                                                                             │
+│  🏷️ ADD_LABEL                                                               │
+│     Input: email_id, labels[]                                               │
+│     Action: Apply labels for organization                                   │
+│                                                                             │
+│  📋 EXTRACT_TASK                                                            │
+│     Input: email_id                                                         │
+│     Action: Parse task from email, add to task list (not committed)         │
+│     Output: {task_description, deadline, source_email}                      │
+│                                                                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  TIER 2: PREPARE + APPROVE (Human confirms before execution)                │
+│  ─────────────────────────────────────────────────────────────────────────  │
+│                                                                             │
+│  ✉️ DRAFT_REPLY                                                              │
+│     Input: email_id, reply_type, key_points[]                               │
+│     Action: Generate reply draft                                            │
+│     Output: {draft_text, confidence, needs_personalization}                 │
+│     Approval: Human reviews, edits, sends                                   │
+│                                                                             │
+│  📅 SCHEDULE_MEETING                                                        │
+│     Input: email_id, suggested_times[], duration, attendees[]               │
+│     Action: Find availability, propose times                                │
+│     Output: {proposed_slots[], conflicts[], draft_invite}                   │
+│     Approval: Human picks slot, confirms send                               │
+│                                                                             │
+│  ➡️ FORWARD_TO                                                               │
+│     Input: email_id, recipient, context_note                                │
+│     Action: Prepare forward with context                                    │
+│     Output: {forward_draft, suggested_note}                                 │
+│     Approval: Human confirms recipient and note                             │
+│                                                                             │
+│  📝 CREATE_TASK                                                             │
+│     Input: email_id, task_details                                           │
+│     Action: Create task in task manager                                     │
+│     Output: {task_draft, deadline, project}                                 │
+│     Approval: Human confirms task creation                                  │
+│                                                                             │
+│  📆 ACCEPT_CALENDAR_INVITE                                                  │
+│     Input: email_id, ICS attachment                                         │
+│     Action: Parse invite, check calendar                                    │
+│     Output: {event_details, conflicts, tentative_accept}                    │
+│     Approval: Human confirms acceptance                                     │
+│                                                                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  TIER 3: CONTEXT PREPARATION (Human takes action with AI-prepared info)    │
+│  ─────────────────────────────────────────────────────────────────────────  │
+│                                                                             │
+│  📊 PREPARE_DECISION_CONTEXT                                                │
+│     Input: email_id                                                         │
+│     Action: Gather related emails, attachments, history                     │
+│     Output: {                                                               │
+│       summary: "Contract renewal request",                                  │
+│       background: "Previous contract terms...",                             │
+│       attachments_summary: "PDF contains...",                               │
+│       related_emails: [{id, summary}...],                                   │
+│       decision_required: "Approve/reject renewal",                          │
+│       options: ["Approve as-is", "Counter-offer", "Decline"]                │
+│     }                                                                       │
+│                                                                             │
+│  🔍 SEARCH_RELATED                                                          │
+│     Input: email_id                                                         │
+│     Action: Find related emails by embedding similarity                     │
+│     Output: {related_emails[], common_thread, project_context}              │
+│                                                                             │
+│  📎 SUMMARIZE_ATTACHMENT                                                    │
+│     Input: attachment_id                                                    │
+│     Action: Extract and summarize document content                          │
+│     Output: {summary, key_points, action_items, entities}                   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Attachment Processing Pipeline
+
+```python
+def process_attachment(attachment):
+    """
+    Extract actionable information from attachments.
+    """
+    if attachment.content_type in ['application/ics', 'text/calendar']:
+        # Calendar invite - parse and extract event
+        return {
+            'type': 'calendar_invite',
+            'action': 'ACCEPT_CALENDAR_INVITE',
+            'data': parse_ics(attachment.stored_path),
+            # Returns: event_name, datetime, location, attendees
+        }
+
+    elif attachment.content_type == 'application/pdf':
+        # PDF - extract text and find action items
+        text = extract_pdf_text(attachment.stored_path)
+        return {
+            'type': 'document',
+            'action': 'SUMMARIZE_ATTACHMENT',
+            'data': {
+                'text': text,
+                'summary': summarize_text(text),
+                'action_items': extract_action_items(text),
+                'contains_signature_request': 'sign' in text.lower(),
+                'contains_deadline': detect_deadline(text),
+            }
+        }
+
+    elif attachment.content_type in ['application/msword', '...docx']:
+        # Word doc - similar to PDF
+        text = extract_docx_text(attachment.stored_path)
+        return {...}
+
+    elif attachment.content_type in ['image/png', 'image/jpeg']:
+        # Image - usually not actionable (logos, signatures)
+        # Could OCR if needed
+        return {
+            'type': 'image',
+            'action': None,  # Usually no action needed
+            'data': {'needs_ocr': is_likely_document(attachment)}
+        }
+```
+
+### Email → Action Mapping
+
+Based on our data, here's how emails map to actions:
+
+| Email Pattern | Count | % | AI Action | Approval |
+|---------------|-------|---|-----------|----------|
+| Newsletter/Marketing | 6,983 | 30.9% | FILE_TO_FOLDER | Auto |
+| Calendar invite (ICS) | 1,046 | 4.6% | ACCEPT_CALENDAR_INVITE | Approve |
+| Order confirmation | ~1,000 | 4.4% | FILE_TO_FOLDER + EXTRACT_TASK | Auto |
+| Meeting request (text) | ~500 | 2.2% | SCHEDULE_MEETING | Approve |
+| FYI from contact | ~2,000 | 8.8% | DRAFT_REPLY (acknowledgment) | Approve |
+| Question needing answer | ~1,500 | 6.6% | PREPARE_DECISION_CONTEXT | Human |
+| Approval request | ~350 | 1.5% | PREPARE_DECISION_CONTEXT | Human |
+| Task assignment | ~500 | 2.2% | CREATE_TASK + DRAFT_REPLY | Approve |
+| PDF attachment | 1,110 | 4.9% | SUMMARIZE_ATTACHMENT | Auto |
+| General person email | ~8,000 | 35% | Varies by content | Varies |
+
+### Getting to 80-90%
+
+**Tier 1 (Auto-execute)**: ~40% of emails
+- Newsletters, notifications → Auto-file
+- Calendar accepts → Auto-file
+- Receipts → Auto-file + extract
+
+**Tier 2 (Prepare + Approve)**: ~40% of emails
+- Meeting requests → Draft response, await approval
+- FYI from contacts → Draft acknowledgment
+- Task assignments → Extract task, draft confirm
+
+**Tier 3 (Context prep)**: ~20% of emails
+- Decisions/approvals → Prepare context, human decides
+- Complex requests → Summarize, human handles
+
+**Total AI involvement**: 80-100% (human only writes 10-20% from scratch)
+
+### LLM Extraction: What to Capture
+
+For each email, LLM should extract:
+
+```json
+{
+  "email_id": 1234,
+
+  "understanding": {
+    "intent": "Meeting request for project kickoff",
+    "sender_wants": "Schedule 1-hour meeting next week",
+    "attachments_contain": "PDF with project brief"
+  },
+
+  "suggested_action": {
+    "primary_tool": "SCHEDULE_MEETING",
+    "tier": 2,
+    "confidence": 0.85,
+    "parameters": {
+      "duration": 60,
+      "suggested_times": ["next Tuesday 2pm", "next Wednesday 10am"],
+      "attendees": ["sender"],
+      "topic": "Project kickoff"
+    }
+  },
+
+  "attachment_actions": [
+    {
+      "attachment_id": 567,
+      "tool": "SUMMARIZE_ATTACHMENT",
+      "summary": "Project brief: 3-month timeline, $50k budget, key deliverables..."
+    }
+  ],
+
+  "draft_outputs": {
+    "reply_draft": "Hi [Name], I'd be happy to meet. How about Tuesday at 2pm or Wednesday at 10am? I've reviewed the project brief...",
+    "task_draft": {
+      "title": "Project kickoff meeting",
+      "due": "next week",
+      "context": "Review project brief before meeting"
+    }
+  },
+
+  "human_required": {
+    "needed": true,
+    "reason": "Confirm availability and meeting time",
+    "decision_type": "schedule_selection"
+  }
+}
+```
+
+---
+
 ## Phase 4C: LLM Feature Extraction (AI Assistant Pipeline)
 
 ### What It Does
