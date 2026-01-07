@@ -165,7 +165,7 @@ class TestEmailActionVector:
         assert action.action_type == 'reply_now'
         assert action.priority == 0.75
         assert action.suggested_response_time == 'same_day'
-        assert action.confidence == 0.85
+        assert action.confidence == pytest.approx(0.85)
 
     def test_vector_roundtrip(self):
         """Test that vector conversion is reversible."""

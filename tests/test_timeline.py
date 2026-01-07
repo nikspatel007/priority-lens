@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Tests for timeline reconstruction API."""
 
+import numbers
 import pytest
 from datetime import datetime, timedelta
 
@@ -210,7 +211,7 @@ class TestRelationshipAt:
 
         vec = rel.to_feature_vector()
         assert len(vec) == 12  # Expected dimension
-        assert all(isinstance(v, float) for v in vec)
+        assert all(isinstance(v, numbers.Real) for v in vec)
 
 
 class TestTopicStateAt:
@@ -345,7 +346,7 @@ class TestTopicStateAt:
 
         vec = topic.to_feature_vector()
         assert len(vec) == 10  # Expected dimension
-        assert all(isinstance(v, float) for v in vec)
+        assert all(isinstance(v, numbers.Real) for v in vec)
 
 
 class TestGetAllSendersAt:

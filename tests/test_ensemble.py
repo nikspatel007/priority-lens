@@ -6,8 +6,9 @@ from pathlib import Path
 import tempfile
 
 import pytest
-import torch
-import torch.nn as nn
+
+torch = pytest.importorskip("torch")
+nn = pytest.importorskip("torch.nn")
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))

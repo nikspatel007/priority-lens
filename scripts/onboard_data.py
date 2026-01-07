@@ -219,8 +219,19 @@ def main():
         default="gpt5",
         help="LLM model for classification (default: gpt5)"
     )
+    parser.add_argument(
+        "--db-url",
+        default=None,
+        help="PostgreSQL connection URL (overrides DB_URL env var)"
+    )
 
     args = parser.parse_args()
+
+    # Override DB_URL if provided
+    global DB_URL
+    if args.db_url:
+        DB_URL = args.db_url
+        os.environ["DB_URL"] = args.db_url
 
     # Status mode
     if args.status:

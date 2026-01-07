@@ -8,7 +8,8 @@ import tempfile
 from pathlib import Path
 
 import pytest
-import torch
+
+torch = pytest.importorskip("torch")
 
 from src.trainer import (
     EmailRLTrainer,

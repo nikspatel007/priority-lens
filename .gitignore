@@ -27,3 +27,6 @@ venv/
 .vscode/
 .DS_Store
 backups/
+
+# Local ad-hoc test artifacts (may contain PII)
+/test.json

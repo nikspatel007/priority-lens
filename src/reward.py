@@ -135,7 +135,7 @@ class RewardConfig:
     timeliness_weight: float = 0.2
     confidence_bonus_scale: float = 0.1
     urgency_penalty_scale: float = 0.5
-    missed_important_penalty: float = 0.3
+    missed_important_penalty: float = 0.6
     false_urgent_penalty: float = 0.2
 
     def __post_init__(self) -> None:
@@ -226,12 +226,18 @@ def compute_satisfaction_reward(
         elif predicted.action_type in ('archive', 'delete'):
             reward -= 0.3
 
-    # Penalty for deleting action requests
+    # Penalty for deleting action requests (should outweigh priority alignment)
     if content.is_action_request and predicted.action_type == 'delete':
-        reward -= 0.4
+        reward -= 0.7
 
     # Bonus for correctly identifying automatable actions
-    if predicted.can_be_automated and ground_truth_label in ('DELETED', 'ARCHIVED', 'JUNK'):
+    if (
+        predicted.can_be_automated
+        and ground_truth_label in ('DELETED', 'ARCHIVED', 'JUNK')
+        and not content.is_action_request
+        and not content.has_deadline
+        and not content.has_question
+    ):
         reward += 0.1
 
     return reward, priority_alignment
@@ -395,7 +401,7 @@ def compute_batch_rewards(
     Returns:
         Tuple of (rewards_list, aggregate_stats)
     """
-    if len(predictions) != len(states) != len(ground_truth_labels):
+    if not (len(predictions) == len(states) == len(ground_truth_labels)):
         raise ValueError("All input lists must have the same length")
 
     rewards = []

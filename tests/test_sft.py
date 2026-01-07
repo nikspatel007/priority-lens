@@ -2,7 +2,8 @@
 """Tests for SFT training components."""
 
 import pytest
-import torch
+
+torch = pytest.importorskip("torch")
 from torch.utils.data import DataLoader
 
 from src.policy_network import EmailPolicyNetwork, PolicyConfig
