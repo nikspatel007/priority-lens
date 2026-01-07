@@ -58,7 +58,7 @@ Moved to `archive/` subdirectories:
 
 ## Current Scripts Directory
 
-After cleanup, `scripts/` contains **14 files** (11 pipeline stages + 3 utilities):
+After cleanup, `scripts/` contains **15 files** (11 pipeline stages + 4 utilities):
 
 ```
 scripts/
@@ -75,7 +75,8 @@ scripts/
 ├── compute_priority.py          # Stage 10: Phase 4C - Hybrid priority ranking
 ├── run_llm_classification.py    # Stage 11: Phase 4D - LLM classification (after clustering)
 ├── checkpoint.py                # Utility: Checkpoint/restore
-└── query_db.py                  # Utility: Database queries
+├── query_db.py                  # Utility: Database queries
+└── validate_data.py             # Utility: Data validation and exploration
 ```
 
 ---
