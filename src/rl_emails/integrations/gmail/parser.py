@@ -184,6 +184,8 @@ def gmail_to_email_data(gmail_msg: GmailMessage) -> EmailData:
 
     return EmailData(
         message_id=gmail_msg.message_id,
+        gmail_id=gmail_msg.id,  # Gmail's internal message ID
+        thread_id=gmail_msg.thread_id,  # Gmail's thread ID for conversation grouping
         from_email=from_email,
         from_name=from_name,
         to_emails=gmail_msg.to_addresses,

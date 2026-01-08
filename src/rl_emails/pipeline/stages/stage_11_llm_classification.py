@@ -7,6 +7,7 @@ Stores prompts and responses for ML training.
 from __future__ import annotations
 
 import json
+import os
 import re
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -16,6 +17,9 @@ import psycopg2
 
 from rl_emails.core.config import Config
 from rl_emails.pipeline.stages.base import StageResult
+
+# Suppress LiteLLM debug/info messages
+os.environ["LITELLM_LOG"] = "ERROR"
 
 # Model mapping (LiteLLM format)
 MODELS = {
@@ -471,6 +475,9 @@ def run(
         )
 
     try:
+        import litellm
+
+        litellm.suppress_debug_info = True
         from litellm import completion as litellm_completion
     except ImportError:
         return StageResult(

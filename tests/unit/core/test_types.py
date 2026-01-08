@@ -26,6 +26,8 @@ class TestEmailData:
         hints = get_type_hints(EmailData)
         expected_keys = {
             "message_id",
+            "gmail_id",
+            "thread_id",
             "from_email",
             "from_name",
             "to_emails",

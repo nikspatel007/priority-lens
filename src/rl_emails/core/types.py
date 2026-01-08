@@ -9,6 +9,8 @@ class EmailData(TypedDict, total=False):
     """Email data structure from parsing."""
 
     message_id: str
+    gmail_id: str | None  # Gmail message ID for API operations
+    thread_id: str | None  # Gmail thread ID for conversation grouping
     from_email: str
     from_name: str | None
     to_emails: list[str]

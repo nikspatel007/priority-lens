@@ -197,6 +197,10 @@ async def _store_emails(
             if not message_id:
                 continue
 
+            # Gmail-specific IDs for API operations and threading
+            gmail_id = email_data.get("gmail_id")
+            thread_id = email_data.get("thread_id")
+
             subject = str(email_data.get("subject", ""))
             from_email = str(email_data.get("from_email", ""))
             from_name = email_data.get("from_name")
@@ -270,12 +274,14 @@ async def _store_emails(
                 text(
                     """
                     INSERT INTO emails (
-                        raw_email_id, message_id, in_reply_to, date_parsed,
+                        raw_email_id, message_id, gmail_id, thread_id,
+                        in_reply_to, date_parsed,
                         from_email, from_name, to_emails, cc_emails, subject,
                         body_text, body_preview, word_count, labels,
                         has_attachments, is_sent, enriched_at
                     ) VALUES (
-                        :raw_email_id, :message_id, :in_reply_to, :date_parsed,
+                        :raw_email_id, :message_id, :gmail_id, :thread_id,
+                        :in_reply_to, :date_parsed,
                         :from_email, :from_name, :to_emails, :cc_emails, :subject,
                         :body_text, :body_preview, :word_count, :labels,
                         :has_attachments, :is_sent, NOW()
@@ -286,6 +292,8 @@ async def _store_emails(
                 {
                     "raw_email_id": raw_id,
                     "message_id": message_id,
+                    "gmail_id": gmail_id,
+                    "thread_id": thread_id,
                     "in_reply_to": in_reply_to,
                     "date_parsed": date_parsed,
                     "from_email": from_email,

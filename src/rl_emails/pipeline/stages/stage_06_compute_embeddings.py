@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+import os
 import re
 import time
 from typing import Any
@@ -18,6 +19,9 @@ from psycopg2.extras import execute_values
 
 from rl_emails.core.config import Config
 from rl_emails.pipeline.stages.base import StageResult
+
+# Suppress LiteLLM debug/info messages
+os.environ["LITELLM_LOG"] = "ERROR"
 
 # Configuration
 EMBEDDING_MODEL = "text-embedding-3-small"
@@ -492,6 +496,9 @@ def run(
         )
 
     try:
+        import litellm
+
+        litellm.suppress_debug_info = True
         from litellm import embedding as litellm_embedding
     except ImportError:
         return StageResult(
