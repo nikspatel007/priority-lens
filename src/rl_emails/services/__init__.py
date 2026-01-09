@@ -16,6 +16,15 @@ from rl_emails.services.progressive_sync import (
     SyncPhase,
     SyncProgress,
 )
+from rl_emails.services.push_notification import (
+    InvalidNotificationError,
+    NotificationData,
+    NotificationDeduplicator,
+    NotificationResult,
+    PushNotificationError,
+    PushNotificationService,
+    UserNotFoundError,
+)
 from rl_emails.services.sync_service import SyncResult, SyncService
 
 __all__ = [
@@ -23,15 +32,22 @@ __all__ = [
     "BatchProcessor",
     "BatchResult",
     "ExtractionResult",
+    "InvalidNotificationError",
+    "NotificationData",
+    "NotificationDeduplicator",
+    "NotificationResult",
     "PhaseConfig",
     "PriorityContextBuilder",
     "ProgressiveSyncResult",
     "ProgressiveSyncService",
     "ProjectExtractor",
+    "PushNotificationError",
+    "PushNotificationService",
     "SyncPhase",
     "SyncProgress",
     "SyncResult",
     "SyncService",
     "TaskExtractor",
+    "UserNotFoundError",
     "extract_all_entities",
 ]

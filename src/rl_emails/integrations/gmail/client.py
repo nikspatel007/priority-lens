@@ -103,6 +103,7 @@ class GmailClient:
         method: str,
         path: str,
         params: dict[str, str] | None = None,
+        json_body: dict[str, object] | None = None,
     ) -> dict[str, object]:
         """Make an API request with rate limiting.
 
@@ -110,6 +111,7 @@ class GmailClient:
             method: HTTP method (GET, POST, etc.).
             path: API path relative to base URL.
             params: Query parameters.
+            json_body: JSON body for POST/PUT requests.
 
         Returns:
             JSON response as dict.
@@ -120,7 +122,7 @@ class GmailClient:
         await self.rate_limiter.acquire()
 
         url = f"{self.BASE_URL}/users/{self.user_id}/{path}"
-        response = await self._client.request(method, url, params=params)
+        response = await self._client.request(method, url, params=params, json=json_body)
 
         if response.status_code >= 400:
             error_data: dict[str, object] = response.json() if response.content else {}
@@ -135,6 +137,10 @@ class GmailClient:
                 message=response.text,
                 status_code=response.status_code,
             )
+
+        # Some endpoints return empty response (like stop)
+        if not response.content:
+            return {}
 
         result: dict[str, object] = response.json()
         return result
@@ -336,3 +342,59 @@ class GmailClient:
             str(next_page) if next_page else None,
             str(history_id) if history_id else None,
         )
+
+    async def watch(
+        self,
+        topic_name: str,
+        label_ids: list[str] | None = None,
+        label_filter_action: str = "include",
+    ) -> tuple[str, int]:
+        """Set up Gmail push notifications via Pub/Sub.
+
+        Creates a watch on the user's mailbox. Gmail will send
+        notifications to the specified Pub/Sub topic when changes occur.
+
+        Args:
+            topic_name: Full Pub/Sub topic name (projects/{project}/topics/{topic}).
+            label_ids: Labels to watch. If None, watches INBOX.
+            label_filter_action: How to apply label filter ("include" or "exclude").
+
+        Returns:
+            Tuple of (history_id, expiration_timestamp_ms).
+            The expiration is typically 7 days from now.
+
+        Raises:
+            GmailApiError: If the API returns an error.
+
+        Note:
+            The topic must grant publish rights to gmail-api-push@system.gserviceaccount.com.
+            Watch must be renewed before expiration (typically every 7 days).
+        """
+        body: dict[str, object] = {
+            "topicName": topic_name,
+            "labelFilterAction": label_filter_action,
+        }
+
+        if label_ids:
+            body["labelIds"] = label_ids
+        else:
+            body["labelIds"] = ["INBOX"]
+
+        result = await self._request("POST", "watch", json_body=body)
+
+        history_id = str(result.get("historyId", ""))
+        expiration_value = result.get("expiration")
+        expiration = int(str(expiration_value)) if expiration_value else 0
+
+        return history_id, expiration
+
+    async def stop_watch(self) -> None:
+        """Stop receiving push notifications.
+
+        Stops the current watch on the user's mailbox. After calling this,
+        no more notifications will be sent to the Pub/Sub topic.
+
+        Raises:
+            GmailApiError: If the API returns an error.
+        """
+        await self._request("POST", "stop")

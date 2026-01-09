@@ -360,6 +360,94 @@ class TestListAvailableProviders:
         assert response.json() == []
 
 
+class TestProviderNotFoundErrors:
+    """Tests for ProviderNotFoundError handling in routes."""
+
+    @pytest.fixture
+    def empty_registry_client(self) -> TestClient:
+        """Create client with empty provider registry."""
+        app = FastAPI()
+        app.include_router(router)
+
+        # Override auth
+        async def override_get_current_user() -> ClerkUser:
+            return ClerkUser(id="user_123")
+
+        app.dependency_overrides[get_current_user] = override_get_current_user
+
+        # Set up service with empty registry
+        empty_registry = ProviderRegistry()
+        empty_service = ConnectionService(empty_registry)
+        set_connection_service(empty_service)
+
+        return TestClient(app)
+
+    def test_start_auth_provider_not_found(self, empty_registry_client: TestClient) -> None:
+        """Test start_auth returns 404 for unregistered provider."""
+        # Use a valid provider type that's not registered
+        response = empty_registry_client.post("/connections/gmail/connect")
+
+        assert response.status_code == 404
+        assert "not available" in response.json()["detail"]
+
+    def test_complete_auth_provider_not_found(self, empty_registry_client: TestClient) -> None:
+        """Test complete_auth returns 404 for unregistered provider."""
+        response = empty_registry_client.post(
+            "/connections/gmail/callback?code=test_code",
+        )
+
+        assert response.status_code == 404
+        assert "not available" in response.json()["detail"]
+
+    def test_disconnect_provider_not_found(self, empty_registry_client: TestClient) -> None:
+        """Test disconnect returns 404 for unregistered provider."""
+        response = empty_registry_client.delete("/connections/gmail")
+
+        assert response.status_code == 404
+        assert "not available" in response.json()["detail"]
+
+    def test_sync_progress_provider_not_found(self, empty_registry_client: TestClient) -> None:
+        """Test sync_progress returns 404 for unregistered provider."""
+        response = empty_registry_client.get("/connections/gmail/sync/progress")
+
+        assert response.status_code == 404
+        assert "not available" in response.json()["detail"]
+
+
+class TestConnectedProviderBranch:
+    """Tests for connected provider branch coverage."""
+
+    def test_list_connections_with_connected_provider(self, client: TestClient) -> None:
+        """Test listing connections with a connected provider."""
+        # Provider is connected by default in the mock_service fixture
+        response = client.get("/connections")
+
+        assert response.status_code == 200
+        data = response.json()
+        assert data["connected_count"] == 1
+        assert len(data["providers"]) == 1
+        assert data["providers"][0]["is_connected"] is True
+
+    def test_list_connections_with_disconnected_provider(
+        self, mock_user: ClerkUser, client: TestClient
+    ) -> None:
+        """Test listing connections with a disconnected provider."""
+        # Create a provider that is not connected
+        registry = ProviderRegistry()
+        provider = MockProvider(connected=False)
+        registry.register(provider)
+        service = ConnectionService(registry)
+        set_connection_service(service)
+
+        response = client.get("/connections")
+
+        assert response.status_code == 200
+        data = response.json()
+        assert data["connected_count"] == 0
+        assert len(data["providers"]) == 1
+        assert data["providers"][0]["is_connected"] is False
+
+
 class TestConnectionServiceDependency:
     """Tests for connection service dependency."""
 

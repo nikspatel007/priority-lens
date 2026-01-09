@@ -17,6 +17,12 @@ from rl_emails.schemas.organization import (
     OrganizationUpdate,
 )
 from rl_emails.schemas.sync import SyncStateResponse, SyncStateUpdate
+from rl_emails.schemas.watch import (
+    WatchSubscriptionCreate,
+    WatchSubscriptionResponse,
+    WatchSubscriptionStatus,
+    WatchSubscriptionUpdate,
+)
 
 __all__ = [
     "OAuthTokenCreate",
@@ -31,4 +37,8 @@ __all__ = [
     "OrgUserUpdate",
     "SyncStateResponse",
     "SyncStateUpdate",
+    "WatchSubscriptionCreate",
+    "WatchSubscriptionResponse",
+    "WatchSubscriptionStatus",
+    "WatchSubscriptionUpdate",
 ]

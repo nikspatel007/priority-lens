@@ -41,11 +41,13 @@ This guide walks through setting up Clerk for user authentication in rl-emails.
    ```
    pk_test_xxx...
    ```
+   pk_test_bGlrZWQtdGVybWl0ZS03LmNsZXJrLmFjY291bnRzLmRldiQ
 
    **Secret Key** (for backend):
    ```
    sk_test_xxx...
    ```
+   sk_test_3Osr36Suq5JSLwZwyVZRSyRWc351SqZRs4ZrAJASI6
 
 3. Copy both keys - you'll need them for configuration
 

@@ -27,6 +27,7 @@ if TYPE_CHECKING:
     from rl_emails.core.types import EmailData
     from rl_emails.repositories.oauth_token import OAuthTokenRepository
     from rl_emails.repositories.sync_state import SyncStateRepository
+    from rl_emails.repositories.watch_subscription import WatchSubscriptionRepository
     from rl_emails.services.auth_service import AuthService
 
 logger = structlog.get_logger(__name__)
@@ -306,3 +307,150 @@ class GmailProvider(EmailProvider):
             Sync progress if sync is active, None otherwise.
         """
         return self._active_syncs.get(user_id)
+
+    def set_watch_repo(self, watch_repo: WatchSubscriptionRepository) -> None:
+        """Set the watch subscription repository.
+
+        This allows adding watch functionality after initialization.
+
+        Args:
+            watch_repo: Repository for watch subscription tracking.
+        """
+        self._watch_repo = watch_repo
+
+    async def setup_watch(
+        self,
+        user_id: UUID,
+        topic_name: str,
+        label_ids: list[str] | None = None,
+    ) -> tuple[str, datetime]:
+        """Set up Gmail push notifications for a user.
+
+        Creates a watch on the user's mailbox so Gmail sends
+        notifications via Pub/Sub when changes occur.
+
+        Args:
+            user_id: User to set up watch for.
+            topic_name: Pub/Sub topic name (projects/{project}/topics/{topic}).
+            label_ids: Labels to watch (default: INBOX).
+
+        Returns:
+            Tuple of (history_id, expiration datetime).
+
+        Raises:
+            ConnectionError: If not connected or no valid token.
+            SyncError: If watch setup fails.
+        """
+
+        # Get valid token
+        try:
+            access_token = await self._auth_service.get_valid_token(user_id, "google")
+        except Exception as e:
+            raise ConnectionError(
+                f"Not connected to Gmail: {e}",
+                provider=ProviderType.GMAIL,
+            ) from e
+
+        try:
+            async with GmailClient(access_token) as client:
+                history_id, expiration_ms = await client.watch(
+                    topic_name=topic_name,
+                    label_ids=label_ids,
+                )
+
+            # Convert expiration from milliseconds to datetime
+            expiration = datetime.fromtimestamp(expiration_ms / 1000, tz=UTC)
+
+            # Store watch subscription if repo is available
+            if hasattr(self, "_watch_repo") and self._watch_repo is not None:
+                await self._watch_repo.activate(
+                    user_id=user_id,
+                    history_id=history_id,
+                    expiration=expiration,
+                    topic_name=topic_name,
+                    label_ids=label_ids,
+                )
+
+            await logger.ainfo(
+                "gmail_watch_setup",
+                user_id=str(user_id),
+                history_id=history_id,
+                expiration=str(expiration),
+            )
+
+            return history_id, expiration
+
+        except GmailApiError as e:
+            await logger.aerror(
+                "gmail_watch_failed",
+                user_id=str(user_id),
+                error=str(e),
+            )
+            raise SyncError(
+                f"Failed to set up Gmail watch: {e}",
+                provider=ProviderType.GMAIL,
+            ) from e
+
+    async def remove_watch(self, user_id: UUID) -> bool:
+        """Remove Gmail push notifications for a user.
+
+        Stops the current watch on the user's mailbox.
+
+        Args:
+            user_id: User to remove watch for.
+
+        Returns:
+            True if watch was removed, False if there was no watch.
+
+        Raises:
+            ConnectionError: If not connected or no valid token.
+        """
+
+        # Get valid token
+        try:
+            access_token = await self._auth_service.get_valid_token(user_id, "google")
+        except Exception as e:
+            raise ConnectionError(
+                f"Not connected to Gmail: {e}",
+                provider=ProviderType.GMAIL,
+            ) from e
+
+        try:
+            async with GmailClient(access_token) as client:
+                await client.stop_watch()
+
+            # Deactivate watch subscription if repo is available
+            if hasattr(self, "_watch_repo") and self._watch_repo is not None:
+                await self._watch_repo.deactivate(user_id)
+
+            await logger.ainfo("gmail_watch_removed", user_id=str(user_id))
+            return True
+
+        except GmailApiError as e:
+            await logger.awarning(
+                "gmail_watch_remove_failed",
+                user_id=str(user_id),
+                error=str(e),
+            )
+            return False
+
+    async def renew_watch(
+        self,
+        user_id: UUID,
+        topic_name: str,
+        label_ids: list[str] | None = None,
+    ) -> tuple[str, datetime]:
+        """Renew an expiring watch subscription.
+
+        This is equivalent to setup_watch but with logging specific to renewal.
+
+        Args:
+            user_id: User to renew watch for.
+            topic_name: Pub/Sub topic name.
+            label_ids: Labels to watch.
+
+        Returns:
+            Tuple of (history_id, new expiration datetime).
+        """
+        await logger.ainfo("gmail_watch_renewing", user_id=str(user_id))
+        return await self.setup_watch(user_id, topic_name, label_ids)

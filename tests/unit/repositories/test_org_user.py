@@ -278,3 +278,37 @@ class TestOrgUserRepository:
 
         # Verify
         assert result is False
+
+    @pytest.mark.asyncio
+    async def test_find_by_email_found(
+        self, repository: OrgUserRepository, mock_session: AsyncMock
+    ) -> None:
+        """Test finding user by email across all organizations."""
+        # Setup
+        user = OrgUser(id=uuid.uuid4(), org_id=uuid.uuid4(), email="test@example.com")
+
+        mock_result = MagicMock()
+        mock_result.scalar_one_or_none.return_value = user
+        mock_session.execute.return_value = mock_result
+
+        # Execute
+        result = await repository.find_by_email("test@example.com")
+
+        # Verify
+        assert result == user
+
+    @pytest.mark.asyncio
+    async def test_find_by_email_not_found(
+        self, repository: OrgUserRepository, mock_session: AsyncMock
+    ) -> None:
+        """Test finding user by email when not found."""
+        # Setup
+        mock_result = MagicMock()
+        mock_result.scalar_one_or_none.return_value = None
+        mock_session.execute.return_value = mock_result
+
+        # Execute
+        result = await repository.find_by_email("nonexistent@example.com")
+
+        # Verify
+        assert result is None

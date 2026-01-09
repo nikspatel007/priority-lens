@@ -195,7 +195,7 @@ class EmailProvider(ABC):
         """
         # This yield is here to make mypy happy about the return type
         # Subclasses will implement the actual logic
-        yield  # type: ignore[misc]
+        yield  # type: ignore[misc]  # pragma: no cover
 
     @abstractmethod
     async def get_sync_progress(self, user_id: UUID) -> SyncProgress | None:

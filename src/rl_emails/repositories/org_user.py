@@ -65,6 +65,20 @@ class OrgUserRepository:
         )
         return result.scalar_one_or_none()
 
+    async def find_by_email(self, email: str) -> OrgUser | None:
+        """Find user by email across all organizations.
+
+        Used for push notifications where we only have the email address.
+
+        Args:
+            email: User email.
+
+        Returns:
+            User if found, None otherwise.
+        """
+        result = await self.session.execute(select(OrgUser).where(OrgUser.email == email))
+        return result.scalar_one_or_none()
+
     async def list_by_org(self, org_id: UUID, limit: int = 100, offset: int = 0) -> list[OrgUser]:
         """List all users in an organization.
 

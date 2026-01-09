@@ -44,6 +44,8 @@ htmlcov/
 db/
 eval_results/
 models/
+!src/rl_emails/models/
+!tests/unit/models/
 results/
 
 # Old shell scripts (SurrealDB, Enron, etc.)

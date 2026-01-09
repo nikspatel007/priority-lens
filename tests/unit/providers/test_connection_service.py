@@ -76,9 +76,18 @@ class MockProvider(EmailProvider):
         days: int | None = None,
         max_messages: int | None = None,
     ) -> AsyncIterator[EmailData]:
+        # Yield messages from _messages_to_yield if set
+        if hasattr(self, "_messages_to_yield") and self._messages_to_yield:
+            for msg in self._messages_to_yield:
+                yield msg
+            return
         # Empty generator for testing
         return
         yield  # type: ignore[misc]
+
+    def set_messages_to_yield(self, messages: list[EmailData]) -> None:
+        """Set messages to yield during sync."""
+        self._messages_to_yield = messages
 
     async def get_sync_progress(self, user_id: UUID) -> SyncProgress | None:
         return self._sync_progress
@@ -314,6 +323,26 @@ class TestSyncMessages:
         with pytest.raises(ProviderNotFoundError):
             async for _ in service.sync_messages(user_id, ProviderType.GMAIL):
                 pass
+
+    @pytest.mark.asyncio
+    async def test_sync_messages_with_results(
+        self, service: ConnectionService, mock_provider: MockProvider, user_id: UUID
+    ) -> None:
+        """Test syncing messages that yields actual results."""
+        # Set up mock messages to yield
+        mock_messages = [
+            {"message_id": "msg1", "subject": "Test 1"},
+            {"message_id": "msg2", "subject": "Test 2"},
+        ]
+        mock_provider.set_messages_to_yield(mock_messages)  # type: ignore[arg-type]
+
+        messages = []
+        async for msg in service.sync_messages(user_id, ProviderType.GMAIL):
+            messages.append(msg)
+
+        assert len(messages) == 2
+        assert messages[0]["message_id"] == "msg1"
+        assert messages[1]["message_id"] == "msg2"
 
 
 class TestGetSyncProgress:

@@ -425,6 +425,71 @@ class TestSyncMessages:
             assert user_id not in provider._active_syncs
             assert messages == []
 
+    @pytest.mark.asyncio
+    async def test_sync_messages_api_error(
+        self,
+        provider: GmailProvider,
+        user_id: UUID,
+        mock_sync_repo: mock.MagicMock,
+    ) -> None:
+        """Test sync raises SyncError on API error."""
+        from rl_emails.integrations.gmail.client import GmailApiError
+        from rl_emails.providers.base import SyncError
+
+        provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
+
+        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+            mock_client = mock.AsyncMock()
+            mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = mock.AsyncMock(return_value=False)
+
+            # Make list_all_messages raise an API error
+            async def error_messages(*args, **kwargs):
+                raise GmailApiError("Rate limited", 429)
+                yield  # type: ignore[misc]
+
+            mock_client.list_all_messages = error_messages
+            MockClient.return_value = mock_client
+
+            with pytest.raises(SyncError) as exc_info:
+                async for _ in provider.sync_messages(user_id):
+                    pass
+
+            assert "list messages" in str(exc_info.value).lower()
+
+    @pytest.mark.asyncio
+    async def test_sync_messages_general_exception(
+        self,
+        provider: GmailProvider,
+        user_id: UUID,
+        mock_sync_repo: mock.MagicMock,
+    ) -> None:
+        """Test sync handles and reports general exceptions."""
+        from rl_emails.providers.base import SyncError
+
+        provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
+
+        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+            mock_client = mock.AsyncMock()
+            mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = mock.AsyncMock(return_value=False)
+
+            # Return no messages but fail on get_profile
+            async def empty_messages(*args, **kwargs):
+                return
+                yield  # type: ignore[misc]
+
+            mock_client.list_all_messages = empty_messages
+            mock_client.get_profile = mock.AsyncMock(side_effect=Exception("Database error"))
+            MockClient.return_value = mock_client
+
+            with pytest.raises(SyncError) as exc_info:
+                async for _ in provider.sync_messages(user_id):
+                    pass
+
+            assert "Database error" in str(exc_info.value)
+            mock_sync_repo.fail_sync.assert_called_once()
+
 
 class TestGetSyncProgress:
     """Tests for get_sync_progress method."""
@@ -454,3 +519,211 @@ class TestGetSyncProgress:
         assert progress.processed == 50
         assert progress.total == 100
         assert progress.current_phase == "processing"
+
+
+class TestSetupWatch:
+    """Tests for setup_watch method."""
+
+    @pytest.mark.asyncio
+    async def test_setup_watch_success(self, provider: GmailProvider, user_id: UUID) -> None:
+        """Test successful watch setup."""
+        provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
+
+        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+            mock_client = mock.AsyncMock()
+            mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = mock.AsyncMock()
+            mock_client.watch = mock.AsyncMock(return_value=("history123", 1704067200000))
+            MockClient.return_value = mock_client
+
+            history_id, expiration = await provider.setup_watch(
+                user_id, "projects/test/topics/gmail"
+            )
+
+            assert history_id == "history123"
+            assert expiration.year >= 2024
+            mock_client.watch.assert_called_once_with(
+                topic_name="projects/test/topics/gmail",
+                label_ids=None,
+            )
+
+    @pytest.mark.asyncio
+    async def test_setup_watch_with_labels(self, provider: GmailProvider, user_id: UUID) -> None:
+        """Test watch setup with custom labels."""
+        provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
+
+        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+            mock_client = mock.AsyncMock()
+            mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = mock.AsyncMock()
+            mock_client.watch = mock.AsyncMock(return_value=("history123", 1704067200000))
+            MockClient.return_value = mock_client
+
+            await provider.setup_watch(
+                user_id,
+                "projects/test/topics/gmail",
+                label_ids=["INBOX", "IMPORTANT"],
+            )
+
+            mock_client.watch.assert_called_once_with(
+                topic_name="projects/test/topics/gmail",
+                label_ids=["INBOX", "IMPORTANT"],
+            )
+
+    @pytest.mark.asyncio
+    async def test_setup_watch_not_connected(self, provider: GmailProvider, user_id: UUID) -> None:
+        """Test watch setup fails when not connected."""
+        provider._auth_service.get_valid_token = mock.AsyncMock(side_effect=Exception("No token"))
+
+        with pytest.raises(ConnectionError) as exc_info:
+            await provider.setup_watch(user_id, "projects/test/topics/gmail")
+
+        assert exc_info.value.provider == ProviderType.GMAIL
+
+    @pytest.mark.asyncio
+    async def test_setup_watch_api_error(self, provider: GmailProvider, user_id: UUID) -> None:
+        """Test watch setup handles API error."""
+        from rl_emails.integrations.gmail.client import GmailApiError
+        from rl_emails.providers.base import SyncError
+
+        provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
+
+        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+            mock_client = mock.AsyncMock()
+            mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = mock.AsyncMock(return_value=False)
+            mock_client.watch = mock.AsyncMock(side_effect=GmailApiError("Watch failed", 403))
+            MockClient.return_value = mock_client
+
+            with pytest.raises(SyncError) as exc_info:
+                await provider.setup_watch(user_id, "projects/test/topics/gmail")
+
+            assert exc_info.value.provider == ProviderType.GMAIL
+
+    @pytest.mark.asyncio
+    async def test_setup_watch_with_watch_repo(
+        self, provider: GmailProvider, user_id: UUID
+    ) -> None:
+        """Test watch setup updates watch repository if available."""
+        provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
+
+        # Set up mock watch repo
+        mock_watch_repo = mock.MagicMock()
+        mock_watch_repo.activate = mock.AsyncMock()
+        provider.set_watch_repo(mock_watch_repo)
+
+        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+            mock_client = mock.AsyncMock()
+            mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = mock.AsyncMock()
+            mock_client.watch = mock.AsyncMock(return_value=("history123", 1704067200000))
+            MockClient.return_value = mock_client
+
+            await provider.setup_watch(user_id, "projects/test/topics/gmail")
+
+            mock_watch_repo.activate.assert_called_once()
+
+
+class TestRemoveWatch:
+    """Tests for remove_watch method."""
+
+    @pytest.mark.asyncio
+    async def test_remove_watch_success(self, provider: GmailProvider, user_id: UUID) -> None:
+        """Test successful watch removal."""
+        provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
+
+        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+            mock_client = mock.AsyncMock()
+            mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = mock.AsyncMock()
+            mock_client.stop_watch = mock.AsyncMock()
+            MockClient.return_value = mock_client
+
+            result = await provider.remove_watch(user_id)
+
+            assert result is True
+            mock_client.stop_watch.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_remove_watch_not_connected(self, provider: GmailProvider, user_id: UUID) -> None:
+        """Test remove watch fails when not connected."""
+        provider._auth_service.get_valid_token = mock.AsyncMock(side_effect=Exception("No token"))
+
+        with pytest.raises(ConnectionError):
+            await provider.remove_watch(user_id)
+
+    @pytest.mark.asyncio
+    async def test_remove_watch_api_error(self, provider: GmailProvider, user_id: UUID) -> None:
+        """Test remove watch returns False on API error."""
+        from rl_emails.integrations.gmail.client import GmailApiError
+
+        provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
+
+        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+            mock_client = mock.AsyncMock()
+            mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = mock.AsyncMock(return_value=False)
+            mock_client.stop_watch = mock.AsyncMock(side_effect=GmailApiError("No watch", 404))
+            MockClient.return_value = mock_client
+
+            result = await provider.remove_watch(user_id)
+
+            assert result is False
+
+    @pytest.mark.asyncio
+    async def test_remove_watch_with_watch_repo(
+        self, provider: GmailProvider, user_id: UUID
+    ) -> None:
+        """Test remove watch updates watch repository if available."""
+        provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
+
+        # Set up mock watch repo
+        mock_watch_repo = mock.MagicMock()
+        mock_watch_repo.deactivate = mock.AsyncMock()
+        provider.set_watch_repo(mock_watch_repo)
+
+        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+            mock_client = mock.AsyncMock()
+            mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = mock.AsyncMock()
+            mock_client.stop_watch = mock.AsyncMock()
+            MockClient.return_value = mock_client
+
+            await provider.remove_watch(user_id)
+
+            mock_watch_repo.deactivate.assert_called_once_with(user_id)
+
+
+class TestRenewWatch:
+    """Tests for renew_watch method."""
+
+    @pytest.mark.asyncio
+    async def test_renew_watch_calls_setup(self, provider: GmailProvider, user_id: UUID) -> None:
+        """Test renew_watch calls setup_watch."""
+        provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
+
+        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+            mock_client = mock.AsyncMock()
+            mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
+            mock_client.__aexit__ = mock.AsyncMock()
+            mock_client.watch = mock.AsyncMock(return_value=("history456", 1704153600000))
+            MockClient.return_value = mock_client
+
+            history_id, expiration = await provider.renew_watch(
+                user_id, "projects/test/topics/gmail"
+            )
+
+            assert history_id == "history456"
+            mock_client.watch.assert_called_once()
+
+
+class TestSetWatchRepo:
+    """Tests for set_watch_repo method."""
+
+    def test_set_watch_repo(self, provider: GmailProvider) -> None:
+        """Test setting watch repository."""
+        mock_repo = mock.MagicMock()
+
+        provider.set_watch_repo(mock_repo)
+
+        assert provider._watch_repo == mock_repo
