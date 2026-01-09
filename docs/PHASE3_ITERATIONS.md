@@ -1,6 +1,6 @@
 # Phase 3: FastAPI + Clerk Authentication & Real-Time Sync
 
-## Status: In Progress (Iteration 0 Complete)
+## Status: In Progress (Iteration 1 Complete)
 
 **Prerequisite**: Phase 2 Complete (Gmail API Integration)
 **Iterations**: 9 (0-8)
@@ -679,94 +679,275 @@ class TestTaskExtractor:
 ## Iteration 1: FastAPI Foundation
 
 ### Story
-As a developer, I need a FastAPI application structure so that I can build secure, documented API endpoints.
+As a developer, I need a FastAPI application structure so that I can build secure, documented API endpoints with production-ready logging, rate limiting, and error handling.
 
 ### Deliverables
 1. FastAPI application with proper project structure
 2. Health check and readiness endpoints
 3. OpenAPI documentation configuration
 4. CORS middleware for mobile/web clients
-5. Error handling middleware
-6. Logging configuration
+5. Global error handling with RFC 7807 Problem Details
+6. Structured logging with structlog and correlation IDs
+7. Rate limiting foundation with slowapi
+8. Async database connection pooling
 
 ### Architecture
 
 ```
 src/rl_emails/
-├── api/                          # NEW: FastAPI application
+├── api/                              # NEW: FastAPI application
 │   ├── __init__.py
-│   ├── main.py                   # FastAPI app factory
-│   ├── config.py                 # API-specific config
-│   ├── dependencies.py           # Dependency injection
+│   ├── main.py                       # FastAPI app factory with lifespan
+│   ├── config.py                     # APIConfig (pydantic-settings)
+│   ├── database.py                   # Async engine + session factory
+│   ├── dependencies.py               # Dependency injection
+│   ├── exceptions.py                 # Custom exceptions + Problem Details
 │   ├── middleware/
 │   │   ├── __init__.py
-│   │   ├── cors.py              # CORS configuration
-│   │   ├── error_handler.py     # Global error handling
-│   │   └── logging.py           # Request logging
+│   │   ├── cors.py                  # CORS configuration
+│   │   ├── error_handler.py         # Global exception middleware
+│   │   ├── logging.py               # Request logging with correlation ID
+│   │   └── rate_limit.py            # Rate limiting setup (slowapi)
 │   └── routes/
 │       ├── __init__.py
-│       └── health.py            # Health check endpoints
+│       └── health.py                # /health and /ready endpoints
 ```
+
+### Dependencies
+
+```toml
+# FastAPI + Server
+"fastapi>=0.115.0",
+"uvicorn[standard]>=0.32.0",
+
+# Structured logging
+"structlog>=24.0.0",
+"asgi-correlation-id>=4.0.0",
+
+# Rate limiting
+"slowapi>=0.1.9",
+
+# Async database
+"asyncpg>=0.30.0",
+```
+
+### Best Practices Applied
+
+1. **Structured Logging (structlog)**
+   - JSON format in production, pretty logs in development
+   - Correlation IDs via asgi-correlation-id for request tracing
+   - Context variables auto-added to all logs
+   - Non-blocking async-safe logging
+
+2. **Rate Limiting (slowapi)**
+   - Token bucket algorithm for burst control
+   - Redis-ready for distributed deployments
+   - Per-endpoint configurable limits
+   - Standard rate limit headers (X-RateLimit-*)
+
+3. **Async Database (asyncpg + SQLAlchemy)**
+   - Connection pooling: pool_size=10, max_overflow=5
+   - Pool recycling every 30 minutes
+   - Dependency injection for session lifecycle
+   - Non-blocking database operations
+
+4. **Error Handling**
+   - RFC 7807 Problem Details format
+   - Global exception middleware (not just handlers)
+   - Starlette HTTPException handling
+   - Structured error logging with context
+
+5. **Middleware Ordering**
+   - CORS (outermost)
+   - Correlation ID
+   - Request Logging
+   - Rate Limiting
+   - Error Handler (innermost)
 
 ### Implementation Design
 
 ```python
-# src/rl_emails/api/main.py
-from fastapi import FastAPI
-from contextlib import asynccontextmanager
+# src/rl_emails/api/config.py
+from pydantic_settings import BaseSettings
 
-from rl_emails.api.config import APIConfig
-from rl_emails.api.middleware.cors import setup_cors
-from rl_emails.api.middleware.error_handler import setup_error_handlers
-from rl_emails.api.routes import health
+class APIConfig(BaseSettings):
+    """API configuration from environment."""
 
+    # Server
+    debug: bool = False
+    enable_docs: bool = True
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Application lifespan manager."""
-    # Startup
-    await setup_database_pool()
-    yield
-    # Shutdown
-    await close_database_pool()
+    # Database
+    database_url: str
+    db_pool_size: int = 10
+    db_max_overflow: int = 5
+    db_pool_recycle: int = 1800
 
+    # CORS
+    cors_origins: list[str] = ["http://localhost:3000"]
 
-def create_app(config: APIConfig | None = None) -> FastAPI:
-    """Create and configure FastAPI application."""
-    if config is None:
-        config = APIConfig.from_env()
+    # Rate limiting
+    rate_limit_per_minute: int = 60
 
-    app = FastAPI(
-        title="RL-Emails API",
-        description="Email ML pipeline API with projects and tasks",
-        version="1.0.0",
-        lifespan=lifespan,
-        docs_url="/docs" if config.enable_docs else None,
-        redoc_url="/redoc" if config.enable_docs else None,
-    )
+    # Logging
+    log_level: str = "INFO"
+    log_json: bool = True  # JSON in prod, pretty in dev
 
-    # Middleware
-    setup_cors(app, config)
-    setup_error_handlers(app)
+    model_config = {"env_prefix": "API_"}
+```
 
-    # Routes
-    app.include_router(health.router, tags=["Health"])
+```python
+# src/rl_emails/api/exceptions.py
+from dataclasses import dataclass
+from typing import Any
 
-    return app
+@dataclass
+class ProblemDetail:
+    """RFC 7807 Problem Details response."""
+    type: str = "about:blank"
+    title: str = "An error occurred"
+    status: int = 500
+    detail: str | None = None
+    instance: str | None = None
+    extensions: dict[str, Any] | None = None
+```
+
+```python
+# src/rl_emails/api/middleware/logging.py
+import structlog
+from asgi_correlation_id import CorrelationIdMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+
+class RequestLoggingMiddleware(BaseHTTPMiddleware):
+    """Log all requests with timing and correlation ID."""
+
+    async def dispatch(self, request, call_next):
+        logger = structlog.get_logger()
+        start = time.perf_counter()
+
+        response = await call_next(request)
+
+        duration_ms = (time.perf_counter() - start) * 1000
+        await logger.ainfo(
+            "request_completed",
+            method=request.method,
+            path=request.url.path,
+            status=response.status_code,
+            duration_ms=round(duration_ms, 2),
+        )
+        return response
+```
+
+```python
+# src/rl_emails/api/routes/health.py
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+
+router = APIRouter()
+
+@router.get("/health")
+async def health() -> dict:
+    """Liveness probe - is the service running?"""
+    return {"status": "healthy"}
+
+@router.get("/ready")
+async def ready(db: AsyncSession = Depends(get_db_session)) -> dict:
+    """Readiness probe - is the service ready to handle requests?"""
+    await db.execute(text("SELECT 1"))
+    return {"status": "ready", "database": "connected"}
 ```
 
 ### Acceptance Criteria
 
-- [ ] FastAPI app factory creates configured application
-- [ ] Health endpoint returns 200 with status info
-- [ ] Readiness endpoint validates database connection
-- [ ] CORS allows configured origins
-- [ ] Global error handler returns consistent error format
-- [ ] Request logging captures method, path, duration
-- [ ] OpenAPI docs available at /docs
-- [ ] App starts with `uvicorn rl_emails.api.main:app`
-- [ ] 100% test coverage on new code
-- [ ] mypy --strict passes
+- [x] FastAPI app factory creates configured application
+- [x] Health endpoint returns 200 with status info
+- [x] Readiness endpoint validates database connection
+- [x] CORS allows configured origins
+- [x] Global error handler returns RFC 7807 Problem Details
+- [x] Request logging captures method, path, duration, correlation_id
+- [x] Correlation ID propagated via X-Request-ID header
+- [x] Rate limiting returns 429 with Retry-After header
+- [x] OpenAPI docs available at /docs (configurable)
+- [x] App starts with `uvicorn rl_emails.api.main:app`
+- [x] Structured logs in JSON format (production mode)
+- [x] Database connection pooling configured
+- [x] 100% test coverage on new code
+- [x] mypy --strict passes
+
+### Test Plan
+
+```python
+# tests/unit/api/test_health.py
+class TestHealthEndpoints:
+    async def test_health_returns_healthy(self, client):
+        response = await client.get("/health")
+        assert response.status_code == 200
+        assert response.json()["status"] == "healthy"
+
+    async def test_ready_checks_database(self, client, mock_db):
+        response = await client.get("/ready")
+        assert response.status_code == 200
+        assert response.json()["database"] == "connected"
+
+    async def test_ready_fails_without_database(self, client, broken_db):
+        response = await client.get("/ready")
+        assert response.status_code == 503
+
+# tests/unit/api/test_middleware.py
+class TestRequestLogging:
+    async def test_logs_request_with_correlation_id(self, client, caplog):
+        response = await client.get("/health")
+        assert "correlation_id" in caplog.text
+        assert "duration_ms" in caplog.text
+
+class TestRateLimiting:
+    async def test_rate_limit_returns_429(self, client):
+        # Exceed rate limit
+        for _ in range(100):
+            await client.get("/health")
+        response = await client.get("/health")
+        assert response.status_code == 429
+        assert "Retry-After" in response.headers
+
+class TestErrorHandling:
+    async def test_returns_problem_details(self, client):
+        response = await client.get("/nonexistent")
+        assert response.status_code == 404
+        data = response.json()
+        assert data["type"] == "about:blank"
+        assert data["status"] == 404
+```
+
+### Verification Steps
+
+1. **Start the server**:
+   ```bash
+   uvicorn rl_emails.api.main:app --reload
+   ```
+
+2. **Test health endpoints**:
+   ```bash
+   curl http://localhost:8000/health
+   curl http://localhost:8000/ready
+   ```
+
+3. **Verify correlation ID**:
+   ```bash
+   curl -H "X-Request-ID: test-123" http://localhost:8000/health -v
+   # Response should include X-Request-ID: test-123
+   ```
+
+4. **Check rate limiting**:
+   ```bash
+   for i in {1..100}; do curl -s http://localhost:8000/health; done
+   # Should see 429 responses after limit exceeded
+   ```
+
+5. **Verify structured logs**:
+   ```bash
+   API_LOG_JSON=true uvicorn rl_emails.api.main:app
+   # Logs should be JSON formatted
+   ```
 
 ---
 
@@ -1220,12 +1401,12 @@ class TestFullUserFlow:
 - [x] Marketing email filtering
 - [x] Write tests (105 new tests, 100% coverage)
 
-### Iteration 1: FastAPI Foundation
-- [ ] Create API module structure
-- [ ] Implement app factory
-- [ ] Add health endpoints
-- [ ] Configure middleware
-- [ ] Write tests
+### Iteration 1: FastAPI Foundation ✅
+- [x] Create API module structure
+- [x] Implement app factory
+- [x] Add health endpoints
+- [x] Configure middleware (CORS, logging, rate limiting, error handling)
+- [x] Write tests (126 tests, 100% coverage)
 
 ### Iteration 2: Clerk Authentication
 - [ ] Implement JWT validation
