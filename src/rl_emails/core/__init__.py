@@ -10,6 +10,11 @@ from rl_emails.core.db import (
     get_cursor,
     get_database_url,
 )
+from rl_emails.core.logging import (
+    configure_stage_logging,
+    get_logger,
+    setup_logging,
+)
 from rl_emails.core.types import (
     ClusterAssignment,
     EmailData,
@@ -25,9 +30,12 @@ __all__ = [
     "EmailFeatures",
     "LLMFlags",
     "PriorityScores",
+    "configure_stage_logging",
     "fetch_count",
     "fetch_one_value",
     "get_connection",
     "get_cursor",
     "get_database_url",
+    "get_logger",
+    "setup_logging",
 ]

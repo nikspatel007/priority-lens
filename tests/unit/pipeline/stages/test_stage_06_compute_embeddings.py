@@ -5,11 +5,22 @@ from __future__ import annotations
 from typing import Any
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 from rl_emails.core.config import Config
 from rl_emails.pipeline.stages import stage_06_compute_embeddings
 from rl_emails.pipeline.stages.base import StageResult
+
+
+class TestGetTokenizer:
+    """Tests for _get_tokenizer function."""
+
+    def test_returns_none_on_exception(self) -> None:
+        """Test returns None when tiktoken fails."""
+        with patch.dict("sys.modules", {"tiktoken": MagicMock()}):
+            import sys
+
+            sys.modules["tiktoken"].get_encoding.side_effect = Exception("Error")
+            result = stage_06_compute_embeddings._get_tokenizer()
+            assert result is None
 
 
 class TestCountTokens:
@@ -17,9 +28,9 @@ class TestCountTokens:
 
     def test_counts_tokens(self) -> None:
         """Test token counting."""
-        text = "Hello world"  # 11 chars -> ~3 tokens
+        text = "Hello world"  # With tiktoken: 2 tokens
         result = stage_06_compute_embeddings.count_tokens(text)
-        assert result == 3
+        assert result >= 1  # At least 1 token for non-empty text
 
     def test_empty_string(self) -> None:
         """Test empty string."""
@@ -38,13 +49,38 @@ class TestTruncateToTokens:
     def test_truncates_long_text(self) -> None:
         """Test truncation of long text."""
         text = "a" * 1000
-        result = stage_06_compute_embeddings.truncate_to_tokens(text, 10)  # 30 chars
-        assert len(result) == 33  # 30 + "..."
+        result = stage_06_compute_embeddings.truncate_to_tokens(text, 10)
+        # Should be truncated to 10 tokens + "..."
+        assert len(result) < len(text)
         assert result.endswith("...")
 
     def test_empty_text(self) -> None:
         """Test empty text."""
         assert stage_06_compute_embeddings.truncate_to_tokens("", 100) == ""
+
+    @patch.object(stage_06_compute_embeddings, "_TOKENIZER", None)
+    def test_fallback_count_tokens(self) -> None:
+        """Test fallback token counting when tiktoken unavailable."""
+        text = "Hello world test"
+        result = stage_06_compute_embeddings.count_tokens(text)
+        # Fallback uses len/2
+        assert result == len(text) // 2
+
+    @patch.object(stage_06_compute_embeddings, "_TOKENIZER", None)
+    def test_fallback_truncate_short(self) -> None:
+        """Test fallback truncation when text fits."""
+        text = "Hello"
+        result = stage_06_compute_embeddings.truncate_to_tokens(text, 100)
+        assert result == "Hello"
+
+    @patch.object(stage_06_compute_embeddings, "_TOKENIZER", None)
+    def test_fallback_truncate_long(self) -> None:
+        """Test fallback truncation when text exceeds limit."""
+        text = "a" * 100
+        result = stage_06_compute_embeddings.truncate_to_tokens(text, 10)
+        # 10 tokens * 2 chars = 20 chars + "..."
+        assert len(result) == 23
+        assert result.endswith("...")
 
 
 class TestStripHtml:
@@ -287,6 +323,19 @@ class TestBuildEmbeddingText:
         assert "[SUBJECT] Test Subject" in result
         assert "[BODY]" not in result
 
+    def test_legacy_sanitizer_path(self) -> None:
+        """Test legacy sanitization path for backward compatibility."""
+        result = stage_06_compute_embeddings.build_embedding_text(
+            subject="Test",
+            body="<p>Hello</p> > quoted",
+            is_service=False,
+            service_importance=0.5,
+            relationship_strength=0.5,
+            use_new_sanitizer=False,
+        )
+        assert "[BODY]" in result
+        assert "Hello" in result
+
 
 class TestComputeContentHash:
     """Tests for compute_content_hash function."""
@@ -407,60 +456,47 @@ class TestSaveEmbeddingsToDb:
 class TestGenerateSingleEmbedding:
     """Tests for generate_single_embedding function."""
 
-    @pytest.mark.asyncio
-    async def test_generates_embedding(self) -> None:
-        """Test embedding generation."""
-        import asyncio
-
-        semaphore = asyncio.Semaphore(1)
+    def test_generates_embedding(self) -> None:
+        """Test single embedding generation."""
         mock_embedding_func = MagicMock()
         mock_response = MagicMock()
         mock_response.data = [{"embedding": [0.1, 0.2, 0.3]}]
         mock_embedding_func.return_value = mock_response
 
-        result = await stage_06_compute_embeddings.generate_single_embedding(
-            "Test text", semaphore, mock_embedding_func
+        result = stage_06_compute_embeddings.generate_single_embedding(
+            "Test text", mock_embedding_func
         )
 
         assert result == [0.1, 0.2, 0.3]
         mock_embedding_func.assert_called_once()
 
 
-class TestProcessEmailsParallel:
-    """Tests for process_emails_parallel function."""
+class TestPrepareEmailsForEmbedding:
+    """Tests for prepare_emails_for_embedding function."""
 
-    @pytest.mark.asyncio
-    async def test_processes_emails(self) -> None:
-        """Test parallel email processing."""
-        mock_embedding_func = MagicMock()
-        mock_response = MagicMock()
-        mock_response.data = [{"embedding": [0.1] * 1536}]
-        mock_embedding_func.return_value = mock_response
-
+    def test_prepares_valid_emails(self) -> None:
+        """Test preparing emails for embedding."""
         emails: list[dict[str, Any]] = [
             {
                 "id": 1,
-                "subject": "Test",
-                "body": "Body text here",
+                "subject": "Test Subject",
+                "body": "Body text here that is long enough",
                 "is_service": False,
                 "service_importance": 0.5,
                 "relationship_strength": 0.5,
             }
         ]
 
-        result = await stage_06_compute_embeddings.process_emails_parallel(
-            emails, workers=1, embedding_func=mock_embedding_func
-        )
+        result = stage_06_compute_embeddings.prepare_emails_for_embedding(emails)
 
         assert len(result) == 1
         assert result[0][0] == 1  # email_id
 
-    @pytest.mark.asyncio
     @patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.build_embedding_text")
-    async def test_skips_short_text(self, mock_build: MagicMock) -> None:
+    def test_skips_short_text(self, mock_build: MagicMock) -> None:
         """Test skipping emails with short text."""
+        # Mock to return very short text
         mock_build.return_value = "short"  # Less than 10 chars
-        mock_embedding_func = MagicMock()
 
         emails: list[dict[str, Any]] = [
             {
@@ -473,14 +509,101 @@ class TestProcessEmailsParallel:
             }
         ]
 
-        result = await stage_06_compute_embeddings.process_emails_parallel(
-            emails, workers=1, embedding_func=mock_embedding_func
-        )
+        result = stage_06_compute_embeddings.prepare_emails_for_embedding(emails)
 
         assert len(result) == 0
 
-    @pytest.mark.asyncio
-    async def test_handles_errors(self) -> None:
+    @patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.build_embedding_text")
+    @patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.count_tokens")
+    @patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.truncate_to_tokens")
+    def test_truncates_long_email(
+        self, mock_truncate: MagicMock, mock_count: MagicMock, mock_build: MagicMock
+    ) -> None:
+        """Test that emails exceeding MAX_TOKENS are truncated."""
+        # Return text that exceeds MAX_TOKENS
+        mock_build.return_value = "a" * 50000
+        # First call returns over limit, second call returns truncated count
+        mock_count.side_effect = [10000, 7000]  # First > MAX_TOKENS, second after truncate
+        mock_truncate.return_value = "truncated..."
+
+        emails: list[dict[str, Any]] = [
+            {
+                "id": 1,
+                "subject": "Test",
+                "body": "Very long body",
+                "is_service": False,
+                "service_importance": 0.5,
+                "relationship_strength": 0.5,
+            }
+        ]
+
+        result = stage_06_compute_embeddings.prepare_emails_for_embedding(emails)
+
+        assert len(result) == 1
+        mock_truncate.assert_called_once()
+        # Token count should be the truncated count
+        assert result[0][2] == 7000
+
+
+class TestProcessSingleEmail:
+    """Tests for _process_single_email function."""
+
+    def test_processes_email_successfully(self) -> None:
+        """Test successful single email processing."""
+        mock_embedding_func = MagicMock()
+        mock_response = MagicMock()
+        mock_response.data = [{"embedding": [0.1] * 1536}]
+        mock_embedding_func.return_value = mock_response
+
+        email_data = (1, "Test text for embedding", 10, "hash123")
+
+        result = stage_06_compute_embeddings._process_single_email(email_data, mock_embedding_func)
+
+        assert result is not None
+        assert result[0] == 1  # email_id
+        assert len(result[1]) == 1536  # embedding dimension
+
+    def test_handles_errors(self) -> None:
+        """Test error handling returns None."""
+        mock_embedding_func = MagicMock()
+        mock_embedding_func.side_effect = Exception("API error")
+
+        email_data = (1, "Test text", 10, "hash123")
+
+        result = stage_06_compute_embeddings._process_single_email(email_data, mock_embedding_func)
+
+        assert result is None
+
+
+class TestProcessEmailsParallel:
+    """Tests for process_emails_parallel function."""
+
+    def test_processes_emails_in_parallel(self) -> None:
+        """Test parallel email processing."""
+        mock_embedding_func = MagicMock()
+        mock_response = MagicMock()
+        mock_response.data = [{"embedding": [0.1] * 1536}]
+        mock_embedding_func.return_value = mock_response
+
+        emails: list[dict[str, Any]] = [
+            {
+                "id": 1,
+                "subject": "Test",
+                "body": "Body text here is long enough",
+                "is_service": False,
+                "service_importance": 0.5,
+                "relationship_strength": 0.5,
+            }
+        ]
+
+        result = stage_06_compute_embeddings.process_emails_parallel(
+            emails, mock_embedding_func, workers=2
+        )
+
+        assert len(result) == 1
+        assert result[0][0] == 1  # email_id
+
+    def test_handles_errors_gracefully(self) -> None:
         """Test error handling in parallel processing."""
         mock_embedding_func = MagicMock()
         mock_embedding_func.side_effect = Exception("API error")
@@ -489,25 +612,64 @@ class TestProcessEmailsParallel:
             {
                 "id": 1,
                 "subject": "Test",
-                "body": "Body text here",
+                "body": "Body text here is long enough",
                 "is_service": False,
                 "service_importance": 0.5,
                 "relationship_strength": 0.5,
             }
         ]
 
-        result = await stage_06_compute_embeddings.process_emails_parallel(
-            emails, workers=1, embedding_func=mock_embedding_func
+        result = stage_06_compute_embeddings.process_emails_parallel(
+            emails, mock_embedding_func, workers=2
         )
 
-        assert len(result) == 0  # Error results in None, filtered out
+        assert len(result) == 0  # Error results in empty list
+
+    def test_multiple_emails_parallel(self) -> None:
+        """Test processing multiple emails in parallel."""
+        mock_embedding_func = MagicMock()
+        mock_response = MagicMock()
+        mock_response.data = [{"embedding": [0.1] * 1536}]
+        mock_embedding_func.return_value = mock_response
+
+        emails: list[dict[str, Any]] = [
+            {
+                "id": i,
+                "subject": f"Test {i}",
+                "body": "Body text here is long enough for embedding",
+                "is_service": False,
+                "service_importance": 0.5,
+                "relationship_strength": 0.5,
+            }
+            for i in range(4)
+        ]
+
+        result = stage_06_compute_embeddings.process_emails_parallel(
+            emails, mock_embedding_func, workers=2
+        )
+
+        assert len(result) == 4
+        # Each email gets its own API call
+        assert mock_embedding_func.call_count == 4
+
+    def test_empty_email_list(self) -> None:
+        """Test with empty email list."""
+        mock_embedding_func = MagicMock()
+
+        emails: list[dict[str, Any]] = []
+
+        result = stage_06_compute_embeddings.process_emails_parallel(
+            emails, mock_embedding_func, workers=2
+        )
+
+        assert len(result) == 0
+        mock_embedding_func.assert_not_called()
 
 
-class TestComputeEmbeddingsAsync:
-    """Tests for compute_embeddings_async function."""
+class TestComputeEmbeddingsSync:
+    """Tests for compute_embeddings_sync function."""
 
-    @pytest.mark.asyncio
-    async def test_processes_all(self) -> None:
+    def test_processes_all(self) -> None:
         """Test processing all emails."""
         conn = MagicMock()
         mock_cursor = MagicMock()
@@ -518,7 +680,7 @@ class TestComputeEmbeddingsAsync:
 
         # get_unprocessed_emails
         mock_cursor.fetchall.side_effect = [
-            [(1, "Test", "Body", False, 0.5, 0.5)],  # First batch
+            [(1, "Test", "Body text long enough", False, 0.5, 0.5)],  # First batch
             [],  # No more emails
         ]
 
@@ -528,16 +690,16 @@ class TestComputeEmbeddingsAsync:
         mock_embedding_func.return_value = mock_response
 
         with patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.execute_values"):
-            stats = await stage_06_compute_embeddings.compute_embeddings_async(
-                conn, mock_embedding_func, workers=1, batch_size=10
+            stats = stage_06_compute_embeddings.compute_embeddings_sync(
+                conn, mock_embedding_func, batch_size=10
             )
 
         assert stats["total_emails"] == 10
         assert stats["already_embedded"] == 5
         assert stats["processed"] == 1
+        assert stats["api_calls"] >= 1
 
-    @pytest.mark.asyncio
-    async def test_all_embedded(self) -> None:
+    def test_all_embedded(self) -> None:
         """Test when all emails are already embedded."""
         conn = MagicMock()
         mock_cursor = MagicMock()
@@ -546,14 +708,12 @@ class TestComputeEmbeddingsAsync:
 
         mock_embedding_func = MagicMock()
 
-        stats = await stage_06_compute_embeddings.compute_embeddings_async(
-            conn, mock_embedding_func
-        )
+        stats = stage_06_compute_embeddings.compute_embeddings_sync(conn, mock_embedding_func)
 
         assert stats["processed"] == 0
+        assert stats["api_calls"] == 0
 
-    @pytest.mark.asyncio
-    async def test_respects_limit(self) -> None:
+    def test_respects_limit(self) -> None:
         """Test limit parameter."""
         conn = MagicMock()
         mock_cursor = MagicMock()
@@ -562,18 +722,18 @@ class TestComputeEmbeddingsAsync:
         # 100 total, 0 embedded, but limit to 10
         mock_cursor.fetchone.side_effect = [(100,), (0,)]
         mock_cursor.fetchall.side_effect = [
-            [(i, "Test", "Body text", False, 0.5, 0.5) for i in range(10)],
+            [(i, "Test", "Body text long enough", False, 0.5, 0.5) for i in range(10)],
             [],  # No more
         ]
 
         mock_embedding_func = MagicMock()
         mock_response = MagicMock()
-        mock_response.data = [{"embedding": [0.1] * 1536}]
+        mock_response.data = [{"embedding": [0.1] * 1536} for _ in range(10)]
         mock_embedding_func.return_value = mock_response
 
         with patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.execute_values"):
-            stats = await stage_06_compute_embeddings.compute_embeddings_async(
-                conn, mock_embedding_func, workers=1, batch_size=100, limit=10
+            stats = stage_06_compute_embeddings.compute_embeddings_sync(
+                conn, mock_embedding_func, batch_size=100, limit=10
             )
 
         assert stats["processed"] == 10
@@ -592,19 +752,20 @@ class TestRun:
         assert "OPENAI_API_KEY" in result.message
 
     @patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.psycopg2.connect")
-    @patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.asyncio.run")
-    def test_run_success(self, mock_asyncio_run: MagicMock, mock_connect: MagicMock) -> None:
+    @patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.compute_embeddings_sync")
+    def test_run_success(self, mock_compute_sync: MagicMock, mock_connect: MagicMock) -> None:
         """Test successful run."""
         mock_conn = MagicMock()
         mock_cursor = MagicMock()
         mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
         mock_connect.return_value = mock_conn
 
-        mock_asyncio_run.return_value = {
+        mock_compute_sync.return_value = {
             "total_emails": 100,
             "already_embedded": 50,
             "processed": 50,
             "batches": 1,
+            "api_calls": 1,
         }
 
         config = Config(database_url="postgresql://test", openai_api_key="sk-test")
@@ -613,6 +774,7 @@ class TestRun:
         assert isinstance(result, StageResult)
         assert result.success is True
         assert result.records_processed == 50
+        assert "1 API calls" in result.message
         mock_conn.close.assert_called_once()
 
     def test_run_without_litellm(self) -> None:
@@ -627,3 +789,12 @@ class TestRun:
 
         assert result.success is False
         assert "litellm" in result.message
+
+    def test_run_with_workers_param_deprecated(self) -> None:
+        """Test that workers parameter is accepted but ignored."""
+        config = Config(database_url="postgresql://test")
+
+        # Should not raise even with workers param
+        result = stage_06_compute_embeddings.run(config, workers=5)
+
+        assert result.success is False  # No API key, but param was accepted

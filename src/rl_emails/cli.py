@@ -786,6 +786,11 @@ def main() -> None:
     """CLI entry point for the email onboarding pipeline."""
     args = parse_args()
 
+    # Set up logging with rolling file handler
+    from rl_emails.core.logging import setup_logging
+
+    setup_logging(console=True, file_logging=True)
+
     # Load configuration
     env_file = get_env_file(args)
     try:
