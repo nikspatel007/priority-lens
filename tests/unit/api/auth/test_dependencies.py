@@ -74,7 +74,7 @@ class TestGetJWTValidator:
 
     def test_raises_when_not_configured(self) -> None:
         """Test raises AuthenticationError when Clerk not configured."""
-        config = ClerkConfig()  # Empty config
+        config = ClerkConfig(secret_key="", issuer="")  # Explicitly empty
 
         with pytest.raises(AuthenticationError, match="Authentication not configured"):
             get_jwt_validator(config)
@@ -267,7 +267,7 @@ class TestGetApiKeyUser:
     @pytest.mark.anyio
     async def test_returns_none_when_invalid_key(self, mock_request: Request) -> None:
         """Test returns None when API key not in allowed list."""
-        config = ClerkConfig(api_keys=["valid-key-1", "valid-key-2"])
+        config = ClerkConfig(api_keys_raw="valid-key-1,valid-key-2")
 
         result = await get_api_key_user(mock_request, "invalid-key", config)
 
@@ -276,7 +276,7 @@ class TestGetApiKeyUser:
     @pytest.mark.anyio
     async def test_returns_service_user_when_valid(self, mock_request: Request) -> None:
         """Test returns service user when API key is valid."""
-        config = ClerkConfig(api_keys=["valid-key-1", "valid-key-2"])
+        config = ClerkConfig(api_keys_raw="valid-key-1,valid-key-2")
 
         result = await get_api_key_user(mock_request, "valid-key-1", config)
 
@@ -289,7 +289,7 @@ class TestGetApiKeyUser:
     @pytest.mark.anyio
     async def test_sets_user_on_request_state(self, mock_request: Request) -> None:
         """Test sets user on request.state."""
-        config = ClerkConfig(api_keys=["valid-key"])
+        config = ClerkConfig(api_keys_raw="valid-key")
 
         await get_api_key_user(mock_request, "valid-key", config)
 
@@ -313,7 +313,7 @@ class TestGetCurrentUserOrApiKey:
         config = ClerkConfig(
             secret_key="sk_test_xxx",
             issuer="https://clerk.example.com",
-            api_keys=["valid-key"],
+            api_keys_raw="valid-key",
         )
         jwt_user = ClerkUser(id="jwt_user")
 
@@ -333,7 +333,7 @@ class TestGetCurrentUserOrApiKey:
         config = ClerkConfig(
             secret_key="sk_test_xxx",
             issuer="https://clerk.example.com",
-            api_keys=["valid-key"],
+            api_keys_raw="valid-key",
         )
 
         with mock.patch("rl_emails.api.auth.dependencies.ClerkJWTValidator") as MockValidator:
@@ -349,7 +349,7 @@ class TestGetCurrentUserOrApiKey:
     @pytest.mark.anyio
     async def test_api_key_only(self, mock_request: Request) -> None:
         """Test works with only API key."""
-        config = ClerkConfig(api_keys=["valid-key"])
+        config = ClerkConfig(api_keys_raw="valid-key")
 
         result = await get_current_user_or_api_key(mock_request, None, "valid-key", config)
 
@@ -358,7 +358,7 @@ class TestGetCurrentUserOrApiKey:
     @pytest.mark.anyio
     async def test_raises_when_neither_valid(self, mock_request: Request) -> None:
         """Test raises error when neither JWT nor API key valid."""
-        config = ClerkConfig(api_keys=["valid-key"])
+        config = ClerkConfig(api_keys_raw="valid-key")
 
         with pytest.raises(AuthenticationError, match="Valid JWT or API key required"):
             await get_current_user_or_api_key(mock_request, None, "invalid-key", config)

@@ -13,7 +13,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from rl_emails.api.auth.clerk import ClerkUser
-from rl_emails.api.auth.dependencies import get_current_user
+from rl_emails.api.auth.dependencies import get_current_user_or_api_key
 from rl_emails.api.routes.connections import (
     router,
     set_connection_service,
@@ -119,7 +119,7 @@ def app(mock_user: ClerkUser, mock_service: ConnectionService) -> FastAPI:
     async def override_get_current_user() -> ClerkUser:
         return mock_user
 
-    app.dependency_overrides[get_current_user] = override_get_current_user
+    app.dependency_overrides[get_current_user_or_api_key] = override_get_current_user
 
     # Set the connection service
     set_connection_service(mock_service)
@@ -373,7 +373,7 @@ class TestProviderNotFoundErrors:
         async def override_get_current_user() -> ClerkUser:
             return ClerkUser(id="user_123")
 
-        app.dependency_overrides[get_current_user] = override_get_current_user
+        app.dependency_overrides[get_current_user_or_api_key] = override_get_current_user
 
         # Set up service with empty registry
         empty_registry = ProviderRegistry()
@@ -460,7 +460,7 @@ class TestConnectionServiceDependency:
         async def override_get_current_user() -> ClerkUser:
             return ClerkUser(id="user_123")
 
-        app.dependency_overrides[get_current_user] = override_get_current_user
+        app.dependency_overrides[get_current_user_or_api_key] = override_get_current_user
 
         # Reset the global service
         set_connection_service(None)  # type: ignore[arg-type]

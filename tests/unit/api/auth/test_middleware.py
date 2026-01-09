@@ -141,7 +141,7 @@ class TestAuthenticationMiddleware:
 
         # Mock get_clerk_config to return unconfigured config
         with mock.patch("rl_emails.api.auth.middleware.get_clerk_config") as mock_get_config:
-            mock_get_config.return_value = ClerkConfig()  # Not configured
+            mock_get_config.return_value = ClerkConfig(secret_key="", issuer="")  # Not configured
 
             # Access validator property
             validator = middleware.validator

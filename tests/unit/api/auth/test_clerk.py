@@ -115,7 +115,7 @@ class TestClerkJWTValidator:
 
     def test_init_requires_jwks_url(self) -> None:
         """Test validator requires JWKS URL."""
-        config = ClerkConfig()  # No issuer or jwks_url
+        config = ClerkConfig(issuer="", jwks_url="")  # Explicitly empty
 
         with pytest.raises(ValueError, match="JWKS URL is required"):
             ClerkJWTValidator(config)

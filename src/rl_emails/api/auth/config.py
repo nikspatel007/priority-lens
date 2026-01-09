@@ -50,11 +50,19 @@ class ClerkConfig(BaseSettings):
         description="Leeway in seconds for token expiration",
     )
 
-    # API key support for service-to-service calls
-    api_keys: list[str] = Field(
-        default_factory=list,
-        description="List of valid API keys for service authentication",
+    # API key support for service-to-service calls (comma-separated string)
+    # Env var: CLERK_API_KEYS_RAW (comma-separated)
+    api_keys_raw: str = Field(
+        default="",
+        description="Comma-separated list of valid API keys for service authentication",
     )
+
+    @property
+    def api_keys(self) -> list[str]:
+        """Get list of API keys parsed from comma-separated string."""
+        if not self.api_keys_raw:
+            return []
+        return [k.strip() for k in self.api_keys_raw.split(",") if k.strip()]
 
     @property
     def is_configured(self) -> bool:

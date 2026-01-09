@@ -9,7 +9,7 @@ import structlog
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel, Field
 
-from rl_emails.api.auth.dependencies import CurrentUser
+from rl_emails.api.auth.dependencies import CurrentUserOrApiKey
 from rl_emails.providers import (
     ConnectionService,
     ConnectionState,
@@ -156,7 +156,7 @@ async def list_available_providers(
     description="Get connection status for all available email providers.",
 )
 async def list_connections(
-    user: CurrentUser,
+    user: CurrentUserOrApiKey,
     service: ConnectionServiceDep,
 ) -> AllConnectionsResponse:
     """Get connection status for all providers.
@@ -219,7 +219,7 @@ async def list_connections(
 )
 async def get_connection_status(
     provider: str,
-    user: CurrentUser,
+    user: CurrentUserOrApiKey,
     service: ConnectionServiceDep,
 ) -> ProviderStatusResponse:
     """Get connection status for a specific provider.
@@ -276,7 +276,7 @@ async def get_connection_status(
 )
 async def start_connection(
     provider: str,
-    user: CurrentUser,
+    user: CurrentUserOrApiKey,
     service: ConnectionServiceDep,
     state: Annotated[str | None, Query(description="CSRF state parameter")] = None,
 ) -> AuthUrlResponse:
@@ -333,7 +333,7 @@ async def start_connection(
 async def complete_connection(
     provider: str,
     code: Annotated[str, Query(description="Authorization code from OAuth callback")],
-    user: CurrentUser,
+    user: CurrentUserOrApiKey,
     service: ConnectionServiceDep,
 ) -> ConnectResponse:
     """Complete OAuth authorization flow.
@@ -409,7 +409,7 @@ async def complete_connection(
 )
 async def disconnect_provider(
     provider: str,
-    user: CurrentUser,
+    user: CurrentUserOrApiKey,
     service: ConnectionServiceDep,
 ) -> DisconnectResponse:
     """Disconnect from a provider.
@@ -469,7 +469,7 @@ async def disconnect_provider(
 )
 async def get_sync_progress(
     provider: str,
-    user: CurrentUser,
+    user: CurrentUserOrApiKey,
     service: ConnectionServiceDep,
 ) -> SyncProgressResponse:
     """Get sync progress for a provider.

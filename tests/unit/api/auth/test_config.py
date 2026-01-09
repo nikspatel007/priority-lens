@@ -21,6 +21,7 @@ class TestClerkConfig:
             issuer="",
             jwks_url="",
             audience="",
+            api_keys_raw="",  # Explicitly empty
         )
 
         assert config.publishable_key == ""
@@ -40,7 +41,7 @@ class TestClerkConfig:
             jwks_url="https://clerk.example.com/.well-known/jwks.json",
             audience="my-app",
             token_leeway_seconds=60,
-            api_keys=["key1", "key2"],
+            api_keys_raw="key1,key2",  # Comma-separated string
         )
 
         assert config.publishable_key == "pk_test_xxx"
@@ -63,6 +64,7 @@ class TestClerkConfig:
     def test_is_configured_missing_secret(self) -> None:
         """Test is_configured returns False without secret."""
         config = ClerkConfig(
+            secret_key="",  # Explicitly empty
             issuer="https://clerk.example.com",
         )
 
@@ -72,13 +74,14 @@ class TestClerkConfig:
         """Test is_configured returns False without issuer."""
         config = ClerkConfig(
             secret_key="sk_test_xxx",
+            issuer="",  # Explicitly empty
         )
 
         assert config.is_configured is False
 
     def test_is_configured_both_empty(self) -> None:
         """Test is_configured returns False when both empty."""
-        config = ClerkConfig()
+        config = ClerkConfig(secret_key="", issuer="")  # Explicitly empty
 
         assert config.is_configured is False
 
@@ -95,6 +98,7 @@ class TestClerkConfig:
         """Test effective_jwks_url derived from issuer."""
         config = ClerkConfig(
             issuer="https://clerk.example.com",
+            jwks_url="",  # Explicitly empty to test derivation
         )
 
         assert config.effective_jwks_url == "https://clerk.example.com/.well-known/jwks.json"
@@ -103,13 +107,14 @@ class TestClerkConfig:
         """Test effective_jwks_url strips trailing slash from issuer."""
         config = ClerkConfig(
             issuer="https://clerk.example.com/",
+            jwks_url="",  # Explicitly empty to test derivation
         )
 
         assert config.effective_jwks_url == "https://clerk.example.com/.well-known/jwks.json"
 
     def test_effective_jwks_url_empty_when_no_issuer(self) -> None:
         """Test effective_jwks_url returns empty when no issuer."""
-        config = ClerkConfig()
+        config = ClerkConfig(issuer="", jwks_url="")  # Explicitly empty
 
         assert config.effective_jwks_url == ""
 

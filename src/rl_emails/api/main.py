@@ -17,7 +17,11 @@ from rl_emails.api.middleware import (
     setup_logging,
     setup_rate_limit,
 )
-from rl_emails.api.routes import health_router
+from rl_emails.api.routes import (
+    connections_router,
+    health_router,
+    webhooks_router,
+)
 
 if TYPE_CHECKING:
     pass
@@ -109,6 +113,8 @@ def create_app(config: APIConfig | None = None) -> FastAPI:
 
     # Register routes
     app.include_router(health_router)
+    app.include_router(connections_router)
+    app.include_router(webhooks_router)
 
     return app
 
