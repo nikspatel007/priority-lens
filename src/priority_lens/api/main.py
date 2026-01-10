@@ -42,9 +42,13 @@ def _setup_session_factories(session_factory: SessionFactory) -> None:
     Args:
         session_factory: AsyncSession factory to use.
     """
+    # Import set_threads_session here to avoid circular imports
+    from priority_lens.api.routes import set_threads_session
+
     set_projects_session(session_factory)
     set_tasks_session(session_factory)
     set_inbox_session(session_factory)
+    set_threads_session(session_factory)
 
 
 @asynccontextmanager
@@ -137,12 +141,18 @@ def create_app(config: APIConfig | None = None) -> FastAPI:
     app.include_router(connections_router)
     app.include_router(webhooks_router)
 
-    # Import and register project/task/inbox routes
-    from priority_lens.api.routes import inbox_router, projects_router, tasks_router
+    # Import and register project/task/inbox/threads routes
+    from priority_lens.api.routes import (
+        inbox_router,
+        projects_router,
+        tasks_router,
+        threads_router,
+    )
 
     app.include_router(projects_router)
     app.include_router(tasks_router)
     app.include_router(inbox_router)
+    app.include_router(threads_router)
 
     return app
 

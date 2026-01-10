@@ -9,6 +9,8 @@ from priority_lens.api.routes.projects import router as projects_router
 from priority_lens.api.routes.projects import set_session_factory as set_projects_session
 from priority_lens.api.routes.tasks import router as tasks_router
 from priority_lens.api.routes.tasks import set_session_factory as set_tasks_session
+from priority_lens.api.routes.threads import router as threads_router
+from priority_lens.api.routes.threads import set_session_factory as set_threads_session
 from priority_lens.api.routes.webhooks import router as webhooks_router
 from priority_lens.api.routes.webhooks import set_push_service
 
@@ -22,6 +24,8 @@ __all__ = [
     "set_projects_session",
     "set_push_service",
     "set_tasks_session",
+    "set_threads_session",
     "tasks_router",
+    "threads_router",
     "webhooks_router",
 ]
