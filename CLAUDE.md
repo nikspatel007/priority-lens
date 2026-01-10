@@ -6,7 +6,7 @@ Email ML pipeline for analyzing Gmail exports and predicting email priority/acti
 
 **Status**: Production-ready with 100% type coverage and 100% test coverage.
 
-**Current Phase**: Phase 2 - Gmail API Integration (COMPLETE)
+**Current Phase**: Phase 4 - Voice AI + SDUI Integration (IN PROGRESS)
 
 ---
 
@@ -313,3 +313,47 @@ Add Gmail API as alternative data source alongside existing MBOX pipeline.
 ### Documentation
 - `docs/PHASE2_ITERATIONS.md` - Phase 2 detailed iteration specs
 - `ralph-wiggum-phase2.md` - Phase 2 implementation plan
+
+---
+
+## Phase 4 Progress
+
+### Goal
+Voice AI + SDUI Integration for Priority Lens backend.
+
+### Architecture
+See `docs/PRIORITY_LENS_INTEGRATION.md` for full integration plan.
+
+### Iteration Status
+
+| Iter | Name | Status | Notes |
+|------|------|--------|-------|
+| 1 | Canonical Event Schema | ✅ Complete | threads, sessions, events tables |
+| 2 | Thread & Session API | 🔄 Pending | REST endpoints |
+| 3 | LiveKit Integration | 🔄 Pending | Token generation |
+| 4 | Turns API & User Events | 🔄 Pending | Turn submission |
+| 5 | Agent Runtime (LangGraph) | 🔄 Pending | Tool integration |
+| 6 | SDUI Generator | 🔄 Pending | UI block schema |
+| 7 | Agent Event Streaming | 🔄 Pending | LiveKit data channel |
+| 8 | Action Handlers | 🔄 Pending | Action registry |
+| 9 | Integration Tests | 🔄 Pending | Full flow tests |
+| 10 | End-to-End Tests | 🔄 Pending | User journeys |
+
+### Iteration 1 Deliverables
+- [x] Alembic migration: `20260109_phase4_canonical_events.py`
+- [x] SQLAlchemy models: ConversationThread, Session, CanonicalEvent
+- [x] Pydantic schemas: ThreadCreate/Update/Response, SessionCreate/Update/Response, EventCreate/Response
+- [x] Repository classes: ThreadRepository, SessionRepository, EventRepository
+- [x] Event types enum: EventActor, EventType
+- [x] Append-only semantics for events (no update/delete)
+- [x] Monotonic seq per thread
+- [x] 115 new tests
+- [x] 100% test coverage maintained (2069 tests)
+
+### New Tables (Phase 4)
+
+| Table | Purpose |
+|-------|---------|
+| conversation_threads | Voice AI conversation threads |
+| sessions | Voice/text sessions within threads |
+| events | Append-only canonical event log |

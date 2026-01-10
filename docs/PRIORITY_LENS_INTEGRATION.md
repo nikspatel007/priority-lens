@@ -106,11 +106,13 @@ class CanonicalEvent(Base):
 ```
 
 **Acceptance Criteria**:
-- [ ] Migration creates tables with proper indexes
-- [ ] `seq` is monotonically increasing per thread
-- [ ] Events are append-only (no UPDATE/DELETE)
-- [ ] Repository has `append_event()` and `get_events_after_seq()`
-- [ ] 100% test coverage on new code
+- [x] Migration creates tables with proper indexes
+- [x] `seq` is monotonically increasing per thread
+- [x] Events are append-only (no UPDATE/DELETE)
+- [x] Repository has `append_event()` and `get_events_after_seq()`
+- [x] 100% test coverage on new code
+
+**Status**: ✅ COMPLETE (2069 tests passing, 100% coverage)
 
 ---
 

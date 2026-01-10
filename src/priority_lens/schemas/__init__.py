@@ -18,6 +18,17 @@ from priority_lens.schemas.cluster_metadata import (
 from priority_lens.schemas.cluster_metadata import (
     ProjectListResponse as ClusterProjectListResponse,
 )
+from priority_lens.schemas.conversation_thread import (
+    ThreadCreate,
+    ThreadListResponse,
+    ThreadResponse,
+    ThreadUpdate,
+)
+from priority_lens.schemas.event import (
+    EventCreate,
+    EventListResponse,
+    EventResponse,
+)
 from priority_lens.schemas.inbox import (
     EmailSummary,
     InboxStats,
@@ -48,6 +59,14 @@ from priority_lens.schemas.project import (
     ProjectResponse,
     ProjectUpdate,
 )
+from priority_lens.schemas.session import (
+    SessionCreate,
+    SessionListResponse,
+    SessionMode,
+    SessionResponse,
+    SessionStatus,
+    SessionUpdate,
+)
 from priority_lens.schemas.sync import SyncStateResponse, SyncStateUpdate
 from priority_lens.schemas.task import (
     TaskCreate,
@@ -75,11 +94,10 @@ __all__ = [
     "ClusterMetadataUpdate",
     "ClusterProjectListResponse",
     "ClusterStatsResponse",
-    "ProjectClusterResponse",
-    "ProjectDetectionRequest",
-    "ProjectDetectionResponse",
-    "ProjectStatus",
     "EmailSummary",
+    "EventCreate",
+    "EventListResponse",
+    "EventResponse",
     "InboxStats",
     "OAuthTokenCreate",
     "OAuthTokenResponse",
@@ -94,11 +112,21 @@ __all__ = [
     "PriorityContext",
     "PriorityEmail",
     "PriorityInboxResponse",
+    "ProjectClusterResponse",
     "ProjectCreate",
     "ProjectDetailResponse",
+    "ProjectDetectionRequest",
+    "ProjectDetectionResponse",
     "ProjectListResponse",
     "ProjectResponse",
+    "ProjectStatus",
     "ProjectUpdate",
+    "SessionCreate",
+    "SessionListResponse",
+    "SessionMode",
+    "SessionResponse",
+    "SessionStatus",
+    "SessionUpdate",
     "SyncStateResponse",
     "SyncStateUpdate",
     "TaskCreate",
@@ -107,6 +135,10 @@ __all__ = [
     "TaskResponse",
     "TaskStatusUpdate",
     "TaskUpdate",
+    "ThreadCreate",
+    "ThreadListResponse",
+    "ThreadResponse",
+    "ThreadUpdate",
     "WatchSubscriptionCreate",
     "WatchSubscriptionResponse",
     "WatchSubscriptionStatus",
