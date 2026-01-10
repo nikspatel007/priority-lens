@@ -248,7 +248,8 @@ async def execute_snooze_task(
         ValueError: If snooze_until is not a valid datetime.
     """
     try:
-        snooze_datetime = datetime.fromisoformat(snooze_until.replace("Z", "+00:00"))
+        # Validate datetime format (variable used for validation only)
+        datetime.fromisoformat(snooze_until.replace("Z", "+00:00"))
     except ValueError as e:
         raise ValueError(f"Invalid datetime format: {snooze_until}") from e
 
@@ -288,20 +289,24 @@ async def execute_generate_ui(
     async with ctx.session() as session:
         if ui_type == "inbox_list":
             inbox_service = InboxService(session)
-            response = await inbox_service.get_priority_inbox(ctx.user_id, limit=limit)
-            block = create_inbox_list(response.emails)
+            inbox_response = await inbox_service.get_priority_inbox(ctx.user_id, limit=limit)
+            block = create_inbox_list(inbox_response.emails)
             return block.model_dump()
 
         elif ui_type == "task_list":
             task_service = TaskService(session)
-            response = await task_service.list_tasks(ctx.user_id, status="pending", limit=limit)
-            block = create_task_list(response.tasks)
+            task_response = await task_service.list_tasks(
+                ctx.user_id, status="pending", limit=limit
+            )
+            block = create_task_list(task_response.tasks)
             return block.model_dump()
 
         elif ui_type == "project_list":
             project_service = ProjectService(session)
-            response = await project_service.list_projects(ctx.user_id, is_active=True, limit=limit)
-            block = create_project_list(response.projects)
+            project_response = await project_service.list_projects(
+                ctx.user_id, is_active=True, limit=limit
+            )
+            block = create_project_list(project_response.projects)
             return block.model_dump()
 
         else:

@@ -375,7 +375,7 @@ async def submit_turn(
         thread_id=thread_id,
         org_id=org_id,
         user_id=user_id,
-        turn_data=data,  # type: ignore[arg-type]
+        turn_data=data,
     )
 
-    return result  # type: ignore[return-value]
+    return result
