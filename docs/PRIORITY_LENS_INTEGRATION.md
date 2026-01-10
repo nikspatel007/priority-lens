@@ -370,11 +370,26 @@ async def stream_agent_output(
 ```
 
 **Acceptance Criteria**:
-- [ ] Events are persisted before publishing
-- [ ] Events maintain monotonic `seq`
-- [ ] Cancel stops agent execution
-- [ ] Agent close event includes reason
-- [ ] 100% test coverage on new code
+- [x] Events are persisted before publishing
+- [x] Events maintain monotonic `seq`
+- [x] Cancel stops agent execution
+- [x] Agent close event includes reason
+- [x] 100% test coverage on new code
+
+**Status**: ✅ COMPLETE (2256 tests passing, 99.46% coverage)
+
+**Deliverables Completed**:
+- `src/priority_lens/services/agent_streaming.py` - AgentStreamingService:
+  - `stream_agent_output()` - Stream events to DB and LiveKit
+  - `cancel_agent()` - Cancel active streaming sessions
+  - `emit_system_cancel_event()` - Emit cancellation events
+  - Turn lifecycle events (turn.agent.open/close)
+  - Error handling with proper close events
+- `src/priority_lens/api/routes/agent.py` - Agent routes:
+  - `POST /agent/cancel` - Cancel agent execution
+  - `GET /agent/status/{correlation_id}` - Check session status
+- Supporting dataclasses: StreamingContext, AgentEvent, AgentStreamingState
+- Unit tests: 18 streaming tests + 12 route tests
 
 ---
 

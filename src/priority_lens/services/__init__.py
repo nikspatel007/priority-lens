@@ -1,5 +1,12 @@
 """Service layer for business logic orchestration."""
 
+from priority_lens.services.agent_streaming import (
+    AgentCancellationError,
+    AgentEvent,
+    AgentStreamingService,
+    AgentStreamingState,
+    StreamingContext,
+)
 from priority_lens.services.auth_service import AuthService
 from priority_lens.services.batch_processor import BatchProcessor, BatchResult
 from priority_lens.services.cluster_labeler import (
@@ -47,6 +54,10 @@ from priority_lens.services.task_service import TaskNotFoundError, TaskService
 from priority_lens.services.turn_service import TurnService
 
 __all__ = [
+    "AgentCancellationError",
+    "AgentEvent",
+    "AgentStreamingService",
+    "AgentStreamingState",
     "AuthService",
     "BatchProcessor",
     "BatchResult",
@@ -74,6 +85,7 @@ __all__ = [
     "ProjectService",
     "PushNotificationError",
     "PushNotificationService",
+    "StreamingContext",
     "SyncPhase",
     "SyncProgress",
     "SyncResult",
