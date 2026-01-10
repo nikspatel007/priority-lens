@@ -8,14 +8,14 @@ from uuid import UUID
 
 import pytest
 
-from rl_emails.providers.base import (
+from priority_lens.providers.base import (
     ConnectionState,
     ConnectionStatus,
     EmailProvider,
     ProviderType,
     SyncProgress,
 )
-from rl_emails.providers.registry import (
+from priority_lens.providers.registry import (
     ProviderNotFoundError,
     ProviderRegistry,
     get_provider_registry,
@@ -23,7 +23,7 @@ from rl_emails.providers.registry import (
 )
 
 if TYPE_CHECKING:
-    from rl_emails.core.types import EmailData
+    from priority_lens.core.types import EmailData
 
 
 class MockProvider(EmailProvider):
@@ -206,7 +206,7 @@ class TestProviderNotFoundError:
 
     def test_inherits_provider_error(self) -> None:
         """Test ProviderNotFoundError is a ProviderError."""
-        from rl_emails.providers.base import ProviderError
+        from priority_lens.providers.base import ProviderError
 
         assert issubclass(ProviderNotFoundError, ProviderError)
 

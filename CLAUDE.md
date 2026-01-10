@@ -1,4 +1,4 @@
-# rl-emails Project Guide
+# priority-lens Project Guide
 
 ## Overview
 
@@ -64,8 +64,8 @@ make status               # Check pipeline status
 ## Project Structure
 
 ```
-rl-emails/
-├── src/rl_emails/        # Python package (100% typed, 100% tested)
+priority-lens/
+├── src/priority_lens/        # Python package (100% typed, 100% tested)
 │   ├── core/             # Core utilities
 │   │   ├── db.py         # Database connection helpers
 │   │   ├── config.py     # Configuration management
@@ -118,7 +118,7 @@ Run `make check` to verify all gates pass.
 | 10 | stage_10_compute_priority | Hybrid priority ranking |
 | 11 | stage_11_llm_classification | LLM classification |
 
-All stages are located in `src/rl_emails/pipeline/stages/` and follow the pattern:
+All stages are located in `src/priority_lens/pipeline/stages/` and follow the pattern:
 ```python
 def run(config: Config, **kwargs) -> StageResult:
     """Execute the stage with config passed in."""
@@ -225,7 +225,7 @@ Add Gmail API as alternative data source alongside existing MBOX pipeline.
 | 10 | Incremental Sync + CLI | ✅ Complete | CLI sync commands, final testing |
 
 ### Iteration 1 Deliverables
-- [x] `src/rl_emails/auth/` module structure
+- [x] `src/priority_lens/auth/` module structure
 - [x] `GoogleTokens` dataclass with `is_expired()` and `expires_in_seconds()`
 - [x] `OAuthError` exception class
 - [x] Dependencies: google-auth, google-auth-oauthlib, httpx
@@ -246,7 +246,7 @@ Add Gmail API as alternative data source alongside existing MBOX pipeline.
 - [x] 100% test coverage maintained (682 tests)
 
 ### Iteration 4 Deliverables
-- [x] `src/rl_emails/services/` module structure
+- [x] `src/priority_lens/services/` module structure
 - [x] `AuthService` class for OAuth flow orchestration
 - [x] `start_auth_flow()`, `complete_auth_flow()`, `get_valid_token()`, `revoke_token()` methods
 - [x] Auto-refresh tokens before expiry (5-minute buffer)
@@ -262,7 +262,7 @@ Add Gmail API as alternative data source alongside existing MBOX pipeline.
 - [x] Tests for Config Google OAuth (8 tests) and CLI auth (25 tests)
 
 ### Iteration 6 Deliverables
-- [x] `src/rl_emails/integrations/gmail/` module structure
+- [x] `src/priority_lens/integrations/gmail/` module structure
 - [x] `GmailMessageRef` dataclass (id, thread_id)
 - [x] `GmailMessage` dataclass with label helpers (is_sent, is_inbox, etc.)
 - [x] `RateLimiter` token bucket rate limiter for API throttling

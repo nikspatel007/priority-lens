@@ -7,9 +7,9 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from rl_emails.models.organization import Organization
-from rl_emails.repositories.organization import OrganizationRepository
-from rl_emails.schemas.organization import OrganizationCreate, OrganizationUpdate
+from priority_lens.models.organization import Organization
+from priority_lens.repositories.organization import OrganizationRepository
+from priority_lens.schemas.organization import OrganizationCreate, OrganizationUpdate
 
 
 @pytest.fixture

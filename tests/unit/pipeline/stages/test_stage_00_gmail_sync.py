@@ -7,8 +7,8 @@ from uuid import uuid4
 
 import pytest
 
-from rl_emails.pipeline.stages import stage_00_gmail_sync
-from rl_emails.pipeline.stages.base import StageResult
+from priority_lens.pipeline.stages import stage_00_gmail_sync
+from priority_lens.pipeline.stages.base import StageResult
 
 
 class TestRunFunction:

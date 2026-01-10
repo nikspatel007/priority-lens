@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 import pytest
 
-from rl_emails.api.config import APIConfig, get_api_config
+from priority_lens.api.config import APIConfig, get_api_config
 
 
 class TestAPIConfig:

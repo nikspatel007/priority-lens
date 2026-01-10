@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import uuid
 
-from rl_emails.models.organization import Organization
+from priority_lens.models.organization import Organization
 
 
 class TestOrganization:

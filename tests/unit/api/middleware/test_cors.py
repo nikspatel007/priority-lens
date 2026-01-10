@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
-from rl_emails.api.config import APIConfig
-from rl_emails.api.middleware.cors import setup_cors
+from priority_lens.api.config import APIConfig
+from priority_lens.api.middleware.cors import setup_cors
 
 
 class TestSetupCors:
@@ -25,7 +25,7 @@ class TestSetupCors:
         mock_app = MagicMock()
         config = APIConfig(cors_origins=["http://localhost:3000"])
 
-        with patch("rl_emails.api.middleware.cors.CORSMiddleware"):
+        with patch("priority_lens.api.middleware.cors.CORSMiddleware"):
             setup_cors(mock_app, config)
 
             call_kwargs = mock_app.add_middleware.call_args[1]

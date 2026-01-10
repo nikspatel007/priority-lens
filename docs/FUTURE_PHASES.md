@@ -19,7 +19,7 @@ As a system, I need background workers to process emails through the ML pipeline
 ### Implementation Design
 
 ```python
-# src/rl_emails/workers/pipeline_worker.py
+# src/priority_lens/workers/pipeline_worker.py
 class PipelineWorker:
     """Background worker for ML pipeline processing."""
 
@@ -71,7 +71,7 @@ As a system administrator, I need scheduled tasks to maintain sync freshness and
 ### Implementation Design
 
 ```python
-# src/rl_emails/workers/scheduler.py
+# src/priority_lens/workers/scheduler.py
 class Scheduler:
     """Simple async scheduler for periodic tasks."""
 

@@ -5,9 +5,9 @@ from __future__ import annotations
 from typing import Any
 from unittest.mock import MagicMock, patch
 
-from rl_emails.core.config import Config
-from rl_emails.pipeline.stages import stage_07_classify_handleability
-from rl_emails.pipeline.stages.base import StageResult
+from priority_lens.core.config import Config
+from priority_lens.pipeline.stages import stage_07_classify_handleability
+from priority_lens.pipeline.stages.base import StageResult
 
 
 class TestDetectPatterns:
@@ -414,7 +414,7 @@ class TestClassifyEmail:
 class TestRun:
     """Tests for run function."""
 
-    @patch("rl_emails.pipeline.stages.stage_07_classify_handleability.get_connection")
+    @patch("priority_lens.pipeline.stages.stage_07_classify_handleability.get_connection")
     def test_run_returns_stage_result(self, mock_get_connection: MagicMock) -> None:
         """Test run returns proper StageResult."""
         mock_conn = MagicMock()
@@ -435,8 +435,8 @@ class TestRun:
         assert result.success is True
         assert result.records_processed == 0
 
-    @patch("rl_emails.pipeline.stages.stage_07_classify_handleability.execute_values")
-    @patch("rl_emails.pipeline.stages.stage_07_classify_handleability.get_connection")
+    @patch("priority_lens.pipeline.stages.stage_07_classify_handleability.execute_values")
+    @patch("priority_lens.pipeline.stages.stage_07_classify_handleability.get_connection")
     def test_run_processes_emails(
         self, mock_get_connection: MagicMock, mock_execute_values: MagicMock
     ) -> None:
@@ -462,7 +462,7 @@ class TestRun:
         assert result.records_processed == 2
         assert mock_execute_values.called
 
-    @patch("rl_emails.pipeline.stages.stage_07_classify_handleability.get_connection")
+    @patch("priority_lens.pipeline.stages.stage_07_classify_handleability.get_connection")
     def test_run_clears_table_first(self, mock_get_connection: MagicMock) -> None:
         """Test run clears classification table before inserting."""
         mock_conn = MagicMock()
@@ -481,8 +481,8 @@ class TestRun:
         calls = [str(c) for c in mock_cursor.execute.call_args_list]
         assert any("DELETE FROM email_ai_classification" in str(c) for c in calls)
 
-    @patch("rl_emails.pipeline.stages.stage_07_classify_handleability.execute_values")
-    @patch("rl_emails.pipeline.stages.stage_07_classify_handleability.get_connection")
+    @patch("priority_lens.pipeline.stages.stage_07_classify_handleability.execute_values")
+    @patch("priority_lens.pipeline.stages.stage_07_classify_handleability.get_connection")
     def test_run_returns_category_counts_in_metadata(
         self, mock_get_connection: MagicMock, mock_execute_values: MagicMock
     ) -> None:

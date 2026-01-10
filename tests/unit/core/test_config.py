@@ -1,4 +1,4 @@
-"""Tests for rl_emails.core.config."""
+"""Tests for priority_lens.core.config."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from rl_emails.core.config import Config
+from priority_lens.core.config import Config
 
 
 class TestConfig:

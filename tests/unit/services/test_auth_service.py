@@ -8,11 +8,11 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from rl_emails.auth.google import GoogleOAuth
-from rl_emails.auth.oauth import GoogleTokens, OAuthError
-from rl_emails.models.oauth_token import OAuthToken
-from rl_emails.repositories.oauth_token import OAuthTokenRepository
-from rl_emails.services.auth_service import (
+from priority_lens.auth.google import GoogleOAuth
+from priority_lens.auth.oauth import GoogleTokens, OAuthError
+from priority_lens.models.oauth_token import OAuthToken
+from priority_lens.repositories.oauth_token import OAuthTokenRepository
+from priority_lens.services.auth_service import (
     AuthService,
     AuthServiceError,
     TokenNotFoundError,

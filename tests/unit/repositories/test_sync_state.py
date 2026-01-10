@@ -7,9 +7,9 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from rl_emails.models.sync_state import SyncState
-from rl_emails.repositories.sync_state import SyncStateRepository
-from rl_emails.schemas.sync import SyncStateUpdate
+from priority_lens.models.sync_state import SyncState
+from priority_lens.repositories.sync_state import SyncStateRepository
+from priority_lens.schemas.sync import SyncStateUpdate
 
 
 @pytest.fixture

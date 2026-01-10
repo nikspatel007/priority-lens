@@ -1,10 +1,10 @@
-"""Tests for rl_emails.core.types."""
+"""Tests for priority_lens.core.types."""
 
 from __future__ import annotations
 
 from typing import get_type_hints
 
-from rl_emails.core.types import (
+from priority_lens.core.types import (
     ClusterAssignment,
     ClusterMetadataData,
     EmailData,

@@ -4,17 +4,17 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
-from rl_emails.core.config import Config
-from rl_emails.pipeline.stages import stage_12_entity_extraction
-from rl_emails.pipeline.stages.base import StageResult
-from rl_emails.services.entity_extraction import ExtractionResult
+from priority_lens.core.config import Config
+from priority_lens.pipeline.stages import stage_12_entity_extraction
+from priority_lens.pipeline.stages.base import StageResult
+from priority_lens.services.entity_extraction import ExtractionResult
 
 
 class TestRun:
     """Tests for run function."""
 
-    @patch("rl_emails.pipeline.stages.stage_12_entity_extraction.create_engine")
-    @patch("rl_emails.pipeline.stages.stage_12_entity_extraction.extract_all_entities")
+    @patch("priority_lens.pipeline.stages.stage_12_entity_extraction.create_engine")
+    @patch("priority_lens.pipeline.stages.stage_12_entity_extraction.extract_all_entities")
     def test_run_success(self, mock_extract: MagicMock, mock_create_engine: MagicMock) -> None:
         """Test successful run."""
         mock_engine = MagicMock()
@@ -43,8 +43,8 @@ class TestRun:
         assert "Contexts: 100 created" in result.message
         mock_conn.commit.assert_called_once()
 
-    @patch("rl_emails.pipeline.stages.stage_12_entity_extraction.create_engine")
-    @patch("rl_emails.pipeline.stages.stage_12_entity_extraction.extract_all_entities")
+    @patch("priority_lens.pipeline.stages.stage_12_entity_extraction.create_engine")
+    @patch("priority_lens.pipeline.stages.stage_12_entity_extraction.extract_all_entities")
     def test_run_with_errors(self, mock_extract: MagicMock, mock_create_engine: MagicMock) -> None:
         """Test run with extraction errors."""
         mock_engine = MagicMock()
@@ -69,8 +69,8 @@ class TestRun:
         assert result.success is False
         assert "Errors: 2" in result.message
 
-    @patch("rl_emails.pipeline.stages.stage_12_entity_extraction.create_engine")
-    @patch("rl_emails.pipeline.stages.stage_12_entity_extraction.extract_all_entities")
+    @patch("priority_lens.pipeline.stages.stage_12_entity_extraction.create_engine")
+    @patch("priority_lens.pipeline.stages.stage_12_entity_extraction.extract_all_entities")
     def test_run_multi_tenant_mode(
         self, mock_extract: MagicMock, mock_create_engine: MagicMock
     ) -> None:
@@ -106,8 +106,8 @@ class TestRun:
         call_args = mock_extract.call_args
         assert call_args[0][1] == config.user_id
 
-    @patch("rl_emails.pipeline.stages.stage_12_entity_extraction.create_engine")
-    @patch("rl_emails.pipeline.stages.stage_12_entity_extraction.extract_all_entities")
+    @patch("priority_lens.pipeline.stages.stage_12_entity_extraction.create_engine")
+    @patch("priority_lens.pipeline.stages.stage_12_entity_extraction.extract_all_entities")
     def test_run_single_tenant_mode(
         self, mock_extract: MagicMock, mock_create_engine: MagicMock
     ) -> None:
@@ -138,8 +138,8 @@ class TestRun:
         call_args = mock_extract.call_args
         assert call_args[0][1] is None
 
-    @patch("rl_emails.pipeline.stages.stage_12_entity_extraction.create_engine")
-    @patch("rl_emails.pipeline.stages.stage_12_entity_extraction.extract_all_entities")
+    @patch("priority_lens.pipeline.stages.stage_12_entity_extraction.create_engine")
+    @patch("priority_lens.pipeline.stages.stage_12_entity_extraction.extract_all_entities")
     def test_run_zero_records(self, mock_extract: MagicMock, mock_create_engine: MagicMock) -> None:
         """Test run with zero records processed."""
         mock_engine = MagicMock()
@@ -164,8 +164,8 @@ class TestRun:
         assert result.success is True
         assert result.records_processed == 0
 
-    @patch("rl_emails.pipeline.stages.stage_12_entity_extraction.create_engine")
-    @patch("rl_emails.pipeline.stages.stage_12_entity_extraction.extract_all_entities")
+    @patch("priority_lens.pipeline.stages.stage_12_entity_extraction.create_engine")
+    @patch("priority_lens.pipeline.stages.stage_12_entity_extraction.extract_all_entities")
     def test_run_includes_duration(
         self, mock_extract: MagicMock, mock_create_engine: MagicMock
     ) -> None:
@@ -191,8 +191,8 @@ class TestRun:
         assert result.duration_seconds is not None
         assert result.duration_seconds >= 0
 
-    @patch("rl_emails.pipeline.stages.stage_12_entity_extraction.create_engine")
-    @patch("rl_emails.pipeline.stages.stage_12_entity_extraction.extract_all_entities")
+    @patch("priority_lens.pipeline.stages.stage_12_entity_extraction.create_engine")
+    @patch("priority_lens.pipeline.stages.stage_12_entity_extraction.extract_all_entities")
     def test_run_message_format(
         self, mock_extract: MagicMock, mock_create_engine: MagicMock
     ) -> None:

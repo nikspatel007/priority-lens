@@ -39,7 +39,7 @@ test-integration:
 	uv run pytest tests/integration/ -v
 
 coverage:
-	uv run pytest tests/ -v --cov=src/rl_emails --cov-report=term-missing --cov-report=html --cov-fail-under=100
+	uv run pytest tests/ -v --cov=src/priority_lens --cov-report=term-missing --cov-report=html --cov-fail-under=100
 	@echo ""
 	@echo "Coverage report: htmlcov/index.html"
 

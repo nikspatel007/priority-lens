@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 import pytest
 
-from rl_emails.cli import (
+from priority_lens.cli import (
     auth_callback,
     auth_connect,
     auth_disconnect,
@@ -16,7 +16,7 @@ from rl_emails.cli import (
     get_env_file,
     parse_args,
 )
-from rl_emails.core.config import Config
+from priority_lens.core.config import Config
 
 
 class TestParseArgsAuth:
@@ -138,7 +138,7 @@ class TestAuthConnect:
             google_client_secret="test-client-secret",
         )
 
-        with patch("rl_emails.cli.webbrowser.open") as mock_open:
+        with patch("priority_lens.cli.webbrowser.open") as mock_open:
             auth_connect(args, config)
             mock_open.assert_called_once()
 
@@ -161,7 +161,7 @@ class TestAuthStatus:
         config = Config(database_url="postgresql://localhost/test")
 
         # Mock the async function
-        with patch("rl_emails.cli.asyncio.run") as mock_run:
+        with patch("priority_lens.cli.asyncio.run") as mock_run:
             mock_run.return_value = {
                 "connected": False,
                 "provider": None,
@@ -180,7 +180,7 @@ class TestAuthStatus:
         args = argparse.Namespace(user=test_uuid)
         config = Config(database_url="postgresql://localhost/test")
 
-        with patch("rl_emails.cli.asyncio.run") as mock_run:
+        with patch("priority_lens.cli.asyncio.run") as mock_run:
             mock_run.return_value = {
                 "connected": True,
                 "provider": "google",
@@ -200,7 +200,7 @@ class TestAuthStatus:
         args = argparse.Namespace(user=test_uuid)
         config = Config(database_url="postgresql://localhost/test")
 
-        with patch("rl_emails.cli.asyncio.run") as mock_run:
+        with patch("priority_lens.cli.asyncio.run") as mock_run:
             mock_run.return_value = {
                 "connected": True,
                 "provider": "google",
@@ -235,7 +235,7 @@ class TestAuthDisconnect:
             google_client_secret="test-secret",
         )
 
-        with patch("rl_emails.cli.asyncio.run") as mock_run:
+        with patch("priority_lens.cli.asyncio.run") as mock_run:
             mock_run.return_value = True
 
             auth_disconnect(args, config)
@@ -253,7 +253,7 @@ class TestAuthDisconnect:
             google_client_secret="test-secret",
         )
 
-        with patch("rl_emails.cli.asyncio.run") as mock_run:
+        with patch("priority_lens.cli.asyncio.run") as mock_run:
             mock_run.return_value = False
 
             auth_disconnect(args, config)
@@ -291,7 +291,7 @@ class TestAuthCallback:
             google_client_secret="test-secret",
         )
 
-        with patch("rl_emails.cli.asyncio.run") as mock_run:
+        with patch("priority_lens.cli.asyncio.run") as mock_run:
             mock_run.return_value = (True, "Token saved successfully")
 
             auth_callback(args, config)
@@ -310,7 +310,7 @@ class TestAuthCallback:
             google_client_secret="test-secret",
         )
 
-        with patch("rl_emails.cli.asyncio.run") as mock_run:
+        with patch("priority_lens.cli.asyncio.run") as mock_run:
             mock_run.return_value = (False, "Invalid authorization code")
 
             auth_callback(args, config)
@@ -328,7 +328,7 @@ class TestGetEnvFile:
         args = argparse.Namespace(env_file=None)
 
         # Mock __file__ to point to temp dir
-        with patch("rl_emails.cli.Path") as mock_path:
+        with patch("priority_lens.cli.Path") as mock_path:
             mock_path.return_value.resolve.return_value.parent.parent.parent = tmp_path
             # The function checks if env_file.exists()
             # This test verifies the function handles the case
@@ -375,69 +375,69 @@ class TestMainFunction:
 
     def test_routes_to_auth_connect(self) -> None:
         """Test main routes to auth connect."""
-        from rl_emails.cli import main
+        from priority_lens.cli import main
 
         test_uuid = str(uuid.uuid4())
         with patch("sys.argv", ["rl-emails", "auth", "connect", "--user", test_uuid]):
-            with patch("rl_emails.cli.Config.from_env") as mock_config:
+            with patch("priority_lens.cli.Config.from_env") as mock_config:
                 mock_config.return_value = Config(
                     database_url="test",
                     google_client_id="id",
                     google_client_secret="secret",
                 )
-                with patch("rl_emails.cli.auth_connect") as mock_connect:
+                with patch("priority_lens.cli.auth_connect") as mock_connect:
                     main()
                     mock_connect.assert_called_once()
 
     def test_routes_to_auth_status(self) -> None:
         """Test main routes to auth status."""
-        from rl_emails.cli import main
+        from priority_lens.cli import main
 
         test_uuid = str(uuid.uuid4())
         with patch("sys.argv", ["rl-emails", "auth", "status", "--user", test_uuid]):
-            with patch("rl_emails.cli.Config.from_env") as mock_config:
+            with patch("priority_lens.cli.Config.from_env") as mock_config:
                 mock_config.return_value = Config(database_url="test")
-                with patch("rl_emails.cli.auth_status") as mock_status:
+                with patch("priority_lens.cli.auth_status") as mock_status:
                     main()
                     mock_status.assert_called_once()
 
     def test_routes_to_auth_disconnect(self) -> None:
         """Test main routes to auth disconnect."""
-        from rl_emails.cli import main
+        from priority_lens.cli import main
 
         test_uuid = str(uuid.uuid4())
         with patch("sys.argv", ["rl-emails", "auth", "disconnect", "--user", test_uuid]):
-            with patch("rl_emails.cli.Config.from_env") as mock_config:
+            with patch("priority_lens.cli.Config.from_env") as mock_config:
                 mock_config.return_value = Config(database_url="test")
-                with patch("rl_emails.cli.auth_disconnect") as mock_disconnect:
+                with patch("priority_lens.cli.auth_disconnect") as mock_disconnect:
                     main()
                     mock_disconnect.assert_called_once()
 
     def test_routes_to_auth_callback(self) -> None:
         """Test main routes to auth callback."""
-        from rl_emails.cli import main
+        from priority_lens.cli import main
 
         test_uuid = str(uuid.uuid4())
         with patch(
             "sys.argv",
             ["rl-emails", "auth", "callback", "--user", test_uuid, "--code", "test-code"],
         ):
-            with patch("rl_emails.cli.Config.from_env") as mock_config:
+            with patch("priority_lens.cli.Config.from_env") as mock_config:
                 mock_config.return_value = Config(
                     database_url="test",
                     google_client_id="id",
                     google_client_secret="secret",
                 )
-                with patch("rl_emails.cli.auth_callback") as mock_callback:
+                with patch("priority_lens.cli.auth_callback") as mock_callback:
                     main()
                     mock_callback.assert_called_once()
 
     def test_auth_without_action_shows_usage(self) -> None:
         """Test auth without action shows usage message."""
-        from rl_emails.cli import main
+        from priority_lens.cli import main
 
         with patch("sys.argv", ["rl-emails", "auth"]):
-            with patch("rl_emails.cli.Config.from_env") as mock_config:
+            with patch("priority_lens.cli.Config.from_env") as mock_config:
                 mock_config.return_value = Config(database_url="test")
                 with pytest.raises(SystemExit) as exc_info:
                     main()
@@ -445,24 +445,24 @@ class TestMainFunction:
 
     def test_routes_to_pipeline_by_default(self) -> None:
         """Test main routes to pipeline when no subcommand."""
-        from rl_emails.cli import main
+        from priority_lens.cli import main
 
         with patch("sys.argv", ["rl-emails", "--status"]):
-            with patch("rl_emails.cli.Config.from_env") as mock_config:
+            with patch("priority_lens.cli.Config.from_env") as mock_config:
                 mock_config.return_value = Config(database_url="test")
-                with patch("rl_emails.cli.run_pipeline") as mock_pipeline:
+                with patch("priority_lens.cli.run_pipeline") as mock_pipeline:
                     main()
                     mock_pipeline.assert_called_once()
 
     def test_routes_to_sync(self) -> None:
         """Test main routes to sync command."""
-        from rl_emails.cli import main
+        from priority_lens.cli import main
 
         test_uuid = str(uuid.uuid4())
         with patch("sys.argv", ["rl-emails", "sync", "--user", test_uuid]):
-            with patch("rl_emails.cli.Config.from_env") as mock_config:
+            with patch("priority_lens.cli.Config.from_env") as mock_config:
                 mock_config.return_value = Config(database_url="test")
-                with patch("rl_emails.cli.sync_emails") as mock_sync:
+                with patch("priority_lens.cli.sync_emails") as mock_sync:
                     main()
                     mock_sync.assert_called_once()
 
@@ -515,7 +515,7 @@ class TestSyncEmails:
 
     def test_invalid_uuid_exits(self) -> None:
         """Test that invalid UUID exits with error."""
-        from rl_emails.cli import sync_emails
+        from priority_lens.cli import sync_emails
 
         args = argparse.Namespace(user="not-a-uuid", status=False, days=30, max_messages=None)
         config = Config(database_url="test")
@@ -525,38 +525,38 @@ class TestSyncEmails:
 
     def test_sync_status_calls_helper(self) -> None:
         """Test that --status calls _show_sync_status."""
-        from rl_emails.cli import sync_emails
+        from priority_lens.cli import sync_emails
 
         test_uuid = str(uuid.uuid4())
         args = argparse.Namespace(user=test_uuid, status=True, days=30, max_messages=None)
         config = Config(database_url="postgresql://localhost/test")
 
-        with patch("rl_emails.cli._show_sync_status") as mock_status:
+        with patch("priority_lens.cli._show_sync_status") as mock_status:
             sync_emails(args, config)
             mock_status.assert_called_once()
 
     def test_sync_run_calls_helper(self) -> None:
         """Test that sync without --status calls _run_sync."""
-        from rl_emails.cli import sync_emails
+        from priority_lens.cli import sync_emails
 
         test_uuid = str(uuid.uuid4())
         args = argparse.Namespace(user=test_uuid, status=False, days=30, max_messages=None)
         config = Config(database_url="postgresql://localhost/test")
 
-        with patch("rl_emails.cli._run_sync") as mock_run:
+        with patch("priority_lens.cli._run_sync") as mock_run:
             sync_emails(args, config)
             mock_run.assert_called_once()
 
     def test_run_sync_success(self, capsys: pytest.CaptureFixture[str]) -> None:
         """Test _run_sync with successful sync."""
-        from rl_emails.cli import _run_sync
-        from rl_emails.pipeline.stages.base import StageResult
+        from priority_lens.cli import _run_sync
+        from priority_lens.pipeline.stages.base import StageResult
 
         test_uuid = uuid.UUID(str(uuid.uuid4()))
         config = Config(database_url="postgresql://localhost/test")
         config = config.with_user(test_uuid)
 
-        with patch("rl_emails.pipeline.stages.stage_00_gmail_sync.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_00_gmail_sync.run") as mock_run:
             mock_run.return_value = StageResult(
                 success=True,
                 records_processed=100,
@@ -573,14 +573,14 @@ class TestSyncEmails:
 
     def test_run_sync_failure_exits(self) -> None:
         """Test _run_sync exits on failure."""
-        from rl_emails.cli import _run_sync
-        from rl_emails.pipeline.stages.base import StageResult
+        from priority_lens.cli import _run_sync
+        from priority_lens.pipeline.stages.base import StageResult
 
         test_uuid = uuid.UUID(str(uuid.uuid4()))
         config = Config(database_url="postgresql://localhost/test")
         config = config.with_user(test_uuid)
 
-        with patch("rl_emails.pipeline.stages.stage_00_gmail_sync.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_00_gmail_sync.run") as mock_run:
             mock_run.return_value = StageResult(
                 success=False,
                 records_processed=0,
@@ -593,14 +593,14 @@ class TestSyncEmails:
 
     def test_run_sync_with_max_messages(self, capsys: pytest.CaptureFixture[str]) -> None:
         """Test _run_sync with max_messages specified."""
-        from rl_emails.cli import _run_sync
-        from rl_emails.pipeline.stages.base import StageResult
+        from priority_lens.cli import _run_sync
+        from priority_lens.pipeline.stages.base import StageResult
 
         test_uuid = uuid.UUID(str(uuid.uuid4()))
         config = Config(database_url="postgresql://localhost/test")
         config = config.with_user(test_uuid)
 
-        with patch("rl_emails.pipeline.stages.stage_00_gmail_sync.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_00_gmail_sync.run") as mock_run:
             mock_run.return_value = StageResult(
                 success=True,
                 records_processed=50,
@@ -617,14 +617,14 @@ class TestSyncEmails:
 
     def test_run_sync_without_metadata(self, capsys: pytest.CaptureFixture[str]) -> None:
         """Test _run_sync when metadata is None."""
-        from rl_emails.cli import _run_sync
-        from rl_emails.pipeline.stages.base import StageResult
+        from priority_lens.cli import _run_sync
+        from priority_lens.pipeline.stages.base import StageResult
 
         test_uuid = uuid.UUID(str(uuid.uuid4()))
         config = Config(database_url="postgresql://localhost/test")
         config = config.with_user(test_uuid)
 
-        with patch("rl_emails.pipeline.stages.stage_00_gmail_sync.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_00_gmail_sync.run") as mock_run:
             mock_run.return_value = StageResult(
                 success=True,
                 records_processed=50,
@@ -641,14 +641,14 @@ class TestSyncEmails:
 
     def test_run_sync_with_zero_synced(self, capsys: pytest.CaptureFixture[str]) -> None:
         """Test _run_sync when synced is 0 (falsy)."""
-        from rl_emails.cli import _run_sync
-        from rl_emails.pipeline.stages.base import StageResult
+        from priority_lens.cli import _run_sync
+        from priority_lens.pipeline.stages.base import StageResult
 
         test_uuid = uuid.UUID(str(uuid.uuid4()))
         config = Config(database_url="postgresql://localhost/test")
         config = config.with_user(test_uuid)
 
-        with patch("rl_emails.pipeline.stages.stage_00_gmail_sync.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_00_gmail_sync.run") as mock_run:
             mock_run.return_value = StageResult(
                 success=True,
                 records_processed=0,
@@ -669,12 +669,12 @@ class TestShowSyncStatus:
 
     def test_show_sync_status_full(self, capsys: pytest.CaptureFixture[str]) -> None:
         """Test _show_sync_status with all fields."""
-        from rl_emails.cli import _show_sync_status
+        from priority_lens.cli import _show_sync_status
 
         test_uuid = uuid.UUID(str(uuid.uuid4()))
         config = Config(database_url="postgresql://localhost/test")
 
-        with patch("rl_emails.cli.asyncio.run") as mock_run:
+        with patch("priority_lens.cli.asyncio.run") as mock_run:
             mock_run.return_value = {
                 "status": "completed",
                 "emails_synced": 500,
@@ -693,12 +693,12 @@ class TestShowSyncStatus:
 
     def test_show_sync_status_with_error(self, capsys: pytest.CaptureFixture[str]) -> None:
         """Test _show_sync_status with error."""
-        from rl_emails.cli import _show_sync_status
+        from priority_lens.cli import _show_sync_status
 
         test_uuid = uuid.UUID(str(uuid.uuid4()))
         config = Config(database_url="postgresql://localhost/test")
 
-        with patch("rl_emails.cli.asyncio.run") as mock_run:
+        with patch("priority_lens.cli.asyncio.run") as mock_run:
             mock_run.return_value = {
                 "status": "error",
                 "emails_synced": 0,
@@ -715,12 +715,12 @@ class TestShowSyncStatus:
 
     def test_show_sync_status_with_message(self, capsys: pytest.CaptureFixture[str]) -> None:
         """Test _show_sync_status with message."""
-        from rl_emails.cli import _show_sync_status
+        from priority_lens.cli import _show_sync_status
 
         test_uuid = uuid.UUID(str(uuid.uuid4()))
         config = Config(database_url="postgresql://localhost/test")
 
-        with patch("rl_emails.cli.asyncio.run") as mock_run:
+        with patch("priority_lens.cli.asyncio.run") as mock_run:
             mock_run.return_value = {
                 "status": "not_connected",
                 "message": "No Gmail connection. Run 'rl-emails auth connect' first.",

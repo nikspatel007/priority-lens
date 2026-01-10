@@ -7,8 +7,8 @@ from unittest import mock
 
 import pytest
 
-from rl_emails.models.cluster_metadata import ClusterMetadata
-from rl_emails.services.project_detector import (
+from priority_lens.models.cluster_metadata import ClusterMetadata
+from priority_lens.services.project_detector import (
     ProjectDetectionConfig,
     ProjectDetectionResult,
     ProjectDetectionSummary,

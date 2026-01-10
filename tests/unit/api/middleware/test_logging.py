@@ -6,8 +6,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from rl_emails.api.config import APIConfig
-from rl_emails.api.middleware.logging import (
+from priority_lens.api.config import APIConfig
+from priority_lens.api.middleware.logging import (
     RequestLoggingMiddleware,
     add_correlation_id,
     configure_structlog,
@@ -24,7 +24,7 @@ class TestAddCorrelationId:
         """Test that correlation ID is added from context."""
         event_dict: dict[str, object] = {"event": "test"}
 
-        with patch("rl_emails.api.middleware.logging.correlation_id") as mock_cid:
+        with patch("priority_lens.api.middleware.logging.correlation_id") as mock_cid:
             mock_cid.get.return_value = "test-correlation-id"
             result = add_correlation_id(MagicMock(), "info", event_dict)
 
@@ -34,7 +34,7 @@ class TestAddCorrelationId:
         """Test that request ID is added from context var."""
         event_dict: dict[str, object] = {"event": "test"}
 
-        with patch("rl_emails.api.middleware.logging.correlation_id") as mock_cid:
+        with patch("priority_lens.api.middleware.logging.correlation_id") as mock_cid:
             mock_cid.get.return_value = None
             request_id_var.set("test-request-id")
             result = add_correlation_id(MagicMock(), "info", event_dict)
@@ -46,7 +46,7 @@ class TestAddCorrelationId:
         """Test that user ID is added from context var."""
         event_dict: dict[str, object] = {"event": "test"}
 
-        with patch("rl_emails.api.middleware.logging.correlation_id") as mock_cid:
+        with patch("priority_lens.api.middleware.logging.correlation_id") as mock_cid:
             mock_cid.get.return_value = None
             user_id_var.set("test-user-id")
             result = add_correlation_id(MagicMock(), "info", event_dict)
@@ -58,7 +58,7 @@ class TestAddCorrelationId:
         """Test that IDs are not added when not set."""
         event_dict: dict[str, object] = {"event": "test"}
 
-        with patch("rl_emails.api.middleware.logging.correlation_id") as mock_cid:
+        with patch("priority_lens.api.middleware.logging.correlation_id") as mock_cid:
             mock_cid.get.return_value = None
             request_id_var.set(None)
             user_id_var.set(None)
@@ -74,14 +74,14 @@ class TestConfigureStructlog:
 
     def test_json_format(self) -> None:
         """Test configuring with JSON format."""
-        with patch("rl_emails.api.middleware.logging.structlog") as mock_structlog:
+        with patch("priority_lens.api.middleware.logging.structlog") as mock_structlog:
             configure_structlog(json_format=True, log_level="INFO")
 
             mock_structlog.configure.assert_called_once()
 
     def test_console_format(self) -> None:
         """Test configuring with console format."""
-        with patch("rl_emails.api.middleware.logging.structlog") as mock_structlog:
+        with patch("priority_lens.api.middleware.logging.structlog") as mock_structlog:
             configure_structlog(json_format=False, log_level="DEBUG")
 
             mock_structlog.configure.assert_called_once()
@@ -89,7 +89,7 @@ class TestConfigureStructlog:
     def test_log_levels(self) -> None:
         """Test different log levels."""
         for level in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:
-            with patch("rl_emails.api.middleware.logging.structlog") as mock_structlog:
+            with patch("priority_lens.api.middleware.logging.structlog") as mock_structlog:
                 configure_structlog(json_format=True, log_level=level)
                 mock_structlog.configure.assert_called_once()
 
@@ -125,7 +125,7 @@ class TestRequestLoggingMiddleware:
         async def call_next(request: MagicMock) -> MagicMock:
             return mock_response
 
-        with patch("rl_emails.api.middleware.logging.logger") as mock_logger:
+        with patch("priority_lens.api.middleware.logging.logger") as mock_logger:
             mock_logger.ainfo = AsyncMock()
             response = await middleware.dispatch(mock_request, call_next)
 
@@ -144,7 +144,7 @@ class TestRequestLoggingMiddleware:
         async def call_next(request: MagicMock) -> MagicMock:
             return mock_response
 
-        with patch("rl_emails.api.middleware.logging.logger") as mock_logger:
+        with patch("priority_lens.api.middleware.logging.logger") as mock_logger:
             mock_logger.ainfo = AsyncMock()
             response = await middleware.dispatch(mock_request, call_next)
 
@@ -167,7 +167,7 @@ class TestRequestLoggingMiddleware:
             captured_user_id = user_id_var.get()
             return mock_response
 
-        with patch("rl_emails.api.middleware.logging.logger") as mock_logger:
+        with patch("priority_lens.api.middleware.logging.logger") as mock_logger:
             mock_logger.ainfo = AsyncMock()
             await middleware.dispatch(mock_request, call_next)
 
@@ -183,7 +183,7 @@ class TestRequestLoggingMiddleware:
             raise ValueError("Test error")
 
         with (
-            patch("rl_emails.api.middleware.logging.logger") as mock_logger,
+            patch("priority_lens.api.middleware.logging.logger") as mock_logger,
             pytest.raises(ValueError),
         ):
             mock_logger.ainfo = AsyncMock()
@@ -205,7 +205,7 @@ class TestRequestLoggingMiddleware:
         async def call_next(request: MagicMock) -> MagicMock:
             return mock_response
 
-        with patch("rl_emails.api.middleware.logging.logger") as mock_logger:
+        with patch("priority_lens.api.middleware.logging.logger") as mock_logger:
             mock_logger.ainfo = AsyncMock()
             await middleware.dispatch(mock_request, call_next)
 
@@ -226,7 +226,7 @@ class TestRequestLoggingMiddleware:
         async def call_next(request: MagicMock) -> MagicMock:
             return mock_response
 
-        with patch("rl_emails.api.middleware.logging.logger") as mock_logger:
+        with patch("priority_lens.api.middleware.logging.logger") as mock_logger:
             mock_logger.ainfo = AsyncMock()
             await middleware.dispatch(mock_request, call_next)
 
@@ -243,7 +243,7 @@ class TestSetupLogging:
         mock_app = MagicMock()
         config = APIConfig(log_json=True, log_level="INFO")
 
-        with patch("rl_emails.api.middleware.logging.configure_structlog") as mock_configure:
+        with patch("priority_lens.api.middleware.logging.configure_structlog") as mock_configure:
             setup_logging(mock_app, config)
 
             mock_configure.assert_called_once_with(
@@ -256,7 +256,7 @@ class TestSetupLogging:
         mock_app = MagicMock()
         config = APIConfig()
 
-        with patch("rl_emails.api.middleware.logging.configure_structlog"):
+        with patch("priority_lens.api.middleware.logging.configure_structlog"):
             setup_logging(mock_app, config)
 
         # Should add CorrelationIdMiddleware and RequestLoggingMiddleware

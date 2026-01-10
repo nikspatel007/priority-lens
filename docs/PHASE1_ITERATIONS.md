@@ -88,7 +88,7 @@ CREATE INDEX idx_sync_state_user_id ON sync_state(user_id);
 | File | Action | Description |
 |------|--------|-------------|
 | `alembic/versions/xxx_add_multi_tenant_tables.py` | Create | Migration for new tables |
-| `src/rl_emails/core/types.py` | Modify | Add Organization, OrgUser, OAuthToken, SyncState types |
+| `src/priority_lens/core/types.py` | Modify | Add Organization, OrgUser, OAuthToken, SyncState types |
 | `tests/unit/core/test_types.py` | Modify | Add tests for new types |
 
 ### Acceptance Criteria
@@ -211,7 +211,7 @@ As a developer, I need Pydantic/SQLAlchemy models for multi-tenant entities so t
 ### Architecture
 
 ```
-src/rl_emails/
+src/priority_lens/
 ├── models/                    # NEW: SQLAlchemy models
 │   ├── __init__.py
 │   ├── base.py               # Base model class
@@ -237,21 +237,21 @@ src/rl_emails/
 
 | File | Action | Description |
 |------|--------|-------------|
-| `src/rl_emails/models/__init__.py` | Create | Barrel exports |
-| `src/rl_emails/models/base.py` | Create | Base model with common fields |
-| `src/rl_emails/models/organization.py` | Create | Organization ORM model |
-| `src/rl_emails/models/org_user.py` | Create | OrgUser ORM model |
-| `src/rl_emails/models/oauth_token.py` | Create | OAuthToken ORM model |
-| `src/rl_emails/models/sync_state.py` | Create | SyncState ORM model |
-| `src/rl_emails/schemas/__init__.py` | Create | Barrel exports |
-| `src/rl_emails/schemas/organization.py` | Create | Org Pydantic schemas |
-| `src/rl_emails/schemas/org_user.py` | Create | User Pydantic schemas |
-| `src/rl_emails/schemas/sync.py` | Create | Sync Pydantic schemas |
-| `src/rl_emails/repositories/__init__.py` | Create | Barrel exports |
-| `src/rl_emails/repositories/organization.py` | Create | Org repository |
-| `src/rl_emails/repositories/org_user.py` | Create | User repository |
-| `src/rl_emails/repositories/sync_state.py` | Create | Sync repository |
-| `src/rl_emails/core/config.py` | Modify | Add user_id, org_id optional fields |
+| `src/priority_lens/models/__init__.py` | Create | Barrel exports |
+| `src/priority_lens/models/base.py` | Create | Base model with common fields |
+| `src/priority_lens/models/organization.py` | Create | Organization ORM model |
+| `src/priority_lens/models/org_user.py` | Create | OrgUser ORM model |
+| `src/priority_lens/models/oauth_token.py` | Create | OAuthToken ORM model |
+| `src/priority_lens/models/sync_state.py` | Create | SyncState ORM model |
+| `src/priority_lens/schemas/__init__.py` | Create | Barrel exports |
+| `src/priority_lens/schemas/organization.py` | Create | Org Pydantic schemas |
+| `src/priority_lens/schemas/org_user.py` | Create | User Pydantic schemas |
+| `src/priority_lens/schemas/sync.py` | Create | Sync Pydantic schemas |
+| `src/priority_lens/repositories/__init__.py` | Create | Barrel exports |
+| `src/priority_lens/repositories/organization.py` | Create | Org repository |
+| `src/priority_lens/repositories/org_user.py` | Create | User repository |
+| `src/priority_lens/repositories/sync_state.py` | Create | Sync repository |
+| `src/priority_lens/core/config.py` | Modify | Add user_id, org_id optional fields |
 | `tests/unit/models/` | Create | Model tests |
 | `tests/unit/schemas/` | Create | Schema tests |
 | `tests/unit/repositories/` | Create | Repository tests |
@@ -259,13 +259,13 @@ src/rl_emails/
 ### Model Design
 
 ```python
-# src/rl_emails/models/organization.py
+# src/priority_lens/models/organization.py
 from sqlalchemy import Column, String, DateTime
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship
 import uuid
 
-from rl_emails.models.base import Base
+from priority_lens.models.base import Base
 
 class Organization(Base):
     __tablename__ = "organizations"
@@ -281,7 +281,7 @@ class Organization(Base):
 ```
 
 ```python
-# src/rl_emails/schemas/organization.py
+# src/priority_lens/schemas/organization.py
 from pydantic import BaseModel, Field
 from uuid import UUID
 from datetime import datetime
@@ -303,13 +303,13 @@ class OrganizationResponse(BaseModel):
 ```
 
 ```python
-# src/rl_emails/repositories/organization.py
+# src/priority_lens/repositories/organization.py
 from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from rl_emails.models.organization import Organization
-from rl_emails.schemas.organization import OrganizationCreate
+from priority_lens.models.organization import Organization
+from priority_lens.schemas.organization import OrganizationCreate
 
 class OrganizationRepository:
     def __init__(self, session: AsyncSession):
@@ -338,7 +338,7 @@ class OrganizationRepository:
 ### Config Updates
 
 ```python
-# src/rl_emails/core/config.py (modifications)
+# src/priority_lens/core/config.py (modifications)
 
 @dataclass
 class Config:
@@ -484,24 +484,24 @@ def run(config: Config) -> StageResult:
 
 | File | Changes |
 |------|---------|
-| `src/rl_emails/pipeline/stages/stage_01_parse_mbox.py` | Add user_id to output |
-| `src/rl_emails/pipeline/stages/stage_02_import_postgres.py` | Add user_id column |
-| `src/rl_emails/pipeline/stages/stage_03_populate_threads.py` | Filter by user_id |
-| `src/rl_emails/pipeline/stages/stage_04_enrich_emails.py` | Filter by user_id |
-| `src/rl_emails/pipeline/stages/stage_05_compute_features.py` | Filter by user_id |
-| `src/rl_emails/pipeline/stages/stage_06_compute_embeddings.py` | Filter by user_id |
-| `src/rl_emails/pipeline/stages/stage_07_classify_handleability.py` | Filter by user_id |
-| `src/rl_emails/pipeline/stages/stage_08_populate_users.py` | Filter by user_id |
-| `src/rl_emails/pipeline/stages/stage_09_cluster_emails.py` | Filter by user_id |
-| `src/rl_emails/pipeline/stages/stage_10_compute_priority.py` | Filter by user_id |
-| `src/rl_emails/pipeline/stages/stage_11_llm_classification.py` | Filter by user_id |
-| `src/rl_emails/pipeline/orchestrator.py` | Pass user_id to stages |
-| `src/rl_emails/cli.py` | Add --user option |
+| `src/priority_lens/pipeline/stages/stage_01_parse_mbox.py` | Add user_id to output |
+| `src/priority_lens/pipeline/stages/stage_02_import_postgres.py` | Add user_id column |
+| `src/priority_lens/pipeline/stages/stage_03_populate_threads.py` | Filter by user_id |
+| `src/priority_lens/pipeline/stages/stage_04_enrich_emails.py` | Filter by user_id |
+| `src/priority_lens/pipeline/stages/stage_05_compute_features.py` | Filter by user_id |
+| `src/priority_lens/pipeline/stages/stage_06_compute_embeddings.py` | Filter by user_id |
+| `src/priority_lens/pipeline/stages/stage_07_classify_handleability.py` | Filter by user_id |
+| `src/priority_lens/pipeline/stages/stage_08_populate_users.py` | Filter by user_id |
+| `src/priority_lens/pipeline/stages/stage_09_cluster_emails.py` | Filter by user_id |
+| `src/priority_lens/pipeline/stages/stage_10_compute_priority.py` | Filter by user_id |
+| `src/priority_lens/pipeline/stages/stage_11_llm_classification.py` | Filter by user_id |
+| `src/priority_lens/pipeline/orchestrator.py` | Pass user_id to stages |
+| `src/priority_lens/cli.py` | Add --user option |
 
 ### Query Scoping Pattern
 
 ```python
-# src/rl_emails/pipeline/stages/stage_03_populate_threads.py
+# src/priority_lens/pipeline/stages/stage_03_populate_threads.py
 
 async def get_emails(conn: Connection, user_id: UUID | None) -> list[dict]:
     """Get emails, optionally filtered by user."""
@@ -536,7 +536,7 @@ def run(config: Config, batch_size: int = 100) -> StageResult:
 ### CLI Updates
 
 ```python
-# src/rl_emails/cli.py
+# src/priority_lens/cli.py
 
 @click.command()
 @click.option("--user", type=click.UUID, help="User ID for multi-tenant mode")
@@ -623,15 +623,15 @@ class TestCLIMultiTenant:
 1. **Test backward compatibility**:
    ```bash
    # Without --user, should work as before
-   rl-emails --status
-   rl-emails  # Full pipeline
+   priority-lens --status
+   priority-lens  # Full pipeline
    ```
 
 2. **Test user-scoped mode**:
    ```bash
    # Create test user first
    # Then run with --user
-   rl-emails --user <uuid> --status
+   priority-lens --user <uuid> --status
    ```
 
 3. **Verify SQL queries include user filter**:
@@ -673,9 +673,9 @@ class TestCLIMultiTenant:
 - [x] Verify 100% coverage
 
 ### Iteration 2: Core Models ✅
-- [x] Create SQLAlchemy models (`src/rl_emails/models/`)
-- [x] Create Pydantic schemas (`src/rl_emails/schemas/`)
-- [x] Create repository classes (`src/rl_emails/repositories/`)
+- [x] Create SQLAlchemy models (`src/priority_lens/models/`)
+- [x] Create Pydantic schemas (`src/priority_lens/schemas/`)
+- [x] Create repository classes (`src/priority_lens/repositories/`)
 - [x] Update Config class with `with_user()` method
 - [x] Write unit tests for all
 - [x] Verify 100% coverage

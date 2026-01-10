@@ -8,7 +8,7 @@ from datetime import UTC, datetime
 import pytest
 from pydantic import ValidationError
 
-from rl_emails.schemas.sync import SyncStateResponse, SyncStateUpdate
+from priority_lens.schemas.sync import SyncStateResponse, SyncStateUpdate
 
 
 class TestSyncStateUpdate:

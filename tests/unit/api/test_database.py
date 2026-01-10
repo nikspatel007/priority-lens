@@ -6,8 +6,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from rl_emails.api.config import APIConfig
-from rl_emails.api.database import Database, get_database, set_database
+from priority_lens.api.config import APIConfig
+from priority_lens.api.database import Database, get_database, set_database
 
 
 class TestDatabase:
@@ -50,8 +50,8 @@ class TestDatabase:
     async def test_connect(self, database: Database) -> None:
         """Test database connection."""
         with (
-            patch("rl_emails.api.database.create_async_engine") as mock_create_engine,
-            patch("rl_emails.api.database.async_sessionmaker") as mock_sessionmaker,
+            patch("priority_lens.api.database.create_async_engine") as mock_create_engine,
+            patch("priority_lens.api.database.async_sessionmaker") as mock_sessionmaker,
         ):
             mock_engine = MagicMock()
             mock_create_engine.return_value = mock_engine
@@ -73,8 +73,8 @@ class TestDatabase:
     async def test_connect_idempotent(self, database: Database) -> None:
         """Test that connect is idempotent."""
         with (
-            patch("rl_emails.api.database.create_async_engine") as mock_create_engine,
-            patch("rl_emails.api.database.async_sessionmaker") as mock_sessionmaker,
+            patch("priority_lens.api.database.create_async_engine") as mock_create_engine,
+            patch("priority_lens.api.database.async_sessionmaker") as mock_sessionmaker,
         ):
             mock_engine = MagicMock()
             mock_create_engine.return_value = mock_engine

@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
-from rl_emails.core.config import Config
-from rl_emails.pipeline.stages import stage_08_populate_users
-from rl_emails.pipeline.stages.base import StageResult
+from priority_lens.core.config import Config
+from priority_lens.pipeline.stages import stage_08_populate_users
+from priority_lens.pipeline.stages.base import StageResult
 
 
 class TestIsYourEmail:
@@ -49,7 +49,7 @@ class TestIsYourEmail:
 class TestPopulateUsersFromEmails:
     """Tests for populate_users_from_emails function."""
 
-    @patch("rl_emails.pipeline.stages.stage_08_populate_users.execute_values")
+    @patch("priority_lens.pipeline.stages.stage_08_populate_users.execute_values")
     def test_populates_users(self, mock_execute_values: MagicMock) -> None:
         """Test basic user population."""
         mock_conn = MagicMock()
@@ -75,7 +75,7 @@ class TestPopulateUsersFromEmails:
         assert stats["unique_emails"] == 2
         assert mock_execute_values.called
 
-    @patch("rl_emails.pipeline.stages.stage_08_populate_users.execute_values")
+    @patch("priority_lens.pipeline.stages.stage_08_populate_users.execute_values")
     def test_handles_empty_emails(self, mock_execute_values: MagicMock) -> None:
         """Test handling when no emails exist."""
         mock_conn = MagicMock()
@@ -95,7 +95,7 @@ class TestPopulateUsersFromEmails:
         # execute_values should not be called with empty data
         mock_execute_values.assert_not_called()
 
-    @patch("rl_emails.pipeline.stages.stage_08_populate_users.execute_values")
+    @patch("priority_lens.pipeline.stages.stage_08_populate_users.execute_values")
     def test_truncates_table_first(self, mock_execute_values: MagicMock) -> None:
         """Test that TRUNCATE is called before populating."""
         mock_conn = MagicMock()
@@ -111,7 +111,7 @@ class TestPopulateUsersFromEmails:
         calls = [str(c) for c in mock_cursor.execute.call_args_list]
         assert any("TRUNCATE" in str(c) for c in calls)
 
-    @patch("rl_emails.pipeline.stages.stage_08_populate_users.execute_values")
+    @patch("priority_lens.pipeline.stages.stage_08_populate_users.execute_values")
     def test_marks_your_emails(self, mock_execute_values: MagicMock) -> None:
         """Test that your emails are marked correctly."""
         mock_conn = MagicMock()
@@ -142,8 +142,8 @@ class TestPopulateUsersFromEmails:
 class TestRun:
     """Tests for run function."""
 
-    @patch("rl_emails.pipeline.stages.stage_08_populate_users.get_connection")
-    @patch("rl_emails.pipeline.stages.stage_08_populate_users.populate_users_from_emails")
+    @patch("priority_lens.pipeline.stages.stage_08_populate_users.get_connection")
+    @patch("priority_lens.pipeline.stages.stage_08_populate_users.populate_users_from_emails")
     def test_run_returns_stage_result(
         self, mock_populate: MagicMock, mock_get_connection: MagicMock
     ) -> None:
@@ -168,8 +168,8 @@ class TestRun:
         assert result.metadata["is_you_count"] == 1
         assert result.metadata["important_sender_count"] == 10
 
-    @patch("rl_emails.pipeline.stages.stage_08_populate_users.get_connection")
-    @patch("rl_emails.pipeline.stages.stage_08_populate_users.populate_users_from_emails")
+    @patch("priority_lens.pipeline.stages.stage_08_populate_users.get_connection")
+    @patch("priority_lens.pipeline.stages.stage_08_populate_users.populate_users_from_emails")
     def test_run_with_no_your_email(
         self, mock_populate: MagicMock, mock_get_connection: MagicMock
     ) -> None:
@@ -191,8 +191,8 @@ class TestRun:
         # Verify populate was called with empty string for your_email
         mock_populate.assert_called_once_with(mock_conn, "")
 
-    @patch("rl_emails.pipeline.stages.stage_08_populate_users.get_connection")
-    @patch("rl_emails.pipeline.stages.stage_08_populate_users.populate_users_from_emails")
+    @patch("priority_lens.pipeline.stages.stage_08_populate_users.get_connection")
+    @patch("priority_lens.pipeline.stages.stage_08_populate_users.populate_users_from_emails")
     def test_run_calculates_duration(
         self, mock_populate: MagicMock, mock_get_connection: MagicMock
     ) -> None:

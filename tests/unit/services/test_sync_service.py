@@ -8,9 +8,9 @@ from uuid import uuid4
 
 import pytest
 
-from rl_emails.integrations.gmail.client import GmailApiError
-from rl_emails.integrations.gmail.models import GmailMessageRef
-from rl_emails.services.sync_service import SyncResult, SyncService
+from priority_lens.integrations.gmail.client import GmailApiError
+from priority_lens.integrations.gmail.models import GmailMessageRef
+from priority_lens.services.sync_service import SyncResult, SyncService
 
 
 class TestSyncResult:

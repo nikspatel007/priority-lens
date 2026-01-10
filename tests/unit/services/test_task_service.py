@@ -8,10 +8,10 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from rl_emails.models.project import Project
-from rl_emails.models.task import Task
-from rl_emails.schemas.task import TaskCreate, TaskUpdate
-from rl_emails.services.task_service import TaskNotFoundError, TaskService
+from priority_lens.models.project import Project
+from priority_lens.models.task import Task
+from priority_lens.schemas.task import TaskCreate, TaskUpdate
+from priority_lens.services.task_service import TaskNotFoundError, TaskService
 
 
 @pytest.fixture

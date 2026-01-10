@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
-from rl_emails.core.config import Config
-from rl_emails.pipeline import status
+from priority_lens.core.config import Config
+from priority_lens.pipeline import status
 
 
 class TestPipelineStatus:
@@ -94,7 +94,7 @@ class TestSafeCount:
 class TestGetStatus:
     """Tests for get_status function."""
 
-    @patch("rl_emails.pipeline.status.psycopg2")
+    @patch("priority_lens.pipeline.status.psycopg2")
     def test_returns_status(self, mock_psycopg2: MagicMock) -> None:
         """Test getting status from database."""
         mock_conn = MagicMock()
@@ -125,7 +125,7 @@ class TestGetStatus:
 
         mock_conn.close.assert_called_once()
 
-    @patch("rl_emails.pipeline.status.psycopg2")
+    @patch("priority_lens.pipeline.status.psycopg2")
     def test_returns_error_on_connection_failure(self, mock_psycopg2: MagicMock) -> None:
         """Test returning error when connection fails."""
         mock_psycopg2.connect.side_effect = Exception("Connection failed")
@@ -140,7 +140,7 @@ class TestGetStatus:
 class TestCheckPostgres:
     """Tests for check_postgres function."""
 
-    @patch("rl_emails.pipeline.status.psycopg2")
+    @patch("priority_lens.pipeline.status.psycopg2")
     def test_returns_true_on_success(self, mock_psycopg2: MagicMock) -> None:
         """Test returning True when connection succeeds."""
         mock_conn = MagicMock()
@@ -152,7 +152,7 @@ class TestCheckPostgres:
         assert result is True
         mock_conn.close.assert_called_once()
 
-    @patch("rl_emails.pipeline.status.psycopg2")
+    @patch("priority_lens.pipeline.status.psycopg2")
     def test_returns_false_on_failure(self, mock_psycopg2: MagicMock) -> None:
         """Test returning False when connection fails."""
         mock_psycopg2.connect.side_effect = Exception("Connection failed")

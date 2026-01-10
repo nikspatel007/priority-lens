@@ -6,8 +6,8 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from rl_emails.api.database import Database
-from rl_emails.api.routes.health import HealthResponse, ReadyResponse, router
+from priority_lens.api.database import Database
+from priority_lens.api.routes.health import HealthResponse, ReadyResponse, router
 
 
 class TestHealthResponse:
@@ -43,7 +43,7 @@ class TestHealthCheck:
     @pytest.mark.asyncio
     async def test_health_check(self) -> None:
         """Test health check returns healthy status."""
-        from rl_emails.api.routes.health import health_check
+        from priority_lens.api.routes.health import health_check
 
         response = await health_check()
 
@@ -57,7 +57,7 @@ class TestReadinessCheck:
     @pytest.mark.asyncio
     async def test_readiness_check_healthy(self) -> None:
         """Test readiness check when database is healthy."""
-        from rl_emails.api.routes.health import readiness_check
+        from priority_lens.api.routes.health import readiness_check
 
         mock_db = AsyncMock(spec=Database)
         mock_db.check_connection.return_value = True
@@ -71,12 +71,12 @@ class TestReadinessCheck:
     @pytest.mark.asyncio
     async def test_readiness_check_unhealthy(self) -> None:
         """Test readiness check when database is unhealthy."""
-        from rl_emails.api.routes.health import readiness_check
+        from priority_lens.api.routes.health import readiness_check
 
         mock_db = AsyncMock(spec=Database)
         mock_db.check_connection.return_value = False
 
-        with patch("rl_emails.api.routes.health.logger") as mock_logger:
+        with patch("priority_lens.api.routes.health.logger") as mock_logger:
             mock_logger.awarning = AsyncMock()
             response = await readiness_check(mock_db)
 
@@ -87,12 +87,12 @@ class TestReadinessCheck:
     @pytest.mark.asyncio
     async def test_readiness_check_logs_failure(self) -> None:
         """Test that readiness failure is logged."""
-        from rl_emails.api.routes.health import readiness_check
+        from priority_lens.api.routes.health import readiness_check
 
         mock_db = AsyncMock(spec=Database)
         mock_db.check_connection.return_value = False
 
-        with patch("rl_emails.api.routes.health.logger") as mock_logger:
+        with patch("priority_lens.api.routes.health.logger") as mock_logger:
             mock_logger.awarning = AsyncMock()
             await readiness_check(mock_db)
 

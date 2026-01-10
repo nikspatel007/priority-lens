@@ -5,7 +5,7 @@ from __future__ import annotations
 import uuid
 from datetime import UTC, datetime, timedelta
 
-from rl_emails.schemas.oauth_token import (
+from priority_lens.schemas.oauth_token import (
     OAuthTokenCreate,
     OAuthTokenResponse,
     OAuthTokenStatus,

@@ -9,8 +9,8 @@ from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from rl_emails.api.exceptions import APIError, NotFoundError, ValidationError
-from rl_emails.api.middleware.error_handler import (
+from priority_lens.api.exceptions import APIError, NotFoundError, ValidationError
+from priority_lens.api.middleware.error_handler import (
     api_error_handler,
     http_exception_handler,
     setup_error_handlers,
@@ -34,7 +34,7 @@ class TestAPIErrorHandler:
         """Test handling of APIError."""
         error = NotFoundError(resource="User", resource_id="123")
 
-        with patch("rl_emails.api.middleware.error_handler.logger") as mock_logger:
+        with patch("priority_lens.api.middleware.error_handler.logger") as mock_logger:
             mock_logger.awarning = AsyncMock()
             response = await api_error_handler(mock_request, error)
 
@@ -51,7 +51,7 @@ class TestAPIErrorHandler:
             error_type="/errors/test",
         )
 
-        with patch("rl_emails.api.middleware.error_handler.logger") as mock_logger:
+        with patch("priority_lens.api.middleware.error_handler.logger") as mock_logger:
             mock_logger.awarning = AsyncMock()
             response = await api_error_handler(mock_request, error)
 
@@ -70,7 +70,7 @@ class TestAPIErrorHandler:
         """Test that errors are logged."""
         error = ValidationError(detail="Validation failed")
 
-        with patch("rl_emails.api.middleware.error_handler.logger") as mock_logger:
+        with patch("priority_lens.api.middleware.error_handler.logger") as mock_logger:
             mock_logger.awarning = AsyncMock()
             await api_error_handler(mock_request, error)
 
@@ -95,7 +95,7 @@ class TestHTTPExceptionHandler:
         """Test handling of Starlette HTTPException."""
         error = StarletteHTTPException(status_code=404, detail="Not found")
 
-        with patch("rl_emails.api.middleware.error_handler.logger") as mock_logger:
+        with patch("priority_lens.api.middleware.error_handler.logger") as mock_logger:
             mock_logger.awarning = AsyncMock()
             response = await http_exception_handler(mock_request, error)
 
@@ -107,7 +107,7 @@ class TestHTTPExceptionHandler:
         """Test Problem Detail response format."""
         error = StarletteHTTPException(status_code=500, detail="Internal error")
 
-        with patch("rl_emails.api.middleware.error_handler.logger") as mock_logger:
+        with patch("priority_lens.api.middleware.error_handler.logger") as mock_logger:
             mock_logger.awarning = AsyncMock()
             response = await http_exception_handler(mock_request, error)
 
@@ -140,7 +140,7 @@ class TestValidationErrorHandler:
         ]
         exc = RequestValidationError(errors=errors)
 
-        with patch("rl_emails.api.middleware.error_handler.logger") as mock_logger:
+        with patch("priority_lens.api.middleware.error_handler.logger") as mock_logger:
             mock_logger.awarning = AsyncMock()
             response = await validation_error_handler(mock_request, exc)
 
@@ -155,7 +155,7 @@ class TestValidationErrorHandler:
         ]
         exc = RequestValidationError(errors=errors)
 
-        with patch("rl_emails.api.middleware.error_handler.logger") as mock_logger:
+        with patch("priority_lens.api.middleware.error_handler.logger") as mock_logger:
             mock_logger.awarning = AsyncMock()
             response = await validation_error_handler(mock_request, exc)
 
@@ -186,7 +186,7 @@ class TestUnhandledExceptionHandler:
         """Test handling of unexpected exceptions."""
         error = Exception("Unexpected error")
 
-        with patch("rl_emails.api.middleware.error_handler.logger") as mock_logger:
+        with patch("priority_lens.api.middleware.error_handler.logger") as mock_logger:
             mock_logger.aexception = AsyncMock()
             response = await unhandled_exception_handler(mock_request, error)
 
@@ -198,7 +198,7 @@ class TestUnhandledExceptionHandler:
         """Test that generic error doesn't leak details."""
         error = ValueError("Sensitive information")
 
-        with patch("rl_emails.api.middleware.error_handler.logger") as mock_logger:
+        with patch("priority_lens.api.middleware.error_handler.logger") as mock_logger:
             mock_logger.aexception = AsyncMock()
             response = await unhandled_exception_handler(mock_request, error)
 
@@ -216,7 +216,7 @@ class TestUnhandledExceptionHandler:
         """Test that exception is logged."""
         error = RuntimeError("Test error")
 
-        with patch("rl_emails.api.middleware.error_handler.logger") as mock_logger:
+        with patch("priority_lens.api.middleware.error_handler.logger") as mock_logger:
             mock_logger.aexception = AsyncMock()
             await unhandled_exception_handler(mock_request, error)
 

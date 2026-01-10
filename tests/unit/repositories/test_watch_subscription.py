@@ -8,9 +8,9 @@ from uuid import uuid4
 
 import pytest
 
-from rl_emails.models.watch_subscription import WatchSubscription
-from rl_emails.repositories.watch_subscription import WatchSubscriptionRepository
-from rl_emails.schemas.watch import WatchSubscriptionUpdate
+from priority_lens.models.watch_subscription import WatchSubscription
+from priority_lens.repositories.watch_subscription import WatchSubscriptionRepository
+from priority_lens.schemas.watch import WatchSubscriptionUpdate
 
 
 @pytest.fixture

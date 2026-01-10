@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from rl_emails.core.sanitization import (
+from priority_lens.core.sanitization import (
     SanitizationResult,
     collapse_whitespace,
     normalize_characters,
@@ -149,7 +149,7 @@ class TestStripHtml:
 
         # Mock BeautifulSoup to raise an exception
         with patch(
-            "rl_emails.core.sanitization.BeautifulSoup", side_effect=Exception("Parse error")
+            "priority_lens.core.sanitization.BeautifulSoup", side_effect=Exception("Parse error")
         ):
             result = strip_html("<p>Hello</p>")
             # Should fall back to regex stripping

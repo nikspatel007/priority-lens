@@ -9,9 +9,9 @@ from unittest import mock
 import jwt
 import pytest
 
-from rl_emails.api.auth.clerk import ClerkJWTValidator, ClerkUser
-from rl_emails.api.auth.config import ClerkConfig
-from rl_emails.api.auth.exceptions import InvalidTokenError, TokenExpiredError
+from priority_lens.api.auth.clerk import ClerkJWTValidator, ClerkUser
+from priority_lens.api.auth.config import ClerkConfig
+from priority_lens.api.auth.exceptions import InvalidTokenError, TokenExpiredError
 
 
 class TestClerkUser:
@@ -161,7 +161,7 @@ class TestClerkJWTValidator:
         validator._jwks_client = mock_client
 
         # Mock jwt.decode to raise ExpiredSignatureError
-        with mock.patch("rl_emails.api.auth.clerk.jwt.decode") as mock_decode:
+        with mock.patch("priority_lens.api.auth.clerk.jwt.decode") as mock_decode:
             mock_decode.side_effect = jwt.ExpiredSignatureError("Token expired")
 
             with pytest.raises(TokenExpiredError):
@@ -177,7 +177,7 @@ class TestClerkJWTValidator:
         mock_client.get_signing_key_from_jwt.return_value = mock_key
         validator._jwks_client = mock_client
 
-        with mock.patch("rl_emails.api.auth.clerk.jwt.decode") as mock_decode:
+        with mock.patch("priority_lens.api.auth.clerk.jwt.decode") as mock_decode:
             mock_decode.side_effect = jwt.InvalidSignatureError("Invalid signature")
 
             with pytest.raises(InvalidTokenError):
@@ -193,7 +193,7 @@ class TestClerkJWTValidator:
         mock_client.get_signing_key_from_jwt.return_value = mock_key
         validator._jwks_client = mock_client
 
-        with mock.patch("rl_emails.api.auth.clerk.jwt.decode") as mock_decode:
+        with mock.patch("priority_lens.api.auth.clerk.jwt.decode") as mock_decode:
             mock_decode.side_effect = Exception("Something went wrong")
 
             with pytest.raises(InvalidTokenError, match="Token validation failed"):
@@ -218,7 +218,7 @@ class TestClerkJWTValidator:
             "iat": int(time.time()),
         }
 
-        with mock.patch("rl_emails.api.auth.clerk.jwt.decode") as mock_decode:
+        with mock.patch("priority_lens.api.auth.clerk.jwt.decode") as mock_decode:
             mock_decode.return_value = payload
 
             user = validator.validate_token("valid.token.here")
@@ -250,7 +250,7 @@ class TestClerkJWTValidator:
             },
         }
 
-        with mock.patch("rl_emails.api.auth.clerk.jwt.decode") as mock_decode:
+        with mock.patch("priority_lens.api.auth.clerk.jwt.decode") as mock_decode:
             mock_decode.return_value = payload
 
             user = validator.validate_token("valid.token.here")
@@ -280,7 +280,7 @@ class TestClerkJWTValidator:
             "unsafe_metadata": {"custom": "value"},
         }
 
-        with mock.patch("rl_emails.api.auth.clerk.jwt.decode") as mock_decode:
+        with mock.patch("priority_lens.api.auth.clerk.jwt.decode") as mock_decode:
             mock_decode.return_value = payload
 
             user = validator.validate_token("valid.token.here")
@@ -305,7 +305,7 @@ class TestClerkJWTValidator:
             "iat": int(time.time()),
         }
 
-        with mock.patch("rl_emails.api.auth.clerk.jwt.decode") as mock_decode:
+        with mock.patch("priority_lens.api.auth.clerk.jwt.decode") as mock_decode:
             mock_decode.return_value = payload
 
             validator.validate_token("test.token")
@@ -338,7 +338,7 @@ class TestClerkJWTValidator:
             "iat": int(time.time()),
         }
 
-        with mock.patch("rl_emails.api.auth.clerk.jwt.decode") as mock_decode:
+        with mock.patch("priority_lens.api.auth.clerk.jwt.decode") as mock_decode:
             mock_decode.return_value = payload
 
             validator.validate_token("test.token")
@@ -363,7 +363,7 @@ class TestClerkJWTValidator:
             "iat": int(time.time()),
         }
 
-        with mock.patch("rl_emails.api.auth.clerk.jwt.decode") as mock_decode:
+        with mock.patch("priority_lens.api.auth.clerk.jwt.decode") as mock_decode:
             mock_decode.return_value = payload
 
             validator.validate_token("test.token")
@@ -393,7 +393,7 @@ class TestClerkJWTValidator:
             "iat": int(time.time()),
         }
 
-        with mock.patch("rl_emails.api.auth.clerk.jwt.decode") as mock_decode:
+        with mock.patch("priority_lens.api.auth.clerk.jwt.decode") as mock_decode:
             mock_decode.return_value = payload
 
             validator.validate_token("test.token")
@@ -412,7 +412,7 @@ class TestClerkJWTValidator:
             "email": "user@example.com",
         }
 
-        with mock.patch("rl_emails.api.auth.clerk.jwt.decode") as mock_decode:
+        with mock.patch("priority_lens.api.auth.clerk.jwt.decode") as mock_decode:
             mock_decode.return_value = payload
 
             result = validator.decode_without_verification("any.token")

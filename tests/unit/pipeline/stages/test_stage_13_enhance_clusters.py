@@ -6,8 +6,8 @@ from unittest import mock
 
 import pytest
 
-from rl_emails.pipeline.stages.stage_13_enhance_clusters import _run_async, run
-from rl_emails.services.project_detector import ProjectDetectionSummary
+from priority_lens.pipeline.stages.stage_13_enhance_clusters import _run_async, run
+from priority_lens.services.project_detector import ProjectDetectionSummary
 
 
 @pytest.fixture
@@ -50,7 +50,7 @@ class TestRun:
             mock.patch("sqlalchemy.ext.asyncio.create_async_engine") as mock_engine,
             mock.patch("sqlalchemy.ext.asyncio.async_sessionmaker") as mock_sessionmaker,
             mock.patch(
-                "rl_emails.services.project_detector.ProjectDetectorService"
+                "priority_lens.services.project_detector.ProjectDetectorService"
             ) as MockDetector,
             mock.patch.dict("os.environ", {"OPENAI_API_KEY": "", "ANTHROPIC_API_KEY": ""}),
         ):
@@ -94,7 +94,7 @@ class TestRunAsync:
             mock.patch("sqlalchemy.ext.asyncio.create_async_engine") as mock_engine,
             mock.patch("sqlalchemy.ext.asyncio.async_sessionmaker") as mock_sessionmaker,
             mock.patch(
-                "rl_emails.services.project_detector.ProjectDetectorService"
+                "priority_lens.services.project_detector.ProjectDetectorService"
             ) as MockDetector,
             mock.patch.dict("os.environ", {"OPENAI_API_KEY": "", "ANTHROPIC_API_KEY": ""}),
         ):
@@ -132,7 +132,7 @@ class TestRunAsync:
             detection_results=[],
         )
 
-        from rl_emails.services.cluster_labeler import LabelResult
+        from priority_lens.services.cluster_labeler import LabelResult
 
         mock_label_results = [
             LabelResult(
@@ -150,9 +150,11 @@ class TestRunAsync:
             mock.patch("sqlalchemy.ext.asyncio.create_async_engine") as mock_engine,
             mock.patch("sqlalchemy.ext.asyncio.async_sessionmaker") as mock_sessionmaker,
             mock.patch(
-                "rl_emails.services.project_detector.ProjectDetectorService"
+                "priority_lens.services.project_detector.ProjectDetectorService"
             ) as MockDetector,
-            mock.patch("rl_emails.services.cluster_labeler.ClusterLabelerService") as MockLabeler,
+            mock.patch(
+                "priority_lens.services.cluster_labeler.ClusterLabelerService"
+            ) as MockLabeler,
             mock.patch.dict("os.environ", {"OPENAI_API_KEY": "test-key", "ANTHROPIC_API_KEY": ""}),
         ):
             # Setup mocks
@@ -190,7 +192,7 @@ class TestRunAsync:
             detection_results=[],
         )
 
-        from rl_emails.services.cluster_labeler import LabelResult
+        from priority_lens.services.cluster_labeler import LabelResult
 
         mock_label_results = [
             LabelResult(
@@ -202,9 +204,11 @@ class TestRunAsync:
             mock.patch("sqlalchemy.ext.asyncio.create_async_engine") as mock_engine,
             mock.patch("sqlalchemy.ext.asyncio.async_sessionmaker") as mock_sessionmaker,
             mock.patch(
-                "rl_emails.services.project_detector.ProjectDetectorService"
+                "priority_lens.services.project_detector.ProjectDetectorService"
             ) as MockDetector,
-            mock.patch("rl_emails.services.cluster_labeler.ClusterLabelerService") as MockLabeler,
+            mock.patch(
+                "priority_lens.services.cluster_labeler.ClusterLabelerService"
+            ) as MockLabeler,
             mock.patch.dict("os.environ", {"OPENAI_API_KEY": "", "ANTHROPIC_API_KEY": "test-key"}),
         ):
             # Setup mocks
@@ -246,7 +250,7 @@ class TestRunAsync:
             mock.patch("sqlalchemy.ext.asyncio.create_async_engine") as mock_engine,
             mock.patch("sqlalchemy.ext.asyncio.async_sessionmaker") as mock_sessionmaker,
             mock.patch(
-                "rl_emails.services.project_detector.ProjectDetectorService"
+                "priority_lens.services.project_detector.ProjectDetectorService"
             ) as MockDetector,
             mock.patch.dict("os.environ", {"OPENAI_API_KEY": "", "ANTHROPIC_API_KEY": ""}),
         ):
@@ -295,7 +299,7 @@ class TestRunAsync:
             mock.patch("sqlalchemy.ext.asyncio.create_async_engine") as mock_engine,
             mock.patch("sqlalchemy.ext.asyncio.async_sessionmaker") as mock_sessionmaker,
             mock.patch(
-                "rl_emails.services.project_detector.ProjectDetectorService"
+                "priority_lens.services.project_detector.ProjectDetectorService"
             ) as MockDetector,
             mock.patch.dict("os.environ", {"OPENAI_API_KEY": "", "ANTHROPIC_API_KEY": ""}),
         ):
@@ -342,7 +346,7 @@ class TestRunAsync:
             mock.patch("sqlalchemy.ext.asyncio.create_async_engine") as mock_engine,
             mock.patch("sqlalchemy.ext.asyncio.async_sessionmaker") as mock_sessionmaker,
             mock.patch(
-                "rl_emails.services.project_detector.ProjectDetectorService"
+                "priority_lens.services.project_detector.ProjectDetectorService"
             ) as MockDetector,
             mock.patch.dict("os.environ", {"OPENAI_API_KEY": "", "ANTHROPIC_API_KEY": ""}),
         ):
@@ -386,7 +390,7 @@ class TestRunAsync:
             mock.patch("sqlalchemy.ext.asyncio.create_async_engine") as mock_engine,
             mock.patch("sqlalchemy.ext.asyncio.async_sessionmaker") as mock_sessionmaker,
             mock.patch(
-                "rl_emails.services.project_detector.ProjectDetectorService"
+                "priority_lens.services.project_detector.ProjectDetectorService"
             ) as MockDetector,
             mock.patch.dict("os.environ", {"OPENAI_API_KEY": "", "ANTHROPIC_API_KEY": ""}),
         ):
@@ -426,7 +430,7 @@ class TestRunAsync:
             mock.patch("sqlalchemy.ext.asyncio.create_async_engine") as mock_engine,
             mock.patch("sqlalchemy.ext.asyncio.async_sessionmaker") as mock_sessionmaker,
             mock.patch(
-                "rl_emails.services.project_detector.ProjectDetectorService"
+                "priority_lens.services.project_detector.ProjectDetectorService"
             ) as MockDetector,
             mock.patch.dict("os.environ", {"OPENAI_API_KEY": "", "ANTHROPIC_API_KEY": ""}),
         ):

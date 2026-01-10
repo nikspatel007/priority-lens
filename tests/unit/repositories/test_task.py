@@ -8,9 +8,9 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from rl_emails.models.task import Task
-from rl_emails.repositories.task import TaskRepository
-from rl_emails.schemas.task import TaskCreate, TaskUpdate
+from priority_lens.models.task import Task
+from priority_lens.repositories.task import TaskRepository
+from priority_lens.schemas.task import TaskCreate, TaskUpdate
 
 
 @pytest.fixture

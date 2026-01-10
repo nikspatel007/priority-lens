@@ -6,8 +6,8 @@ from unittest import mock
 
 import pytest
 
-from rl_emails.models.cluster_metadata import ClusterMetadata
-from rl_emails.services.cluster_labeler import (
+from priority_lens.models.cluster_metadata import ClusterMetadata
+from priority_lens.services.cluster_labeler import (
     ClusterLabelerError,
     ClusterLabelerService,
     LabelResult,

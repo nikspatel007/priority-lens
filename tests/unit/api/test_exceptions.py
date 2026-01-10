@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from rl_emails.api.exceptions import (
+from priority_lens.api.exceptions import (
     APIError,
     ConflictError,
     ForbiddenError,

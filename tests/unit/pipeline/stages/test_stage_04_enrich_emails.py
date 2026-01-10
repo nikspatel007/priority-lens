@@ -7,9 +7,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from rl_emails.core.config import Config
-from rl_emails.pipeline.stages import stage_04_enrich_emails
-from rl_emails.pipeline.stages.base import StageResult
+from priority_lens.core.config import Config
+from priority_lens.pipeline.stages import stage_04_enrich_emails
+from priority_lens.pipeline.stages.base import StageResult
 
 
 class TestClassifyResponseTime:
@@ -249,7 +249,7 @@ class TestRunAsync:
     """Tests for run_async function."""
 
     @pytest.mark.asyncio
-    @patch("rl_emails.pipeline.stages.stage_04_enrich_emails.asyncpg.connect")
+    @patch("priority_lens.pipeline.stages.stage_04_enrich_emails.asyncpg.connect")
     async def test_connects_and_enriches(self, mock_connect: MagicMock) -> None:
         """Test run_async connects and enriches."""
         mock_conn = AsyncMock()
@@ -264,7 +264,7 @@ class TestRunAsync:
         assert stats["total_emails"] == 100
 
     @pytest.mark.asyncio
-    @patch("rl_emails.pipeline.stages.stage_04_enrich_emails.asyncpg.connect")
+    @patch("priority_lens.pipeline.stages.stage_04_enrich_emails.asyncpg.connect")
     async def test_closes_on_error(self, mock_connect: MagicMock) -> None:
         """Test connection is closed on error."""
         mock_conn = AsyncMock()
@@ -289,7 +289,7 @@ class TestRun:
         assert result.success is False
         assert "YOUR_EMAIL not configured" in result.message
 
-    @patch("rl_emails.pipeline.stages.stage_04_enrich_emails.asyncio.run")
+    @patch("priority_lens.pipeline.stages.stage_04_enrich_emails.asyncio.run")
     def test_run_success(self, mock_asyncio_run: MagicMock) -> None:
         """Test successful run."""
         mock_asyncio_run.return_value = {

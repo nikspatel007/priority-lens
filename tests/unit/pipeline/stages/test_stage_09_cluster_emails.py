@@ -7,9 +7,9 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 
-from rl_emails.core.config import Config
-from rl_emails.pipeline.stages import stage_09_cluster_emails
-from rl_emails.pipeline.stages.base import StageResult
+from priority_lens.core.config import Config
+from priority_lens.pipeline.stages import stage_09_cluster_emails
+from priority_lens.pipeline.stages.base import StageResult
 
 
 class TestCreateTables:
@@ -182,7 +182,7 @@ class TestLoadTemporalFeatures:
 class TestClusterPeople:
     """Tests for cluster_people function."""
 
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.load_people_features")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.load_people_features")
     def test_clusters_people(self, mock_load: MagicMock) -> None:
         """Test people clustering."""
         mock_load.return_value = (
@@ -197,7 +197,7 @@ class TestClusterPeople:
         assert len(result["labels"]) == 5
         assert result["n_clusters"] > 0
 
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.load_people_features")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.load_people_features")
     def test_empty_data(self, mock_load: MagicMock) -> None:
         """Test with empty data."""
         mock_load.return_value = ([], np.array([]))
@@ -207,7 +207,7 @@ class TestClusterPeople:
 
         assert result["n_clusters"] == 0
 
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.load_people_features")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.load_people_features")
     def test_uniform_distances(self, mock_load: MagicMock) -> None:
         """Test when all points are identical (max_dist=0)."""
         # All identical features will result in max_dist=0
@@ -227,7 +227,7 @@ class TestClusterPeople:
 class TestClusterContent:
     """Tests for cluster_content function."""
 
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.load_embeddings")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.load_embeddings")
     def test_clusters_content_kmeans(self, mock_load: MagicMock) -> None:
         """Test content clustering with K-Means fallback."""
         mock_load.return_value = (
@@ -243,7 +243,7 @@ class TestClusterContent:
         assert len(result["email_ids"]) == 5
         assert result["n_clusters"] > 0
 
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.load_embeddings")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.load_embeddings")
     def test_empty_data(self, mock_load: MagicMock) -> None:
         """Test with empty data."""
         mock_load.return_value = ([], np.array([]))
@@ -253,7 +253,7 @@ class TestClusterContent:
 
         assert result["n_clusters"] == 0
 
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.load_embeddings")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.load_embeddings")
     def test_uniform_distances_kmeans(self, mock_load: MagicMock) -> None:
         """Test when all embeddings are identical (max_dist=0)."""
         mock_load.return_value = (
@@ -268,7 +268,7 @@ class TestClusterContent:
 
         assert len(result["probs"]) == 2
 
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.load_embeddings")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.load_embeddings")
     def test_with_hdbscan(self, mock_load: MagicMock) -> None:
         """Test content clustering with HDBSCAN."""
         mock_load.return_value = (
@@ -292,7 +292,7 @@ class TestClusterContent:
         assert len(result["email_ids"]) == 100
         mock_hdbscan.HDBSCAN.assert_called_once()
 
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.load_embeddings")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.load_embeddings")
     def test_with_umap(self, mock_load: MagicMock) -> None:
         """Test content clustering with UMAP dimensionality reduction."""
         mock_load.return_value = (
@@ -319,7 +319,7 @@ class TestClusterContent:
 class TestClusterBehavior:
     """Tests for cluster_behavior function."""
 
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.load_behavior_features")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.load_behavior_features")
     def test_clusters_behavior(self, mock_load: MagicMock) -> None:
         """Test behavior clustering."""
         mock_load.return_value = (
@@ -333,7 +333,7 @@ class TestClusterBehavior:
         assert len(result["email_ids"]) == 5
         assert result["n_clusters"] > 0
 
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.load_behavior_features")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.load_behavior_features")
     def test_empty_data(self, mock_load: MagicMock) -> None:
         """Test with empty data."""
         mock_load.return_value = ([], np.array([]))
@@ -347,7 +347,7 @@ class TestClusterBehavior:
 class TestClusterService:
     """Tests for cluster_service function."""
 
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.load_service_features")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.load_service_features")
     def test_clusters_service(self, mock_load: MagicMock) -> None:
         """Test service clustering."""
         mock_load.return_value = (
@@ -361,7 +361,7 @@ class TestClusterService:
         assert len(result["email_ids"]) == 5
         assert result["n_clusters"] > 0
 
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.load_service_features")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.load_service_features")
     def test_empty_data(self, mock_load: MagicMock) -> None:
         """Test with empty data."""
         mock_load.return_value = ([], np.array([]))
@@ -375,7 +375,7 @@ class TestClusterService:
 class TestClusterTemporal:
     """Tests for cluster_temporal function."""
 
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.load_temporal_features")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.load_temporal_features")
     def test_clusters_temporal(self, mock_load: MagicMock) -> None:
         """Test temporal clustering."""
         mock_load.return_value = (
@@ -389,7 +389,7 @@ class TestClusterTemporal:
         assert len(result["email_ids"]) == 5
         assert result["n_clusters"] > 0
 
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.load_temporal_features")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.load_temporal_features")
     def test_empty_data(self, mock_load: MagicMock) -> None:
         """Test with empty data."""
         mock_load.return_value = ([], np.array([]))
@@ -403,7 +403,7 @@ class TestClusterTemporal:
 class TestSaveClusters:
     """Tests for save_clusters function."""
 
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.execute_values")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.execute_values")
     def test_saves_clusters(self, mock_execute_values: MagicMock) -> None:
         """Test saving cluster assignments."""
         conn = MagicMock()
@@ -463,14 +463,14 @@ class TestComputeClusterMetadata:
 class TestRun:
     """Tests for run function."""
 
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.psycopg2.connect")
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.cluster_people")
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.cluster_content")
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.cluster_behavior")
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.cluster_service")
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.cluster_temporal")
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.save_clusters")
-    @patch("rl_emails.pipeline.stages.stage_09_cluster_emails.compute_cluster_metadata")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.psycopg2.connect")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.cluster_people")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.cluster_content")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.cluster_behavior")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.cluster_service")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.cluster_temporal")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.save_clusters")
+    @patch("priority_lens.pipeline.stages.stage_09_cluster_emails.compute_cluster_metadata")
     def test_run_success(
         self,
         mock_metadata: MagicMock,

@@ -10,7 +10,7 @@ from uuid import UUID
 
 import pytest
 
-from rl_emails.providers.base import (
+from priority_lens.providers.base import (
     AuthorizationError,
     ConnectionError,
     ConnectionState,
@@ -23,7 +23,7 @@ from rl_emails.providers.base import (
 )
 
 if TYPE_CHECKING:
-    from rl_emails.core.types import EmailData
+    from priority_lens.core.types import EmailData
 
 
 class TestProviderType:

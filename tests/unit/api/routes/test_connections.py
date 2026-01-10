@@ -12,13 +12,13 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from rl_emails.api.auth.clerk import ClerkUser
-from rl_emails.api.auth.dependencies import get_current_user_or_api_key
-from rl_emails.api.routes.connections import (
+from priority_lens.api.auth.clerk import ClerkUser
+from priority_lens.api.auth.dependencies import get_current_user_or_api_key
+from priority_lens.api.routes.connections import (
     router,
     set_connection_service,
 )
-from rl_emails.providers import (
+from priority_lens.providers import (
     ConnectionService,
     ConnectionState,
     ConnectionStatus,
@@ -29,7 +29,7 @@ from rl_emails.providers import (
 )
 
 if TYPE_CHECKING:
-    from rl_emails.core.types import EmailData
+    from priority_lens.core.types import EmailData
 
 
 class MockProvider(EmailProvider):

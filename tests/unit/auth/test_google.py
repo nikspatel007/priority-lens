@@ -7,8 +7,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from rl_emails.auth.google import GoogleOAuth
-from rl_emails.auth.oauth import OAuthError
+from priority_lens.auth.google import GoogleOAuth
+from priority_lens.auth.oauth import OAuthError
 
 
 class TestGoogleOAuthInit:

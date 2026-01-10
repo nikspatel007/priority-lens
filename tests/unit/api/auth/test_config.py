@@ -7,7 +7,7 @@ from unittest import mock
 
 import pytest
 
-from rl_emails.api.auth.config import ClerkConfig, get_clerk_config
+from priority_lens.api.auth.config import ClerkConfig, get_clerk_config
 
 
 class TestClerkConfig:

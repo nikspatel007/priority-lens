@@ -7,8 +7,8 @@ from datetime import UTC, datetime
 
 import pytest
 
-from rl_emails.integrations.gmail.models import GmailMessage
-from rl_emails.integrations.gmail.parser import (
+from priority_lens.integrations.gmail.models import GmailMessage
+from priority_lens.integrations.gmail.parser import (
     GmailParseError,
     _decode_base64,
     _has_attachments,

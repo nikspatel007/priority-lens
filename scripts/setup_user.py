@@ -18,7 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 env_path = Path(__file__).parent.parent / ".env"
 load_dotenv(env_path)
 
-from rl_emails.core.config import Config
+from priority_lens.core.config import Config
 
 
 async def setup_user(email: str) -> None:

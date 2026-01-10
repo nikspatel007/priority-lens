@@ -115,7 +115,7 @@ As a system, I need database tables for projects, tasks, and priority context so
 ### Architecture
 
 ```
-src/rl_emails/
+src/priority_lens/
 ├── models/                       # MODIFY: Add SQLAlchemy models
 │   ├── project.py               # NEW: SQLAlchemy Project model
 │   ├── task.py                  # NEW: SQLAlchemy Task model
@@ -269,13 +269,13 @@ CREATE INDEX idx_email_priority_context_priority ON email_priority_context(overa
 ### Implementation Design
 
 ```python
-# src/rl_emails/models/project.py (SQLAlchemy)
+# src/priority_lens/models/project.py (SQLAlchemy)
 from sqlalchemy import Column, String, Boolean, Integer, Float, ForeignKey, ARRAY
 from sqlalchemy.dialects.postgresql import UUID, TIMESTAMP
 from sqlalchemy.orm import relationship
 import uuid
 
-from rl_emails.models.base import Base
+from priority_lens.models.base import Base
 
 
 class Project(Base):
@@ -314,12 +314,12 @@ class Project(Base):
 ```
 
 ```python
-# src/rl_emails/services/project_extractor.py
+# src/priority_lens/services/project_extractor.py
 from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from rl_emails.repositories.project import ProjectRepository
-from rl_emails.repositories.email_cluster import EmailClusterRepository
+from priority_lens.repositories.project import ProjectRepository
+from priority_lens.repositories.email_cluster import EmailClusterRepository
 
 
 class ProjectExtractor:
@@ -444,10 +444,10 @@ class ProjectExtractor:
 ```
 
 ```python
-# src/rl_emails/services/task_extractor.py
+# src/priority_lens/services/task_extractor.py
 from uuid import UUID
 
-from rl_emails.repositories.task import TaskRepository
+from priority_lens.repositories.task import TaskRepository
 
 
 class TaskExtractor:
@@ -517,11 +517,11 @@ class TaskExtractor:
 ```
 
 ```python
-# src/rl_emails/pipeline/stages/stage_12_extract_entities.py
+# src/priority_lens/pipeline/stages/stage_12_extract_entities.py
 """Stage 12: Extract projects and tasks from pipeline results."""
 
-from rl_emails.core.config import Config
-from rl_emails.pipeline.stages.base import StageResult
+from priority_lens.core.config import Config
+from priority_lens.pipeline.stages.base import StageResult
 
 
 def run(config: Config) -> StageResult:
@@ -541,9 +541,9 @@ def run(config: Config) -> StageResult:
         from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
         from sqlalchemy.orm import sessionmaker
 
-        from rl_emails.services.project_extractor import ProjectExtractor
-        from rl_emails.services.task_extractor import TaskExtractor
-        from rl_emails.services.priority_context_builder import PriorityContextBuilder
+        from priority_lens.services.project_extractor import ProjectExtractor
+        from priority_lens.services.task_extractor import TaskExtractor
+        from priority_lens.services.priority_context_builder import PriorityContextBuilder
 
         engine = create_async_engine(config.database_url.replace("postgresql://", "postgresql+asyncpg://"))
         async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
@@ -667,7 +667,7 @@ class TestTaskExtractor:
 
 3. **Run extraction stage**:
    ```bash
-   rl-emails --user <uuid> --start-from 12
+   priority-lens --user <uuid> --start-from 12
    ```
 
 4. **Verify data populated**:
@@ -707,7 +707,7 @@ As a developer, I need a FastAPI application structure so that I can build secur
 ### Architecture
 
 ```
-src/rl_emails/
+src/priority_lens/
 ├── api/                              # NEW: FastAPI application
 │   ├── __init__.py
 │   ├── main.py                       # FastAPI app factory with lifespan
@@ -780,7 +780,7 @@ src/rl_emails/
 ### Implementation Design
 
 ```python
-# src/rl_emails/api/config.py
+# src/priority_lens/api/config.py
 from pydantic_settings import BaseSettings
 
 class APIConfig(BaseSettings):
@@ -810,7 +810,7 @@ class APIConfig(BaseSettings):
 ```
 
 ```python
-# src/rl_emails/api/exceptions.py
+# src/priority_lens/api/exceptions.py
 from dataclasses import dataclass
 from typing import Any
 
@@ -826,7 +826,7 @@ class ProblemDetail:
 ```
 
 ```python
-# src/rl_emails/api/middleware/logging.py
+# src/priority_lens/api/middleware/logging.py
 import structlog
 from asgi_correlation_id import CorrelationIdMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -852,7 +852,7 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
 ```
 
 ```python
-# src/rl_emails/api/routes/health.py
+# src/priority_lens/api/routes/health.py
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -881,7 +881,7 @@ async def ready(db: AsyncSession = Depends(get_db_session)) -> dict:
 - [x] Correlation ID propagated via X-Request-ID header
 - [x] Rate limiting returns 429 with Retry-After header
 - [x] OpenAPI docs available at /docs (configurable)
-- [x] App starts with `uvicorn rl_emails.api.main:app`
+- [x] App starts with `uvicorn priority_lens.api.main:app`
 - [x] Structured logs in JSON format (production mode)
 - [x] Database connection pooling configured
 - [x] 100% test coverage on new code
@@ -935,7 +935,7 @@ class TestErrorHandling:
 
 1. **Start the server**:
    ```bash
-   uvicorn rl_emails.api.main:app --reload
+   uvicorn priority_lens.api.main:app --reload
    ```
 
 2. **Test health endpoints**:
@@ -958,7 +958,7 @@ class TestErrorHandling:
 
 5. **Verify structured logs**:
    ```bash
-   API_LOG_JSON=true uvicorn rl_emails.api.main:app
+   API_LOG_JSON=true uvicorn priority_lens.api.main:app
    # Logs should be JSON formatted
    ```
 
@@ -979,7 +979,7 @@ As a user, I need to authenticate with Clerk so that I can securely access my em
 ### Implementation Design
 
 ```python
-# src/rl_emails/api/auth/clerk.py
+# src/priority_lens/api/auth/clerk.py
 from dataclasses import dataclass
 import jwt
 from jwt import PyJWKClient
@@ -1032,12 +1032,12 @@ class ClerkJWTValidator:
 
 ### Deliverables Implemented
 
-- `src/rl_emails/api/auth/config.py` - ClerkConfig with pydantic-settings
-- `src/rl_emails/api/auth/clerk.py` - ClerkJWTValidator, ClerkUser dataclass
-- `src/rl_emails/api/auth/exceptions.py` - Auth exception classes
-- `src/rl_emails/api/auth/dependencies.py` - FastAPI dependencies for auth
-- `src/rl_emails/api/auth/middleware.py` - AuthenticationMiddleware
-- `src/rl_emails/api/auth/user_sync.py` - UserSyncService for Clerk users
+- `src/priority_lens/api/auth/config.py` - ClerkConfig with pydantic-settings
+- `src/priority_lens/api/auth/clerk.py` - ClerkJWTValidator, ClerkUser dataclass
+- `src/priority_lens/api/auth/exceptions.py` - Auth exception classes
+- `src/priority_lens/api/auth/dependencies.py` - FastAPI dependencies for auth
+- `src/priority_lens/api/auth/middleware.py` - AuthenticationMiddleware
+- `src/priority_lens/api/auth/user_sync.py` - UserSyncService for Clerk users
 - `tests/unit/api/auth/` - 104 comprehensive tests
 
 ---
@@ -1057,7 +1057,7 @@ As a developer, I need a provider interface so that I can support multiple email
 ### Implementation Design
 
 ```python
-# src/rl_emails/providers/base.py
+# src/priority_lens/providers/base.py
 from abc import ABC, abstractmethod
 from enum import Enum
 from typing import AsyncIterator
@@ -1120,7 +1120,7 @@ As a user, I need real-time email updates so that my data is always fresh withou
 ### Implementation Design
 
 ```python
-# src/rl_emails/api/routes/webhooks.py
+# src/priority_lens/api/routes/webhooks.py
 from fastapi import APIRouter, Request
 
 router = APIRouter()
@@ -1167,7 +1167,7 @@ As a user, I need API endpoints to view and manage my projects and tasks so that
 ### Implementation Design
 
 ```python
-# src/rl_emails/api/routes/projects.py
+# src/priority_lens/api/routes/projects.py
 from fastapi import APIRouter, Depends
 
 router = APIRouter()
@@ -1199,7 +1199,7 @@ async def get_project(
     )
 
 
-# src/rl_emails/api/routes/tasks.py
+# src/priority_lens/api/routes/tasks.py
 @router.get("/tasks", response_model=list[TaskResponse])
 async def list_tasks(
     user: CurrentUser = Depends(get_current_user),
@@ -1239,7 +1239,7 @@ async def dismiss_task(
     )
 
 
-# src/rl_emails/api/routes/inbox.py
+# src/priority_lens/api/routes/inbox.py
 @router.get("/inbox/priority", response_model=PriorityInboxResponse)
 async def get_priority_inbox(
     user: CurrentUser = Depends(get_current_user),
@@ -1265,19 +1265,19 @@ async def get_priority_inbox(
 
 ### Deliverables Implemented
 
-- `src/rl_emails/api/routes/projects.py` - Project CRUD endpoints
-- `src/rl_emails/api/routes/tasks.py` - Task CRUD + complete/dismiss endpoints
-- `src/rl_emails/api/routes/inbox.py` - Priority inbox endpoint
-- `src/rl_emails/services/project_service.py` - Project business logic
-- `src/rl_emails/services/task_service.py` - Task business logic
-- `src/rl_emails/services/inbox_service.py` - Priority inbox service
-- `src/rl_emails/schemas/project.py` - Project Pydantic schemas
-- `src/rl_emails/schemas/task.py` - Task Pydantic schemas
-- `src/rl_emails/schemas/inbox.py` - Inbox response schemas
-- `src/rl_emails/models/project.py` - Project SQLAlchemy model
-- `src/rl_emails/models/task.py` - Task SQLAlchemy model
-- `src/rl_emails/repositories/project.py` - Project repository
-- `src/rl_emails/repositories/task.py` - Task repository
+- `src/priority_lens/api/routes/projects.py` - Project CRUD endpoints
+- `src/priority_lens/api/routes/tasks.py` - Task CRUD + complete/dismiss endpoints
+- `src/priority_lens/api/routes/inbox.py` - Priority inbox endpoint
+- `src/priority_lens/services/project_service.py` - Project business logic
+- `src/priority_lens/services/task_service.py` - Task business logic
+- `src/priority_lens/services/inbox_service.py` - Priority inbox service
+- `src/priority_lens/schemas/project.py` - Project Pydantic schemas
+- `src/priority_lens/schemas/task.py` - Task Pydantic schemas
+- `src/priority_lens/schemas/inbox.py` - Inbox response schemas
+- `src/priority_lens/models/project.py` - Project SQLAlchemy model
+- `src/priority_lens/models/task.py` - Task SQLAlchemy model
+- `src/priority_lens/repositories/project.py` - Project repository
+- `src/priority_lens/repositories/task.py` - Task repository
 - `tests/unit/api/routes/test_projects.py` - Project route tests
 - `tests/unit/api/routes/test_tasks.py` - Task route tests
 - `tests/unit/api/routes/test_inbox.py` - Inbox route tests

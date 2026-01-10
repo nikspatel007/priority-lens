@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from rl_emails.api.auth.exceptions import (
+from priority_lens.api.auth.exceptions import (
     AuthenticationError,
     InsufficientPermissionsError,
     InvalidTokenError,

@@ -1,4 +1,4 @@
-"""Tests for rl_emails.cli."""
+"""Tests for priority_lens.cli."""
 
 from __future__ import annotations
 
@@ -8,9 +8,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from rl_emails import cli
-from rl_emails.pipeline import PipelineResult
-from rl_emails.pipeline.status import PipelineStatus
+from priority_lens import cli
+from priority_lens.pipeline import PipelineResult
+from priority_lens.pipeline.status import PipelineStatus
 
 
 class TestParseArgs:
@@ -117,8 +117,8 @@ class TestParseArgs:
 class TestCli:
     """Tests for CLI main function."""
 
-    @patch("rl_emails.cli.get_status")
-    @patch("rl_emails.cli.Config")
+    @patch("priority_lens.cli.get_status")
+    @patch("priority_lens.cli.Config")
     def test_status_mode(
         self,
         mock_config_cls: MagicMock,
@@ -140,8 +140,8 @@ class TestCli:
         assert "PIPELINE STATUS" in captured.out
         assert "100" in captured.out
 
-    @patch("rl_emails.cli.PipelineOrchestrator")
-    @patch("rl_emails.cli.Config")
+    @patch("priority_lens.cli.PipelineOrchestrator")
+    @patch("priority_lens.cli.Config")
     def test_config_error(
         self,
         mock_config_cls: MagicMock,
@@ -161,8 +161,8 @@ class TestCli:
         captured = capsys.readouterr()
         assert "Configuration error" in captured.err
 
-    @patch("rl_emails.cli.PipelineOrchestrator")
-    @patch("rl_emails.cli.Config")
+    @patch("priority_lens.cli.PipelineOrchestrator")
+    @patch("priority_lens.cli.Config")
     def test_validation_errors(
         self,
         mock_config_cls: MagicMock,
@@ -188,8 +188,8 @@ class TestCli:
         assert "Configuration errors" in captured.err
         assert "Error 1" in captured.err
 
-    @patch("rl_emails.cli.PipelineOrchestrator")
-    @patch("rl_emails.cli.Config")
+    @patch("priority_lens.cli.PipelineOrchestrator")
+    @patch("priority_lens.cli.Config")
     def test_successful_run(
         self,
         mock_config_cls: MagicMock,
@@ -220,8 +220,8 @@ class TestCli:
         captured = capsys.readouterr()
         assert "PIPELINE COMPLETED" in captured.out
 
-    @patch("rl_emails.cli.PipelineOrchestrator")
-    @patch("rl_emails.cli.Config")
+    @patch("priority_lens.cli.PipelineOrchestrator")
+    @patch("priority_lens.cli.Config")
     def test_failed_run(
         self,
         mock_config_cls: MagicMock,
@@ -252,8 +252,8 @@ class TestCli:
         assert "PIPELINE FAILED" in captured.out
         assert "Stage 3" in captured.out
 
-    @patch("rl_emails.cli.PipelineOrchestrator")
-    @patch("rl_emails.cli.Config")
+    @patch("priority_lens.cli.PipelineOrchestrator")
+    @patch("priority_lens.cli.Config")
     def test_failed_run_no_stages_failed(
         self,
         mock_config_cls: MagicMock,
@@ -284,8 +284,8 @@ class TestCli:
         assert "PIPELINE FAILED" in captured.out
         assert "Resume with" not in captured.out  # No resume message
 
-    @patch("rl_emails.cli.PipelineOrchestrator")
-    @patch("rl_emails.cli.Config")
+    @patch("priority_lens.cli.PipelineOrchestrator")
+    @patch("priority_lens.cli.Config")
     def test_passes_options(
         self,
         mock_config_cls: MagicMock,
@@ -315,8 +315,8 @@ class TestCli:
         assert options.batch_size == 50
         assert options.skip_llm is True
 
-    @patch("rl_emails.cli.PipelineOrchestrator")
-    @patch("rl_emails.cli.Config")
+    @patch("priority_lens.cli.PipelineOrchestrator")
+    @patch("priority_lens.cli.Config")
     def test_callback_events(
         self,
         mock_config_cls: MagicMock,
@@ -325,7 +325,7 @@ class TestCli:
         capsys: pytest.CaptureFixture[str],
     ) -> None:
         """Test that stage events are printed."""
-        from rl_emails.pipeline.stages.base import StageResult
+        from priority_lens.pipeline.stages.base import StageResult
 
         monkeypatch.setattr(sys, "argv", ["rl-emails"])
 
@@ -370,8 +370,8 @@ class TestCli:
         assert "Stage 1 skipped" in captured.out
         assert "Failed" in captured.out
 
-    @patch("rl_emails.cli.PipelineOrchestrator")
-    @patch("rl_emails.cli.Config")
+    @patch("priority_lens.cli.PipelineOrchestrator")
+    @patch("priority_lens.cli.Config")
     def test_with_custom_env_file(
         self,
         mock_config_cls: MagicMock,
@@ -388,15 +388,15 @@ class TestCli:
         mock_config = MagicMock()
         mock_config_cls.from_env.return_value = mock_config
 
-        with patch("rl_emails.cli.get_status") as mock_status:
+        with patch("priority_lens.cli.get_status") as mock_status:
             mock_status.return_value = PipelineStatus(emails=50)
             cli.main()
 
         # Verify from_env was called with the env file path
         mock_config_cls.from_env.assert_called_once_with(env_file)
 
-    @patch("rl_emails.cli.PipelineOrchestrator")
-    @patch("rl_emails.cli.Config")
+    @patch("priority_lens.cli.PipelineOrchestrator")
+    @patch("priority_lens.cli.Config")
     def test_callback_with_non_stage_result(
         self,
         mock_config_cls: MagicMock,
@@ -440,8 +440,8 @@ class TestCli:
 class TestCliMultiTenant:
     """Tests for CLI multi-tenant mode."""
 
-    @patch("rl_emails.cli.get_status")
-    @patch("rl_emails.cli.Config")
+    @patch("priority_lens.cli.get_status")
+    @patch("priority_lens.cli.Config")
     def test_user_flag_sets_context(
         self,
         mock_config_cls: MagicMock,
@@ -477,8 +477,8 @@ class TestCliMultiTenant:
         assert "Multi-tenant mode" in captured.out
         assert user_uuid in captured.out
 
-    @patch("rl_emails.cli.get_status")
-    @patch("rl_emails.cli.Config")
+    @patch("priority_lens.cli.get_status")
+    @patch("priority_lens.cli.Config")
     def test_user_and_org_flags_set_context(
         self,
         mock_config_cls: MagicMock,
@@ -510,7 +510,7 @@ class TestCliMultiTenant:
         assert call_args[0][0] == UUID(user_uuid)
         assert call_args[0][1] == UUID(org_uuid)
 
-    @patch("rl_emails.cli.Config")
+    @patch("priority_lens.cli.Config")
     def test_invalid_user_uuid_exits(
         self,
         mock_config_cls: MagicMock,
@@ -638,7 +638,7 @@ class TestParseArgsOnboard:
 class TestOnboardUser:
     """Tests for onboard_user function."""
 
-    @patch("rl_emails.cli.Config")
+    @patch("priority_lens.cli.Config")
     def test_onboard_invalid_uuid_exits(
         self,
         mock_config_cls: MagicMock,
@@ -658,8 +658,8 @@ class TestOnboardUser:
         captured = capsys.readouterr()
         assert "Invalid UUID format" in captured.err
 
-    @patch("rl_emails.cli.asyncio.run")
-    @patch("rl_emails.cli.Config")
+    @patch("priority_lens.cli.asyncio.run")
+    @patch("priority_lens.cli.Config")
     def test_onboard_prints_header(
         self,
         mock_config_cls: MagicMock,
@@ -686,8 +686,8 @@ class TestOnboardUser:
         assert user_uuid in captured.out
         assert "Quick Only: False" in captured.out
 
-    @patch("rl_emails.cli.asyncio.run")
-    @patch("rl_emails.cli.Config")
+    @patch("priority_lens.cli.asyncio.run")
+    @patch("priority_lens.cli.Config")
     def test_onboard_with_quick_only(
         self,
         mock_config_cls: MagicMock,
@@ -713,8 +713,8 @@ class TestOnboardUser:
         captured = capsys.readouterr()
         assert "Quick Only: True" in captured.out
 
-    @patch("rl_emails.cli.asyncio.run")
-    @patch("rl_emails.cli.Config")
+    @patch("priority_lens.cli.asyncio.run")
+    @patch("priority_lens.cli.Config")
     def test_onboard_applies_multi_tenant_context(
         self,
         mock_config_cls: MagicMock,

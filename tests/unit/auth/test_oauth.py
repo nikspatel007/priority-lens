@@ -6,7 +6,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from rl_emails.auth.oauth import GoogleTokens, OAuthError
+from priority_lens.auth.oauth import GoogleTokens, OAuthError
 
 
 class TestOAuthError:

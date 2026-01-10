@@ -5,9 +5,9 @@ from __future__ import annotations
 from typing import Any
 from unittest.mock import MagicMock, patch
 
-from rl_emails.core.config import Config
-from rl_emails.pipeline.stages import stage_06_compute_embeddings
-from rl_emails.pipeline.stages.base import StageResult
+from priority_lens.core.config import Config
+from priority_lens.pipeline.stages import stage_06_compute_embeddings
+from priority_lens.pipeline.stages.base import StageResult
 
 
 class TestGetTokenizer:
@@ -111,7 +111,7 @@ class TestStripHtml:
         # BeautifulSoup is very tolerant, so just test None-like input
         assert stage_06_compute_embeddings.strip_html(None) == ""  # type: ignore[arg-type]
 
-    @patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.BeautifulSoup")
+    @patch("priority_lens.pipeline.stages.stage_06_compute_embeddings.BeautifulSoup")
     def test_returns_html_on_exception(self, mock_soup: MagicMock) -> None:
         """Test returns original HTML on exception."""
         mock_soup.side_effect = Exception("Parse error")
@@ -429,7 +429,7 @@ class TestGetEmbeddingCounts:
 class TestSaveEmbeddingsToDb:
     """Tests for save_embeddings_to_db function."""
 
-    @patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.execute_values")
+    @patch("priority_lens.pipeline.stages.stage_06_compute_embeddings.execute_values")
     def test_saves_embeddings(self, mock_execute_values: MagicMock) -> None:
         """Test saving embeddings."""
         conn = MagicMock()
@@ -492,7 +492,7 @@ class TestPrepareEmailsForEmbedding:
         assert len(result) == 1
         assert result[0][0] == 1  # email_id
 
-    @patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.build_embedding_text")
+    @patch("priority_lens.pipeline.stages.stage_06_compute_embeddings.build_embedding_text")
     def test_skips_short_text(self, mock_build: MagicMock) -> None:
         """Test skipping emails with short text."""
         # Mock to return very short text
@@ -513,9 +513,9 @@ class TestPrepareEmailsForEmbedding:
 
         assert len(result) == 0
 
-    @patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.build_embedding_text")
-    @patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.count_tokens")
-    @patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.truncate_to_tokens")
+    @patch("priority_lens.pipeline.stages.stage_06_compute_embeddings.build_embedding_text")
+    @patch("priority_lens.pipeline.stages.stage_06_compute_embeddings.count_tokens")
+    @patch("priority_lens.pipeline.stages.stage_06_compute_embeddings.truncate_to_tokens")
     def test_truncates_long_email(
         self, mock_truncate: MagicMock, mock_count: MagicMock, mock_build: MagicMock
     ) -> None:
@@ -689,7 +689,7 @@ class TestComputeEmbeddingsSync:
         mock_response.data = [{"embedding": [0.1] * 1536}]
         mock_embedding_func.return_value = mock_response
 
-        with patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.execute_values"):
+        with patch("priority_lens.pipeline.stages.stage_06_compute_embeddings.execute_values"):
             stats = stage_06_compute_embeddings.compute_embeddings_sync(
                 conn, mock_embedding_func, batch_size=10
             )
@@ -731,7 +731,7 @@ class TestComputeEmbeddingsSync:
         mock_response.data = [{"embedding": [0.1] * 1536} for _ in range(10)]
         mock_embedding_func.return_value = mock_response
 
-        with patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.execute_values"):
+        with patch("priority_lens.pipeline.stages.stage_06_compute_embeddings.execute_values"):
             stats = stage_06_compute_embeddings.compute_embeddings_sync(
                 conn, mock_embedding_func, batch_size=100, limit=10
             )
@@ -751,8 +751,8 @@ class TestRun:
         assert result.success is False
         assert "OPENAI_API_KEY" in result.message
 
-    @patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.psycopg2.connect")
-    @patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.compute_embeddings_sync")
+    @patch("priority_lens.pipeline.stages.stage_06_compute_embeddings.psycopg2.connect")
+    @patch("priority_lens.pipeline.stages.stage_06_compute_embeddings.compute_embeddings_sync")
     def test_run_success(self, mock_compute_sync: MagicMock, mock_connect: MagicMock) -> None:
         """Test successful run."""
         mock_conn = MagicMock()
@@ -782,7 +782,9 @@ class TestRun:
         config = Config(database_url="postgresql://test", openai_api_key="sk-test")
 
         with patch.dict("sys.modules", {"litellm": None}):
-            with patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.psycopg2.connect"):
+            with patch(
+                "priority_lens.pipeline.stages.stage_06_compute_embeddings.psycopg2.connect"
+            ):
                 # Simulate import error
                 with patch("builtins.__import__", side_effect=ImportError("No module")):
                     result = stage_06_compute_embeddings.run(config)

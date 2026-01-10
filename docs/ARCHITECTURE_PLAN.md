@@ -1,8 +1,8 @@
-# rl-emails Architecture Plan: Gmail API Integration & Multi-Tenant Support
+# priority-lens Architecture Plan: Gmail API Integration & Multi-Tenant Support
 
 ## Executive Summary
 
-This document outlines a phased plan to evolve rl-emails to support multiple data sources (MBOX + Gmail API), multi-tenant capabilities, and comprehensive clustering with API access.
+This document outlines a phased plan to evolve priority-lens to support multiple data sources (MBOX + Gmail API), multi-tenant capabilities, and comprehensive clustering with API access.
 
 **Key Objectives:**
 1. **ADD Gmail API as a data source** (MBOX remains fully supported)
@@ -24,7 +24,7 @@ This document outlines a phased plan to evolve rl-emails to support multiple dat
 | **3** | Foundation | Pipeline Multi-Tenant | All stages accept user_id, scoped queries |
 | **4** | Gmail API | OAuth2 Flow | Google OAuth consent, token storage/refresh |
 | **5** | Gmail API | Gmail Client | API wrapper, batch fetch, rate limiting |
-| **6** | Gmail API | Initial Sync | `rl-emails sync --days N`, Gmail import stage |
+| **6** | Gmail API | Initial Sync | `priority-lens sync --days N`, Gmail import stage |
 | **7** | Gmail API | Incremental Sync | History API, delta processing |
 | **8** | Clustering | Cluster Metadata | `cluster_metadata` table, auto-labeling, project detection |
 | **9** | Clustering | Advanced Algorithms | HDBSCAN, UMAP, semantic content clustering |
@@ -244,7 +244,7 @@ CREATE TABLE emails (
 
 **Files to modify:**
 - `alembic/versions/` - New migration files
-- `src/rl_emails/core/types.py` - Add Organization, OrgUser types
+- `src/priority_lens/core/types.py` - Add Organization, OrgUser types
 
 **Tests:**
 - Migration rollback/forward tests
@@ -256,14 +256,14 @@ CREATE TABLE emails (
 - Add tenant context middleware concept
 
 **Files to create:**
-- `src/rl_emails/models/organization.py`
-- `src/rl_emails/models/org_user.py`
-- `src/rl_emails/models/oauth_token.py`
-- `src/rl_emails/models/sync_state.py`
+- `src/priority_lens/models/organization.py`
+- `src/priority_lens/models/org_user.py`
+- `src/priority_lens/models/oauth_token.py`
+- `src/priority_lens/models/sync_state.py`
 
 **Files to modify:**
-- `src/rl_emails/core/config.py` - Add user context
-- `src/rl_emails/pipeline/stages/*.py` - Add user_id filtering
+- `src/priority_lens/core/config.py` - Add user context
+- `src/priority_lens/pipeline/stages/*.py` - Add user_id filtering
 
 #### Iteration 3: Pipeline Multi-Tenant Adaptation
 - Update all 11 pipeline stages to accept user_id
@@ -271,8 +271,8 @@ CREATE TABLE emails (
 - Ensure clustering is per-user
 
 **Files to modify:**
-- All `src/rl_emails/pipeline/stages/stage_*.py`
-- `src/rl_emails/pipeline/orchestrator.py`
+- All `src/priority_lens/pipeline/stages/stage_*.py`
+- `src/priority_lens/pipeline/orchestrator.py`
 
 ---
 
@@ -286,9 +286,9 @@ CREATE TABLE emails (
 - Scopes: `gmail.readonly`, `gmail.labels`
 
 **Files to create:**
-- `src/rl_emails/auth/oauth.py`
-- `src/rl_emails/auth/google.py`
-- `src/rl_emails/services/auth_service.py`
+- `src/priority_lens/auth/oauth.py`
+- `src/priority_lens/auth/google.py`
+- `src/priority_lens/services/auth_service.py`
 
 **Environment variables:**
 ```
@@ -304,10 +304,10 @@ GOOGLE_REDIRECT_URI=...
 - Handle rate limiting and pagination
 
 **Files to create:**
-- `src/rl_emails/integrations/gmail/__init__.py`
-- `src/rl_emails/integrations/gmail/client.py`
-- `src/rl_emails/integrations/gmail/models.py`
-- `src/rl_emails/integrations/gmail/parser.py`
+- `src/priority_lens/integrations/gmail/__init__.py`
+- `src/priority_lens/integrations/gmail/client.py`
+- `src/priority_lens/integrations/gmail/models.py`
+- `src/priority_lens/integrations/gmail/parser.py`
 
 **Key functions:**
 ```python
@@ -334,20 +334,20 @@ class GmailClient:
 - Both paths feed into the same stages 3-11
 
 **Files to keep unchanged:**
-- `src/rl_emails/pipeline/stages/stage_01_parse_mbox.py` (MBOX still works)
-- `src/rl_emails/pipeline/stages/stage_02_import_postgres.py` (MBOX still works)
+- `src/priority_lens/pipeline/stages/stage_01_parse_mbox.py` (MBOX still works)
+- `src/priority_lens/pipeline/stages/stage_02_import_postgres.py` (MBOX still works)
 
 **Files to create (Gmail path):**
-- `src/rl_emails/pipeline/sources/gmail_source.py` (new Gmail-specific ingestion)
-- `src/rl_emails/services/sync_service.py` (Gmail sync orchestration)
-- `src/rl_emails/pipeline/stages/stage_01_gmail_sync.py` (Gmail equivalent of stage 1-2)
+- `src/priority_lens/pipeline/sources/gmail_source.py` (new Gmail-specific ingestion)
+- `src/priority_lens/services/sync_service.py` (Gmail sync orchestration)
+- `src/priority_lens/pipeline/stages/stage_01_gmail_sync.py` (Gmail equivalent of stage 1-2)
 
 **CLI updates:**
 ```bash
 # New commands
-rl-emails sync --user <user_id> --days 30
-rl-emails sync --user <user_id> --since "2024-01-01"
-rl-emails sync --user <user_id> --incremental
+priority-lens sync --user <user_id> --days 30
+priority-lens sync --user <user_id> --since "2024-01-01"
+priority-lens sync --user <user_id> --incremental
 ```
 
 #### Iteration 7: Incremental Sync
@@ -357,8 +357,8 @@ rl-emails sync --user <user_id> --incremental
 - Update affected clusters/priority
 
 **Files to create:**
-- `src/rl_emails/integrations/gmail/history.py`
-- `src/rl_emails/services/delta_processor.py`
+- `src/priority_lens/integrations/gmail/history.py`
+- `src/priority_lens/services/delta_processor.py`
 
 ---
 
@@ -451,9 +451,9 @@ Output: priority_rank (1 = highest priority)
 - **Project detection from content clusters**
 
 **Files to create:**
-- `src/rl_emails/models/cluster_metadata.py`
-- `src/rl_emails/services/cluster_labeler.py`
-- `src/rl_emails/services/project_detector.py`
+- `src/priority_lens/models/cluster_metadata.py`
+- `src/priority_lens/services/cluster_labeler.py`
+- `src/priority_lens/services/project_detector.py`
 
 **Database additions:**
 ```sql
@@ -486,7 +486,7 @@ CREATE INDEX idx_cluster_metadata_project ON cluster_metadata(user_id, is_projec
 - **Project extraction** from content clusters
 
 **Files to modify:**
-- `src/rl_emails/pipeline/stages/stage_09_cluster_emails.py`
+- `src/priority_lens/pipeline/stages/stage_09_cluster_emails.py`
 
 **New clustering approach:**
 ```python
@@ -530,7 +530,7 @@ def cluster_content_with_projects(embeddings: np.ndarray) -> tuple[np.ndarray, l
 - Enhanced priority computation using all clustering dimensions
 
 **Files to modify:**
-- `src/rl_emails/pipeline/stages/stage_10_compute_priority.py`
+- `src/priority_lens/pipeline/stages/stage_10_compute_priority.py`
 
 **Priority enhancement:**
 ```python
@@ -563,11 +563,11 @@ def compute_project_importance(email_id: int, clusters: EmailClusters) -> float:
 - Error handling and logging
 
 **Files to create:**
-- `src/rl_emails/api/__init__.py`
-- `src/rl_emails/api/app.py`
-- `src/rl_emails/api/deps.py`
-- `src/rl_emails/api/middleware/auth.py`
-- `src/rl_emails/api/middleware/tenant.py`
+- `src/priority_lens/api/__init__.py`
+- `src/priority_lens/api/app.py`
+- `src/priority_lens/api/deps.py`
+- `src/priority_lens/api/middleware/auth.py`
+- `src/priority_lens/api/middleware/tenant.py`
 
 #### Iteration 12: Core API Endpoints
 - Organizations CRUD
@@ -575,9 +575,9 @@ def compute_project_importance(email_id: int, clusters: EmailClusters) -> float:
 - Gmail connection flow
 
 **Files to create:**
-- `src/rl_emails/api/routes/organizations.py`
-- `src/rl_emails/api/routes/users.py`
-- `src/rl_emails/api/routes/auth.py`
+- `src/priority_lens/api/routes/organizations.py`
+- `src/priority_lens/api/routes/users.py`
+- `src/priority_lens/api/routes/auth.py`
 
 **Endpoints:**
 ```
@@ -596,9 +596,9 @@ POST   /api/v1/auth/google/callback
 - Priority inbox
 
 **Files to create:**
-- `src/rl_emails/api/routes/emails.py`
-- `src/rl_emails/api/routes/threads.py`
-- `src/rl_emails/api/routes/analytics.py`
+- `src/priority_lens/api/routes/emails.py`
+- `src/priority_lens/api/routes/threads.py`
+- `src/priority_lens/api/routes/analytics.py`
 
 **Endpoints:**
 ```
@@ -618,10 +618,10 @@ GET    /api/v1/users/{user_id}/analytics/summary
 - Webhook notifications
 
 **Files to create:**
-- `src/rl_emails/jobs/__init__.py`
-- `src/rl_emails/jobs/scheduler.py`
-- `src/rl_emails/jobs/sync_job.py`
-- `src/rl_emails/jobs/cluster_job.py`
+- `src/priority_lens/jobs/__init__.py`
+- `src/priority_lens/jobs/scheduler.py`
+- `src/priority_lens/jobs/sync_job.py`
+- `src/priority_lens/jobs/cluster_job.py`
 
 ---
 
@@ -633,9 +633,9 @@ GET    /api/v1/users/{user_id}/analytics/summary
 - Attachment search capabilities
 
 **Files to create:**
-- `src/rl_emails/models/attachment.py`
-- `src/rl_emails/services/attachment_service.py`
-- `src/rl_emails/storage/s3.py` (optional)
+- `src/priority_lens/models/attachment.py`
+- `src/priority_lens/services/attachment_service.py`
+- `src/priority_lens/storage/s3.py` (optional)
 
 #### Iteration 16: Polish & Documentation
 - API documentation (OpenAPI)
@@ -715,7 +715,7 @@ async def google_callback(code: str, state: str):
 **Story:** As a user, I want to sync my last N days of Gmail so that I can analyze my email patterns.
 
 **Acceptance Criteria:**
-- [ ] CLI command: `rl-emails sync --user <id> --days 30`
+- [ ] CLI command: `priority-lens sync --user <id> --days 30`
 - [ ] Fetches all messages from last N days
 - [ ] Parses message content (to, from, subject, body)
 - [ ] Stores in multi-tenant emails table
@@ -728,16 +728,16 @@ async def google_callback(code: str, state: str):
 **CLI Interface:**
 ```bash
 # Sync last 30 days
-rl-emails sync --user abc123 --days 30
+priority-lens sync --user abc123 --days 30
 
 # Sync from specific date
-rl-emails sync --user abc123 --since 2024-01-01
+priority-lens sync --user abc123 --since 2024-01-01
 
 # Check sync status
-rl-emails sync --user abc123 --status
+priority-lens sync --user abc123 --status
 
 # Force full re-sync
-rl-emails sync --user abc123 --full
+priority-lens sync --user abc123 --full
 ```
 
 ---
@@ -768,9 +768,9 @@ rl-emails sync --user abc123 --full
 │ Stage 2: Import DB  │                               │ - OAuth             │
 │                     │                               │ - Fetch messages    │
 │ CLI:                │                               │ - Import to DB      │
-│ rl-emails           │                               │                     │
+│ priority-lens           │                               │                     │
 │ (uses MBOX_PATH)    │                               │ CLI:                │
-│                     │                               │ rl-emails sync      │
+│                     │                               │ priority-lens sync      │
 │                     │                               │ --user X --days 30  │
 └─────────────────────┘                               └─────────────────────┘
           │                                                       │
@@ -969,7 +969,7 @@ Step 0: OAuth Authentication (one-time per user)
 
 Step 1: Initial Sync with Days Parameter
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│  CLI: rl-emails sync --user <user_id> --days 30                              │
+│  CLI: priority-lens sync --user <user_id> --days 30                              │
 │                                                                              │
 │  ┌────────────────────────────────────────────────────────────────────────┐  │
 │  │  Date Range Calculation                                                │  │
@@ -1029,7 +1029,7 @@ Step 2: Run Analysis Pipeline (Stages 3-11)
 
 Step 3: Incremental Sync (subsequent runs)
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│  CLI: rl-emails sync --user <user_id> --incremental                          │
+│  CLI: priority-lens sync --user <user_id> --incremental                          │
 │                                                                              │
 │  ┌────────────┐     ┌────────────────┐     ┌──────────────────┐              │
 │  │ Load last  │────▶│ Call History   │────▶│ Process changes  │              │
@@ -1139,49 +1139,49 @@ The same validation that happens with MBOX must happen with Gmail API:
 └─────────────────────────────────────────────────────────────────────────────┘
 
 # Authentication
-rl-emails auth connect --email user@example.com
+priority-lens auth connect --email user@example.com
   → Opens browser for Google OAuth
   → Stores tokens in database
 
-rl-emails auth status --email user@example.com
+priority-lens auth status --email user@example.com
   → Shows: Connected, token expires in 45 minutes
 
-rl-emails auth disconnect --email user@example.com
+priority-lens auth disconnect --email user@example.com
   → Revokes tokens, clears local storage
 
 # Sync Commands
-rl-emails sync --user <user_id> --days <N>
+priority-lens sync --user <user_id> --days <N>
   → Initial sync: Last N days of email
   → Example: --days 30 (1 month), --days 90 (3 months), --days 365 (1 year)
 
-rl-emails sync --user <user_id> --since <DATE>
+priority-lens sync --user <user_id> --since <DATE>
   → Sync from specific date
   → Example: --since 2024-01-01
 
-rl-emails sync --user <user_id> --incremental
+priority-lens sync --user <user_id> --incremental
   → Only fetch new emails since last sync
   → Uses Gmail History API
 
-rl-emails sync --user <user_id> --full
+priority-lens sync --user <user_id> --full
   → Force complete re-sync (clears existing data)
 
-rl-emails sync --user <user_id> --status
+priority-lens sync --user <user_id> --status
   → Shows: Last sync, emails count, next sync due
 
 # Pipeline Commands (existing, now with user scope)
-rl-emails run --user <user_id>
+priority-lens run --user <user_id>
   → Run full pipeline stages 3-11
 
-rl-emails run --user <user_id> --stage 9
+priority-lens run --user <user_id> --stage 9
   → Run specific stage
 
-rl-emails status --user <user_id>
+priority-lens status --user <user_id>
   → Show pipeline status for user
 
 # Organization Management
-rl-emails org create --name "Acme Corp" --slug acme
-rl-emails org add-user --org acme --email user@acme.com
-rl-emails org list-users --org acme
+priority-lens org create --name "Acme Corp" --slug acme
+priority-lens org add-user --org acme --email user@acme.com
+priority-lens org list-users --org acme
 ```
 
 ---

@@ -5,13 +5,13 @@ from __future__ import annotations
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from rl_emails.core.config import Config
-from rl_emails.pipeline.orchestrator import (
+from priority_lens.core.config import Config
+from priority_lens.pipeline.orchestrator import (
     PipelineOptions,
     PipelineOrchestrator,
     PipelineResult,
 )
-from rl_emails.pipeline.stages.base import StageResult
+from priority_lens.pipeline.stages.base import StageResult
 
 
 class TestPipelineOptions:
@@ -132,7 +132,7 @@ class TestPipelineOrchestrator:
         assert info[11]["name"] == "entity_extraction"
         assert info[12]["name"] == "enhance_clusters"
 
-    @patch("rl_emails.pipeline.orchestrator.check_postgres")
+    @patch("priority_lens.pipeline.orchestrator.check_postgres")
     def test_validate_missing_database_url(self, mock_check: MagicMock) -> None:
         """Test validation with missing database_url."""
         config = Config(database_url="")
@@ -140,7 +140,7 @@ class TestPipelineOrchestrator:
         errors = orchestrator.validate()
         assert "DATABASE_URL not configured" in errors
 
-    @patch("rl_emails.pipeline.orchestrator.check_postgres")
+    @patch("priority_lens.pipeline.orchestrator.check_postgres")
     def test_validate_missing_mbox_path(self, mock_check: MagicMock) -> None:
         """Test validation with missing mbox_path."""
         config = self._make_config(mbox_path=None)
@@ -148,7 +148,7 @@ class TestPipelineOrchestrator:
         errors = orchestrator.validate()
         assert "MBOX_PATH not configured" in errors
 
-    @patch("rl_emails.pipeline.orchestrator.check_postgres")
+    @patch("priority_lens.pipeline.orchestrator.check_postgres")
     def test_validate_mbox_not_found(self, mock_check: MagicMock) -> None:
         """Test validation with non-existent mbox file."""
         config = self._make_config(mbox_path=Path("/nonexistent/file.mbox"))
@@ -156,7 +156,7 @@ class TestPipelineOrchestrator:
         errors = orchestrator.validate()
         assert any("not found" in e for e in errors)
 
-    @patch("rl_emails.pipeline.orchestrator.check_postgres")
+    @patch("priority_lens.pipeline.orchestrator.check_postgres")
     def test_validate_missing_your_email(self, mock_check: MagicMock) -> None:
         """Test validation with missing your_email."""
         config = self._make_config(your_email=None)
@@ -164,7 +164,7 @@ class TestPipelineOrchestrator:
         errors = orchestrator.validate()
         assert "YOUR_EMAIL not configured" in errors
 
-    @patch("rl_emails.pipeline.orchestrator.check_postgres")
+    @patch("priority_lens.pipeline.orchestrator.check_postgres")
     def test_validate_missing_openai_key(self, mock_check: MagicMock) -> None:
         """Test validation with missing OpenAI key."""
         config = self._make_config(openai_api_key=None)
@@ -172,7 +172,7 @@ class TestPipelineOrchestrator:
         errors = orchestrator.validate()
         assert any("OPENAI_API_KEY" in e for e in errors)
 
-    @patch("rl_emails.pipeline.orchestrator.check_postgres")
+    @patch("priority_lens.pipeline.orchestrator.check_postgres")
     def test_validate_missing_llm_key(self, mock_check: MagicMock) -> None:
         """Test validation with missing LLM keys."""
         config = self._make_config(openai_api_key=None, anthropic_api_key=None)
@@ -180,7 +180,7 @@ class TestPipelineOrchestrator:
         errors = orchestrator.validate()
         assert any("LLM API key" in e for e in errors)
 
-    @patch("rl_emails.pipeline.orchestrator.check_postgres")
+    @patch("priority_lens.pipeline.orchestrator.check_postgres")
     def test_validate_skip_embeddings(self, mock_check: MagicMock) -> None:
         """Test validation with skip_embeddings allows missing OpenAI key."""
         mock_check.return_value = True
@@ -190,7 +190,7 @@ class TestPipelineOrchestrator:
         errors = orchestrator.validate()
         assert not any("OPENAI_API_KEY" in e for e in errors)
 
-    @patch("rl_emails.pipeline.orchestrator.check_postgres")
+    @patch("priority_lens.pipeline.orchestrator.check_postgres")
     def test_validate_postgres_failure(self, mock_check: MagicMock) -> None:
         """Test validation with postgres connection failure."""
         mock_check.return_value = False
@@ -215,7 +215,7 @@ class TestPipelineOrchestrator:
         assert len(events) == 1
         assert events[0] == (1, "start", None)
 
-    @patch("rl_emails.pipeline.orchestrator.subprocess.run")
+    @patch("priority_lens.pipeline.orchestrator.subprocess.run")
     def test_run_migrations_success(self, mock_run: MagicMock) -> None:
         """Test successful migration run."""
         mock_run.return_value = MagicMock(returncode=0)
@@ -227,7 +227,7 @@ class TestPipelineOrchestrator:
         assert result is True
         mock_run.assert_called_once()
 
-    @patch("rl_emails.pipeline.orchestrator.subprocess.run")
+    @patch("priority_lens.pipeline.orchestrator.subprocess.run")
     def test_run_migrations_failure(self, mock_run: MagicMock) -> None:
         """Test failed migration run."""
         mock_run.return_value = MagicMock(returncode=1)
@@ -238,7 +238,7 @@ class TestPipelineOrchestrator:
 
         assert result is False
 
-    @patch("rl_emails.pipeline.orchestrator.subprocess.run")
+    @patch("priority_lens.pipeline.orchestrator.subprocess.run")
     def test_run_migrations_exception(self, mock_run: MagicMock) -> None:
         """Test migration run with exception."""
         mock_run.side_effect = Exception("Subprocess failed")
@@ -249,8 +249,8 @@ class TestPipelineOrchestrator:
 
         assert result is False
 
-    @patch("rl_emails.pipeline.orchestrator.get_status")
-    @patch("rl_emails.pipeline.orchestrator.stage_01_parse_mbox")
+    @patch("priority_lens.pipeline.orchestrator.get_status")
+    @patch("priority_lens.pipeline.orchestrator.stage_01_parse_mbox")
     def test_run_single_stage(self, mock_stage: MagicMock, mock_status: MagicMock) -> None:
         """Test running a single stage."""
         mock_stage.run.return_value = StageResult(
@@ -271,8 +271,8 @@ class TestPipelineOrchestrator:
         assert 1 in result.stages_completed
         mock_stage.run.assert_called_once()
 
-    @patch("rl_emails.pipeline.orchestrator.get_status")
-    @patch("rl_emails.pipeline.orchestrator.stage_01_parse_mbox")
+    @patch("priority_lens.pipeline.orchestrator.get_status")
+    @patch("priority_lens.pipeline.orchestrator.stage_01_parse_mbox")
     def test_run_stage_failure(self, mock_stage: MagicMock, mock_status: MagicMock) -> None:
         """Test handling stage failure."""
         mock_stage.run.return_value = StageResult(
@@ -293,8 +293,8 @@ class TestPipelineOrchestrator:
         assert 1 in result.stages_failed
         assert "Stage 1" in str(result.error)
 
-    @patch("rl_emails.pipeline.orchestrator.get_status")
-    @patch("rl_emails.pipeline.orchestrator.stage_01_parse_mbox")
+    @patch("priority_lens.pipeline.orchestrator.get_status")
+    @patch("priority_lens.pipeline.orchestrator.stage_01_parse_mbox")
     def test_run_stage_exception(self, mock_stage: MagicMock, mock_status: MagicMock) -> None:
         """Test handling stage exception."""
         mock_stage.run.side_effect = Exception("Stage crashed")
@@ -309,7 +309,7 @@ class TestPipelineOrchestrator:
         assert result.success is False
         assert 1 in result.stages_failed
 
-    @patch("rl_emails.pipeline.orchestrator.get_status")
+    @patch("priority_lens.pipeline.orchestrator.get_status")
     def test_run_skips_earlier_stages(self, mock_status: MagicMock) -> None:
         """Test skipping stages before start_from."""
         mock_status.return_value = MagicMock()
@@ -325,8 +325,8 @@ class TestPipelineOrchestrator:
         assert result.success is True
         assert len(result.stages_skipped) == 13
 
-    @patch("rl_emails.pipeline.orchestrator.get_status")
-    @patch("rl_emails.pipeline.orchestrator.subprocess.run")
+    @patch("priority_lens.pipeline.orchestrator.get_status")
+    @patch("priority_lens.pipeline.orchestrator.subprocess.run")
     def test_run_migrations_failure_stops_pipeline(
         self, mock_run: MagicMock, mock_status: MagicMock
     ) -> None:
@@ -342,7 +342,7 @@ class TestPipelineOrchestrator:
         assert result.success is False
         assert "migrations failed" in str(result.error)
 
-    @patch("rl_emails.pipeline.orchestrator.stage_01_parse_mbox")
+    @patch("priority_lens.pipeline.orchestrator.stage_01_parse_mbox")
     def test_run_stage_by_number(self, mock_stage: MagicMock) -> None:
         """Test running a specific stage by number."""
         mock_stage.run.return_value = StageResult(
@@ -359,7 +359,7 @@ class TestPipelineOrchestrator:
         assert result.success is True
         mock_stage.run.assert_called_once()
 
-    @patch("rl_emails.pipeline.orchestrator.stage_02_import_postgres")
+    @patch("priority_lens.pipeline.orchestrator.stage_02_import_postgres")
     def test_run_stage_02(self, mock_stage: MagicMock) -> None:
         """Test running stage 2."""
         mock_stage.run.return_value = StageResult(
@@ -370,7 +370,7 @@ class TestPipelineOrchestrator:
         result = orchestrator.run_stage(2)
         assert result.success is True
 
-    @patch("rl_emails.pipeline.orchestrator.stage_03_populate_threads")
+    @patch("priority_lens.pipeline.orchestrator.stage_03_populate_threads")
     def test_run_stage_03(self, mock_stage: MagicMock) -> None:
         """Test running stage 3."""
         mock_stage.run.return_value = StageResult(
@@ -381,7 +381,7 @@ class TestPipelineOrchestrator:
         result = orchestrator.run_stage(3)
         assert result.success is True
 
-    @patch("rl_emails.pipeline.orchestrator.stage_04_enrich_emails")
+    @patch("priority_lens.pipeline.orchestrator.stage_04_enrich_emails")
     def test_run_stage_04(self, mock_stage: MagicMock) -> None:
         """Test running stage 4."""
         mock_stage.run.return_value = StageResult(
@@ -392,7 +392,7 @@ class TestPipelineOrchestrator:
         result = orchestrator.run_stage(4)
         assert result.success is True
 
-    @patch("rl_emails.pipeline.orchestrator.stage_05_compute_features")
+    @patch("priority_lens.pipeline.orchestrator.stage_05_compute_features")
     def test_run_stage_05(self, mock_stage: MagicMock) -> None:
         """Test running stage 5."""
         mock_stage.run.return_value = StageResult(
@@ -403,7 +403,7 @@ class TestPipelineOrchestrator:
         result = orchestrator.run_stage(5)
         assert result.success is True
 
-    @patch("rl_emails.pipeline.orchestrator.stage_06_compute_embeddings")
+    @patch("priority_lens.pipeline.orchestrator.stage_06_compute_embeddings")
     def test_run_stage_06(self, mock_stage: MagicMock) -> None:
         """Test running stage 6."""
         mock_stage.run.return_value = StageResult(
@@ -414,7 +414,7 @@ class TestPipelineOrchestrator:
         result = orchestrator.run_stage(6)
         assert result.success is True
 
-    @patch("rl_emails.pipeline.orchestrator.stage_07_classify_handleability")
+    @patch("priority_lens.pipeline.orchestrator.stage_07_classify_handleability")
     def test_run_stage_07(self, mock_stage: MagicMock) -> None:
         """Test running stage 7."""
         mock_stage.run.return_value = StageResult(
@@ -425,7 +425,7 @@ class TestPipelineOrchestrator:
         result = orchestrator.run_stage(7)
         assert result.success is True
 
-    @patch("rl_emails.pipeline.orchestrator.stage_08_populate_users")
+    @patch("priority_lens.pipeline.orchestrator.stage_08_populate_users")
     def test_run_stage_08(self, mock_stage: MagicMock) -> None:
         """Test running stage 8."""
         mock_stage.run.return_value = StageResult(
@@ -436,7 +436,7 @@ class TestPipelineOrchestrator:
         result = orchestrator.run_stage(8)
         assert result.success is True
 
-    @patch("rl_emails.pipeline.orchestrator.stage_09_cluster_emails")
+    @patch("priority_lens.pipeline.orchestrator.stage_09_cluster_emails")
     def test_run_stage_09(self, mock_stage: MagicMock) -> None:
         """Test running stage 9."""
         mock_stage.run.return_value = StageResult(
@@ -447,7 +447,7 @@ class TestPipelineOrchestrator:
         result = orchestrator.run_stage(9)
         assert result.success is True
 
-    @patch("rl_emails.pipeline.orchestrator.stage_10_compute_priority")
+    @patch("priority_lens.pipeline.orchestrator.stage_10_compute_priority")
     def test_run_stage_10(self, mock_stage: MagicMock) -> None:
         """Test running stage 10."""
         mock_stage.run.return_value = StageResult(
@@ -458,7 +458,7 @@ class TestPipelineOrchestrator:
         result = orchestrator.run_stage(10)
         assert result.success is True
 
-    @patch("rl_emails.pipeline.orchestrator.stage_11_llm_classification")
+    @patch("priority_lens.pipeline.orchestrator.stage_11_llm_classification")
     def test_run_stage_11(self, mock_stage: MagicMock) -> None:
         """Test running stage 11."""
         mock_stage.run.return_value = StageResult(
@@ -469,7 +469,7 @@ class TestPipelineOrchestrator:
         result = orchestrator.run_stage(11)
         assert result.success is True
 
-    @patch("rl_emails.pipeline.stages.stage_12_entity_extraction.run")
+    @patch("priority_lens.pipeline.stages.stage_12_entity_extraction.run")
     def test_run_stage_12(self, mock_run: MagicMock) -> None:
         """Test running stage 12."""
         mock_run.return_value = StageResult(
@@ -480,7 +480,7 @@ class TestPipelineOrchestrator:
         result = orchestrator.run_stage(12)
         assert result.success is True
 
-    @patch("rl_emails.pipeline.stages.stage_13_enhance_clusters.run")
+    @patch("priority_lens.pipeline.stages.stage_13_enhance_clusters.run")
     def test_run_stage_13(self, mock_run: MagicMock) -> None:
         """Test running stage 13."""
         mock_run.return_value = StageResult(
@@ -501,7 +501,7 @@ class TestPipelineOrchestrator:
         with pytest.raises(ValueError, match="Invalid stage number"):
             orchestrator.run_stage(99)
 
-    @patch("rl_emails.pipeline.orchestrator.get_status")
+    @patch("priority_lens.pipeline.orchestrator.get_status")
     def test_run_notifies_callbacks(self, mock_status: MagicMock) -> None:
         """Test that callbacks are notified for stage events."""
         mock_status.return_value = MagicMock()
@@ -522,13 +522,13 @@ class TestPipelineOrchestrator:
         assert len(events) == 13
         assert all(e[1] == "skip" for e in events)
 
-    @patch("rl_emails.pipeline.orchestrator.get_status")
-    @patch("rl_emails.pipeline.orchestrator.stage_06_compute_embeddings")
-    @patch("rl_emails.pipeline.orchestrator.stage_05_compute_features")
-    @patch("rl_emails.pipeline.orchestrator.stage_04_enrich_emails")
-    @patch("rl_emails.pipeline.orchestrator.stage_03_populate_threads")
-    @patch("rl_emails.pipeline.orchestrator.stage_02_import_postgres")
-    @patch("rl_emails.pipeline.orchestrator.stage_01_parse_mbox")
+    @patch("priority_lens.pipeline.orchestrator.get_status")
+    @patch("priority_lens.pipeline.orchestrator.stage_06_compute_embeddings")
+    @patch("priority_lens.pipeline.orchestrator.stage_05_compute_features")
+    @patch("priority_lens.pipeline.orchestrator.stage_04_enrich_emails")
+    @patch("priority_lens.pipeline.orchestrator.stage_03_populate_threads")
+    @patch("priority_lens.pipeline.orchestrator.stage_02_import_postgres")
+    @patch("priority_lens.pipeline.orchestrator.stage_01_parse_mbox")
     def test_run_skips_embeddings_stage(
         self,
         mock_s1: MagicMock,
@@ -557,9 +557,9 @@ class TestPipelineOrchestrator:
         assert 6 in result.stages_skipped
         mock_s6.run.assert_not_called()
 
-    @patch("rl_emails.pipeline.orchestrator.get_status")
-    @patch("rl_emails.pipeline.orchestrator.stage_11_llm_classification")
-    @patch("rl_emails.pipeline.orchestrator.stage_10_compute_priority")
+    @patch("priority_lens.pipeline.orchestrator.get_status")
+    @patch("priority_lens.pipeline.orchestrator.stage_11_llm_classification")
+    @patch("priority_lens.pipeline.orchestrator.stage_10_compute_priority")
     def test_run_skips_llm_stage(
         self,
         mock_s10: MagicMock,
@@ -587,9 +587,9 @@ class TestPipelineOrchestrator:
         assert 11 in result.stages_skipped
         mock_s11.run.assert_not_called()
 
-    @patch("rl_emails.pipeline.orchestrator.get_status")
-    @patch("rl_emails.pipeline.orchestrator.subprocess.run")
-    @patch("rl_emails.pipeline.orchestrator.stage_01_parse_mbox")
+    @patch("priority_lens.pipeline.orchestrator.get_status")
+    @patch("priority_lens.pipeline.orchestrator.subprocess.run")
+    @patch("priority_lens.pipeline.orchestrator.stage_01_parse_mbox")
     def test_run_with_successful_migrations(
         self,
         mock_s1: MagicMock,
@@ -615,7 +615,7 @@ class TestPipelineOrchestrator:
         # Stage 1 should be attempted
         mock_s1.run.assert_called_once()
 
-    @patch("rl_emails.pipeline.orchestrator.check_postgres")
+    @patch("priority_lens.pipeline.orchestrator.check_postgres")
     def test_validate_with_existing_mbox(self, mock_check: MagicMock, tmp_path: Path) -> None:
         """Test validation when mbox file exists."""
         mock_check.return_value = True

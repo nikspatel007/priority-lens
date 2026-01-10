@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import uuid
 
-from rl_emails.models.sync_state import SyncState
+from priority_lens.models.sync_state import SyncState
 
 
 class TestSyncState:

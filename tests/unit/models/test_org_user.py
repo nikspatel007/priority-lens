@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import uuid
 
-from rl_emails.models.org_user import OrgUser
+from priority_lens.models.org_user import OrgUser
 
 
 class TestOrgUser:

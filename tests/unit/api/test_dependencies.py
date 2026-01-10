@@ -6,8 +6,8 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from rl_emails.api.database import Database, set_database
-from rl_emails.api.dependencies import (
+from priority_lens.api.database import Database, set_database
+from priority_lens.api.dependencies import (
     get_db,
     get_db_session,
     get_org_id_optional,

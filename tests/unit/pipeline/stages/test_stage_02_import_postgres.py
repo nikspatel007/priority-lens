@@ -8,9 +8,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from rl_emails.core.config import Config
-from rl_emails.pipeline.stages import stage_02_import_postgres
-from rl_emails.pipeline.stages.base import StageResult
+from priority_lens.core.config import Config
+from priority_lens.pipeline.stages import stage_02_import_postgres
+from priority_lens.pipeline.stages.base import StageResult
 
 
 class TestSanitizeText:
@@ -447,7 +447,7 @@ class TestRunAsync:
     """Tests for run_async function."""
 
     @pytest.mark.asyncio
-    @patch("rl_emails.pipeline.stages.stage_02_import_postgres.asyncpg.connect")
+    @patch("priority_lens.pipeline.stages.stage_02_import_postgres.asyncpg.connect")
     async def test_connects_and_imports(self, mock_connect: MagicMock, tmp_path: Path) -> None:
         """Test run_async connects and imports."""
         jsonl_path = tmp_path / "emails.jsonl"
@@ -464,7 +464,7 @@ class TestRunAsync:
         mock_conn.close.assert_called_once()
 
     @pytest.mark.asyncio
-    @patch("rl_emails.pipeline.stages.stage_02_import_postgres.asyncpg.connect")
+    @patch("priority_lens.pipeline.stages.stage_02_import_postgres.asyncpg.connect")
     async def test_closes_on_error(self, mock_connect: MagicMock, tmp_path: Path) -> None:
         """Test connection is closed on error."""
         jsonl_path = tmp_path / "nonexistent.jsonl"
@@ -502,7 +502,7 @@ class TestRun:
         assert result.success is False
         assert "not found" in result.message
 
-    @patch("rl_emails.pipeline.stages.stage_02_import_postgres.asyncio.run")
+    @patch("priority_lens.pipeline.stages.stage_02_import_postgres.asyncio.run")
     def test_run_success(self, mock_asyncio_run: MagicMock, tmp_path: Path) -> None:
         """Test successful run."""
         jsonl_path = tmp_path / "emails.jsonl"
@@ -522,7 +522,7 @@ class TestRun:
         assert result.metadata is not None
         assert "Imported 100 emails" in result.message
 
-    @patch("rl_emails.pipeline.stages.stage_02_import_postgres.asyncio.run")
+    @patch("priority_lens.pipeline.stages.stage_02_import_postgres.asyncio.run")
     def test_run_with_custom_batch_size(self, mock_asyncio_run: MagicMock, tmp_path: Path) -> None:
         """Test run with custom batch size."""
         jsonl_path = tmp_path / "emails.jsonl"

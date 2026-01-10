@@ -7,9 +7,9 @@ from uuid import uuid4
 
 import pytest
 
-from rl_emails.models.cluster_metadata import ClusterMetadata
-from rl_emails.repositories.cluster_metadata import ClusterMetadataRepository
-from rl_emails.schemas.cluster_metadata import ClusterMetadataCreate
+from priority_lens.models.cluster_metadata import ClusterMetadata
+from priority_lens.repositories.cluster_metadata import ClusterMetadataRepository
+from priority_lens.schemas.cluster_metadata import ClusterMetadataCreate
 
 
 class TestClusterMetadataRepository:
@@ -654,7 +654,7 @@ class TestClusterMetadataRepositoryAdditional:
         mock_session: mock.MagicMock,
     ) -> None:
         """Test updating metadata when found."""
-        from rl_emails.schemas.cluster_metadata import ClusterMetadataUpdate
+        from priority_lens.schemas.cluster_metadata import ClusterMetadataUpdate
 
         existing = ClusterMetadata(
             dimension="content",
@@ -681,7 +681,7 @@ class TestClusterMetadataRepositoryAdditional:
         mock_session: mock.MagicMock,
     ) -> None:
         """Test updating metadata when not found."""
-        from rl_emails.schemas.cluster_metadata import ClusterMetadataUpdate
+        from priority_lens.schemas.cluster_metadata import ClusterMetadataUpdate
 
         mock_result = mock.MagicMock()
         mock_result.scalar_one_or_none.return_value = None

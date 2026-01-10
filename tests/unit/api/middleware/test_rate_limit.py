@@ -6,8 +6,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from rl_emails.api.config import APIConfig
-from rl_emails.api.middleware.rate_limit import (
+from priority_lens.api.config import APIConfig
+from priority_lens.api.middleware.rate_limit import (
     _get_request_identifier,
     get_limiter,
     rate_limit_exceeded_handler,
@@ -33,7 +33,7 @@ class TestGetRequestIdentifier:
         mock_request.headers = {}
         mock_request.client.host = "192.168.1.1"
 
-        with patch("rl_emails.api.middleware.rate_limit.get_remote_address") as mock_get_ip:
+        with patch("priority_lens.api.middleware.rate_limit.get_remote_address") as mock_get_ip:
             mock_get_ip.return_value = "192.168.1.1"
             result = _get_request_identifier(mock_request)
 
@@ -62,9 +62,9 @@ class TestRateLimitExceededHandler:
     async def test_returns_429_response(self, mock_request: MagicMock, mock_exc: MagicMock) -> None:
         """Test that handler returns 429 status."""
         with (
-            patch("rl_emails.api.middleware.rate_limit.logger") as mock_logger,
+            patch("priority_lens.api.middleware.rate_limit.logger") as mock_logger,
             patch(
-                "rl_emails.api.middleware.rate_limit._get_request_identifier",
+                "priority_lens.api.middleware.rate_limit._get_request_identifier",
                 return_value="test-id",
             ),
         ):
@@ -80,9 +80,9 @@ class TestRateLimitExceededHandler:
     ) -> None:
         """Test that response contains Problem Detail format."""
         with (
-            patch("rl_emails.api.middleware.rate_limit.logger") as mock_logger,
+            patch("priority_lens.api.middleware.rate_limit.logger") as mock_logger,
             patch(
-                "rl_emails.api.middleware.rate_limit._get_request_identifier",
+                "priority_lens.api.middleware.rate_limit._get_request_identifier",
                 return_value="test-id",
             ),
         ):
@@ -104,9 +104,9 @@ class TestRateLimitExceededHandler:
         mock_exc.detail = "Rate limit exceeded: 60 per minute"
 
         with (
-            patch("rl_emails.api.middleware.rate_limit.logger") as mock_logger,
+            patch("priority_lens.api.middleware.rate_limit.logger") as mock_logger,
             patch(
-                "rl_emails.api.middleware.rate_limit._get_request_identifier",
+                "priority_lens.api.middleware.rate_limit._get_request_identifier",
                 return_value="test-id",
             ),
         ):
@@ -121,9 +121,9 @@ class TestRateLimitExceededHandler:
     ) -> None:
         """Test that rate limit exceeded is logged."""
         with (
-            patch("rl_emails.api.middleware.rate_limit.logger") as mock_logger,
+            patch("priority_lens.api.middleware.rate_limit.logger") as mock_logger,
             patch(
-                "rl_emails.api.middleware.rate_limit._get_request_identifier",
+                "priority_lens.api.middleware.rate_limit._get_request_identifier",
                 return_value="user:test-123",
             ),
         ):
@@ -141,9 +141,9 @@ class TestRateLimitExceededHandler:
         mock_exc.detail = "Rate limit exceeded"  # No number
 
         with (
-            patch("rl_emails.api.middleware.rate_limit.logger") as mock_logger,
+            patch("priority_lens.api.middleware.rate_limit.logger") as mock_logger,
             patch(
-                "rl_emails.api.middleware.rate_limit._get_request_identifier",
+                "priority_lens.api.middleware.rate_limit._get_request_identifier",
                 return_value="test-id",
             ),
         ):
@@ -160,9 +160,9 @@ class TestRateLimitExceededHandler:
         mock_exc.detail = 12345  # Not a string
 
         with (
-            patch("rl_emails.api.middleware.rate_limit.logger") as mock_logger,
+            patch("priority_lens.api.middleware.rate_limit.logger") as mock_logger,
             patch(
-                "rl_emails.api.middleware.rate_limit._get_request_identifier",
+                "priority_lens.api.middleware.rate_limit._get_request_identifier",
                 return_value="test-id",
             ),
         ):
@@ -201,7 +201,7 @@ class TestGetLimiter:
     def test_raises_when_not_configured(self) -> None:
         """Test that get_limiter raises when not configured."""
         # Reset the global limiter
-        import rl_emails.api.middleware.rate_limit as rate_limit_module
+        import priority_lens.api.middleware.rate_limit as rate_limit_module
 
         original = rate_limit_module.limiter
         rate_limit_module.limiter = None

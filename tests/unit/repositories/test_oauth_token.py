@@ -8,9 +8,9 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from rl_emails.models.oauth_token import OAuthToken
-from rl_emails.repositories.oauth_token import OAuthTokenRepository
-from rl_emails.schemas.oauth_token import OAuthTokenCreate, OAuthTokenUpdate
+from priority_lens.models.oauth_token import OAuthToken
+from priority_lens.repositories.oauth_token import OAuthTokenRepository
+from priority_lens.schemas.oauth_token import OAuthTokenCreate, OAuthTokenUpdate
 
 
 @pytest.fixture

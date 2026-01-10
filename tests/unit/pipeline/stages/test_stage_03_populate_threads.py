@@ -6,9 +6,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from rl_emails.core.config import Config
-from rl_emails.pipeline.stages import stage_03_populate_threads
-from rl_emails.pipeline.stages.base import StageResult
+from priority_lens.core.config import Config
+from priority_lens.pipeline.stages import stage_03_populate_threads
+from priority_lens.pipeline.stages.base import StageResult
 
 
 class TestPopulateThreadsAsync:
@@ -176,7 +176,7 @@ class TestRunAsync:
     async def test_connects_and_populates(self) -> None:
         """Test run_async connects to DB and populates threads."""
         with patch(
-            "rl_emails.pipeline.stages.stage_03_populate_threads.asyncpg.connect"
+            "priority_lens.pipeline.stages.stage_03_populate_threads.asyncpg.connect"
         ) as mock_connect:
             mock_conn = AsyncMock()
             mock_connect.return_value = mock_conn
@@ -192,7 +192,7 @@ class TestRunAsync:
     async def test_closes_connection_on_success(self) -> None:
         """Test connection is closed on success."""
         with patch(
-            "rl_emails.pipeline.stages.stage_03_populate_threads.asyncpg.connect"
+            "priority_lens.pipeline.stages.stage_03_populate_threads.asyncpg.connect"
         ) as mock_connect:
             mock_conn = AsyncMock()
             mock_connect.return_value = mock_conn
@@ -206,7 +206,7 @@ class TestRunAsync:
     async def test_closes_connection_on_error(self) -> None:
         """Test connection is closed even on error."""
         with patch(
-            "rl_emails.pipeline.stages.stage_03_populate_threads.asyncpg.connect"
+            "priority_lens.pipeline.stages.stage_03_populate_threads.asyncpg.connect"
         ) as mock_connect:
             mock_conn = AsyncMock()
             mock_connect.return_value = mock_conn
@@ -221,7 +221,7 @@ class TestRunAsync:
 class TestRun:
     """Tests for run function."""
 
-    @patch("rl_emails.pipeline.stages.stage_03_populate_threads.asyncio.run")
+    @patch("priority_lens.pipeline.stages.stage_03_populate_threads.asyncio.run")
     def test_run_returns_stage_result(self, mock_asyncio_run: MagicMock) -> None:
         """Test run returns proper StageResult."""
         mock_asyncio_run.return_value = (100, {"threads_inserted": 100})
@@ -235,7 +235,7 @@ class TestRun:
         assert result.metadata is not None
         assert result.metadata["threads_inserted"] == 100
 
-    @patch("rl_emails.pipeline.stages.stage_03_populate_threads.asyncio.run")
+    @patch("priority_lens.pipeline.stages.stage_03_populate_threads.asyncio.run")
     def test_run_with_custom_batch_size(self, mock_asyncio_run: MagicMock) -> None:
         """Test run with custom batch size."""
         mock_asyncio_run.return_value = (50, {"threads_inserted": 50})
@@ -246,7 +246,7 @@ class TestRun:
         assert result.success is True
         assert result.records_processed == 50
 
-    @patch("rl_emails.pipeline.stages.stage_03_populate_threads.asyncio.run")
+    @patch("priority_lens.pipeline.stages.stage_03_populate_threads.asyncio.run")
     def test_run_calculates_duration(self, mock_asyncio_run: MagicMock) -> None:
         """Test run calculates duration."""
         mock_asyncio_run.return_value = (10, {"threads_inserted": 10})

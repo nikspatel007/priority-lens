@@ -7,9 +7,9 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from rl_emails.models.org_user import OrgUser
-from rl_emails.repositories.org_user import OrgUserRepository
-from rl_emails.schemas.org_user import OrgUserCreate, OrgUserUpdate
+from priority_lens.models.org_user import OrgUser
+from priority_lens.repositories.org_user import OrgUserRepository
+from priority_lens.schemas.org_user import OrgUserCreate, OrgUserUpdate
 
 
 @pytest.fixture

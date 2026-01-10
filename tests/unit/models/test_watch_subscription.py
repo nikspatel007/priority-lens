@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
-from rl_emails.models.watch_subscription import WatchSubscription
+from priority_lens.models.watch_subscription import WatchSubscription
 
 
 class TestWatchSubscriptionModel:

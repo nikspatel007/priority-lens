@@ -8,7 +8,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from rl_emails.services.entity_extraction import (
+from priority_lens.services.entity_extraction import (
     MARKETING_PATTERNS,
     ExtractionResult,
     PriorityContextBuilder,

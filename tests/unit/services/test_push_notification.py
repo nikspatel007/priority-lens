@@ -10,7 +10,7 @@ from uuid import uuid4
 
 import pytest
 
-from rl_emails.services.push_notification import (
+from priority_lens.services.push_notification import (
     InvalidNotificationError,
     NotificationData,
     NotificationDeduplicator,

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from rl_emails.pipeline.stages.base import StageResult
+from priority_lens.pipeline.stages.base import StageResult
 
 
 class TestStageResult:

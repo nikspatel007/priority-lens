@@ -11,8 +11,8 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from rl_emails.api.routes.webhooks import router, set_push_service
-from rl_emails.services.push_notification import NotificationResult
+from priority_lens.api.routes.webhooks import router, set_push_service
+from priority_lens.services.push_notification import NotificationResult
 
 
 @pytest.fixture

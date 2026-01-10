@@ -5,9 +5,9 @@ from __future__ import annotations
 from typing import Any
 from unittest.mock import MagicMock, patch
 
-from rl_emails.core.config import Config
-from rl_emails.pipeline.stages import stage_10_compute_priority
-from rl_emails.pipeline.stages.base import StageResult
+from priority_lens.core.config import Config
+from priority_lens.pipeline.stages import stage_10_compute_priority
+from priority_lens.pipeline.stages.base import StageResult
 
 
 class TestCreateTables:
@@ -320,7 +320,7 @@ class TestDetermineLlmFlags:
 class TestSavePriorities:
     """Tests for save_priorities function."""
 
-    @patch("rl_emails.pipeline.stages.stage_10_compute_priority.execute_values")
+    @patch("priority_lens.pipeline.stages.stage_10_compute_priority.execute_values")
     def test_saves_priorities(self, mock_execute_values: MagicMock) -> None:
         """Test saving priorities."""
         conn = MagicMock()
@@ -345,7 +345,7 @@ class TestSavePriorities:
         mock_execute_values.assert_called_once()
         conn.commit.assert_called_once()
 
-    @patch("rl_emails.pipeline.stages.stage_10_compute_priority.execute_values")
+    @patch("priority_lens.pipeline.stages.stage_10_compute_priority.execute_values")
     def test_default_llm_flags(self, mock_execute_values: MagicMock) -> None:
         """Test default LLM flags for missing entries."""
         conn = MagicMock()
@@ -371,7 +371,7 @@ class TestSavePriorities:
 class TestRun:
     """Tests for run function."""
 
-    @patch("rl_emails.pipeline.stages.stage_10_compute_priority.psycopg2.connect")
+    @patch("priority_lens.pipeline.stages.stage_10_compute_priority.psycopg2.connect")
     def test_run_success(self, mock_connect: MagicMock) -> None:
         """Test successful run."""
         mock_conn = MagicMock()
@@ -389,7 +389,7 @@ class TestRun:
         ]
         mock_cursor.fetchone.return_value = (None,)  # No replied centroid
 
-        with patch("rl_emails.pipeline.stages.stage_10_compute_priority.execute_values"):
+        with patch("priority_lens.pipeline.stages.stage_10_compute_priority.execute_values"):
             config = Config(database_url="postgresql://test")
             result = stage_10_compute_priority.run(config)
 

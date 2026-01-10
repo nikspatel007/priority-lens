@@ -10,10 +10,10 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from rl_emails.api.auth.clerk import ClerkUser
-from rl_emails.api.auth.dependencies import get_current_user_or_api_key
-from rl_emails.api.routes.inbox import router, set_session_factory
-from rl_emails.schemas.inbox import (
+from priority_lens.api.auth.clerk import ClerkUser
+from priority_lens.api.auth.dependencies import get_current_user_or_api_key
+from priority_lens.api.routes.inbox import router, set_session_factory
+from priority_lens.schemas.inbox import (
     EmailSummary,
     InboxStats,
     PriorityEmail,
@@ -96,7 +96,7 @@ class TestGetPriorityInbox:
             from_real_people_count=10,
         )
 
-        with mock.patch("rl_emails.api.routes.inbox.InboxService") as MockService:
+        with mock.patch("priority_lens.api.routes.inbox.InboxService") as MockService:
             mock_service = MockService.return_value
             mock_service.get_priority_inbox = mock.AsyncMock(return_value=mock_response)
 
@@ -123,7 +123,7 @@ class TestGetPriorityInbox:
             from_real_people_count=0,
         )
 
-        with mock.patch("rl_emails.api.routes.inbox.InboxService") as MockService:
+        with mock.patch("priority_lens.api.routes.inbox.InboxService") as MockService:
             mock_service = MockService.return_value
             mock_service.get_priority_inbox = mock.AsyncMock(return_value=mock_response)
 
@@ -151,7 +151,7 @@ class TestGetInboxStats:
             oldest_unanswered_hours=48.0,
         )
 
-        with mock.patch("rl_emails.api.routes.inbox.InboxService") as MockService:
+        with mock.patch("priority_lens.api.routes.inbox.InboxService") as MockService:
             mock_service = MockService.return_value
             mock_service.get_inbox_stats = mock.AsyncMock(return_value=mock_response)
 
@@ -224,7 +224,7 @@ class TestClerkUserIdHandling:
             from_real_people_count=0,
         )
 
-        with mock.patch("rl_emails.api.routes.inbox.InboxService") as MockService:
+        with mock.patch("priority_lens.api.routes.inbox.InboxService") as MockService:
             mock_service = MockService.return_value
             mock_service.get_priority_inbox = mock.AsyncMock(return_value=mock_response)
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 import uuid
 from datetime import UTC, datetime
 
-from rl_emails.models.cluster_metadata import ClusterMetadata
+from priority_lens.models.cluster_metadata import ClusterMetadata
 
 
 class TestClusterMetadata:

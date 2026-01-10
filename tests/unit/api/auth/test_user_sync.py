@@ -7,9 +7,9 @@ from unittest import mock
 
 import pytest
 
-from rl_emails.api.auth.clerk import ClerkUser
-from rl_emails.api.auth.user_sync import UserSyncService
-from rl_emails.models.org_user import OrgUser
+from priority_lens.api.auth.clerk import ClerkUser
+from priority_lens.api.auth.user_sync import UserSyncService
+from priority_lens.models.org_user import OrgUser
 
 
 class TestUserSyncService:

@@ -52,7 +52,7 @@ uv pip install -r requirements.txt
 docker run -d \
   --name pl-postgres \
   -e POSTGRES_PASSWORD=postgres \
-  -e POSTGRES_DB=rl_emails \
+  -e POSTGRES_DB=priority_lens \
   -p 5433:5432 \
   pgvector/pgvector:pg16
 
@@ -151,7 +151,7 @@ Benefits:
 ## Project Structure
 
 ```
-rl-emails/
+priority-lens/
 ├── README.md
 ├── requirements.txt
 ├── PIPELINE.md            # Gmail pipeline documentation

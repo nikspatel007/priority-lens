@@ -1,11 +1,11 @@
 # Clerk Authentication Setup Guide
 
-This guide walks through setting up Clerk for user authentication in rl-emails.
+This guide walks through setting up Clerk for user authentication in priority-lens.
 
 ## Prerequisites
 
 - Clerk account (free tier available)
-- rl-emails project installed locally
+- priority-lens project installed locally
 - Node.js (for Clerk frontend integration, if applicable)
 
 ---
@@ -19,7 +19,7 @@ This guide walks through setting up Clerk for user authentication in rl-emails.
 3. Click **Create application**
 
 4. Enter application details:
-   - **Application name**: `rl-emails` (or your preferred name)
+   - **Application name**: `priority-lens` (or your preferred name)
    - **Sign-in options**: Select your preferred methods:
      - Email address (recommended)
      - Google OAuth (optional)
@@ -64,7 +64,7 @@ This guide walks through setting up Clerk for user authentication in rl-emails.
 
 4. Configure the template:
    ```
-   Name: rl-emails-api
+   Name: priority-lens-api
 
    Claims:
    {
@@ -101,7 +101,7 @@ The JWKS (JSON Web Key Set) URL is used to verify JWT signatures.
 
 ---
 
-## Step 5: Configure rl-emails
+## Step 5: Configure priority-lens
 
 ### Environment Variables
 
@@ -128,7 +128,7 @@ CLERK_API_KEYS=
 The configuration is loaded automatically via `ClerkConfig`:
 
 ```python
-from rl_emails.api.auth.config import ClerkConfig, get_clerk_config
+from priority_lens.api.auth.config import ClerkConfig, get_clerk_config
 
 config = get_clerk_config()
 print(f"Configured: {config.is_configured}")
@@ -142,8 +142,8 @@ print(f"Issuer: {config.issuer}")
 ### Test JWT Validation
 
 ```python
-from rl_emails.api.auth.clerk import ClerkJWTValidator
-from rl_emails.api.auth.config import get_clerk_config
+from priority_lens.api.auth.clerk import ClerkJWTValidator
+from priority_lens.api.auth.config import get_clerk_config
 
 config = get_clerk_config()
 validator = ClerkJWTValidator(config)
@@ -161,7 +161,7 @@ except Exception as e:
 
 ```bash
 # Start the API server
-uvicorn rl_emails.api.main:app --reload
+uvicorn priority_lens.api.main:app --reload
 
 # Test health endpoint (no auth required)
 curl http://localhost:8000/health
@@ -177,7 +177,7 @@ curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
 
 ```
 ┌─────────────┐     ┌─────────────────┐     ┌──────────────────┐
-│   Frontend  │     │   rl-emails     │     │   Clerk          │
+│   Frontend  │     │   priority-lens     │     │   Clerk          │
 │   (React)   │     │   Backend       │     │   (Auth Server)  │
 └─────────────┘     └─────────────────┘     └──────────────────┘
        │                    │                        │
@@ -210,7 +210,7 @@ curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
 
 ```python
 from fastapi import APIRouter
-from rl_emails.api.auth.dependencies import CurrentUser
+from priority_lens.api.auth.dependencies import CurrentUser
 
 router = APIRouter()
 
@@ -227,7 +227,7 @@ async def get_current_user(user: CurrentUser):
 ### Optional Authentication
 
 ```python
-from rl_emails.api.auth.dependencies import CurrentUserOptional
+from priority_lens.api.auth.dependencies import CurrentUserOptional
 
 @router.get("/public")
 async def public_endpoint(user: CurrentUserOptional):
@@ -242,7 +242,7 @@ async def public_endpoint(user: CurrentUserOptional):
 For service-to-service communication:
 
 ```python
-from rl_emails.api.auth.dependencies import CurrentUserOrApiKey
+from priority_lens.api.auth.dependencies import CurrentUserOrApiKey
 
 @router.get("/internal")
 async def internal_endpoint(user: CurrentUserOrApiKey):

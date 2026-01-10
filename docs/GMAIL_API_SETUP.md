@@ -6,7 +6,7 @@ This guide walks through setting up Google Cloud credentials for Gmail API acces
 
 - Google account with Gmail
 - Access to Google Cloud Console
-- rl-emails project installed locally
+- priority-lens project installed locally
 
 ---
 
@@ -17,7 +17,7 @@ This guide walks through setting up Google Cloud credentials for Gmail API acces
 2. Click **Select a project** → **New Project**
 
 3. Enter project details:
-   - **Project name**: `rl-emails` (or your preferred name)
+   - **Project name**: `priority-lens` (or your preferred name)
    - **Organization**: Select if applicable
    - **Location**: Select if applicable
 
@@ -53,7 +53,7 @@ This guide walks through setting up Google Cloud credentials for Gmail API acces
 
 4. Fill in App Information:
    ```
-   App name: rl-emails
+   App name: priority-lens
    User support email: your-email@example.com
    Developer contact: your-email@example.com
    ```
@@ -85,7 +85,7 @@ This guide walks through setting up Google Cloud credentials for Gmail API acces
 
 4. Enter details:
    ```
-   Name: rl-emails-client
+   Name: priority-lens-client
 
    Authorized JavaScript origins:
    - http://localhost:8000
@@ -106,7 +106,7 @@ This guide walks through setting up Google Cloud credentials for Gmail API acces
 
 ---
 
-## Step 5: Configure rl-emails
+## Step 5: Configure priority-lens
 
 ### Option A: Environment Variables
 
@@ -135,7 +135,7 @@ GOOGLE_REDIRECT_URI=http://localhost:8000/auth/google/callback
 
 ```bash
 # Start the auth flow
-rl-emails auth connect --email your@gmail.com
+priority-lens auth connect --email your@gmail.com
 
 # This will:
 # 1. Open browser to Google consent screen
@@ -146,7 +146,7 @@ rl-emails auth connect --email your@gmail.com
 ### Check Token Status
 
 ```bash
-rl-emails auth status --email your@gmail.com
+priority-lens auth status --email your@gmail.com
 
 # Expected output:
 # Email: your@gmail.com
@@ -161,7 +161,7 @@ rl-emails auth status --email your@gmail.com
 
 ```
 ┌─────────────┐     ┌─────────────────┐     ┌──────────────────┐
-│   User      │     │   rl-emails     │     │   Google OAuth   │
+│   User      │     │   priority-lens     │     │   Google OAuth   │
 │   Browser   │     │   Backend       │     │   Server         │
 └─────────────┘     └─────────────────┘     └──────────────────┘
        │                    │                        │
@@ -207,7 +207,7 @@ rl-emails auth status --email your@gmail.com
 
 ### Rate Limiting Strategy
 
-rl-emails implements conservative rate limiting:
+priority-lens implements conservative rate limiting:
 
 ```python
 # Default settings
@@ -229,7 +229,7 @@ Monitor your usage in Google Cloud Console:
 
 | Scope | Access | Use Case |
 |-------|--------|----------|
-| `gmail.readonly` | Read emails, labels | Primary scope for rl-emails |
+| `gmail.readonly` | Read emails, labels | Primary scope for priority-lens |
 | `gmail.labels` | Manage labels | Optional: label management |
 | `gmail.metadata` | Headers only, no body | Lighter weight alternative |
 
@@ -271,7 +271,7 @@ Monitor your usage in Google Cloud Console:
 **Cause**: Refresh token expired or revoked
 
 **Fix**:
-1. Re-authenticate: `rl-emails auth connect --email your@gmail.com`
+1. Re-authenticate: `priority-lens auth connect --email your@gmail.com`
 2. In Google Account → Security → Third-party apps, revoke and re-grant
 
 ### Error: Rate limit exceeded
@@ -361,7 +361,7 @@ GMAIL_MAX_RETRIES=5
 After completing this setup:
 
 1. **Phase 1**: Implement multi-tenant foundation (Iterations 1-3)
-2. **Phase 2, Iteration 4**: Implement OAuth flow in rl-emails
+2. **Phase 2, Iteration 4**: Implement OAuth flow in priority-lens
 3. **Phase 2, Iteration 5**: Implement Gmail API client
 4. **Phase 2, Iteration 6**: Implement initial sync with `--days` parameter
 

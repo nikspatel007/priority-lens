@@ -8,9 +8,9 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from rl_emails.models.project import Project
-from rl_emails.schemas.project import ProjectCreate, ProjectUpdate
-from rl_emails.services.project_service import ProjectNotFoundError, ProjectService
+from priority_lens.models.project import Project
+from priority_lens.schemas.project import ProjectCreate, ProjectUpdate
+from priority_lens.services.project_service import ProjectNotFoundError, ProjectService
 
 
 @pytest.fixture

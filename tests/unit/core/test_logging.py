@@ -6,7 +6,7 @@ import logging
 import tempfile
 from pathlib import Path
 
-from rl_emails.core.logging import (
+from priority_lens.core.logging import (
     configure_stage_logging,
     get_logger,
     setup_logging,
@@ -20,7 +20,7 @@ class TestSetupLogging:
         """Test logger creation."""
         logger = setup_logging(console=True, file_logging=False)
 
-        assert logger.name == "rl_emails"
+        assert logger.name == "priority_lens"
         assert logger.level == logging.INFO
 
     def test_console_only(self) -> None:
@@ -82,19 +82,19 @@ class TestGetLogger:
         """Test logger name prefixing."""
         logger = get_logger("mymodule")
 
-        assert logger.name == "rl_emails.mymodule"
+        assert logger.name == "priority_lens.mymodule"
 
     def test_preserves_full_name(self) -> None:
-        """Test preserving full rl_emails name."""
-        logger = get_logger("rl_emails.core.config")
+        """Test preserving full priority_lens name."""
+        logger = get_logger("priority_lens.core.config")
 
-        assert logger.name == "rl_emails.core.config"
+        assert logger.name == "priority_lens.core.config"
 
     def test_nested_modules(self) -> None:
         """Test nested module names."""
         logger = get_logger("pipeline.stages.stage_06")
 
-        assert logger.name == "rl_emails.pipeline.stages.stage_06"
+        assert logger.name == "priority_lens.pipeline.stages.stage_06"
 
 
 class TestConfigureStageLogging:

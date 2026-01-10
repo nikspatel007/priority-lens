@@ -6,7 +6,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from rl_emails.services.batch_processor import BatchProcessor, BatchResult, StageResult
+from priority_lens.services.batch_processor import BatchProcessor, BatchResult, StageResult
 
 
 class TestBatchResult:
@@ -409,7 +409,7 @@ class TestBatchProcessorComputeFeatures:
         mock_result = MagicMock()
         mock_result.records_processed = 10
 
-        with patch("rl_emails.pipeline.stages.stage_05_compute_features.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_05_compute_features.run") as mock_run:
             mock_run.return_value = mock_result
 
             count = await processor._compute_features()
@@ -440,7 +440,7 @@ class TestBatchProcessorClassifyRuleBased:
         mock_result = MagicMock()
         mock_result.records_processed = 5
 
-        with patch("rl_emails.pipeline.stages.stage_07_classify_handleability.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_07_classify_handleability.run") as mock_run:
             mock_run.return_value = mock_result
 
             count = await processor._classify_rule_based()
@@ -479,7 +479,7 @@ class TestBatchProcessorGenerateEmbeddings:
         mock_result = MagicMock()
         mock_result.records_processed = 15
 
-        with patch("rl_emails.pipeline.stages.stage_06_compute_embeddings.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_06_compute_embeddings.run") as mock_run:
             mock_run.return_value = mock_result
 
             count = await processor._generate_embeddings()
@@ -520,7 +520,7 @@ class TestBatchProcessorClassifyLLM:
         mock_result = MagicMock()
         mock_result.records_processed = 3
 
-        with patch("rl_emails.pipeline.stages.stage_11_llm_classification.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_11_llm_classification.run") as mock_run:
             mock_run.return_value = mock_result
 
             count = await processor._classify_llm(limit=10)
@@ -539,7 +539,7 @@ class TestBatchProcessorClassifyLLM:
         mock_result = MagicMock()
         mock_result.records_processed = 7
 
-        with patch("rl_emails.pipeline.stages.stage_11_llm_classification.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_11_llm_classification.run") as mock_run:
             mock_run.return_value = mock_result
 
             count = await processor._classify_llm()
@@ -572,7 +572,7 @@ class TestBatchProcessorUpdateClusters:
         mock_result.records_processed = 100
         mock_result.message = "Success"
 
-        with patch("rl_emails.pipeline.stages.stage_09_cluster_emails.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_09_cluster_emails.run") as mock_run:
             mock_run.return_value = mock_result
 
             result = await processor.update_clusters()
@@ -593,7 +593,7 @@ class TestBatchProcessorUpdateClusters:
         mock_result.records_processed = 0
         mock_result.message = "Not enough data for clustering"
 
-        with patch("rl_emails.pipeline.stages.stage_09_cluster_emails.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_09_cluster_emails.run") as mock_run:
             mock_run.return_value = mock_result
 
             result = await processor.update_clusters()
@@ -608,7 +608,7 @@ class TestBatchProcessorUpdateClusters:
         """Test cluster update handles exceptions."""
         processor = BatchProcessor(session=mock_session, config=mock_config)
 
-        with patch("rl_emails.pipeline.stages.stage_09_cluster_emails.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_09_cluster_emails.run") as mock_run:
             mock_run.side_effect = Exception("Clustering error")
 
             result = await processor.update_clusters()
@@ -642,7 +642,7 @@ class TestBatchProcessorComputePriority:
         mock_result.records_processed = 50
         mock_result.message = "Success"
 
-        with patch("rl_emails.pipeline.stages.stage_10_compute_priority.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_10_compute_priority.run") as mock_run:
             mock_run.return_value = mock_result
 
             result = await processor.compute_priority()
@@ -657,7 +657,7 @@ class TestBatchProcessorComputePriority:
         """Test priority computation handles exceptions."""
         processor = BatchProcessor(session=mock_session, config=mock_config)
 
-        with patch("rl_emails.pipeline.stages.stage_10_compute_priority.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_10_compute_priority.run") as mock_run:
             mock_run.side_effect = Exception("Priority error")
 
             result = await processor.compute_priority()
@@ -691,7 +691,7 @@ class TestBatchProcessorPopulateUsers:
         mock_result.records_processed = 25
         mock_result.message = "Success"
 
-        with patch("rl_emails.pipeline.stages.stage_08_populate_users.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_08_populate_users.run") as mock_run:
             mock_run.return_value = mock_result
 
             result = await processor.populate_users()
@@ -706,7 +706,7 @@ class TestBatchProcessorPopulateUsers:
         """Test user population handles exceptions."""
         processor = BatchProcessor(session=mock_session, config=mock_config)
 
-        with patch("rl_emails.pipeline.stages.stage_08_populate_users.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_08_populate_users.run") as mock_run:
             mock_run.side_effect = Exception("User population error")
 
             result = await processor.populate_users()
@@ -740,7 +740,7 @@ class TestBatchProcessorBuildThreads:
         mock_result.records_processed = 200
         mock_result.message = "Success"
 
-        with patch("rl_emails.pipeline.stages.stage_03_populate_threads.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_03_populate_threads.run") as mock_run:
             mock_run.return_value = mock_result
 
             result = await processor.build_threads()
@@ -755,7 +755,7 @@ class TestBatchProcessorBuildThreads:
         """Test thread building handles exceptions."""
         processor = BatchProcessor(session=mock_session, config=mock_config)
 
-        with patch("rl_emails.pipeline.stages.stage_03_populate_threads.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_03_populate_threads.run") as mock_run:
             mock_run.side_effect = Exception("Thread building error")
 
             result = await processor.build_threads()
@@ -789,7 +789,7 @@ class TestBatchProcessorEnrichEmails:
         mock_result.records_processed = 150
         mock_result.message = "Success"
 
-        with patch("rl_emails.pipeline.stages.stage_04_enrich_emails.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_04_enrich_emails.run") as mock_run:
             mock_run.return_value = mock_result
 
             result = await processor.enrich_emails()
@@ -804,7 +804,7 @@ class TestBatchProcessorEnrichEmails:
         """Test email enrichment handles exceptions."""
         processor = BatchProcessor(session=mock_session, config=mock_config)
 
-        with patch("rl_emails.pipeline.stages.stage_04_enrich_emails.run") as mock_run:
+        with patch("priority_lens.pipeline.stages.stage_04_enrich_emails.run") as mock_run:
             mock_run.side_effect = Exception("Enrichment error")
 
             result = await processor.enrich_emails()

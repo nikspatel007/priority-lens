@@ -5,9 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 from unittest.mock import MagicMock, mock_open, patch
 
-from rl_emails.core.config import Config
-from rl_emails.pipeline.stages import stage_01_parse_mbox
-from rl_emails.pipeline.stages.base import StageResult
+from priority_lens.core.config import Config
+from priority_lens.pipeline.stages import stage_01_parse_mbox
+from priority_lens.pipeline.stages.base import StageResult
 
 
 class TestDecodeHeaderValue:
@@ -29,7 +29,7 @@ class TestDecodeHeaderValue:
         result = stage_01_parse_mbox.decode_header_value(encoded)
         assert "Hello World" in result or result  # May vary by implementation
 
-    @patch("rl_emails.pipeline.stages.stage_01_parse_mbox.decode_header")
+    @patch("priority_lens.pipeline.stages.stage_01_parse_mbox.decode_header")
     def test_decode_header_invalid_charset(self, mock_decode: MagicMock) -> None:
         """Test handling of invalid charset in decode_header."""
         # Mock decode_header to return bytes with invalid charset
@@ -38,7 +38,7 @@ class TestDecodeHeaderValue:
         result = stage_01_parse_mbox.decode_header_value("test")
         assert result == "Hello"  # Falls back to UTF-8
 
-    @patch("rl_emails.pipeline.stages.stage_01_parse_mbox.decode_header")
+    @patch("priority_lens.pipeline.stages.stage_01_parse_mbox.decode_header")
     def test_decode_header_exception(self, mock_decode: MagicMock) -> None:
         """Test handling of exception in decode_header."""
         mock_decode.side_effect = ValueError("Decode error")
@@ -509,7 +509,7 @@ class TestParseEmail:
 class TestParseMboxFile:
     """Tests for parse_mbox_file function."""
 
-    @patch("rl_emails.pipeline.stages.stage_01_parse_mbox.mailbox.mbox")
+    @patch("priority_lens.pipeline.stages.stage_01_parse_mbox.mailbox.mbox")
     @patch("builtins.open", new_callable=mock_open)
     def test_parses_mbox(self, mock_file: MagicMock, mock_mbox_class: MagicMock) -> None:
         """Test parsing MBOX file."""
@@ -546,7 +546,7 @@ class TestParseMboxFile:
         assert stats["emails_with_body"] == 1
         assert stats["errors"] == 0
 
-    @patch("rl_emails.pipeline.stages.stage_01_parse_mbox.mailbox.mbox")
+    @patch("priority_lens.pipeline.stages.stage_01_parse_mbox.mailbox.mbox")
     @patch("builtins.open", new_callable=mock_open)
     def test_parses_mbox_with_attachments(
         self, mock_file: MagicMock, mock_mbox_class: MagicMock
@@ -594,7 +594,7 @@ class TestParseMboxFile:
         assert "Inbox" in stats["unique_labels"]
         assert "Important" in stats["unique_labels"]
 
-    @patch("rl_emails.pipeline.stages.stage_01_parse_mbox.mailbox.mbox")
+    @patch("priority_lens.pipeline.stages.stage_01_parse_mbox.mailbox.mbox")
     @patch("builtins.open", new_callable=mock_open)
     def test_parses_mbox_handles_errors(
         self, mock_file: MagicMock, mock_mbox_class: MagicMock
@@ -614,7 +614,7 @@ class TestParseMboxFile:
         assert stats["total_emails"] == 0
         assert stats["errors"] == 1
 
-    @patch("rl_emails.pipeline.stages.stage_01_parse_mbox.mailbox.mbox")
+    @patch("priority_lens.pipeline.stages.stage_01_parse_mbox.mailbox.mbox")
     @patch("builtins.open", new_callable=mock_open)
     def test_parses_mbox_with_empty_body(
         self, mock_file: MagicMock, mock_mbox_class: MagicMock
@@ -651,7 +651,7 @@ class TestParseMboxFile:
         assert stats["total_emails"] == 1
         assert stats["emails_with_body"] == 0  # Body is empty
 
-    @patch("rl_emails.pipeline.stages.stage_01_parse_mbox.mailbox.mbox")
+    @patch("priority_lens.pipeline.stages.stage_01_parse_mbox.mailbox.mbox")
     @patch("builtins.open", new_callable=mock_open)
     def test_parses_mbox_handles_as_bytes_error(
         self, mock_file: MagicMock, mock_mbox_class: MagicMock
@@ -688,7 +688,7 @@ class TestParseMboxFile:
         assert stats["total_emails"] == 1
         assert stats["errors"] == 0
 
-    @patch("rl_emails.pipeline.stages.stage_01_parse_mbox.mailbox.mbox")
+    @patch("priority_lens.pipeline.stages.stage_01_parse_mbox.mailbox.mbox")
     @patch("builtins.open", new_callable=mock_open)
     def test_parses_mbox_writes_report(
         self, mock_file: MagicMock, mock_mbox_class: MagicMock
@@ -750,7 +750,7 @@ class TestRun:
         assert result.success is False
         assert "not found" in result.message
 
-    @patch("rl_emails.pipeline.stages.stage_01_parse_mbox.parse_mbox_file")
+    @patch("priority_lens.pipeline.stages.stage_01_parse_mbox.parse_mbox_file")
     def test_run_success(self, mock_parse: MagicMock, tmp_path: Path) -> None:
         """Test successful run."""
         # Create a temp mbox file
@@ -766,7 +766,7 @@ class TestRun:
         assert result.success is True
         assert result.records_processed == 100
 
-    @patch("rl_emails.pipeline.stages.stage_01_parse_mbox.parse_mbox_file")
+    @patch("priority_lens.pipeline.stages.stage_01_parse_mbox.parse_mbox_file")
     def test_run_with_custom_output(self, mock_parse: MagicMock, tmp_path: Path) -> None:
         """Test run with custom output path."""
         mbox_file = tmp_path / "test.mbox"
@@ -783,7 +783,7 @@ class TestRun:
         call_args = mock_parse.call_args[0]
         assert call_args[1] == output_file
 
-    @patch("rl_emails.pipeline.stages.stage_01_parse_mbox.parse_mbox_file")
+    @patch("priority_lens.pipeline.stages.stage_01_parse_mbox.parse_mbox_file")
     def test_run_uses_parsed_jsonl_from_config(self, mock_parse: MagicMock, tmp_path: Path) -> None:
         """Test run uses parsed_jsonl from config when no output_path."""
         mbox_file = tmp_path / "test.mbox"

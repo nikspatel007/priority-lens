@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from rl_emails.schemas.inbox import (
+from priority_lens.schemas.inbox import (
     EmailSummary,
     InboxStats,
     PriorityContext,

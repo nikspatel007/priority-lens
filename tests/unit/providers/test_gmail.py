@@ -9,13 +9,13 @@ from uuid import UUID
 
 import pytest
 
-from rl_emails.providers.base import (
+from priority_lens.providers.base import (
     AuthorizationError,
     ConnectionError,
     ConnectionState,
     ProviderType,
 )
-from rl_emails.providers.gmail import GmailProvider
+from priority_lens.providers.gmail import GmailProvider
 
 if TYPE_CHECKING:
     pass
@@ -252,7 +252,7 @@ class TestSyncMessages:
         """Test sync uses default 30 days when not specified."""
         provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
 
-        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+        with mock.patch("priority_lens.providers.gmail.GmailClient") as MockClient:
             mock_client = mock.AsyncMock()
             mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
             mock_client.__aexit__ = mock.AsyncMock()
@@ -288,7 +288,7 @@ class TestSyncMessages:
 
         provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
 
-        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+        with mock.patch("priority_lens.providers.gmail.GmailClient") as MockClient:
             mock_client = mock.AsyncMock()
             mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
             mock_client.__aexit__ = mock.AsyncMock()
@@ -318,14 +318,14 @@ class TestSyncMessages:
         mock_sync_repo: mock.MagicMock,
     ) -> None:
         """Test sync with actual messages."""
-        from rl_emails.integrations.gmail.models import GmailMessageRef
+        from priority_lens.integrations.gmail.models import GmailMessageRef
 
         provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
 
         with (
-            mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient,
-            mock.patch("rl_emails.providers.gmail.parse_raw_message") as mock_parse,
-            mock.patch("rl_emails.providers.gmail.gmail_to_email_data") as mock_convert,
+            mock.patch("priority_lens.providers.gmail.GmailClient") as MockClient,
+            mock.patch("priority_lens.providers.gmail.parse_raw_message") as mock_parse,
+            mock.patch("priority_lens.providers.gmail.gmail_to_email_data") as mock_convert,
         ):
             mock_client = mock.AsyncMock()
             mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
@@ -361,13 +361,13 @@ class TestSyncMessages:
         mock_sync_repo: mock.MagicMock,
     ) -> None:
         """Test sync continues after parse error."""
-        from rl_emails.integrations.gmail.models import GmailMessageRef
+        from priority_lens.integrations.gmail.models import GmailMessageRef
 
         provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
 
         with (
-            mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient,
-            mock.patch("rl_emails.providers.gmail.parse_raw_message") as mock_parse,
+            mock.patch("priority_lens.providers.gmail.GmailClient") as MockClient,
+            mock.patch("priority_lens.providers.gmail.parse_raw_message") as mock_parse,
         ):
             mock_client = mock.AsyncMock()
             mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
@@ -402,7 +402,7 @@ class TestSyncMessages:
         """Test sync cleans up progress tracking after completion."""
         provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
 
-        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+        with mock.patch("priority_lens.providers.gmail.GmailClient") as MockClient:
             mock_client = mock.AsyncMock()
             mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
             mock_client.__aexit__ = mock.AsyncMock()
@@ -433,12 +433,12 @@ class TestSyncMessages:
         mock_sync_repo: mock.MagicMock,
     ) -> None:
         """Test sync raises SyncError on API error."""
-        from rl_emails.integrations.gmail.client import GmailApiError
-        from rl_emails.providers.base import SyncError
+        from priority_lens.integrations.gmail.client import GmailApiError
+        from priority_lens.providers.base import SyncError
 
         provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
 
-        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+        with mock.patch("priority_lens.providers.gmail.GmailClient") as MockClient:
             mock_client = mock.AsyncMock()
             mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
             mock_client.__aexit__ = mock.AsyncMock(return_value=False)
@@ -465,11 +465,11 @@ class TestSyncMessages:
         mock_sync_repo: mock.MagicMock,
     ) -> None:
         """Test sync handles and reports general exceptions."""
-        from rl_emails.providers.base import SyncError
+        from priority_lens.providers.base import SyncError
 
         provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
 
-        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+        with mock.patch("priority_lens.providers.gmail.GmailClient") as MockClient:
             mock_client = mock.AsyncMock()
             mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
             mock_client.__aexit__ = mock.AsyncMock(return_value=False)
@@ -504,7 +504,7 @@ class TestGetSyncProgress:
     @pytest.mark.asyncio
     async def test_get_sync_progress_active(self, provider: GmailProvider, user_id: UUID) -> None:
         """Test getting sync progress during sync."""
-        from rl_emails.providers.base import SyncProgress
+        from priority_lens.providers.base import SyncProgress
 
         # Manually set progress
         provider._active_syncs[user_id] = SyncProgress(
@@ -529,7 +529,7 @@ class TestSetupWatch:
         """Test successful watch setup."""
         provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
 
-        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+        with mock.patch("priority_lens.providers.gmail.GmailClient") as MockClient:
             mock_client = mock.AsyncMock()
             mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
             mock_client.__aexit__ = mock.AsyncMock()
@@ -552,7 +552,7 @@ class TestSetupWatch:
         """Test watch setup with custom labels."""
         provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
 
-        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+        with mock.patch("priority_lens.providers.gmail.GmailClient") as MockClient:
             mock_client = mock.AsyncMock()
             mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
             mock_client.__aexit__ = mock.AsyncMock()
@@ -583,12 +583,12 @@ class TestSetupWatch:
     @pytest.mark.asyncio
     async def test_setup_watch_api_error(self, provider: GmailProvider, user_id: UUID) -> None:
         """Test watch setup handles API error."""
-        from rl_emails.integrations.gmail.client import GmailApiError
-        from rl_emails.providers.base import SyncError
+        from priority_lens.integrations.gmail.client import GmailApiError
+        from priority_lens.providers.base import SyncError
 
         provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
 
-        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+        with mock.patch("priority_lens.providers.gmail.GmailClient") as MockClient:
             mock_client = mock.AsyncMock()
             mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
             mock_client.__aexit__ = mock.AsyncMock(return_value=False)
@@ -612,7 +612,7 @@ class TestSetupWatch:
         mock_watch_repo.activate = mock.AsyncMock()
         provider.set_watch_repo(mock_watch_repo)
 
-        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+        with mock.patch("priority_lens.providers.gmail.GmailClient") as MockClient:
             mock_client = mock.AsyncMock()
             mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
             mock_client.__aexit__ = mock.AsyncMock()
@@ -632,7 +632,7 @@ class TestRemoveWatch:
         """Test successful watch removal."""
         provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
 
-        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+        with mock.patch("priority_lens.providers.gmail.GmailClient") as MockClient:
             mock_client = mock.AsyncMock()
             mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
             mock_client.__aexit__ = mock.AsyncMock()
@@ -655,11 +655,11 @@ class TestRemoveWatch:
     @pytest.mark.asyncio
     async def test_remove_watch_api_error(self, provider: GmailProvider, user_id: UUID) -> None:
         """Test remove watch returns False on API error."""
-        from rl_emails.integrations.gmail.client import GmailApiError
+        from priority_lens.integrations.gmail.client import GmailApiError
 
         provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
 
-        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+        with mock.patch("priority_lens.providers.gmail.GmailClient") as MockClient:
             mock_client = mock.AsyncMock()
             mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
             mock_client.__aexit__ = mock.AsyncMock(return_value=False)
@@ -682,7 +682,7 @@ class TestRemoveWatch:
         mock_watch_repo.deactivate = mock.AsyncMock()
         provider.set_watch_repo(mock_watch_repo)
 
-        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+        with mock.patch("priority_lens.providers.gmail.GmailClient") as MockClient:
             mock_client = mock.AsyncMock()
             mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
             mock_client.__aexit__ = mock.AsyncMock()
@@ -702,7 +702,7 @@ class TestRenewWatch:
         """Test renew_watch calls setup_watch."""
         provider._auth_service.get_valid_token = mock.AsyncMock(return_value="access_token")
 
-        with mock.patch("rl_emails.providers.gmail.GmailClient") as MockClient:
+        with mock.patch("priority_lens.providers.gmail.GmailClient") as MockClient:
             mock_client = mock.AsyncMock()
             mock_client.__aenter__ = mock.AsyncMock(return_value=mock_client)
             mock_client.__aexit__ = mock.AsyncMock()

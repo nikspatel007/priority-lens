@@ -8,9 +8,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from rl_emails.core.config import Config
-from rl_emails.pipeline.stages import stage_05_compute_features
-from rl_emails.pipeline.stages.base import StageResult
+from priority_lens.core.config import Config
+from priority_lens.pipeline.stages import stage_05_compute_features
+from priority_lens.pipeline.stages.base import StageResult
 
 
 class TestExtractPlainText:
@@ -492,7 +492,7 @@ class TestRunAsync:
     """Tests for run_async function."""
 
     @pytest.mark.asyncio
-    @patch("rl_emails.pipeline.stages.stage_05_compute_features.asyncpg.connect")
+    @patch("priority_lens.pipeline.stages.stage_05_compute_features.asyncpg.connect")
     async def test_runs_pipeline_empty(self, mock_connect: MagicMock) -> None:
         """Test run_async with no emails."""
         mock_conn = AsyncMock()
@@ -509,7 +509,7 @@ class TestRunAsync:
         mock_conn.close.assert_called_once()
 
     @pytest.mark.asyncio
-    @patch("rl_emails.pipeline.stages.stage_05_compute_features.asyncpg.connect")
+    @patch("priority_lens.pipeline.stages.stage_05_compute_features.asyncpg.connect")
     async def test_runs_pipeline_with_emails(self, mock_connect: MagicMock) -> None:
         """Test run_async with emails to process."""
         mock_conn = AsyncMock()
@@ -555,7 +555,7 @@ class TestRunAsync:
 class TestRun:
     """Tests for run function."""
 
-    @patch("rl_emails.pipeline.stages.stage_05_compute_features.asyncio.run")
+    @patch("priority_lens.pipeline.stages.stage_05_compute_features.asyncio.run")
     def test_run_success(self, mock_asyncio_run: MagicMock) -> None:
         """Test successful run."""
         mock_asyncio_run.return_value = {

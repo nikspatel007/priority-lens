@@ -7,7 +7,7 @@ from time import monotonic
 
 import pytest
 
-from rl_emails.integrations.gmail.rate_limiter import RateLimiter
+from priority_lens.integrations.gmail.rate_limiter import RateLimiter
 
 
 class TestRateLimiter:

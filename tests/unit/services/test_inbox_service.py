@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from rl_emails.services.inbox_service import InboxService
+from priority_lens.services.inbox_service import InboxService
 
 
 @pytest.fixture

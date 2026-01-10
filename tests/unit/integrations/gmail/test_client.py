@@ -6,9 +6,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from rl_emails.integrations.gmail.client import GmailApiError, GmailClient
-from rl_emails.integrations.gmail.models import GmailMessageRef
-from rl_emails.integrations.gmail.rate_limiter import RateLimiter
+from priority_lens.integrations.gmail.client import GmailApiError, GmailClient
+from priority_lens.integrations.gmail.models import GmailMessageRef
+from priority_lens.integrations.gmail.rate_limiter import RateLimiter
 
 
 class TestGmailApiError:

@@ -10,10 +10,10 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from rl_emails.api.auth.clerk import ClerkUser
-from rl_emails.api.auth.dependencies import get_current_user_or_api_key
-from rl_emails.api.routes.projects import router, set_session_factory
-from rl_emails.schemas.project import (
+from priority_lens.api.auth.clerk import ClerkUser
+from priority_lens.api.auth.dependencies import get_current_user_or_api_key
+from priority_lens.api.routes.projects import router, set_session_factory
+from priority_lens.schemas.project import (
     ProjectDetailResponse,
     ProjectListResponse,
     ProjectResponse,
@@ -85,7 +85,7 @@ class TestListProjects:
             has_more=False,
         )
 
-        with mock.patch("rl_emails.api.routes.projects.ProjectService") as MockService:
+        with mock.patch("priority_lens.api.routes.projects.ProjectService") as MockService:
             mock_service = MockService.return_value
             mock_service.list_projects = mock.AsyncMock(return_value=mock_response)
 
@@ -108,7 +108,7 @@ class TestListProjects:
             has_more=False,
         )
 
-        with mock.patch("rl_emails.api.routes.projects.ProjectService") as MockService:
+        with mock.patch("priority_lens.api.routes.projects.ProjectService") as MockService:
             mock_service = MockService.return_value
             mock_service.list_projects = mock.AsyncMock(return_value=mock_response)
 
@@ -131,7 +131,7 @@ class TestGetProject:
             description="A test project",
         )
 
-        with mock.patch("rl_emails.api.routes.projects.ProjectService") as MockService:
+        with mock.patch("priority_lens.api.routes.projects.ProjectService") as MockService:
             mock_service = MockService.return_value
             mock_service.get_project = mock.AsyncMock(return_value=mock_response)
 
@@ -143,9 +143,9 @@ class TestGetProject:
 
     def test_get_project_not_found(self, client: TestClient, mock_session: mock.MagicMock) -> None:
         """Test getting a non-existent project."""
-        from rl_emails.services.project_service import ProjectNotFoundError
+        from priority_lens.services.project_service import ProjectNotFoundError
 
-        with mock.patch("rl_emails.api.routes.projects.ProjectService") as MockService:
+        with mock.patch("priority_lens.api.routes.projects.ProjectService") as MockService:
             mock_service = MockService.return_value
             mock_service.get_project = mock.AsyncMock(side_effect=ProjectNotFoundError(999))
 
@@ -163,7 +163,7 @@ class TestCreateProject:
         now = datetime.now(UTC)
         mock_response = ProjectResponse(id=1, name="New Project", created_at=now)
 
-        with mock.patch("rl_emails.api.routes.projects.ProjectService") as MockService:
+        with mock.patch("priority_lens.api.routes.projects.ProjectService") as MockService:
             mock_service = MockService.return_value
             mock_service.create_project = mock.AsyncMock(return_value=mock_response)
 
@@ -185,7 +185,7 @@ class TestUpdateProject:
         now = datetime.now(UTC)
         mock_response = ProjectResponse(id=1, name="Updated Project", created_at=now)
 
-        with mock.patch("rl_emails.api.routes.projects.ProjectService") as MockService:
+        with mock.patch("priority_lens.api.routes.projects.ProjectService") as MockService:
             mock_service = MockService.return_value
             mock_service.update_project = mock.AsyncMock(return_value=mock_response)
 
@@ -204,7 +204,7 @@ class TestDeleteProject:
 
     def test_delete_project(self, client: TestClient, mock_session: mock.MagicMock) -> None:
         """Test deleting a project."""
-        with mock.patch("rl_emails.api.routes.projects.ProjectService") as MockService:
+        with mock.patch("priority_lens.api.routes.projects.ProjectService") as MockService:
             mock_service = MockService.return_value
             mock_service.delete_project = mock.AsyncMock(return_value=True)
 
@@ -216,9 +216,9 @@ class TestDeleteProject:
         self, client: TestClient, mock_session: mock.MagicMock
     ) -> None:
         """Test deleting a non-existent project."""
-        from rl_emails.services.project_service import ProjectNotFoundError
+        from priority_lens.services.project_service import ProjectNotFoundError
 
-        with mock.patch("rl_emails.api.routes.projects.ProjectService") as MockService:
+        with mock.patch("priority_lens.api.routes.projects.ProjectService") as MockService:
             mock_service = MockService.return_value
             mock_service.delete_project = mock.AsyncMock(side_effect=ProjectNotFoundError(999))
 
@@ -270,9 +270,9 @@ class TestUpdateProjectNotFound:
         self, client: TestClient, mock_session: mock.MagicMock
     ) -> None:
         """Test updating a non-existent project."""
-        from rl_emails.services.project_service import ProjectNotFoundError
+        from priority_lens.services.project_service import ProjectNotFoundError
 
-        with mock.patch("rl_emails.api.routes.projects.ProjectService") as MockService:
+        with mock.patch("priority_lens.api.routes.projects.ProjectService") as MockService:
             mock_service = MockService.return_value
             mock_service.update_project = mock.AsyncMock(side_effect=ProjectNotFoundError(999))
 
@@ -341,7 +341,7 @@ class TestClerkUserIdHandling:
             has_more=False,
         )
 
-        with mock.patch("rl_emails.api.routes.projects.ProjectService") as MockService:
+        with mock.patch("priority_lens.api.routes.projects.ProjectService") as MockService:
             mock_service = MockService.return_value
             mock_service.list_projects = mock.AsyncMock(return_value=mock_response)
 

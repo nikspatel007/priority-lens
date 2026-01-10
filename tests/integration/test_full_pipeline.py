@@ -11,14 +11,14 @@ from pathlib import Path
 
 import pytest
 
-from rl_emails.core.config import Config
-from rl_emails.pipeline import (
+from priority_lens.core.config import Config
+from priority_lens.pipeline import (
     PipelineOptions,
     PipelineOrchestrator,
     PipelineStatus,
     get_status,
 )
-from rl_emails.pipeline.stages import (
+from priority_lens.pipeline.stages import (
     StageResult,
     stage_01_parse_mbox,
     stage_02_import_postgres,
@@ -141,7 +141,7 @@ class TestCLIStatus:
         import sys
 
         result = subprocess.run(
-            [sys.executable, "-m", "rl_emails.cli", "--status"],
+            [sys.executable, "-m", "priority_lens.cli", "--status"],
             capture_output=True,
             text=True,
             timeout=30,

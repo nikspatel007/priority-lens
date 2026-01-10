@@ -8,9 +8,9 @@ import pytest
 from starlette.datastructures import State
 from starlette.requests import Request
 
-from rl_emails.api.auth.clerk import ClerkJWTValidator, ClerkUser
-from rl_emails.api.auth.config import ClerkConfig
-from rl_emails.api.auth.dependencies import (
+from priority_lens.api.auth.clerk import ClerkJWTValidator, ClerkUser
+from priority_lens.api.auth.config import ClerkConfig
+from priority_lens.api.auth.dependencies import (
     _extract_bearer_token,
     get_api_key_user,
     get_current_user,
@@ -18,7 +18,7 @@ from rl_emails.api.auth.dependencies import (
     get_current_user_or_api_key,
     get_jwt_validator,
 )
-from rl_emails.api.auth.exceptions import AuthenticationError, InvalidTokenError
+from priority_lens.api.auth.exceptions import AuthenticationError, InvalidTokenError
 
 
 class TestExtractBearerToken:
@@ -82,7 +82,7 @@ class TestGetJWTValidator:
     def test_creates_validator_when_configured(self) -> None:
         """Test creates validator when properly configured."""
         # Clear global validator
-        import rl_emails.api.auth.dependencies as deps
+        import priority_lens.api.auth.dependencies as deps
 
         deps._validator = None
 
@@ -97,7 +97,7 @@ class TestGetJWTValidator:
 
     def test_reuses_validator(self) -> None:
         """Test reuses same validator instance."""
-        import rl_emails.api.auth.dependencies as deps
+        import priority_lens.api.auth.dependencies as deps
 
         deps._validator = None
 
@@ -222,7 +222,7 @@ class TestGetCurrentUserOptional:
         )
         expected_user = ClerkUser(id="user_123")
 
-        with mock.patch("rl_emails.api.auth.dependencies.ClerkJWTValidator") as MockValidator:
+        with mock.patch("priority_lens.api.auth.dependencies.ClerkJWTValidator") as MockValidator:
             mock_validator = MockValidator.return_value
             mock_validator.validate_token.return_value = expected_user
 
@@ -239,7 +239,7 @@ class TestGetCurrentUserOptional:
             issuer="https://clerk.example.com",
         )
 
-        with mock.patch("rl_emails.api.auth.dependencies.ClerkJWTValidator") as MockValidator:
+        with mock.patch("priority_lens.api.auth.dependencies.ClerkJWTValidator") as MockValidator:
             mock_validator = MockValidator.return_value
             mock_validator.validate_token.side_effect = InvalidTokenError()
 
@@ -325,7 +325,7 @@ class TestGetCurrentUserOrApiKey:
         )
         jwt_user = ClerkUser(id="jwt_user")
 
-        with mock.patch("rl_emails.api.auth.dependencies.ClerkJWTValidator") as MockValidator:
+        with mock.patch("priority_lens.api.auth.dependencies.ClerkJWTValidator") as MockValidator:
             mock_validator = MockValidator.return_value
             mock_validator.validate_token.return_value = jwt_user
 
@@ -344,7 +344,7 @@ class TestGetCurrentUserOrApiKey:
             api_keys_raw="valid-key",
         )
 
-        with mock.patch("rl_emails.api.auth.dependencies.ClerkJWTValidator") as MockValidator:
+        with mock.patch("priority_lens.api.auth.dependencies.ClerkJWTValidator") as MockValidator:
             mock_validator = MockValidator.return_value
             mock_validator.validate_token.side_effect = InvalidTokenError()
 

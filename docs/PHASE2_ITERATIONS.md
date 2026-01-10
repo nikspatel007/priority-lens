@@ -40,7 +40,7 @@ Phase 2 adds Gmail API integration as an alternative to MBOX file ingestion. Bot
 ## Iteration 4: OAuth2 Flow
 
 ### Story
-As a user, I need to connect my Gmail account via OAuth so that rl-emails can access my emails securely.
+As a user, I need to connect my Gmail account via OAuth so that priority-lens can access my emails securely.
 
 ### Deliverables
 1. OAuth2 authentication service
@@ -51,7 +51,7 @@ As a user, I need to connect my Gmail account via OAuth so that rl-emails can ac
 ### Architecture
 
 ```
-src/rl_emails/
+src/priority_lens/
 ├── auth/                      # NEW: Authentication module
 │   ├── __init__.py
 │   ├── oauth.py              # OAuth base classes
@@ -67,11 +67,11 @@ src/rl_emails/
 
 | File | Description |
 |------|-------------|
-| `src/rl_emails/auth/__init__.py` | Barrel exports |
-| `src/rl_emails/auth/oauth.py` | OAuth2 base types and utilities |
-| `src/rl_emails/auth/google.py` | Google OAuth implementation |
-| `src/rl_emails/services/__init__.py` | Barrel exports |
-| `src/rl_emails/services/auth_service.py` | Auth flow orchestration |
+| `src/priority_lens/auth/__init__.py` | Barrel exports |
+| `src/priority_lens/auth/oauth.py` | OAuth2 base types and utilities |
+| `src/priority_lens/auth/google.py` | Google OAuth implementation |
+| `src/priority_lens/services/__init__.py` | Barrel exports |
+| `src/priority_lens/services/auth_service.py` | Auth flow orchestration |
 | `tests/unit/auth/test_oauth.py` | OAuth base tests |
 | `tests/unit/auth/test_google.py` | Google OAuth tests |
 | `tests/unit/services/test_auth_service.py` | Service tests |
@@ -80,14 +80,14 @@ src/rl_emails/
 
 | File | Changes |
 |------|---------|
-| `src/rl_emails/core/config.py` | Add Google OAuth credentials |
-| `src/rl_emails/cli.py` | Add `auth` subcommands |
+| `src/priority_lens/core/config.py` | Add Google OAuth credentials |
+| `src/priority_lens/cli.py` | Add `auth` subcommands |
 | `pyproject.toml` | Add `google-auth`, `google-auth-oauthlib` dependencies |
 
 ### Implementation Design
 
 ```python
-# src/rl_emails/auth/google.py
+# src/priority_lens/auth/google.py
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -130,12 +130,12 @@ class GoogleOAuth:
 ```
 
 ```python
-# src/rl_emails/services/auth_service.py
+# src/priority_lens/services/auth_service.py
 from uuid import UUID
 
-from rl_emails.auth.google import GoogleOAuth, GoogleTokens
-from rl_emails.repositories.org_user import OrgUserRepository
-from rl_emails.models.oauth_token import OAuthToken
+from priority_lens.auth.google import GoogleOAuth, GoogleTokens
+from priority_lens.repositories.org_user import OrgUserRepository
+from priority_lens.models.oauth_token import OAuthToken
 
 class AuthService:
     """Service for managing authentication."""
@@ -171,19 +171,19 @@ class AuthService:
 
 ```bash
 # Connect Gmail account (opens browser)
-rl-emails auth connect --email user@gmail.com
+priority-lens auth connect --email user@gmail.com
 
 # Check connection status
-rl-emails auth status --email user@gmail.com
+priority-lens auth status --email user@gmail.com
 
 # Disconnect Gmail
-rl-emails auth disconnect --email user@gmail.com
+priority-lens auth disconnect --email user@gmail.com
 ```
 
 ### Config Updates
 
 ```python
-# src/rl_emails/core/config.py additions
+# src/priority_lens/core/config.py additions
 @dataclass
 class Config:
     # Existing fields...
@@ -329,7 +329,7 @@ class TestAuthService:
 2. **Test auth flow manually**:
    ```bash
    # Start auth (opens browser)
-   rl-emails auth connect --email your@gmail.com
+   priority-lens auth connect --email your@gmail.com
 
    # Follow browser prompts, approve access
    # Should see: "Successfully connected your@gmail.com"
@@ -344,7 +344,7 @@ class TestAuthService:
 
 4. **Check status**:
    ```bash
-   rl-emails auth status --email your@gmail.com
+   priority-lens auth status --email your@gmail.com
    # Should show: Connected, expires at <datetime>
    ```
 
@@ -382,7 +382,7 @@ As a developer, I need a Gmail API client wrapper so that I can fetch emails eff
 ### Architecture
 
 ```
-src/rl_emails/
+src/priority_lens/
 ├── integrations/              # NEW: External service integrations
 │   ├── __init__.py
 │   └── gmail/
@@ -397,12 +397,12 @@ src/rl_emails/
 
 | File | Description |
 |------|-------------|
-| `src/rl_emails/integrations/__init__.py` | Barrel exports |
-| `src/rl_emails/integrations/gmail/__init__.py` | Gmail module exports |
-| `src/rl_emails/integrations/gmail/client.py` | Gmail API wrapper |
-| `src/rl_emails/integrations/gmail/models.py` | Gmail data models |
-| `src/rl_emails/integrations/gmail/parser.py` | Email format parser |
-| `src/rl_emails/integrations/gmail/rate_limiter.py` | Rate limiting |
+| `src/priority_lens/integrations/__init__.py` | Barrel exports |
+| `src/priority_lens/integrations/gmail/__init__.py` | Gmail module exports |
+| `src/priority_lens/integrations/gmail/client.py` | Gmail API wrapper |
+| `src/priority_lens/integrations/gmail/models.py` | Gmail data models |
+| `src/priority_lens/integrations/gmail/parser.py` | Email format parser |
+| `src/priority_lens/integrations/gmail/rate_limiter.py` | Rate limiting |
 | `tests/unit/integrations/gmail/test_client.py` | Client tests |
 | `tests/unit/integrations/gmail/test_parser.py` | Parser tests |
 | `tests/unit/integrations/gmail/test_rate_limiter.py` | Rate limiter tests |
@@ -410,7 +410,7 @@ src/rl_emails/
 ### Implementation Design
 
 ```python
-# src/rl_emails/integrations/gmail/models.py
+# src/priority_lens/integrations/gmail/models.py
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -449,7 +449,7 @@ class GmailMessage:
 ```
 
 ```python
-# src/rl_emails/integrations/gmail/client.py
+# src/priority_lens/integrations/gmail/client.py
 from typing import AsyncIterator
 from datetime import datetime, timedelta
 
@@ -522,7 +522,7 @@ class GmailClient:
 ```
 
 ```python
-# src/rl_emails/integrations/gmail/rate_limiter.py
+# src/priority_lens/integrations/gmail/rate_limiter.py
 import asyncio
 from collections import deque
 from time import monotonic
@@ -552,9 +552,9 @@ class RateLimiter:
 ```
 
 ```python
-# src/rl_emails/integrations/gmail/parser.py
-from rl_emails.integrations.gmail.models import GmailMessage
-from rl_emails.core.types import EmailData
+# src/priority_lens/integrations/gmail/parser.py
+from priority_lens.integrations.gmail.models import GmailMessage
+from priority_lens.core.types import EmailData
 
 def gmail_to_email_data(gmail_msg: GmailMessage, user_id: UUID) -> EmailData:
     """Convert Gmail message to internal EmailData format.
@@ -761,8 +761,8 @@ class TestGmailParser:
 2. **Manual API test** (after auth connected):
    ```python
    # In Python REPL
-   from rl_emails.integrations.gmail.client import GmailClient
-   from rl_emails.services.auth_service import AuthService
+   from priority_lens.integrations.gmail.client import GmailClient
+   from priority_lens.services.auth_service import AuthService
 
    # Get valid token
    token = await auth_service.get_valid_token(user_id)
@@ -821,7 +821,7 @@ As a user, I need to sync my Gmail emails so that I can run the analysis pipelin
 ### Architecture
 
 ```
-src/rl_emails/
+src/priority_lens/
 ├── pipeline/
 │   └── stages/
 │       └── stage_00_gmail_sync.py  # NEW: Gmail sync stage (before stage 1)
@@ -857,8 +857,8 @@ src/rl_emails/
 
 | File | Description |
 |------|-------------|
-| `src/rl_emails/pipeline/stages/stage_00_gmail_sync.py` | Gmail sync stage |
-| `src/rl_emails/services/sync_service.py` | Sync orchestration |
+| `src/priority_lens/pipeline/stages/stage_00_gmail_sync.py` | Gmail sync stage |
+| `src/priority_lens/services/sync_service.py` | Sync orchestration |
 | `tests/unit/pipeline/stages/test_stage_00_gmail_sync.py` | Sync stage tests |
 | `tests/unit/services/test_sync_service.py` | Sync service tests |
 
@@ -866,14 +866,14 @@ src/rl_emails/
 
 | File | Changes |
 |------|---------|
-| `src/rl_emails/cli.py` | Add `sync` subcommand |
-| `src/rl_emails/pipeline/orchestrator.py` | Support Gmail mode |
-| `src/rl_emails/repositories/sync_state.py` | Add sync state methods |
+| `src/priority_lens/cli.py` | Add `sync` subcommand |
+| `src/priority_lens/pipeline/orchestrator.py` | Support Gmail mode |
+| `src/priority_lens/repositories/sync_state.py` | Add sync state methods |
 
 ### Implementation Design
 
 ```python
-# src/rl_emails/services/sync_service.py
+# src/priority_lens/services/sync_service.py
 from uuid import UUID
 from datetime import datetime
 
@@ -954,10 +954,10 @@ class SyncService:
 ```
 
 ```python
-# src/rl_emails/pipeline/stages/stage_00_gmail_sync.py
-from rl_emails.pipeline.stages.base import StageResult
-from rl_emails.core.config import Config
-from rl_emails.services.sync_service import SyncService
+# src/priority_lens/pipeline/stages/stage_00_gmail_sync.py
+from priority_lens.pipeline.stages.base import StageResult
+from priority_lens.core.config import Config
+from priority_lens.services.sync_service import SyncService
 
 def run(config: Config, days: int = 30) -> StageResult:
     """Run Gmail sync stage.
@@ -1012,19 +1012,19 @@ def run(config: Config, days: int = 30) -> StageResult:
 
 ```bash
 # Initial sync (last 30 days)
-rl-emails sync --user <uuid>
+priority-lens sync --user <uuid>
 
 # Sync specific date range
-rl-emails sync --user <uuid> --days 90
+priority-lens sync --user <uuid> --days 90
 
 # Sync since specific date
-rl-emails sync --user <uuid> --since 2024-01-01
+priority-lens sync --user <uuid> --since 2024-01-01
 
 # Check sync status
-rl-emails sync --user <uuid> --status
+priority-lens sync --user <uuid> --status
 
 # Full pipeline with Gmail source
-rl-emails --user <uuid> --source gmail --days 30
+priority-lens --user <uuid> --source gmail --days 30
 ```
 
 ### Database Updates
@@ -1071,7 +1071,7 @@ WHERE user_id = '<user-uuid>';
 class TestSyncService:
     """Tests for sync service."""
 
-    @patch("rl_emails.integrations.gmail.client.GmailClient")
+    @patch("priority_lens.integrations.gmail.client.GmailClient")
     async def test_initial_sync_fetches_messages(self, mock_client):
         """Initial sync fetches and stores messages."""
         mock_client.list_messages.return_value = AsyncIterator([
@@ -1124,7 +1124,7 @@ class TestGmailSyncStage:
         assert not result.success
         assert "requires --user" in result.message
 
-    @patch("rl_emails.services.sync_service.SyncService")
+    @patch("priority_lens.services.sync_service.SyncService")
     def test_runs_sync_with_days(self, mock_service):
         """Stage passes days parameter."""
         config = Config(database_url="...", user_id=uuid4())
@@ -1144,12 +1144,12 @@ class TestGmailSyncStage:
 
 1. **Connect Gmail first**:
    ```bash
-   rl-emails auth connect --email your@gmail.com
+   priority-lens auth connect --email your@gmail.com
    ```
 
 2. **Run initial sync**:
    ```bash
-   rl-emails sync --user <uuid> --days 30
+   priority-lens sync --user <uuid> --days 30
 
    # Expected output:
    # Syncing emails from last 30 days...
@@ -1169,7 +1169,7 @@ class TestGmailSyncStage:
 4. **Run full pipeline**:
    ```bash
    # With Gmail source (skips stages 1-2)
-   rl-emails --user <uuid> --source gmail
+   priority-lens --user <uuid> --source gmail
 
    # Stages 3-11 run on synced data
    ```
@@ -1177,7 +1177,7 @@ class TestGmailSyncStage:
 5. **Verify MBOX still works**:
    ```bash
    # MBOX path unchanged
-   rl-emails  # Without --user, uses MBOX
+   priority-lens  # Without --user, uses MBOX
    ```
 
 ### Success Criteria
@@ -1210,7 +1210,7 @@ As a user, I need incremental sync so that only new emails are fetched, making s
 ### Architecture
 
 ```
-src/rl_emails/
+src/priority_lens/
 ├── integrations/
 │   └── gmail/
 │       └── history.py            # NEW: History API wrapper
@@ -1222,8 +1222,8 @@ src/rl_emails/
 
 | File | Description |
 |------|-------------|
-| `src/rl_emails/integrations/gmail/history.py` | History API wrapper |
-| `src/rl_emails/services/delta_processor.py` | Delta processing logic |
+| `src/priority_lens/integrations/gmail/history.py` | History API wrapper |
+| `src/priority_lens/services/delta_processor.py` | Delta processing logic |
 | `tests/unit/integrations/gmail/test_history.py` | History API tests |
 | `tests/unit/services/test_delta_processor.py` | Delta processor tests |
 
@@ -1231,13 +1231,13 @@ src/rl_emails/
 
 | File | Changes |
 |------|---------|
-| `src/rl_emails/services/sync_service.py` | Add incremental_sync method |
-| `src/rl_emails/cli.py` | Add `--incremental` flag |
+| `src/priority_lens/services/sync_service.py` | Add incremental_sync method |
+| `src/priority_lens/cli.py` | Add `--incremental` flag |
 
 ### Implementation Design
 
 ```python
-# src/rl_emails/integrations/gmail/history.py
+# src/priority_lens/integrations/gmail/history.py
 from dataclasses import dataclass
 from enum import Enum
 
@@ -1275,9 +1275,9 @@ async def get_history_changes(
 ```
 
 ```python
-# src/rl_emails/services/delta_processor.py
+# src/priority_lens/services/delta_processor.py
 from uuid import UUID
-from rl_emails.integrations.gmail.history import HistoryRecord, HistoryType
+from priority_lens.integrations.gmail.history import HistoryRecord, HistoryType
 
 @dataclass
 class DeltaResult:
@@ -1338,7 +1338,7 @@ class DeltaProcessor:
 ```
 
 ```python
-# src/rl_emails/services/sync_service.py (additions)
+# src/priority_lens/services/sync_service.py (additions)
 
 class SyncService:
     # ... existing methods ...
@@ -1414,7 +1414,7 @@ class SyncService:
             )
             return SyncResult(
                 success=False,
-                message="History expired. Run: rl-emails sync --user <id> --days 30",
+                message="History expired. Run: priority-lens sync --user <id> --days 30",
             )
 ```
 
@@ -1422,16 +1422,16 @@ class SyncService:
 
 ```bash
 # Incremental sync (uses last history ID)
-rl-emails sync --user <uuid> --incremental
+priority-lens sync --user <uuid> --incremental
 
 # Force full re-sync
-rl-emails sync --user <uuid> --days 30 --force
+priority-lens sync --user <uuid> --days 30 --force
 
 # Auto mode: incremental if possible, full if needed
-rl-emails sync --user <uuid>
+priority-lens sync --user <uuid>
 
 # Show sync history
-rl-emails sync --user <uuid> --history
+priority-lens sync --user <uuid> --history
 ```
 
 ### Acceptance Criteria
@@ -1536,14 +1536,14 @@ class TestDeltaProcessor:
 
 1. **Initial sync first**:
    ```bash
-   rl-emails sync --user <uuid> --days 30
+   priority-lens sync --user <uuid> --days 30
    ```
 
 2. **Wait for new emails** (or send yourself a test email)
 
 3. **Run incremental sync**:
    ```bash
-   rl-emails sync --user <uuid> --incremental
+   priority-lens sync --user <uuid> --incremental
 
    # Expected output:
    # Checking for changes since last sync...
@@ -1566,7 +1566,7 @@ class TestDeltaProcessor:
    WHERE user_id = '<uuid>';
    ```
    ```bash
-   rl-emails sync --user <uuid> --incremental
+   priority-lens sync --user <uuid> --incremental
    # Should suggest full re-sync
    ```
 
@@ -1698,7 +1698,7 @@ dependencies = [
 
 | Iteration | Key Deliverable | Verification |
 |-----------|-----------------|--------------|
-| 4 | OAuth flow | `rl-emails auth connect` works |
+| 4 | OAuth flow | `priority-lens auth connect` works |
 | 5 | Gmail client | Can list and fetch messages |
 | 6 | Initial sync | Full sync populates database |
 | 7 | Incremental | Delta sync is fast and correct |

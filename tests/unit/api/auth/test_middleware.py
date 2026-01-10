@@ -12,9 +12,9 @@ from starlette.responses import Response
 from starlette.routing import Route
 from starlette.testclient import TestClient
 
-from rl_emails.api.auth.clerk import ClerkUser
-from rl_emails.api.auth.config import ClerkConfig
-from rl_emails.api.auth.middleware import (
+from priority_lens.api.auth.clerk import ClerkUser
+from priority_lens.api.auth.config import ClerkConfig
+from priority_lens.api.auth.middleware import (
     AuthenticationMiddleware,
     add_authentication_middleware,
 )
@@ -140,7 +140,7 @@ class TestAuthenticationMiddleware:
         middleware = AuthenticationMiddleware(app)
 
         # Mock get_clerk_config to return unconfigured config
-        with mock.patch("rl_emails.api.auth.middleware.get_clerk_config") as mock_get_config:
+        with mock.patch("priority_lens.api.auth.middleware.get_clerk_config") as mock_get_config:
             mock_get_config.return_value = ClerkConfig(secret_key="", issuer="")  # Not configured
 
             # Access validator property
@@ -162,7 +162,7 @@ class TestAuthenticationMiddleware:
             issuer="https://clerk.example.com",
         )
 
-        with mock.patch("rl_emails.api.auth.middleware.get_clerk_config") as mock_get_config:
+        with mock.patch("priority_lens.api.auth.middleware.get_clerk_config") as mock_get_config:
             mock_get_config.return_value = config
 
             validator = middleware.validator
@@ -186,7 +186,7 @@ class TestAuthenticationMiddleware:
 
         # Mock get_clerk_config to return unconfigured config
         # This ensures validator property returns None
-        with mock.patch("rl_emails.api.auth.middleware.get_clerk_config") as mock_get_config:
+        with mock.patch("priority_lens.api.auth.middleware.get_clerk_config") as mock_get_config:
             mock_get_config.return_value = ClerkConfig()  # Not configured
 
             client = TestClient(middleware)

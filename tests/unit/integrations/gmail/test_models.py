@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from rl_emails.integrations.gmail.models import GmailMessage, GmailMessageRef
+from priority_lens.integrations.gmail.models import GmailMessage, GmailMessageRef
 
 
 class TestGmailMessageRef:

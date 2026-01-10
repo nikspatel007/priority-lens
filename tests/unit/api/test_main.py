@@ -7,8 +7,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from fastapi import FastAPI
 
-from rl_emails.api.config import APIConfig
-from rl_emails.api.main import create_app, lifespan, run_server
+from priority_lens.api.config import APIConfig
+from priority_lens.api.main import create_app, lifespan, run_server
 
 
 class TestCreateApp:
@@ -19,10 +19,10 @@ class TestCreateApp:
         config = APIConfig(environment="development")
 
         with (
-            patch("rl_emails.api.main.setup_cors"),
-            patch("rl_emails.api.main.setup_error_handlers"),
-            patch("rl_emails.api.main.setup_logging"),
-            patch("rl_emails.api.main.setup_rate_limit"),
+            patch("priority_lens.api.main.setup_cors"),
+            patch("priority_lens.api.main.setup_error_handlers"),
+            patch("priority_lens.api.main.setup_logging"),
+            patch("priority_lens.api.main.setup_rate_limit"),
         ):
             app = create_app(config)
 
@@ -33,10 +33,10 @@ class TestCreateApp:
         config = APIConfig(environment="development")
 
         with (
-            patch("rl_emails.api.main.setup_cors"),
-            patch("rl_emails.api.main.setup_error_handlers"),
-            patch("rl_emails.api.main.setup_logging"),
-            patch("rl_emails.api.main.setup_rate_limit"),
+            patch("priority_lens.api.main.setup_cors"),
+            patch("priority_lens.api.main.setup_error_handlers"),
+            patch("priority_lens.api.main.setup_logging"),
+            patch("priority_lens.api.main.setup_rate_limit"),
         ):
             app = create_app(config)
 
@@ -48,10 +48,10 @@ class TestCreateApp:
         config = APIConfig(environment="development")
 
         with (
-            patch("rl_emails.api.main.setup_cors"),
-            patch("rl_emails.api.main.setup_error_handlers"),
-            patch("rl_emails.api.main.setup_logging"),
-            patch("rl_emails.api.main.setup_rate_limit"),
+            patch("priority_lens.api.main.setup_cors"),
+            patch("priority_lens.api.main.setup_error_handlers"),
+            patch("priority_lens.api.main.setup_logging"),
+            patch("priority_lens.api.main.setup_rate_limit"),
         ):
             app = create_app(config)
 
@@ -64,10 +64,10 @@ class TestCreateApp:
         config = APIConfig(environment="production")
 
         with (
-            patch("rl_emails.api.main.setup_cors"),
-            patch("rl_emails.api.main.setup_error_handlers"),
-            patch("rl_emails.api.main.setup_logging"),
-            patch("rl_emails.api.main.setup_rate_limit"),
+            patch("priority_lens.api.main.setup_cors"),
+            patch("priority_lens.api.main.setup_error_handlers"),
+            patch("priority_lens.api.main.setup_logging"),
+            patch("priority_lens.api.main.setup_rate_limit"),
         ):
             app = create_app(config)
 
@@ -80,10 +80,10 @@ class TestCreateApp:
         config = APIConfig()
 
         with (
-            patch("rl_emails.api.main.setup_cors"),
-            patch("rl_emails.api.main.setup_error_handlers"),
-            patch("rl_emails.api.main.setup_logging"),
-            patch("rl_emails.api.main.setup_rate_limit"),
+            patch("priority_lens.api.main.setup_cors"),
+            patch("priority_lens.api.main.setup_error_handlers"),
+            patch("priority_lens.api.main.setup_logging"),
+            patch("priority_lens.api.main.setup_rate_limit"),
         ):
             app = create_app(config)
 
@@ -92,11 +92,11 @@ class TestCreateApp:
     def test_uses_default_config_when_none(self) -> None:
         """Test that default config is used when none provided."""
         with (
-            patch("rl_emails.api.main.get_api_config") as mock_get_config,
-            patch("rl_emails.api.main.setup_cors"),
-            patch("rl_emails.api.main.setup_error_handlers"),
-            patch("rl_emails.api.main.setup_logging"),
-            patch("rl_emails.api.main.setup_rate_limit"),
+            patch("priority_lens.api.main.get_api_config") as mock_get_config,
+            patch("priority_lens.api.main.setup_cors"),
+            patch("priority_lens.api.main.setup_error_handlers"),
+            patch("priority_lens.api.main.setup_logging"),
+            patch("priority_lens.api.main.setup_rate_limit"),
         ):
             mock_config = APIConfig()
             mock_get_config.return_value = mock_config
@@ -111,10 +111,10 @@ class TestCreateApp:
         config = APIConfig()
 
         with (
-            patch("rl_emails.api.main.setup_cors") as mock_cors,
-            patch("rl_emails.api.main.setup_error_handlers") as mock_errors,
-            patch("rl_emails.api.main.setup_logging") as mock_logging,
-            patch("rl_emails.api.main.setup_rate_limit") as mock_rate_limit,
+            patch("priority_lens.api.main.setup_cors") as mock_cors,
+            patch("priority_lens.api.main.setup_error_handlers") as mock_errors,
+            patch("priority_lens.api.main.setup_logging") as mock_logging,
+            patch("priority_lens.api.main.setup_rate_limit") as mock_rate_limit,
         ):
             create_app(config)
 
@@ -128,10 +128,10 @@ class TestCreateApp:
         config = APIConfig()
 
         with (
-            patch("rl_emails.api.main.setup_cors"),
-            patch("rl_emails.api.main.setup_error_handlers"),
-            patch("rl_emails.api.main.setup_logging"),
-            patch("rl_emails.api.main.setup_rate_limit"),
+            patch("priority_lens.api.main.setup_cors"),
+            patch("priority_lens.api.main.setup_error_handlers"),
+            patch("priority_lens.api.main.setup_logging"),
+            patch("priority_lens.api.main.setup_rate_limit"),
         ):
             app = create_app(config)
 
@@ -152,9 +152,9 @@ class TestLifespan:
         mock_app.state.config = config
 
         with (
-            patch("rl_emails.api.main.Database") as mock_db_class,
-            patch("rl_emails.api.main.set_database") as mock_set_db,
-            patch("rl_emails.api.main.logger") as mock_logger,
+            patch("priority_lens.api.main.Database") as mock_db_class,
+            patch("priority_lens.api.main.set_database") as mock_set_db,
+            patch("priority_lens.api.main.logger") as mock_logger,
         ):
             mock_db = AsyncMock()
             mock_db_class.return_value = mock_db
@@ -173,9 +173,9 @@ class TestLifespan:
         mock_app.state.config = config
 
         with (
-            patch("rl_emails.api.main.Database") as mock_db_class,
-            patch("rl_emails.api.main.set_database") as mock_set_db,
-            patch("rl_emails.api.main.logger") as mock_logger,
+            patch("priority_lens.api.main.Database") as mock_db_class,
+            patch("priority_lens.api.main.set_database") as mock_set_db,
+            patch("priority_lens.api.main.logger") as mock_logger,
         ):
             mock_db = AsyncMock()
             mock_db_class.return_value = mock_db
@@ -199,9 +199,9 @@ class TestLifespan:
         mock_app.state.config = config
 
         with (
-            patch("rl_emails.api.main.Database") as mock_db_class,
-            patch("rl_emails.api.main.set_database"),
-            patch("rl_emails.api.main.logger") as mock_logger,
+            patch("priority_lens.api.main.Database") as mock_db_class,
+            patch("priority_lens.api.main.set_database"),
+            patch("priority_lens.api.main.logger") as mock_logger,
         ):
             mock_db = AsyncMock()
             mock_db_class.return_value = mock_db
@@ -225,9 +225,9 @@ class TestLifespan:
         del mock_app.state.db
 
         with (
-            patch("rl_emails.api.main.Database") as mock_db_class,
-            patch("rl_emails.api.main.set_database"),
-            patch("rl_emails.api.main.logger") as mock_logger,
+            patch("priority_lens.api.main.Database") as mock_db_class,
+            patch("priority_lens.api.main.set_database"),
+            patch("priority_lens.api.main.logger") as mock_logger,
         ):
             mock_db = AsyncMock()
             mock_db_class.return_value = mock_db
@@ -260,7 +260,7 @@ class TestRunServer:
     def test_uses_default_config_when_none(self) -> None:
         """Test that default config is used when none provided."""
         with (
-            patch("rl_emails.api.main.get_api_config") as mock_get_config,
+            patch("priority_lens.api.main.get_api_config") as mock_get_config,
             patch("uvicorn.run") as mock_uvicorn_run,
         ):
             mock_config = APIConfig()

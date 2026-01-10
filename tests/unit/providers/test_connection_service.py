@@ -10,18 +10,18 @@ from uuid import UUID
 
 import pytest
 
-from rl_emails.providers.base import (
+from priority_lens.providers.base import (
     ConnectionState,
     ConnectionStatus,
     EmailProvider,
     ProviderType,
     SyncProgress,
 )
-from rl_emails.providers.connection_service import ConnectionService
-from rl_emails.providers.registry import ProviderNotFoundError, ProviderRegistry
+from priority_lens.providers.connection_service import ConnectionService
+from priority_lens.providers.registry import ProviderNotFoundError, ProviderRegistry
 
 if TYPE_CHECKING:
-    from rl_emails.core.types import EmailData
+    from priority_lens.core.types import EmailData
 
 
 class MockProvider(EmailProvider):
@@ -441,7 +441,7 @@ class TestIsConnected:
     @pytest.mark.asyncio
     async def test_is_connected_handles_provider_error(self, user_id: UUID) -> None:
         """Test is_connected handles ProviderError gracefully."""
-        from rl_emails.providers.base import ProviderError
+        from priority_lens.providers.base import ProviderError
 
         registry = ProviderRegistry()
         provider = mock.MagicMock(spec=EmailProvider)

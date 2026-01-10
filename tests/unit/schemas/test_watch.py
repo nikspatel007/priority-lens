@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from uuid import uuid4
 
-from rl_emails.schemas.watch import (
+from priority_lens.schemas.watch import (
     WatchSubscriptionCreate,
     WatchSubscriptionResponse,
     WatchSubscriptionStatus,

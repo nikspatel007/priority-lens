@@ -7,7 +7,7 @@ from uuid import uuid4
 
 import pytest
 
-from rl_emails.schemas.task import (
+from priority_lens.schemas.task import (
     TaskCreate,
     TaskDetailResponse,
     TaskListResponse,

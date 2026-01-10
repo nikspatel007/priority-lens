@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from uuid import uuid4
 
-from rl_emails.models.project import Project
+from priority_lens.models.project import Project
 
 
 class TestProject:

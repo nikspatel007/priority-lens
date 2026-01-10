@@ -1,4 +1,4 @@
-"""Tests for rl_emails.core.db."""
+"""Tests for priority_lens.core.db."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from rl_emails.core.db import (
+from priority_lens.core.db import (
     fetch_count,
     fetch_one_value,
     get_connection,
@@ -33,7 +33,7 @@ class TestGetDatabaseUrl:
 class TestGetConnection:
     """Tests for get_connection context manager."""
 
-    @patch("rl_emails.core.db.psycopg2.connect")
+    @patch("priority_lens.core.db.psycopg2.connect")
     def test_yields_connection(self, mock_connect: MagicMock) -> None:
         """Test that it yields a connection and closes it."""
         mock_conn = MagicMock()
@@ -45,8 +45,8 @@ class TestGetConnection:
         mock_connect.assert_called_once_with("postgresql://test")
         mock_conn.close.assert_called_once()
 
-    @patch("rl_emails.core.db.psycopg2.connect")
-    @patch("rl_emails.core.db.get_database_url")
+    @patch("priority_lens.core.db.psycopg2.connect")
+    @patch("priority_lens.core.db.get_database_url")
     def test_uses_env_url_when_none(self, mock_get_url: MagicMock, mock_connect: MagicMock) -> None:
         """Test that it uses get_database_url when db_url is None."""
         mock_get_url.return_value = "postgresql://env_url"
@@ -59,7 +59,7 @@ class TestGetConnection:
         mock_get_url.assert_called_once()
         mock_connect.assert_called_once_with("postgresql://env_url")
 
-    @patch("rl_emails.core.db.psycopg2.connect")
+    @patch("priority_lens.core.db.psycopg2.connect")
     def test_closes_on_exception(self, mock_connect: MagicMock) -> None:
         """Test that connection is closed even on exception."""
         mock_conn = MagicMock()

@@ -7,7 +7,7 @@ from uuid import uuid4
 
 import pytest
 
-from rl_emails.schemas.project import (
+from priority_lens.schemas.project import (
     ProjectCreate,
     ProjectDetailResponse,
     ProjectListResponse,

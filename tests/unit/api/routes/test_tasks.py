@@ -10,10 +10,10 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from rl_emails.api.auth.clerk import ClerkUser
-from rl_emails.api.auth.dependencies import get_current_user_or_api_key
-from rl_emails.api.routes.tasks import router, set_session_factory
-from rl_emails.schemas.task import (
+from priority_lens.api.auth.clerk import ClerkUser
+from priority_lens.api.auth.dependencies import get_current_user_or_api_key
+from priority_lens.api.routes.tasks import router, set_session_factory
+from priority_lens.schemas.task import (
     TaskDetailResponse,
     TaskListResponse,
     TaskResponse,
@@ -82,7 +82,7 @@ class TestListTasks:
             has_more=False,
         )
 
-        with mock.patch("rl_emails.api.routes.tasks.TaskService") as MockService:
+        with mock.patch("priority_lens.api.routes.tasks.TaskService") as MockService:
             mock_service = MockService.return_value
             mock_service.list_tasks = mock.AsyncMock(return_value=mock_response)
 
@@ -105,7 +105,7 @@ class TestListTasks:
             has_more=False,
         )
 
-        with mock.patch("rl_emails.api.routes.tasks.TaskService") as MockService:
+        with mock.patch("priority_lens.api.routes.tasks.TaskService") as MockService:
             mock_service = MockService.return_value
             mock_service.list_tasks = mock.AsyncMock(return_value=mock_response)
 
@@ -120,7 +120,7 @@ class TestGetTaskStats:
 
     def test_get_task_stats(self, client: TestClient, mock_session: mock.MagicMock) -> None:
         """Test getting task stats."""
-        with mock.patch("rl_emails.api.routes.tasks.TaskService") as MockService:
+        with mock.patch("priority_lens.api.routes.tasks.TaskService") as MockService:
             mock_service = MockService.return_value
             mock_service.count_pending = mock.AsyncMock(return_value=5)
             mock_service.count_urgent = mock.AsyncMock(return_value=2)
@@ -147,7 +147,7 @@ class TestGetTask:
             source_text="Original text",
         )
 
-        with mock.patch("rl_emails.api.routes.tasks.TaskService") as MockService:
+        with mock.patch("priority_lens.api.routes.tasks.TaskService") as MockService:
             mock_service = MockService.return_value
             mock_service.get_task = mock.AsyncMock(return_value=mock_response)
 
@@ -159,9 +159,9 @@ class TestGetTask:
 
     def test_get_task_not_found(self, client: TestClient, mock_session: mock.MagicMock) -> None:
         """Test getting a non-existent task."""
-        from rl_emails.services.task_service import TaskNotFoundError
+        from priority_lens.services.task_service import TaskNotFoundError
 
-        with mock.patch("rl_emails.api.routes.tasks.TaskService") as MockService:
+        with mock.patch("priority_lens.api.routes.tasks.TaskService") as MockService:
             mock_service = MockService.return_value
             mock_service.get_task = mock.AsyncMock(side_effect=TaskNotFoundError(999))
 
@@ -184,7 +184,7 @@ class TestCreateTask:
             created_at=now,
         )
 
-        with mock.patch("rl_emails.api.routes.tasks.TaskService") as MockService:
+        with mock.patch("priority_lens.api.routes.tasks.TaskService") as MockService:
             mock_service = MockService.return_value
             mock_service.create_task = mock.AsyncMock(return_value=mock_response)
 
@@ -211,7 +211,7 @@ class TestUpdateTask:
             created_at=now,
         )
 
-        with mock.patch("rl_emails.api.routes.tasks.TaskService") as MockService:
+        with mock.patch("priority_lens.api.routes.tasks.TaskService") as MockService:
             mock_service = MockService.return_value
             mock_service.update_task = mock.AsyncMock(return_value=mock_response)
 
@@ -226,9 +226,9 @@ class TestUpdateTask:
 
     def test_update_task_not_found(self, client: TestClient, mock_session: mock.MagicMock) -> None:
         """Test updating a non-existent task."""
-        from rl_emails.services.task_service import TaskNotFoundError
+        from priority_lens.services.task_service import TaskNotFoundError
 
-        with mock.patch("rl_emails.api.routes.tasks.TaskService") as MockService:
+        with mock.patch("priority_lens.api.routes.tasks.TaskService") as MockService:
             mock_service = MockService.return_value
             mock_service.update_task = mock.AsyncMock(side_effect=TaskNotFoundError(999))
 
@@ -254,7 +254,7 @@ class TestCompleteTask:
             created_at=now,
         )
 
-        with mock.patch("rl_emails.api.routes.tasks.TaskService") as MockService:
+        with mock.patch("priority_lens.api.routes.tasks.TaskService") as MockService:
             mock_service = MockService.return_value
             mock_service.complete_task = mock.AsyncMock(return_value=mock_response)
 
@@ -268,9 +268,9 @@ class TestCompleteTask:
         self, client: TestClient, mock_session: mock.MagicMock
     ) -> None:
         """Test completing a non-existent task."""
-        from rl_emails.services.task_service import TaskNotFoundError
+        from priority_lens.services.task_service import TaskNotFoundError
 
-        with mock.patch("rl_emails.api.routes.tasks.TaskService") as MockService:
+        with mock.patch("priority_lens.api.routes.tasks.TaskService") as MockService:
             mock_service = MockService.return_value
             mock_service.complete_task = mock.AsyncMock(side_effect=TaskNotFoundError(999))
 
@@ -293,7 +293,7 @@ class TestDismissTask:
             created_at=now,
         )
 
-        with mock.patch("rl_emails.api.routes.tasks.TaskService") as MockService:
+        with mock.patch("priority_lens.api.routes.tasks.TaskService") as MockService:
             mock_service = MockService.return_value
             mock_service.dismiss_task = mock.AsyncMock(return_value=mock_response)
 
@@ -305,9 +305,9 @@ class TestDismissTask:
 
     def test_dismiss_task_not_found(self, client: TestClient, mock_session: mock.MagicMock) -> None:
         """Test dismissing a non-existent task."""
-        from rl_emails.services.task_service import TaskNotFoundError
+        from priority_lens.services.task_service import TaskNotFoundError
 
-        with mock.patch("rl_emails.api.routes.tasks.TaskService") as MockService:
+        with mock.patch("priority_lens.api.routes.tasks.TaskService") as MockService:
             mock_service = MockService.return_value
             mock_service.dismiss_task = mock.AsyncMock(side_effect=TaskNotFoundError(999))
 
@@ -321,7 +321,7 @@ class TestDeleteTask:
 
     def test_delete_task(self, client: TestClient, mock_session: mock.MagicMock) -> None:
         """Test deleting a task."""
-        with mock.patch("rl_emails.api.routes.tasks.TaskService") as MockService:
+        with mock.patch("priority_lens.api.routes.tasks.TaskService") as MockService:
             mock_service = MockService.return_value
             mock_service.delete_task = mock.AsyncMock(return_value=True)
 
@@ -331,9 +331,9 @@ class TestDeleteTask:
 
     def test_delete_task_not_found(self, client: TestClient, mock_session: mock.MagicMock) -> None:
         """Test deleting a non-existent task."""
-        from rl_emails.services.task_service import TaskNotFoundError
+        from priority_lens.services.task_service import TaskNotFoundError
 
-        with mock.patch("rl_emails.api.routes.tasks.TaskService") as MockService:
+        with mock.patch("priority_lens.api.routes.tasks.TaskService") as MockService:
             mock_service = MockService.return_value
             mock_service.delete_task = mock.AsyncMock(side_effect=TaskNotFoundError(999))
 
@@ -401,7 +401,7 @@ class TestClerkUserIdHandling:
             has_more=False,
         )
 
-        with mock.patch("rl_emails.api.routes.tasks.TaskService") as MockService:
+        with mock.patch("priority_lens.api.routes.tasks.TaskService") as MockService:
             mock_service = MockService.return_value
             mock_service.list_tasks = mock.AsyncMock(return_value=mock_response)
 

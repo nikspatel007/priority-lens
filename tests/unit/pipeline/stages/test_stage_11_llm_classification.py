@@ -6,9 +6,9 @@ from datetime import datetime
 from typing import Any
 from unittest.mock import MagicMock, patch
 
-from rl_emails.core.config import Config
-from rl_emails.pipeline.stages import stage_11_llm_classification
-from rl_emails.pipeline.stages.base import StageResult
+from priority_lens.core.config import Config
+from priority_lens.pipeline.stages import stage_11_llm_classification
+from priority_lens.pipeline.stages.base import StageResult
 
 
 class TestCreateTables:
@@ -641,7 +641,7 @@ class TestProcessBatch:
         assert result["errors"] == 1
         assert result["saved"] == 0
 
-    @patch("rl_emails.pipeline.stages.stage_11_llm_classification.save_result")
+    @patch("priority_lens.pipeline.stages.stage_11_llm_classification.save_result")
     def test_handles_save_failure(self, mock_save: MagicMock) -> None:
         """Test processing batch when save fails."""
         mock_save.return_value = False
@@ -698,7 +698,7 @@ class TestRun:
         assert result.success is False
         assert "API key" in result.message
 
-    @patch("rl_emails.pipeline.stages.stage_11_llm_classification.psycopg2.connect")
+    @patch("priority_lens.pipeline.stages.stage_11_llm_classification.psycopg2.connect")
     def test_run_all_classified(self, mock_connect: MagicMock) -> None:
         """Test run when all emails already classified."""
         mock_conn = MagicMock()
@@ -714,8 +714,8 @@ class TestRun:
         assert result.records_processed == 0
         assert "already classified" in result.message
 
-    @patch("rl_emails.pipeline.stages.stage_11_llm_classification.psycopg2.connect")
-    @patch("rl_emails.pipeline.stages.stage_11_llm_classification.process_batch")
+    @patch("priority_lens.pipeline.stages.stage_11_llm_classification.psycopg2.connect")
+    @patch("priority_lens.pipeline.stages.stage_11_llm_classification.process_batch")
     def test_run_success(self, mock_batch: MagicMock, mock_connect: MagicMock) -> None:
         """Test successful run."""
         mock_conn = MagicMock()
@@ -760,8 +760,8 @@ class TestRun:
         assert result.records_processed == 1
         mock_conn.close.assert_called_once()
 
-    @patch("rl_emails.pipeline.stages.stage_11_llm_classification.psycopg2.connect")
-    @patch("rl_emails.pipeline.stages.stage_11_llm_classification.process_batch")
+    @patch("priority_lens.pipeline.stages.stage_11_llm_classification.psycopg2.connect")
+    @patch("priority_lens.pipeline.stages.stage_11_llm_classification.process_batch")
     def test_run_with_limit(self, mock_batch: MagicMock, mock_connect: MagicMock) -> None:
         """Test run with limit parameter."""
         mock_conn = MagicMock()
@@ -810,7 +810,9 @@ class TestRun:
         config = Config(database_url="postgresql://test", openai_api_key="sk-test")
 
         with patch.dict("sys.modules", {"litellm": None}):
-            with patch("rl_emails.pipeline.stages.stage_11_llm_classification.psycopg2.connect"):
+            with patch(
+                "priority_lens.pipeline.stages.stage_11_llm_classification.psycopg2.connect"
+            ):
                 with patch("builtins.__import__", side_effect=ImportError("No module")):
                     result = stage_11_llm_classification.run(config)
 

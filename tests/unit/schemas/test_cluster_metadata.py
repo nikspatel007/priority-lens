@@ -8,7 +8,7 @@ from uuid import uuid4
 import pytest
 from pydantic import ValidationError
 
-from rl_emails.schemas.cluster_metadata import (
+from priority_lens.schemas.cluster_metadata import (
     ClusterLabelRequest,
     ClusterLabelResult,
     ClusterMetadataCreate,

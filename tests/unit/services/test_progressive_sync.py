@@ -8,9 +8,9 @@ from uuid import uuid4
 
 import pytest
 
-from rl_emails.integrations.gmail.client import GmailApiError
-from rl_emails.integrations.gmail.models import GmailMessageRef
-from rl_emails.services.progressive_sync import (
+from priority_lens.integrations.gmail.client import GmailApiError
+from priority_lens.integrations.gmail.models import GmailMessageRef
+from priority_lens.services.progressive_sync import (
     DEFAULT_PHASES,
     PhaseConfig,
     ProgressiveSyncResult,

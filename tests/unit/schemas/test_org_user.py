@@ -8,7 +8,7 @@ from datetime import UTC, datetime
 import pytest
 from pydantic import ValidationError
 
-from rl_emails.schemas.org_user import (
+from priority_lens.schemas.org_user import (
     OrgUserCreate,
     OrgUserResponse,
     OrgUserUpdate,

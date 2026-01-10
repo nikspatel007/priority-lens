@@ -13,13 +13,13 @@ import os
 import psycopg2
 import pytest
 
-from rl_emails.core.db import fetch_count, fetch_one_value, get_connection, get_cursor
+from priority_lens.core.db import fetch_count, fetch_one_value, get_connection, get_cursor
 
 
 def is_database_available() -> bool:
     """Check if the test database is available."""
     db_url = os.environ.get(
-        "TEST_DATABASE_URL", "postgresql://postgres:postgres@localhost:5433/test_rl_emails"
+        "TEST_DATABASE_URL", "postgresql://postgres:postgres@localhost:5433/test_priority_lens"
     )
     try:
         conn = psycopg2.connect(db_url)
@@ -37,7 +37,7 @@ pytestmark = pytest.mark.skipif(not is_database_available(), reason="Test databa
 def test_db_url() -> str:
     """Get test database URL."""
     return os.environ.get(
-        "TEST_DATABASE_URL", "postgresql://postgres:postgres@localhost:5433/test_rl_emails"
+        "TEST_DATABASE_URL", "postgresql://postgres:postgres@localhost:5433/test_priority_lens"
     )
 
 

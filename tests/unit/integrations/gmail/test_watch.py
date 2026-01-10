@@ -7,7 +7,7 @@ from unittest import mock
 import httpx
 import pytest
 
-from rl_emails.integrations.gmail.client import GmailApiError, GmailClient
+from priority_lens.integrations.gmail.client import GmailApiError, GmailClient
 
 
 class TestGmailClientWatch:
