@@ -424,11 +424,24 @@ async def handle_action(
 ```
 
 **Acceptance Criteria**:
-- [ ] Actions are type-safe with registry
-- [ ] Results are emitted as canonical events
-- [ ] Failed actions return errors gracefully
-- [ ] Navigation actions supported
-- [ ] 100% test coverage on new code
+- [x] Actions are type-safe with registry
+- [x] Results are emitted as canonical events
+- [x] Failed actions return errors gracefully
+- [x] Navigation actions supported
+- [x] 100% test coverage on new code
+
+**Status**: ✅ COMPLETE (2300 tests passing, 99.46% coverage)
+
+**Deliverables Completed**:
+- `src/priority_lens/services/action_handlers.py` - Action handling system:
+  - ActionRegistry for type-safe action handler registration
+  - ActionService for executing actions with event emission
+  - Built-in handlers: archive, complete, dismiss, snooze, navigate, reply, delete
+  - ActionContext, ActionResult, ActionResultStatus dataclasses
+- `src/priority_lens/api/routes/actions.py` - Action routes:
+  - `POST /actions` - Execute SDUI actions
+  - `GET /actions/types` - List available action types
+- Unit tests: 29 handler tests + 15 route tests
 
 ---
 

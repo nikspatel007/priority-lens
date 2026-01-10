@@ -1,5 +1,14 @@
 """Service layer for business logic orchestration."""
 
+from priority_lens.services.action_handlers import (
+    ActionContext,
+    ActionExecutionError,
+    ActionNotFoundError,
+    ActionResult,
+    ActionResultStatus,
+    ActionService,
+    action_registry,
+)
 from priority_lens.services.agent_streaming import (
     AgentCancellationError,
     AgentEvent,
@@ -54,6 +63,13 @@ from priority_lens.services.task_service import TaskNotFoundError, TaskService
 from priority_lens.services.turn_service import TurnService
 
 __all__ = [
+    "ActionContext",
+    "ActionExecutionError",
+    "ActionNotFoundError",
+    "ActionResult",
+    "ActionResultStatus",
+    "ActionService",
+    "action_registry",
     "AgentCancellationError",
     "AgentEvent",
     "AgentStreamingService",

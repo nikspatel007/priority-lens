@@ -1,5 +1,7 @@
 """API route modules."""
 
+from priority_lens.api.routes.actions import router as actions_router
+from priority_lens.api.routes.actions import set_session_factory as set_actions_session
 from priority_lens.api.routes.agent import router as agent_router
 from priority_lens.api.routes.agent import set_livekit_service as set_agent_livekit
 from priority_lens.api.routes.agent import set_session_factory as set_agent_session
@@ -20,12 +22,14 @@ from priority_lens.api.routes.webhooks import router as webhooks_router
 from priority_lens.api.routes.webhooks import set_push_service
 
 __all__ = [
+    "actions_router",
     "agent_router",
     "connections_router",
     "health_router",
     "inbox_router",
     "livekit_router",
     "projects_router",
+    "set_actions_session",
     "set_agent_livekit",
     "set_agent_session",
     "set_connection_service",
