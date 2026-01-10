@@ -105,6 +105,23 @@ async def snooze_task(
     return {}
 
 
+@tool
+async def generate_ui(
+    ui_type: str,
+    limit: int = 10,
+) -> dict[str, object]:
+    """Generate a server-driven UI component for the mobile client.
+
+    Args:
+        ui_type: Type of UI to generate. Options: 'inbox_list', 'task_list', 'project_list'.
+        limit: Maximum number of items (default 10, max 20).
+
+    Returns:
+        UIBlock definition that the client can render.
+    """
+    return {}
+
+
 # Tool registry for easy access
 PRIORITY_LENS_TOOLS = [
     get_priority_inbox,
@@ -112,6 +129,7 @@ PRIORITY_LENS_TOOLS = [
     get_tasks,
     search_emails,
     snooze_task,
+    generate_ui,
 ]
 
 
@@ -241,6 +259,57 @@ async def execute_snooze_task(
         return await service.get_task(task_id, ctx.user_id)
 
 
+async def execute_generate_ui(
+    ctx: AgentContext,
+    ui_type: str,
+    limit: int = 10,
+) -> dict[str, object]:
+    """Execute generate_ui with context.
+
+    Args:
+        ctx: Agent context with user/session info.
+        ui_type: Type of UI to generate.
+        limit: Maximum number of items.
+
+    Returns:
+        UIBlock as a dictionary.
+
+    Raises:
+        ValueError: If ui_type is not recognized.
+    """
+    from priority_lens.sdui.components import (
+        create_inbox_list,
+        create_project_list,
+        create_task_list,
+    )
+
+    limit = min(limit, 20)  # Cap at 20 for UI
+
+    async with ctx.session() as session:
+        if ui_type == "inbox_list":
+            inbox_service = InboxService(session)
+            response = await inbox_service.get_priority_inbox(ctx.user_id, limit=limit)
+            block = create_inbox_list(response.emails)
+            return block.model_dump()
+
+        elif ui_type == "task_list":
+            task_service = TaskService(session)
+            response = await task_service.list_tasks(ctx.user_id, status="pending", limit=limit)
+            block = create_task_list(response.tasks)
+            return block.model_dump()
+
+        elif ui_type == "project_list":
+            project_service = ProjectService(session)
+            response = await project_service.list_projects(ctx.user_id, is_active=True, limit=limit)
+            block = create_project_list(response.projects)
+            return block.model_dump()
+
+        else:
+            raise ValueError(
+                f"Unknown ui_type: {ui_type}. Options: inbox_list, task_list, project_list"
+            )
+
+
 # Mapping from tool name to executor
 TOOL_EXECUTORS = {
     "get_priority_inbox": execute_get_priority_inbox,
@@ -248,4 +317,5 @@ TOOL_EXECUTORS = {
     "get_tasks": execute_get_tasks,
     "search_emails": execute_search_emails,
     "snooze_task": execute_snooze_task,
+    "generate_ui": execute_generate_ui,
 }

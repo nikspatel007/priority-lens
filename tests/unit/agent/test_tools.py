@@ -59,7 +59,7 @@ class TestToolDefinitions:
 
     def test_tools_list_exists(self) -> None:
         """Test that PRIORITY_LENS_TOOLS list exists."""
-        assert len(PRIORITY_LENS_TOOLS) == 5
+        assert len(PRIORITY_LENS_TOOLS) == 6
 
     def test_get_priority_inbox_is_tool(self) -> None:
         """Test that get_priority_inbox is a valid tool."""
@@ -85,6 +85,13 @@ class TestToolDefinitions:
         """Test that snooze_task is a valid tool."""
         assert snooze_task.name == "snooze_task"
         assert "snooze" in snooze_task.description.lower()
+
+    def test_generate_ui_is_tool(self) -> None:
+        """Test that generate_ui is a valid tool."""
+        from priority_lens.agent.tools import generate_ui
+
+        assert generate_ui.name == "generate_ui"
+        assert "ui" in generate_ui.description.lower()
 
 
 class TestToolExecutors:
@@ -281,3 +288,54 @@ class TestToolExecutors:
         """Test snooze_task with invalid datetime."""
         with pytest.raises(ValueError, match="Invalid datetime format"):
             await execute_snooze_task(agent_context, task_id=1, snooze_until="not-a-date")
+
+    @pytest.mark.asyncio
+    async def test_execute_generate_ui_inbox(
+        self, agent_context: AgentContext, mock_session: MagicMock
+    ) -> None:
+        """Test execute_generate_ui for inbox_list."""
+        from priority_lens.agent.tools import execute_generate_ui
+
+        mock_response = PriorityInboxResponse(
+            emails=[
+                PriorityEmail(
+                    email=EmailSummary(
+                        id=1,
+                        message_id="msg1",
+                        thread_id="thread1",
+                        subject="Test",
+                        from_email="test@example.com",
+                        date_parsed=datetime.now(UTC),
+                    ),
+                    priority_rank=1,
+                    priority_score=0.9,
+                    context=None,
+                    task_count=0,
+                    project_name=None,
+                )
+            ],
+            total=1,
+            limit=10,
+            offset=0,
+            has_more=False,
+            pending_tasks=0,
+            urgent_count=0,
+            from_real_people_count=0,
+        )
+
+        with patch("priority_lens.agent.tools.InboxService") as MockInboxService:
+            mock_service = MockInboxService.return_value
+            mock_service.get_priority_inbox = AsyncMock(return_value=mock_response)
+
+            result = await execute_generate_ui(agent_context, ui_type="inbox_list", limit=10)
+
+            assert result["type"] == "list"
+            assert len(result["children"]) == 1
+
+    @pytest.mark.asyncio
+    async def test_execute_generate_ui_invalid_type(self, agent_context: AgentContext) -> None:
+        """Test execute_generate_ui with invalid ui_type."""
+        from priority_lens.agent.tools import execute_generate_ui
+
+        with pytest.raises(ValueError, match="Unknown ui_type"):
+            await execute_generate_ui(agent_context, ui_type="invalid_type", limit=10)

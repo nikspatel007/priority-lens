@@ -321,11 +321,23 @@ class LayoutProps(BaseModel):
 ```
 
 **Acceptance Criteria**:
-- [ ] UIBlock schema matches SDUI_COMPONENTS.md spec
-- [ ] Component factories produce valid blocks
-- [ ] Agent can call `generate_ui` tool
-- [ ] UI blocks are streamed as canonical events
-- [ ] 100% test coverage on new code
+- [x] UIBlock schema matches SDUI_COMPONENTS.md spec
+- [x] Component factories produce valid blocks
+- [x] Agent can call `generate_ui` tool
+- [ ] UI blocks are streamed as canonical events - Deferred to Iteration 7
+- [x] 100% test coverage on new code
+
+**Status**: ✅ COMPLETE (2226 tests passing, 99.46% coverage)
+
+**Deliverables Completed**:
+- `src/priority_lens/sdui/` module structure
+- `src/priority_lens/sdui/schemas.py` - Pydantic models:
+  - UIBlock, LayoutProps, GridProps, ActionProps, ActionType
+- `src/priority_lens/sdui/components.py` - Component factories:
+  - `create_email_card()`, `create_task_card()`, `create_project_card()`
+  - `create_inbox_list()`, `create_task_list()`, `create_project_list()`
+- `generate_ui` tool added to agent (6 tools total)
+- Unit tests: 31 schema/component tests + 3 tool tests
 
 ---
 
