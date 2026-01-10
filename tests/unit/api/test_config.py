@@ -138,6 +138,63 @@ class TestAPIConfig:
             config = APIConfig()
             assert "https://example.com" in config.cors_origins
 
+    def test_livekit_default_values(self) -> None:
+        """Test that LiveKit config has None defaults."""
+        config = APIConfig()
+
+        assert config.livekit_api_key is None
+        assert config.livekit_api_secret is None
+        assert config.livekit_url is None
+
+    def test_livekit_from_env(self) -> None:
+        """Test loading LiveKit config from environment."""
+        env_vars = {
+            "API_LIVEKIT_API_KEY": "test-api-key",
+            "API_LIVEKIT_API_SECRET": "test-api-secret",
+            "API_LIVEKIT_URL": "wss://test.livekit.cloud",
+        }
+
+        with patch.dict(os.environ, env_vars, clear=False):
+            config = APIConfig()
+
+        assert config.livekit_api_key == "test-api-key"
+        assert config.livekit_api_secret == "test-api-secret"
+        assert config.livekit_url == "wss://test.livekit.cloud"
+
+    def test_has_livekit_true(self) -> None:
+        """Test has_livekit returns True when configured."""
+        env_vars = {
+            "API_LIVEKIT_API_KEY": "test-api-key",
+            "API_LIVEKIT_API_SECRET": "test-api-secret",
+        }
+
+        with patch.dict(os.environ, env_vars, clear=False):
+            config = APIConfig()
+
+        assert config.has_livekit is True
+
+    def test_has_livekit_false_no_key(self) -> None:
+        """Test has_livekit returns False when key is missing."""
+        env_vars = {
+            "API_LIVEKIT_API_SECRET": "test-api-secret",
+        }
+
+        with patch.dict(os.environ, env_vars, clear=False):
+            config = APIConfig()
+
+        assert config.has_livekit is False
+
+    def test_has_livekit_false_no_secret(self) -> None:
+        """Test has_livekit returns False when secret is missing."""
+        env_vars = {
+            "API_LIVEKIT_API_KEY": "test-api-key",
+        }
+
+        with patch.dict(os.environ, env_vars, clear=False):
+            config = APIConfig()
+
+        assert config.has_livekit is False
+
 
 class TestGetAPIConfig:
     """Tests for get_api_config function."""

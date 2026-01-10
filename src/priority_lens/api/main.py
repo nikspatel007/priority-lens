@@ -141,9 +141,10 @@ def create_app(config: APIConfig | None = None) -> FastAPI:
     app.include_router(connections_router)
     app.include_router(webhooks_router)
 
-    # Import and register project/task/inbox/threads routes
+    # Import and register project/task/inbox/threads/livekit routes
     from priority_lens.api.routes import (
         inbox_router,
+        livekit_router,
         projects_router,
         tasks_router,
         threads_router,
@@ -153,6 +154,7 @@ def create_app(config: APIConfig | None = None) -> FastAPI:
     app.include_router(tasks_router)
     app.include_router(inbox_router)
     app.include_router(threads_router)
+    app.include_router(livekit_router)
 
     return app
 

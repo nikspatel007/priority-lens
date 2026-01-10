@@ -36,6 +36,11 @@ from priority_lens.schemas.inbox import (
     PriorityEmail,
     PriorityInboxResponse,
 )
+from priority_lens.schemas.livekit import (
+    LiveKitConfig,
+    LiveKitTokenRequest,
+    LiveKitTokenResponse,
+)
 from priority_lens.schemas.oauth_token import (
     OAuthTokenCreate,
     OAuthTokenResponse,
@@ -99,6 +104,9 @@ __all__ = [
     "EventListResponse",
     "EventResponse",
     "InboxStats",
+    "LiveKitConfig",
+    "LiveKitTokenRequest",
+    "LiveKitTokenResponse",
     "OAuthTokenCreate",
     "OAuthTokenResponse",
     "OAuthTokenStatus",

@@ -56,6 +56,11 @@ class APIConfig(BaseSettings):
     )
     log_json: bool = Field(default=True, description="Use JSON log format")
 
+    # LiveKit configuration
+    livekit_api_key: str | None = Field(default=None, description="LiveKit API key")
+    livekit_api_secret: str | None = Field(default=None, description="LiveKit API secret")
+    livekit_url: str | None = Field(default=None, description="LiveKit server URL (wss://...)")
+
     @field_validator("database_url")
     @classmethod
     def validate_database_url(cls, v: str) -> str:
@@ -73,6 +78,11 @@ class APIConfig(BaseSettings):
     def is_development(self) -> bool:
         """Check if running in development environment."""
         return self.environment == "development"
+
+    @property
+    def has_livekit(self) -> bool:
+        """Check if LiveKit credentials are configured."""
+        return bool(self.livekit_api_key and self.livekit_api_secret)
 
 
 @lru_cache

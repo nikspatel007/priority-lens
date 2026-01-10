@@ -45,6 +45,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+voice = [
+    "livekit-api>=1.0.0",
+]
+
 dev = [
     "mypy>=1.8.0",
     "ruff>=0.1.0",

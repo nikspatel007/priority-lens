@@ -15,6 +15,10 @@ from priority_lens.services.entity_extraction import (
     extract_all_entities,
 )
 from priority_lens.services.inbox_service import InboxService
+from priority_lens.services.livekit_service import (
+    LiveKitNotConfiguredError,
+    LiveKitService,
+)
 from priority_lens.services.progressive_sync import (
     PhaseConfig,
     ProgressiveSyncResult,
@@ -50,6 +54,8 @@ __all__ = [
     "ExtractionResult",
     "InboxService",
     "LabelResult",
+    "LiveKitNotConfiguredError",
+    "LiveKitService",
     "InvalidNotificationError",
     "NotificationData",
     "NotificationDeduplicator",
