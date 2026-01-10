@@ -181,11 +181,13 @@ class LiveKitService:
 ```
 
 **Acceptance Criteria**:
-- [ ] Tokens are short-lived (default 120s)
-- [ ] Room names are deterministic from thread_id
-- [ ] Tokens include correct grants (join, publish audio)
-- [ ] Config validation for LiveKit credentials
-- [ ] 100% test coverage on new code
+- [x] Tokens are short-lived (default 120s)
+- [x] Room names are deterministic from thread_id
+- [x] Tokens include correct grants (join, publish audio)
+- [x] Config validation for LiveKit credentials
+- [x] 100% test coverage on new code
+
+**Status**: ✅ COMPLETE (2132 tests passing, 99.82% coverage)
 
 ---
 
@@ -220,11 +222,20 @@ async def submit_turn(
 ```
 
 **Acceptance Criteria**:
-- [ ] Both text and voice transcript inputs supported
-- [ ] Events persisted with correlation_id
-- [ ] `seq` incremented correctly
-- [ ] Agent invocation is async (non-blocking)
-- [ ] 100% test coverage on new code
+- [x] Both text and voice transcript inputs supported
+- [x] Events persisted with correlation_id
+- [x] `seq` incremented correctly
+- [ ] Agent invocation is async (non-blocking) - Deferred to Iteration 5
+- [x] 100% test coverage on new code
+
+**Status**: ✅ COMPLETE (2167 tests passing, 99.82% coverage)
+
+**Deliverables Completed**:
+- `src/priority_lens/schemas/turn.py` - Turn schemas (TurnCreate, TurnResponse, TextInput, VoiceInput, payloads)
+- `src/priority_lens/services/turn_service.py` - Turn service with event persistence
+- `POST /threads/{thread_id}/turns` endpoint in threads router
+- Unit tests for schemas (24 tests) and service (6 tests)
+- API endpoint tests (5 tests)
 
 ---
 

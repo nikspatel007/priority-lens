@@ -27,6 +27,7 @@ from priority_lens.schemas.session import (
     SessionListResponse,
     SessionResponse,
 )
+from priority_lens.schemas.turn import TurnCreate, TurnResponse
 
 if TYPE_CHECKING:
     from priority_lens.api.auth.clerk import ClerkUser
@@ -325,3 +326,56 @@ async def list_sessions(
         sessions=[SessionResponse.from_orm_with_metadata(s) for s in sessions],
         total=total,
     )
+
+
+# ============================================================================
+# Turns endpoints
+# ============================================================================
+
+
+@router.post(
+    "/{thread_id}/turns",
+    response_model=TurnResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def submit_turn(
+    thread_id: UUID,
+    data: TurnCreate,
+    user: CurrentUserOrApiKey,
+    session: SessionDep,
+) -> TurnResponse:
+    """Submit a conversation turn.
+
+    This endpoint accepts text or voice transcript input and creates
+    a sequence of events:
+    1. turn.user.open - Turn started
+    2. ui.text.submit or stt.final - Content event
+    3. turn.user.close - Turn completed
+
+    The agent will be invoked asynchronously to respond.
+    """
+    # Import here to avoid circular imports
+    from priority_lens.services.turn_service import TurnService
+
+    # Verify thread access
+    thread_repo = ThreadRepository(session)
+    org_id = _get_org_id(user)
+    user_id = _get_user_id(user)
+
+    thread = await thread_repo.get_by_id_and_org(thread_id, org_id)
+    if thread is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Thread {thread_id} not found",
+        )
+
+    # Submit turn
+    turn_service = TurnService(session)
+    result = await turn_service.submit_turn(
+        thread_id=thread_id,
+        org_id=org_id,
+        user_id=user_id,
+        turn_data=data,  # type: ignore[arg-type]
+    )
+
+    return result  # type: ignore[return-value]

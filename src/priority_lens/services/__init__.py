@@ -44,6 +44,7 @@ from priority_lens.services.push_notification import (
 )
 from priority_lens.services.sync_service import SyncResult, SyncService
 from priority_lens.services.task_service import TaskNotFoundError, TaskService
+from priority_lens.services.turn_service import TurnService
 
 __all__ = [
     "AuthService",
@@ -80,6 +81,7 @@ __all__ = [
     "TaskExtractor",
     "TaskNotFoundError",
     "TaskService",
+    "TurnService",
     "UserNotFoundError",
     "extract_all_entities",
 ]

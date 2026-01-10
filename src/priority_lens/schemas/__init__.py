@@ -81,6 +81,15 @@ from priority_lens.schemas.task import (
     TaskStatusUpdate,
     TaskUpdate,
 )
+from priority_lens.schemas.turn import (
+    TextInput,
+    TurnClosePayload,
+    TurnCreate,
+    TurnInputType,
+    TurnOpenPayload,
+    TurnResponse,
+    VoiceInput,
+)
 from priority_lens.schemas.watch import (
     WatchSubscriptionCreate,
     WatchSubscriptionResponse,
@@ -143,10 +152,17 @@ __all__ = [
     "TaskResponse",
     "TaskStatusUpdate",
     "TaskUpdate",
+    "TextInput",
     "ThreadCreate",
     "ThreadListResponse",
     "ThreadResponse",
     "ThreadUpdate",
+    "TurnClosePayload",
+    "TurnCreate",
+    "TurnInputType",
+    "TurnOpenPayload",
+    "TurnResponse",
+    "VoiceInput",
     "WatchSubscriptionCreate",
     "WatchSubscriptionResponse",
     "WatchSubscriptionStatus",

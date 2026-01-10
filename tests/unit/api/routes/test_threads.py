@@ -516,6 +516,181 @@ class TestListSessions:
             assert data["total"] == 1
 
 
+class TestSubmitTurn:
+    """Tests for submit_turn endpoint."""
+
+    def test_submit_text_turn(self, client: TestClient, mock_session: mock.MagicMock) -> None:
+        """Test submitting a text turn."""
+        thread_id = uuid.uuid4()
+        session_id = uuid.uuid4()
+        org_id = uuid.UUID("550e8400-e29b-41d4-a716-446655440000")
+        now = datetime.now(UTC)
+
+        mock_thread = ConversationThread(
+            id=thread_id,
+            org_id=org_id,
+            user_id=org_id,
+            title="Test Thread",
+            metadata_={},
+        )
+        mock_thread.created_at = now
+        mock_thread.updated_at = now
+
+        seq_counter = [0]
+
+        def create_mock_event(*args: object, **kwargs: object) -> CanonicalEvent:
+            seq_counter[0] += 1
+            return CanonicalEvent(
+                event_id=uuid.uuid4(),
+                thread_id=thread_id,
+                org_id=org_id,
+                seq=seq_counter[0],
+                ts=int(now.timestamp() * 1000),
+                actor="user",
+                type="turn.user.open",
+                payload={},
+            )
+
+        with (
+            mock.patch("priority_lens.api.routes.threads.ThreadRepository") as MockThreadRepo,
+            mock.patch("priority_lens.services.turn_service.EventRepository") as MockEventRepo,
+        ):
+            mock_thread_repo = MockThreadRepo.return_value
+            mock_thread_repo.get_by_id_and_org = mock.AsyncMock(return_value=mock_thread)
+
+            mock_event_repo = MockEventRepo.return_value
+            mock_event_repo.append_event_raw = mock.AsyncMock(side_effect=create_mock_event)
+
+            response = client.post(
+                f"/threads/{thread_id}/turns",
+                json={
+                    "session_id": str(session_id),
+                    "input": {"type": "text", "text": "Hello, assistant!"},
+                },
+            )
+
+            assert response.status_code == 201
+            data = response.json()
+            assert "correlation_id" in data
+            assert data["accepted"] is True
+            assert data["thread_id"] == str(thread_id)
+            assert data["session_id"] == str(session_id)
+            assert data["seq"] == 1
+
+    def test_submit_voice_turn(self, client: TestClient, mock_session: mock.MagicMock) -> None:
+        """Test submitting a voice turn."""
+        thread_id = uuid.uuid4()
+        session_id = uuid.uuid4()
+        org_id = uuid.UUID("550e8400-e29b-41d4-a716-446655440000")
+        now = datetime.now(UTC)
+
+        mock_thread = ConversationThread(
+            id=thread_id,
+            org_id=org_id,
+            user_id=org_id,
+            title="Test Thread",
+            metadata_={},
+        )
+        mock_thread.created_at = now
+        mock_thread.updated_at = now
+
+        seq_counter = [0]
+
+        def create_mock_event(*args: object, **kwargs: object) -> CanonicalEvent:
+            seq_counter[0] += 1
+            return CanonicalEvent(
+                event_id=uuid.uuid4(),
+                thread_id=thread_id,
+                org_id=org_id,
+                seq=seq_counter[0],
+                ts=int(now.timestamp() * 1000),
+                actor="user",
+                type="turn.user.open",
+                payload={},
+            )
+
+        with (
+            mock.patch("priority_lens.api.routes.threads.ThreadRepository") as MockThreadRepo,
+            mock.patch("priority_lens.services.turn_service.EventRepository") as MockEventRepo,
+        ):
+            mock_thread_repo = MockThreadRepo.return_value
+            mock_thread_repo.get_by_id_and_org = mock.AsyncMock(return_value=mock_thread)
+
+            mock_event_repo = MockEventRepo.return_value
+            mock_event_repo.append_event_raw = mock.AsyncMock(side_effect=create_mock_event)
+
+            response = client.post(
+                f"/threads/{thread_id}/turns",
+                json={
+                    "session_id": str(session_id),
+                    "input": {
+                        "type": "voice",
+                        "transcript": "Hello there!",
+                        "confidence": 0.95,
+                        "duration_ms": 1500,
+                    },
+                },
+            )
+
+            assert response.status_code == 201
+            data = response.json()
+            assert "correlation_id" in data
+            assert data["accepted"] is True
+
+    def test_submit_turn_thread_not_found(
+        self, client: TestClient, mock_session: mock.MagicMock
+    ) -> None:
+        """Test submitting a turn to a non-existent thread."""
+        thread_id = uuid.uuid4()
+        session_id = uuid.uuid4()
+
+        with mock.patch("priority_lens.api.routes.threads.ThreadRepository") as MockRepo:
+            mock_repo = MockRepo.return_value
+            mock_repo.get_by_id_and_org = mock.AsyncMock(return_value=None)
+
+            response = client.post(
+                f"/threads/{thread_id}/turns",
+                json={
+                    "session_id": str(session_id),
+                    "input": {"type": "text", "text": "Hello!"},
+                },
+            )
+
+            assert response.status_code == 404
+
+    def test_submit_turn_invalid_input_type(
+        self, client: TestClient, mock_session: mock.MagicMock
+    ) -> None:
+        """Test submitting a turn with invalid input type."""
+        thread_id = uuid.uuid4()
+        session_id = uuid.uuid4()
+
+        response = client.post(
+            f"/threads/{thread_id}/turns",
+            json={
+                "session_id": str(session_id),
+                "input": {"type": "invalid", "text": "Hello!"},
+            },
+        )
+
+        assert response.status_code == 422
+
+    def test_submit_turn_empty_text(self, client: TestClient, mock_session: mock.MagicMock) -> None:
+        """Test submitting a turn with empty text."""
+        thread_id = uuid.uuid4()
+        session_id = uuid.uuid4()
+
+        response = client.post(
+            f"/threads/{thread_id}/turns",
+            json={
+                "session_id": str(session_id),
+                "input": {"type": "text", "text": ""},
+            },
+        )
+
+        assert response.status_code == 422
+
+
 class TestDatabaseNotConfigured:
     """Tests for database not configured scenario."""
 
