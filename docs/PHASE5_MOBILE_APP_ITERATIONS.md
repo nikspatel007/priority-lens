@@ -72,21 +72,21 @@ src/
 
 ---
 
-## Iteration 1: Project Setup & Testing Infrastructure
+## Iteration 1: Project Setup & Testing Infrastructure ✅ COMPLETE
 
 ### Story
 As a developer, I need a properly configured Expo project with testing infrastructure so that I can port the pl-app frontend with 100% test coverage.
 
 ### Success Criteria
-- [ ] Expo project initialized in `apps/mobile/`
-- [ ] All production dependencies installed (from pl-app)
-- [ ] Jest + React Native Testing Library configured
-- [ ] MSW configured for API mocking
-- [ ] Detox configured for E2E tests
-- [ ] Coverage threshold set to 100%
-- [ ] CI workflow for tests
-- [ ] TypeScript strict mode with path aliases
-- [ ] Design system ported from pl-app
+- [x] Expo project initialized in `apps/mobile/`
+- [x] All production dependencies installed (from pl-app)
+- [x] Jest + React Native Testing Library configured
+- [x] MSW configured for API mocking
+- [ ] Detox configured for E2E tests (deferred to Iteration 8)
+- [x] Coverage threshold set to 100%
+- [ ] CI workflow for tests (pending)
+- [x] TypeScript strict mode with path aliases
+- [x] Design system ported from pl-app
 
 ### Deliverables
 
@@ -245,18 +245,18 @@ npx expo start --ios
 
 ---
 
-## Iteration 2: Authentication - Clerk (with Tests)
+## Iteration 2: Authentication - Clerk (with Tests) ✅ COMPLETE
 
 ### Story
 As a user, I need to sign in with Clerk so that my identity is verified and I can access my personalized data.
 
 ### Success Criteria
-- [ ] AuthContext ported from pl-app
-- [ ] SignInScreen ported from pl-app
-- [ ] 100% test coverage for AuthContext
-- [ ] 100% test coverage for SignInScreen
-- [ ] JWT tokens accessible for API calls
-- [ ] Auth state persists across app restarts
+- [x] AuthContext ported from pl-app
+- [x] SignInScreen ported from pl-app
+- [x] 100% test coverage for AuthContext
+- [x] 100% test coverage for SignInScreen
+- [x] JWT tokens accessible for API calls
+- [x] Auth state persists across app restarts
 
 ### Deliverables
 
@@ -339,18 +339,19 @@ As a user, I need to sign in with Clerk so that my identity is verified and I ca
 
 ---
 
-## Iteration 3: Authentication - Google OAuth (with Tests)
+## Iteration 3: Authentication - Google OAuth (with Tests) ✅ COMPLETE
 
 ### Story
 As a user, I need to connect my Google account so that Priority Lens can access my Gmail and Calendar data.
 
 ### Success Criteria
-- [ ] GoogleContext ported from pl-app
-- [ ] googleAuth service ported from pl-app
-- [ ] LandingScreen ported from pl-app
-- [ ] 100% test coverage for GoogleContext
-- [ ] 100% test coverage for googleAuth
-- [ ] Backend token sync working
+- [x] GoogleContext ported from pl-app
+- [x] googleAuth service ported from pl-app
+- [x] LandingScreen ported from pl-app
+- [x] 100% test coverage for GoogleContext
+- [x] 100% test coverage for googleAuth
+- [x] Backend token sync working
+- [x] SyncProgressScreen for initial sync flow (bonus)
 
 ### Deliverables
 
@@ -432,17 +433,17 @@ As a user, I need to connect my Google account so that Priority Lens can access 
 
 ---
 
-## Iteration 4: API Service Layer (with Tests)
+## Iteration 4: API Service Layer (with Tests) ✅ COMPLETE
 
 ### Story
 As a developer, I need a typed API client so that the app can communicate with the Priority Lens backend.
 
 ### Success Criteria
-- [ ] API service created matching Priority Lens endpoints
-- [ ] MSW handlers for all endpoints
-- [ ] 100% test coverage for api.ts
-- [ ] Types match Priority Lens Pydantic schemas
-- [ ] Error handling tested
+- [x] API service created matching Priority Lens endpoints
+- [x] MSW handlers for all endpoints
+- [x] 100% test coverage for api.ts
+- [x] Types match Priority Lens Pydantic schemas
+- [x] Error handling tested
 
 ### Deliverables
 
