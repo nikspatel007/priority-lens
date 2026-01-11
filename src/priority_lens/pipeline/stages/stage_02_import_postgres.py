@@ -178,7 +178,7 @@ def is_sent_email(labels: list[str] | None) -> bool:
 
 
 def convert_db_url(db_url: str) -> str:
-    """Convert postgresql:// URL to postgres:// for asyncpg compatibility.
+    """Convert database URL to postgres:// for asyncpg compatibility.
 
     Args:
         db_url: Database URL, possibly starting with postgresql://.
@@ -186,6 +186,8 @@ def convert_db_url(db_url: str) -> str:
     Returns:
         URL with postgres:// prefix for asyncpg.
     """
+    if db_url.startswith("postgresql+asyncpg://"):
+        return db_url.replace("postgresql+asyncpg://", "postgres://", 1)
     if db_url.startswith("postgresql://"):
         return db_url.replace("postgresql://", "postgres://", 1)
     return db_url

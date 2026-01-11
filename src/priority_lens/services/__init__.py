@@ -17,6 +17,10 @@ from priority_lens.services.agent_streaming import (
     StreamingContext,
 )
 from priority_lens.services.auth_service import AuthService
+from priority_lens.services.background_sync import (
+    BackgroundSyncRunner,
+    BackgroundSyncStatus,
+)
 from priority_lens.services.batch_processor import BatchProcessor, BatchResult
 from priority_lens.services.cluster_labeler import (
     ClusterLabelerError,
@@ -75,6 +79,8 @@ __all__ = [
     "AgentStreamingService",
     "AgentStreamingState",
     "AuthService",
+    "BackgroundSyncRunner",
+    "BackgroundSyncStatus",
     "BatchProcessor",
     "BatchResult",
     "ClusterLabelerError",

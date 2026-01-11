@@ -72,7 +72,13 @@ from priority_lens.schemas.session import (
     SessionStatus,
     SessionUpdate,
 )
-from priority_lens.schemas.sync import SyncStateResponse, SyncStateUpdate
+from priority_lens.schemas.sync import (
+    CompleteConnectionResponse,
+    SyncStateResponse,
+    SyncStateUpdate,
+    SyncStatus,
+    SyncStatusApiResponse,
+)
 from priority_lens.schemas.task import (
     TaskCreate,
     TaskDetailResponse,
@@ -144,8 +150,11 @@ __all__ = [
     "SessionResponse",
     "SessionStatus",
     "SessionUpdate",
+    "CompleteConnectionResponse",
     "SyncStateResponse",
     "SyncStateUpdate",
+    "SyncStatus",
+    "SyncStatusApiResponse",
     "TaskCreate",
     "TaskDetailResponse",
     "TaskListResponse",

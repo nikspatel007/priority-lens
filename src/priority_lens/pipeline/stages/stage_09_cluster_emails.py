@@ -604,7 +604,7 @@ def run(config: Config) -> StageResult:
     """
     start_time = time.time()
 
-    conn = psycopg2.connect(config.database_url)
+    conn = psycopg2.connect(config.sync_database_url)
     try:
         create_tables(conn)
 

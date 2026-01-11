@@ -21,11 +21,11 @@ class RateLimiter:
         requests_per_second: Maximum requests allowed per second.
     """
 
-    def __init__(self, requests_per_second: int = 10) -> None:
+    def __init__(self, requests_per_second: int = 50) -> None:
         """Initialize rate limiter.
 
         Args:
-            requests_per_second: Maximum requests per second (default: 10).
+            requests_per_second: Maximum requests per second (default: 50).
         """
         self.requests_per_second = requests_per_second
         self._interval = 1.0 / requests_per_second

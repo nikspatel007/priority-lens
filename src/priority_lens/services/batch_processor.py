@@ -198,8 +198,17 @@ class BatchProcessor:
                 except (ValueError, TypeError):
                     pass
 
+            # Check if email already exists
+            exists_result = await self.session.execute(
+                text("SELECT id FROM raw_emails WHERE message_id = :message_id"),
+                {"message_id": message_id},
+            )
+            if exists_result.scalar() is not None:
+                # Already exists, skip
+                continue
+
             # Insert into raw_emails
-            raw_result = await self.session.execute(
+            await self.session.execute(
                 text(
                     """
                     INSERT INTO raw_emails (
@@ -211,8 +220,6 @@ class BatchProcessor:
                         :date_raw, :from_raw, :to_raw, :cc_raw,
                         :subject_raw, :body_text, :body_html, :labels_raw
                     )
-                    ON CONFLICT (message_id) DO NOTHING
-                    RETURNING id
                 """
                 ),
                 {
@@ -230,12 +237,12 @@ class BatchProcessor:
                 },
             )
 
-            raw_row = raw_result.fetchone()
-            if raw_row is None:
-                # Already exists
-                continue
-
-            raw_id = raw_row[0]
+            # Get the raw_id we just inserted
+            raw_id_result = await self.session.execute(
+                text("SELECT id FROM raw_emails WHERE message_id = :message_id"),
+                {"message_id": message_id},
+            )
+            raw_id = raw_id_result.scalar()
             is_sent = "SENT" in labels
 
             # Insert into emails

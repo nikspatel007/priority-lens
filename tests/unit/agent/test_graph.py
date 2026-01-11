@@ -104,6 +104,86 @@ class TestAgentRunner:
 
             assert result == []
 
+    @pytest.mark.asyncio
+    async def test_runner_run_streaming_text_response(self, agent_context: AgentContext) -> None:
+        """Test run_streaming yields text events from AI messages."""
+        from priority_lens.models.canonical_event import EventType
+
+        # Mock graph that returns a simple text response
+        mock_graph = MagicMock()
+        mock_graph.ainvoke = AsyncMock(
+            return_value={
+                "messages": [
+                    HumanMessage(content="Hello"),
+                    AIMessage(content="Hi! How can I help you?"),
+                ]
+            }
+        )
+
+        with patch("priority_lens.agent.graph.create_agent_graph", return_value=mock_graph):
+            runner = AgentRunner(agent_context)
+            events_gen = await runner.run_streaming("Hello")
+
+            # Collect events
+            events = [event async for event in events_gen]
+
+            # Should have one text event from AI response
+            assert len(events) == 1
+            assert events[0].event_type == EventType.ASSISTANT_TEXT_FINAL
+            assert events[0].payload["text"] == "Hi! How can I help you?"
+
+    @pytest.mark.asyncio
+    async def test_runner_run_streaming_tool_calls(self, agent_context: AgentContext) -> None:
+        """Test run_streaming yields tool call and result events."""
+        from langchain_core.messages import ToolMessage
+
+        from priority_lens.models.canonical_event import EventType
+
+        # Mock graph that returns tool calls and results
+        mock_graph = MagicMock()
+        mock_graph.ainvoke = AsyncMock(
+            return_value={
+                "messages": [
+                    HumanMessage(content="Show my inbox"),
+                    AIMessage(
+                        content="",
+                        tool_calls=[
+                            {
+                                "name": "get_priority_inbox",
+                                "args": {"limit": 10},
+                                "id": "call_123",
+                            }
+                        ],
+                    ),
+                    ToolMessage(content="[]", tool_call_id="call_123"),
+                    AIMessage(content="Your inbox is empty."),
+                ]
+            }
+        )
+
+        with patch("priority_lens.agent.graph.create_agent_graph", return_value=mock_graph):
+            runner = AgentRunner(agent_context)
+            events_gen = await runner.run_streaming("Show my inbox")
+
+            # Collect events
+            events = [event async for event in events_gen]
+
+            # Should have: tool_call, tool_result, text_final
+            assert len(events) == 3
+
+            # First: tool call
+            assert events[0].event_type == EventType.TOOL_CALL
+            assert events[0].payload["tool_name"] == "get_priority_inbox"
+            assert events[0].payload["tool_call_id"] == "call_123"
+
+            # Second: tool result
+            assert events[1].event_type == EventType.TOOL_RESULT
+            assert events[1].payload["tool_call_id"] == "call_123"
+
+            # Third: final text
+            assert events[2].event_type == EventType.ASSISTANT_TEXT_FINAL
+            assert events[2].payload["text"] == "Your inbox is empty."
+
 
 class TestAgentState:
     """Tests for agent state handling in graph."""

@@ -6,7 +6,7 @@ Email ML pipeline for analyzing Gmail exports and predicting email priority/acti
 
 **Status**: Production-ready with 100% type coverage and 100% test coverage.
 
-**Current Phase**: Phase 4 - Voice AI + SDUI Integration (IN PROGRESS)
+**Current Phase**: Phase 4 - Voice AI + SDUI Integration (COMPLETE)
 
 ---
 
@@ -329,15 +329,15 @@ See `docs/PRIORITY_LENS_INTEGRATION.md` for full integration plan.
 | Iter | Name | Status | Notes |
 |------|------|--------|-------|
 | 1 | Canonical Event Schema | ✅ Complete | threads, sessions, events tables |
-| 2 | Thread & Session API | 🔄 Pending | REST endpoints |
-| 3 | LiveKit Integration | 🔄 Pending | Token generation |
-| 4 | Turns API & User Events | 🔄 Pending | Turn submission |
-| 5 | Agent Runtime (LangGraph) | 🔄 Pending | Tool integration |
-| 6 | SDUI Generator | 🔄 Pending | UI block schema |
-| 7 | Agent Event Streaming | 🔄 Pending | LiveKit data channel |
-| 8 | Action Handlers | 🔄 Pending | Action registry |
-| 9 | Integration Tests | 🔄 Pending | Full flow tests |
-| 10 | End-to-End Tests | 🔄 Pending | User journeys |
+| 2 | Thread & Session API | ✅ Complete | REST endpoints (36 tests) |
+| 3 | LiveKit Integration | ✅ Complete | Token generation (15 tests) |
+| 4 | Turns API & User Events | ✅ Complete | Turn submission (6 tests) |
+| 5 | Agent Runtime (LangGraph) | ✅ Complete | AgentRunner, tool integration (8 tests) |
+| 6 | SDUI Generator | ✅ Complete | UI block schema (31 tests) |
+| 7 | Agent Event Streaming | ✅ Complete | Streaming service (18 tests) |
+| 8 | Action Handlers | ✅ Complete | Action registry (44 tests) |
+| 9 | Integration Tests | ✅ Complete | Full flow tests (32 tests) |
+| 10 | End-to-End Tests | ✅ Complete | User journeys (17 tests) |
 
 ### Iteration 1 Deliverables
 - [x] Alembic migration: `20260109_phase4_canonical_events.py`
@@ -348,7 +348,70 @@ See `docs/PRIORITY_LENS_INTEGRATION.md` for full integration plan.
 - [x] Append-only semantics for events (no update/delete)
 - [x] Monotonic seq per thread
 - [x] 115 new tests
-- [x] 100% test coverage maintained (2069 tests)
+
+### Iteration 2 Deliverables
+- [x] Thread API routes: create, get, list, update
+- [x] Session API routes: create, get, list, update, close
+- [x] FastAPI router with Clerk auth integration
+- [x] 36 route tests
+
+### Iteration 3 Deliverables
+- [x] LiveKitService for token generation
+- [x] JWT token creation with room/participant claims
+- [x] `/livekit/token` endpoint
+- [x] 15 tests
+
+### Iteration 4 Deliverables
+- [x] TurnService for handling conversation turns
+- [x] Turn submission creates event sequence (turn.user.open, content, turn.user.close)
+- [x] Text and voice input support
+- [x] 6 tests
+
+### Iteration 5 Deliverables
+- [x] LangGraph agent with StateGraph
+- [x] AgentRunner with `run_streaming()` method
+- [x] TurnService.invoke_agent() wiring
+- [x] Tools: get_priority_inbox, get_projects, get_tasks, search_emails, snooze_task, generate_ui
+- [x] Tool executors with context injection
+- [x] 8 tests
+
+### Iteration 6 Deliverables
+- [x] SDUI schemas: UIBlock, ActionProps, LayoutProps, GridProps
+- [x] ActionType enum: navigate, api_call, dismiss, snooze, complete, reply, archive, delete
+- [x] Component factories: create_email_card, create_task_card, create_project_card
+- [x] List factories: create_inbox_list, create_task_list, create_project_list
+- [x] 31 tests
+
+### Iteration 7 Deliverables
+- [x] AgentStreamingService for event persistence and LiveKit publishing
+- [x] StreamingContext and AgentEvent dataclasses
+- [x] Turn lifecycle management (open/close)
+- [x] Cancellation/barge-in support
+- [x] 18 tests
+
+### Iteration 8 Deliverables
+- [x] ActionService for executing SDUI actions
+- [x] ActionRegistry for handler registration
+- [x] Built-in handlers: archive, complete, dismiss, snooze, navigate, reply, delete
+- [x] Action result events persisted to event log
+- [x] `/actions/execute` endpoint
+- [x] 44 tests
+
+### Iteration 9 Deliverables
+- [x] Voice+SDUI integration tests (test_voice_sdui_flow.py)
+- [x] Thread/session lifecycle tests
+- [x] Turn submission tests
+- [x] Event streaming tests
+- [x] Action handling tests
+- [x] 32 tests
+
+### Iteration 10 Deliverables
+- [x] End-to-end user journey tests (test_user_journeys.py)
+- [x] Complete conversation flow tests
+- [x] Reconnection flow tests
+- [x] Agent integration tests (test_agent_integration.py)
+- [x] 17 tests
+- [x] 100% test coverage maintained (2285 tests)
 
 ### New Tables (Phase 4)
 
@@ -357,3 +420,6 @@ See `docs/PRIORITY_LENS_INTEGRATION.md` for full integration plan.
 | conversation_threads | Voice AI conversation threads |
 | sessions | Voice/text sessions within threads |
 | events | Append-only canonical event log |
+
+### Documentation
+- `docs/PRIORITY_LENS_INTEGRATION.md` - Full integration plan and architecture

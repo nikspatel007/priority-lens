@@ -1,7 +1,7 @@
 """Agent module for Priority Lens LangGraph agent."""
 
 from priority_lens.agent.context import AgentContext
-from priority_lens.agent.graph import create_agent_graph
+from priority_lens.agent.graph import AgentRunner, create_agent_graph
 from priority_lens.agent.state import AgentState
 from priority_lens.agent.tools import (
     generate_ui,
@@ -14,6 +14,7 @@ from priority_lens.agent.tools import (
 
 __all__ = [
     "AgentContext",
+    "AgentRunner",
     "AgentState",
     "create_agent_graph",
     "generate_ui",

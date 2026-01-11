@@ -71,7 +71,7 @@ class GoogleOAuth:
 
         return f"{self.AUTHORIZATION_URL}?{urlencode(params)}"
 
-    async def exchange_code(self, code: str) -> GoogleTokens:
+    async def exchange_code(self, code: str, *, include_redirect_uri: bool = True) -> GoogleTokens:
         """Exchange authorization code for tokens.
 
         After the user grants access, Google redirects back with an
@@ -80,6 +80,8 @@ class GoogleOAuth:
 
         Args:
             code: Authorization code from OAuth callback.
+            include_redirect_uri: Whether to include redirect_uri in request.
+                Set to False for mobile serverAuthCode exchange.
 
         Returns:
             GoogleTokens with access_token, refresh_token, and expiration.
@@ -87,13 +89,15 @@ class GoogleOAuth:
         Raises:
             OAuthError: If the exchange fails (e.g., invalid code).
         """
-        data = {
+        data: dict[str, str] = {
             "client_id": self.client_id,
             "client_secret": self.client_secret,
             "code": code,
             "grant_type": "authorization_code",
-            "redirect_uri": self.redirect_uri,
         }
+        # For mobile OAuth (serverAuthCode), redirect_uri should be omitted
+        if include_redirect_uri:
+            data["redirect_uri"] = self.redirect_uri
 
         async with httpx.AsyncClient() as client:
             response = await client.post(self.TOKEN_URL, data=data)

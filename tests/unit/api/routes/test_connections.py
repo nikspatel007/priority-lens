@@ -14,10 +14,7 @@ from fastapi.testclient import TestClient
 
 from priority_lens.api.auth.clerk import ClerkUser
 from priority_lens.api.auth.dependencies import get_current_user_or_api_key
-from priority_lens.api.routes.connections import (
-    router,
-    set_connection_service,
-)
+from priority_lens.api.routes import connections as connections_module
 from priority_lens.providers import (
     ConnectionService,
     ConnectionState,
@@ -30,6 +27,12 @@ from priority_lens.providers import (
 
 if TYPE_CHECKING:
     from priority_lens.core.types import EmailData
+
+# Use items from the module
+router = connections_module.router
+set_connection_service = connections_module.set_connection_service
+set_background_sync_runner = connections_module.set_background_sync_runner
+set_session_factory = connections_module.set_session_factory
 
 
 class MockProvider(EmailProvider):
@@ -51,7 +54,9 @@ class MockProvider(EmailProvider):
     async def get_auth_url(self, state: str | None = None) -> str:
         return f"https://auth.example.com?state={state or ''}"
 
-    async def complete_auth(self, user_id: UUID, code: str) -> ConnectionStatus:
+    async def complete_auth(
+        self, user_id: UUID, code: str, *, from_mobile: bool = False
+    ) -> ConnectionStatus:
         return ConnectionStatus(
             provider=self._provider_type,
             state=ConnectionState.CONNECTED,
@@ -90,6 +95,53 @@ class MockProvider(EmailProvider):
         return None
 
 
+class MockBackgroundSyncRunner:
+    """Mock background sync runner for testing."""
+
+    def __init__(self, needs_sync: bool = True) -> None:
+        self._needs_sync = needs_sync
+        self._sync_started = False
+
+    async def needs_initial_sync(self, user_id: UUID) -> bool:
+        return self._needs_sync
+
+    async def start_if_needed(
+        self,
+        user_id: UUID,
+        max_messages: int = 1000,
+        days: int = 30,
+    ) -> bool:
+        """Start sync if needed. Returns True if sync was started."""
+        if self._needs_sync and not self._sync_started:
+            self._sync_started = True
+            return True
+        return False
+
+    async def get_status(self, user_id: UUID) -> mock.MagicMock:
+        """Return a mock status object."""
+        from priority_lens.services.background_sync import BackgroundSyncStatus
+
+        if self._sync_started:
+            return BackgroundSyncStatus(
+                status="syncing",
+                emails_synced=50,
+                total_emails=None,
+                progress=0.5,
+            )
+        return BackgroundSyncStatus(
+            status="pending" if self._needs_sync else "completed",
+            emails_synced=0 if self._needs_sync else 100,
+            total_emails=None,
+            progress=0.0 if self._needs_sync else 1.0,
+        )
+
+
+@pytest.fixture
+def mock_runner() -> MockBackgroundSyncRunner:
+    """Create a mock background sync runner."""
+    return MockBackgroundSyncRunner()
+
+
 @pytest.fixture
 def mock_user() -> ClerkUser:
     """Create a mock authenticated user."""
@@ -110,8 +162,29 @@ def mock_service() -> ConnectionService:
 
 
 @pytest.fixture
-def app(mock_user: ClerkUser, mock_service: ConnectionService) -> FastAPI:
+def mock_session() -> mock.AsyncMock:
+    """Create a mock database session."""
+    session = mock.AsyncMock()
+    # Mock the execute method to return no existing user
+    mock_result = mock.MagicMock()
+    mock_result.scalar_one_or_none.return_value = None
+    session.execute.return_value = mock_result
+    session.flush = mock.AsyncMock()
+    session.commit = mock.AsyncMock()
+    session.add = mock.MagicMock()
+    return session
+
+
+@pytest.fixture
+def app(
+    mock_user: ClerkUser,
+    mock_service: ConnectionService,
+    mock_runner: MockBackgroundSyncRunner,
+    mock_session: mock.AsyncMock,
+) -> FastAPI:
     """Create a test FastAPI app."""
+    from contextlib import asynccontextmanager
+
     app = FastAPI()
     app.include_router(router)
 
@@ -121,8 +194,16 @@ def app(mock_user: ClerkUser, mock_service: ConnectionService) -> FastAPI:
 
     app.dependency_overrides[get_current_user_or_api_key] = override_get_current_user
 
-    # Set the connection service
+    # Set the connection service and background sync runner
     set_connection_service(mock_service)
+    set_background_sync_runner(mock_runner)  # type: ignore[arg-type]
+
+    # Set up mock session factory for user provisioning
+    @asynccontextmanager
+    async def mock_session_factory() -> AsyncIterator[mock.AsyncMock]:
+        yield mock_session
+
+    set_session_factory(mock_session_factory)  # type: ignore[arg-type]
 
     return app
 
@@ -348,6 +429,30 @@ class TestListAvailableProviders:
         data = response.json()
         assert data == ["gmail"]
 
+    def test_list_available_v1(
+        self,
+        mock_user: ClerkUser,
+        mock_service: ConnectionService,
+        mock_runner: MockBackgroundSyncRunner,
+    ) -> None:
+        """Test listing available providers via /api/v1 prefix."""
+        app = FastAPI()
+        app.include_router(router, prefix="/api/v1")
+
+        async def override_get_current_user() -> ClerkUser:
+            return mock_user
+
+        app.dependency_overrides[get_current_user_or_api_key] = override_get_current_user
+
+        set_connection_service(mock_service)
+        set_background_sync_runner(mock_runner)  # type: ignore[arg-type]
+
+        client = TestClient(app)
+        response = client.get("/api/v1/connections/available")
+
+        assert response.status_code == 200
+        assert response.json() == ["gmail"]
+
     def test_list_available_empty(self, mock_user: ClerkUser, client: TestClient) -> None:
         """Test listing providers when none registered."""
         registry = ProviderRegistry()
@@ -462,8 +567,9 @@ class TestConnectionServiceDependency:
 
         app.dependency_overrides[get_current_user_or_api_key] = override_get_current_user
 
-        # Reset the global service
+        # Reset both the global service and session factory
         set_connection_service(None)  # type: ignore[arg-type]
+        set_session_factory(None)  # type: ignore[arg-type]
 
         client = TestClient(app)
         response = client.get("/connections")

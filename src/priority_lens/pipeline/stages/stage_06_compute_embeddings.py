@@ -44,7 +44,7 @@ MAX_TOKENS = 8000
 # Database batch size for fetching emails
 DEFAULT_BATCH_SIZE = 100
 # Number of parallel workers for API calls (one email per call)
-DEFAULT_PARALLEL_WORKERS = 10
+DEFAULT_PARALLEL_WORKERS = 35
 
 
 def _get_tokenizer() -> Any:
@@ -639,7 +639,7 @@ def run(
         f"Starting embedding generation (workers={workers}, batch_size={batch_size}, limit={limit})"
     )
 
-    conn = psycopg2.connect(config.database_url)
+    conn = psycopg2.connect(config.sync_database_url)
     try:
         create_tables(conn)
 

@@ -232,7 +232,7 @@ def run(config: Config) -> StageResult:
     """
     start_time = time.time()
 
-    with get_connection(config.database_url) as conn:
+    with get_connection(config.sync_database_url) as conn:
         with conn.cursor() as cur:
             # Clear existing data for idempotent re-runs
             cur.execute("DELETE FROM email_ai_classification")

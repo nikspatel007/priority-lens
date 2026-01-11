@@ -1,0 +1,70 @@
+{
+  "expo": {
+    "name": "Priority Lens",
+    "slug": "priority-lens",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "scheme": "priority-lens",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.prioritylens.app",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "Priority Lens needs microphone access for voice conversations with the AI assistant.",
+        "NSSpeechRecognitionUsageDescription": "Priority Lens uses speech recognition for voice commands.",
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "bitcode": false
+    },
+    "android": {
+      "package": "com.prioritylens.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.CAMERA",
+        "android.permission.INTERNET",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.WAKE_LOCK",
+        "android.permission.BLUETOOTH"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-web-browser",
+      [
+        "@config-plugins/react-native-webrtc",
+        {
+          "cameraPermission": false,
+          "microphonePermission": "Priority Lens needs microphone access for voice conversations."
+        }
+      ],
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.1045724586932-g0uk59g2qorehr1sh5q4t0puorht5u19"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "3df0c164-39eb-4ef9-884d-7fee28922cc0"
+      }
+    }
+  }
+}

@@ -82,12 +82,15 @@ class GmailProvider(EmailProvider):
         """
         return self._auth_service.start_auth_flow(state=state)
 
-    async def complete_auth(self, user_id: UUID, code: str) -> ConnectionStatus:
+    async def complete_auth(
+        self, user_id: UUID, code: str, *, from_mobile: bool = False
+    ) -> ConnectionStatus:
         """Complete Gmail OAuth flow.
 
         Args:
             user_id: User to connect for.
             code: Authorization code from OAuth callback.
+            from_mobile: If True, this is a serverAuthCode from mobile OAuth.
 
         Returns:
             Connection status after authorization.
@@ -96,7 +99,9 @@ class GmailProvider(EmailProvider):
             AuthorizationError: If authorization fails.
         """
         try:
-            token = await self._auth_service.complete_auth_flow(user_id, code)
+            token = await self._auth_service.complete_auth_flow(
+                user_id, code, from_mobile=from_mobile
+            )
 
             await logger.ainfo(
                 "gmail_connected",

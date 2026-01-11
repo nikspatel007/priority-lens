@@ -7,6 +7,7 @@ from priority_lens.api.routes.agent import set_livekit_service as set_agent_live
 from priority_lens.api.routes.agent import set_session_factory as set_agent_session
 from priority_lens.api.routes.connections import router as connections_router
 from priority_lens.api.routes.connections import set_connection_service
+from priority_lens.api.routes.connections import set_session_factory as set_connections_session
 from priority_lens.api.routes.health import router as health_router
 from priority_lens.api.routes.inbox import router as inbox_router
 from priority_lens.api.routes.inbox import set_session_factory as set_inbox_session
@@ -33,6 +34,7 @@ __all__ = [
     "set_agent_livekit",
     "set_agent_session",
     "set_connection_service",
+    "set_connections_session",
     "set_inbox_session",
     "set_livekit_service",
     "set_projects_session",

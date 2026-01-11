@@ -104,6 +104,28 @@ class Config:
         """Check if running in multi-tenant mode."""
         return self.user_id is not None
 
+    @property
+    def sync_database_url(self) -> str:
+        """Get synchronous database URL.
+
+        Converts asyncpg URLs to psycopg2-compatible URLs for sync stages.
+        """
+        url = self.database_url
+        if url.startswith("postgresql+asyncpg://"):
+            return url.replace("postgresql+asyncpg://", "postgresql://", 1)
+        return url
+
+    @property
+    def async_database_url(self) -> str:
+        """Get asynchronous database URL.
+
+        Converts postgresql URLs to asyncpg-compatible URLs for async SQLAlchemy.
+        """
+        url = self.database_url
+        if url.startswith("postgresql://") and "+asyncpg" not in url:
+            return url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return url
+
     def with_user(self, user_id: UUID, org_id: UUID | None = None) -> Config:
         """Create a new config with user context.
 

@@ -32,3 +32,30 @@ class SyncStateResponse(BaseModel):
     updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+# API Response for mobile app sync status polling
+SyncStatus = Literal["pending", "syncing", "completed", "failed"]
+
+
+class SyncStatusApiResponse(BaseModel):
+    """API response schema for sync status endpoint.
+
+    Used by mobile app to poll sync progress.
+    """
+
+    status: SyncStatus
+    emails_synced: int
+    total_emails: int | None = None
+    progress: float  # 0.0 to 1.0
+    error: str | None = None
+
+
+class CompleteConnectionResponse(BaseModel):
+    """API response for completing Google connection.
+
+    Indicates whether a new sync was started.
+    """
+
+    status: str
+    sync_started: bool

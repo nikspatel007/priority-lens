@@ -241,3 +241,41 @@ class TestConfigGoogleOAuth:
         assert config.google_client_secret is None
         assert config.google_redirect_uri == "http://localhost:8000/auth/google/callback"
         assert config.has_google_oauth() is False
+
+
+class TestConfigSyncDatabaseUrl:
+    """Tests for Config sync_database_url property."""
+
+    def test_sync_database_url_converts_asyncpg(self) -> None:
+        """Test sync_database_url converts postgresql+asyncpg to postgresql."""
+        config = Config(database_url="postgresql+asyncpg://user:pass@localhost/db")
+        assert config.sync_database_url == "postgresql://user:pass@localhost/db"
+
+    def test_sync_database_url_preserves_postgresql(self) -> None:
+        """Test sync_database_url preserves postgresql URLs."""
+        config = Config(database_url="postgresql://user:pass@localhost/db")
+        assert config.sync_database_url == "postgresql://user:pass@localhost/db"
+
+    def test_sync_database_url_preserves_other_schemes(self) -> None:
+        """Test sync_database_url preserves other URL schemes."""
+        config = Config(database_url="postgres://user:pass@localhost/db")
+        assert config.sync_database_url == "postgres://user:pass@localhost/db"
+
+
+class TestConfigAsyncDatabaseUrl:
+    """Tests for Config async_database_url property."""
+
+    def test_async_database_url_converts_postgresql(self) -> None:
+        """Test async_database_url converts postgresql to postgresql+asyncpg."""
+        config = Config(database_url="postgresql://user:pass@localhost/db")
+        assert config.async_database_url == "postgresql+asyncpg://user:pass@localhost/db"
+
+    def test_async_database_url_preserves_asyncpg(self) -> None:
+        """Test async_database_url preserves postgresql+asyncpg URLs."""
+        config = Config(database_url="postgresql+asyncpg://user:pass@localhost/db")
+        assert config.async_database_url == "postgresql+asyncpg://user:pass@localhost/db"
+
+    def test_async_database_url_preserves_other_schemes(self) -> None:
+        """Test async_database_url preserves other URL schemes."""
+        config = Config(database_url="postgres://user:pass@localhost/db")
+        assert config.async_database_url == "postgres://user:pass@localhost/db"

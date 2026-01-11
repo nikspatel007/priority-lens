@@ -2,17 +2,20 @@
 
 from __future__ import annotations
 
+from collections.abc import AsyncGenerator
 from typing import TYPE_CHECKING, Any, Literal, cast
 
 import structlog
 from langchain_anthropic import ChatAnthropic
-from langchain_core.messages import AIMessage
+from langchain_core.messages import AIMessage, ToolMessage
 from langgraph.graph import END, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 from langgraph.prebuilt import ToolNode
 
 from priority_lens.agent.state import AgentState
 from priority_lens.agent.tools import PRIORITY_LENS_TOOLS, TOOL_EXECUTORS
+from priority_lens.models.canonical_event import EventType
+from priority_lens.services.agent_streaming import AgentEvent
 
 if TYPE_CHECKING:
     from priority_lens.agent.context import AgentContext
@@ -184,3 +187,74 @@ class AgentRunner:
         )
 
         return result
+
+    async def run_streaming(
+        self,
+        user_message: str,
+    ) -> AsyncGenerator[AgentEvent, None]:
+        """Run the agent and stream events.
+
+        This method runs the LangGraph agent and yields AgentEvents
+        for each significant step (text output, tool calls, tool results).
+
+        Args:
+            user_message: The user's input message.
+
+        Yields:
+            AgentEvent for each agent action.
+        """
+        from langchain_core.messages import HumanMessage
+
+        async def generate() -> AsyncGenerator[AgentEvent, None]:
+            initial_state: AgentState = {"messages": [HumanMessage(content=user_message)]}
+
+            await logger.ainfo(
+                "agent_streaming_start",
+                thread_id=str(self._ctx.thread_id),
+                user_message=user_message[:100],
+            )
+
+            # Use astream_events for real streaming when available
+            # For now, invoke and convert final messages to events
+            result = await self._graph.ainvoke(initial_state)
+            messages = cast(AgentState, result)["messages"]
+
+            # Convert messages to events
+            for msg in messages:
+                if isinstance(msg, HumanMessage):
+                    # Skip - already handled by TurnService
+                    continue
+                elif isinstance(msg, AIMessage):
+                    # Check for tool calls
+                    if msg.tool_calls:
+                        for tool_call in msg.tool_calls:
+                            yield AgentEvent(
+                                event_type=EventType.TOOL_CALL,
+                                payload={
+                                    "tool_name": tool_call["name"],
+                                    "tool_args": tool_call["args"],
+                                    "tool_call_id": tool_call.get("id", ""),
+                                },
+                            )
+                    # Yield text content if present
+                    if msg.content and isinstance(msg.content, str):
+                        yield AgentEvent(
+                            event_type=EventType.ASSISTANT_TEXT_FINAL,
+                            payload={"text": msg.content},
+                        )
+                elif isinstance(msg, ToolMessage):
+                    yield AgentEvent(
+                        event_type=EventType.TOOL_RESULT,
+                        payload={
+                            "tool_call_id": msg.tool_call_id,
+                            "result": str(msg.content)[:1000],  # Truncate large results
+                        },
+                    )
+
+            await logger.ainfo(
+                "agent_streaming_complete",
+                thread_id=str(self._ctx.thread_id),
+                message_count=len(messages),
+            )
+
+        return generate()

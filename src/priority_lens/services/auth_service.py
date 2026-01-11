@@ -67,7 +67,9 @@ class AuthService:
         """
         return self.oauth.get_authorization_url(state=state)
 
-    async def complete_auth_flow(self, user_id: UUID, code: str) -> OAuthToken:
+    async def complete_auth_flow(
+        self, user_id: UUID, code: str, *, from_mobile: bool = False
+    ) -> OAuthToken:
         """Complete OAuth flow with authorization code.
 
         After the user authorizes on Google, they're redirected back with
@@ -80,6 +82,8 @@ class AuthService:
         Args:
             user_id: User UUID to associate tokens with.
             code: Authorization code from OAuth callback.
+            from_mobile: If True, this is a serverAuthCode from mobile OAuth.
+                Mobile codes don't require redirect_uri in the exchange.
 
         Returns:
             The created or updated OAuthToken.
@@ -88,7 +92,8 @@ class AuthService:
             OAuthError: If the code exchange fails.
         """
         # Exchange authorization code for tokens
-        tokens = await self.oauth.exchange_code(code)
+        # Mobile OAuth (serverAuthCode) doesn't need redirect_uri
+        tokens = await self.oauth.exchange_code(code, include_redirect_uri=not from_mobile)
 
         # Check if token already exists for user
         existing = await self.token_repo.get_by_user(user_id)

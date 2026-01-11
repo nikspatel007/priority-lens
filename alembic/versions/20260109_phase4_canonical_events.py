@@ -1,7 +1,7 @@
 """phase4_canonical_events
 
 Revision ID: 20260109_phase4_events
-Revises: 20260109_add_watch_subscriptions
+Revises: 20260109_temporal
 Create Date: 2026-01-09
 
 Add canonical event schema for Voice AI + SDUI integration.
@@ -25,7 +25,7 @@ from sqlalchemy.dialects.postgresql import JSONB, UUID
 
 # revision identifiers, used by Alembic.
 revision: str = "20260109_phase4_events"
-down_revision: Union[str, Sequence[str], None] = "20260109_add_watch_subscriptions"
+down_revision: Union[str, Sequence[str], None] = "20260109_temporal"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

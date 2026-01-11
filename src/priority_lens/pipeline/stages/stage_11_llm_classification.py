@@ -29,7 +29,7 @@ MODELS = {
 }
 
 DEFAULT_MODEL = "gpt5"
-DEFAULT_WORKERS = 10
+DEFAULT_WORKERS = 35
 DEFAULT_BATCH_SIZE = 100
 
 PROMPT_TEMPLATE = """Classify this email for an AI assistant. Be concise. Respond with JSON only.
@@ -487,7 +487,7 @@ def run(
             message="litellm package not installed",
         )
 
-    conn = psycopg2.connect(config.database_url)
+    conn = psycopg2.connect(config.sync_database_url)
     try:
         create_tables(conn)
 

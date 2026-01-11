@@ -132,12 +132,15 @@ class EmailProvider(ABC):
         """
 
     @abstractmethod
-    async def complete_auth(self, user_id: UUID, code: str) -> ConnectionStatus:
+    async def complete_auth(
+        self, user_id: UUID, code: str, *, from_mobile: bool = False
+    ) -> ConnectionStatus:
         """Complete OAuth flow with authorization code.
 
         Args:
             user_id: User to connect for.
             code: Authorization code from OAuth callback.
+            from_mobile: If True, this is a serverAuthCode from mobile OAuth.
 
         Returns:
             Connection status after authorization.

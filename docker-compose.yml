@@ -1,0 +1,75 @@
+services:
+  # PostgreSQL database with pgvector extension
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: priority-lens-db
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-gmail_fresh}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis for Celery broker and result backend
+  redis:
+    image: redis:7-alpine
+    container_name: priority-lens-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Celery worker for background tasks
+  celery-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    container_name: priority-lens-worker
+    command: celery -A priority_lens.tasks.celery_app worker --loglevel=info --concurrency=35
+    env_file:
+      - .env
+    environment:
+      # Override DATABASE_URL to use Docker internal hostname (sync driver for pipeline stages)
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/${POSTGRES_DB:-gmail_fresh}
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src:ro
+
+  # Celery Flower for monitoring (optional)
+  flower:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    container_name: priority-lens-flower
+    command: celery -A priority_lens.tasks.celery_app flower --port=5555
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - FLOWER_UNAUTHENTICATED_API=true
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+      - celery-worker
+
+volumes:
+  postgres_data:
+  redis_data:

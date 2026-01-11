@@ -153,6 +153,7 @@ class ProgressiveSyncService:
         user_id: UUID,
         config: Config,
         phases: list[PhaseConfig] | None = None,
+        max_messages: int = 1000,
         on_batch_complete: Callable[[list[EmailData]], None] | None = None,
     ) -> AsyncGenerator[SyncProgress, None]:
         """Execute progressive sync with streaming updates.
@@ -164,6 +165,7 @@ class ProgressiveSyncService:
             user_id: User to sync for.
             config: Pipeline configuration.
             phases: Custom phase configs (default: 7d, 30d, 90d).
+            max_messages: Maximum total emails to sync (default: 1000).
             on_batch_complete: Callback when a batch is processed.
 
         Yields:
@@ -176,18 +178,28 @@ class ProgressiveSyncService:
         from priority_lens.services.batch_processor import BatchProcessor
 
         processor = BatchProcessor(session=self.session, config=config)
+        total_processed = 0
 
         for phase_config in phases:
+            # Calculate remaining quota for this phase
+            remaining_quota = max_messages - total_processed
+            if remaining_quota <= 0:
+                break
+
             async for progress in self._sync_phase(
                 user_id=user_id,
                 phase_config=phase_config,
                 processor=processor,
+                max_messages=remaining_quota,
                 on_batch_complete=on_batch_complete,
             ):
+                total_processed = progress.emails_processed
                 yield progress
 
-                # If phase failed, stop
+                # If phase failed or hit limit, stop
                 if progress.error:
+                    return
+                if total_processed >= max_messages:
                     return
 
     async def _sync_phase(
@@ -195,6 +207,7 @@ class ProgressiveSyncService:
         user_id: UUID,
         phase_config: PhaseConfig,
         processor: BatchProcessor,
+        max_messages: int = 1000,
         on_batch_complete: Callable[[list[EmailData]], None] | None = None,
     ) -> AsyncGenerator[SyncProgress, None]:
         """Execute a single sync phase.
@@ -232,10 +245,12 @@ class ProgressiveSyncService:
             else:
                 query = f"older_than:{phase_config.days_start}d newer_than:{phase_config.days_end}d"
 
-            # List messages for this phase
+            # List messages for this phase (limited to max_messages)
             message_refs = []
             async for ref in self.gmail_client.list_all_messages(query=query):
                 message_refs.append(ref)
+                if len(message_refs) >= max_messages:
+                    break
 
             progress.total_in_phase = len(message_refs)
             yield progress

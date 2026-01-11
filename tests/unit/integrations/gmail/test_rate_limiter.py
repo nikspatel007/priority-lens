@@ -14,9 +14,9 @@ class TestRateLimiter:
     """Tests for RateLimiter class."""
 
     def test_default_requests_per_second(self) -> None:
-        """Test default rate is 10 requests per second."""
+        """Test default rate is 50 requests per second."""
         limiter = RateLimiter()
-        assert limiter.requests_per_second == 10
+        assert limiter.requests_per_second == 50
 
     def test_custom_requests_per_second(self) -> None:
         """Test custom rate setting."""

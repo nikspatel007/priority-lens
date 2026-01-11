@@ -36,7 +36,7 @@ def run(config: Config, **kwargs: object) -> StageResult:
     user_id = config.user_id if config.is_multi_tenant else None
 
     # Create SQLAlchemy engine and connection
-    engine = create_engine(config.database_url)
+    engine = create_engine(config.sync_database_url)
 
     with engine.connect() as conn:
         # Run extraction

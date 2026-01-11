@@ -402,7 +402,7 @@ async def enrich_emails_async(conn: asyncpg.Connection, your_emails: list[str]) 
 
 
 def _convert_db_url(db_url: str) -> str:
-    """Convert postgresql:// URL to postgres:// for asyncpg compatibility.
+    """Convert database URL to postgres:// for asyncpg compatibility.
 
     Args:
         db_url: Database URL.
@@ -410,6 +410,8 @@ def _convert_db_url(db_url: str) -> str:
     Returns:
         URL with postgres:// prefix.
     """
+    if db_url.startswith("postgresql+asyncpg://"):
+        return db_url.replace("postgresql+asyncpg://", "postgres://", 1)
     if db_url.startswith("postgresql://"):
         return db_url.replace("postgresql://", "postgres://", 1)
     return db_url

@@ -308,7 +308,7 @@ def run(config: Config) -> StageResult:
 
     your_email = config.your_email or ""
 
-    with get_connection(config.database_url) as conn:
+    with get_connection(config.sync_database_url) as conn:
         count, stats = populate_users_from_emails(conn, your_email)
 
     duration = time.time() - start_time

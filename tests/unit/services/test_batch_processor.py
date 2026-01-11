@@ -124,10 +124,20 @@ class TestBatchProcessorProcessBatch:
         self, mock_session: AsyncMock, mock_config: MagicMock
     ) -> None:
         """Test process_batch stores emails in database."""
-        # Mock raw_emails insert returning row
-        raw_result = MagicMock()
-        raw_result.fetchone.return_value = (1,)  # raw_id = 1
-        mock_session.execute.return_value = raw_result
+        # Mock the 3-query pattern: exists check, insert, get id
+        exists_result = MagicMock()
+        exists_result.scalar.return_value = None  # Doesn't exist
+        insert_result = MagicMock()  # INSERT has no return
+        get_id_result = MagicMock()
+        get_id_result.scalar.return_value = 1  # raw_id = 1
+        emails_insert_result = MagicMock()  # emails INSERT
+
+        mock_session.execute.side_effect = [
+            exists_result,
+            insert_result,
+            get_id_result,
+            emails_insert_result,
+        ]
 
         # Mock stage runners
         with (
@@ -165,9 +175,20 @@ class TestBatchProcessorProcessBatch:
         self, mock_session: AsyncMock, mock_config: MagicMock
     ) -> None:
         """Test process_batch skips embeddings when disabled."""
-        raw_result = MagicMock()
-        raw_result.fetchone.return_value = (1,)
-        mock_session.execute.return_value = raw_result
+        # Mock the 3-query pattern
+        exists_result = MagicMock()
+        exists_result.scalar.return_value = None
+        insert_result = MagicMock()
+        get_id_result = MagicMock()
+        get_id_result.scalar.return_value = 1
+        emails_insert_result = MagicMock()
+
+        mock_session.execute.side_effect = [
+            exists_result,
+            insert_result,
+            get_id_result,
+            emails_insert_result,
+        ]
 
         with (
             patch.object(BatchProcessor, "_compute_features", return_value=1),
@@ -215,16 +236,24 @@ class TestBatchProcessorProcessBatch:
         self, mock_session: AsyncMock, mock_config: MagicMock
     ) -> None:
         """Test process_batch handles duplicate emails gracefully."""
-        # First call returns row, second returns None (duplicate)
-        raw_result1 = MagicMock()
-        raw_result1.fetchone.return_value = (1,)
-        raw_result2 = MagicMock()
-        raw_result2.fetchone.return_value = None
+        # First email: doesn't exist, insert, get id, emails insert
+        # Second email: exists (duplicate)
+        exists1 = MagicMock()
+        exists1.scalar.return_value = None  # First doesn't exist
+        insert1 = MagicMock()
+        get_id1 = MagicMock()
+        get_id1.scalar.return_value = 1
+        emails_insert1 = MagicMock()
+
+        exists2 = MagicMock()
+        exists2.scalar.return_value = 99  # Second already exists
 
         mock_session.execute.side_effect = [
-            raw_result1,
-            MagicMock(),  # emails insert
-            raw_result2,  # duplicate raw_emails
+            exists1,
+            insert1,
+            get_id1,
+            emails_insert1,  # First email
+            exists2,  # Second email (duplicate, stops here)
         ]
 
         with (
@@ -271,7 +300,7 @@ class TestBatchProcessorProcessBatch:
     ) -> None:
         """Test process_batch correctly parses date strings."""
         raw_result = MagicMock()
-        raw_result.fetchone.return_value = (1,)
+        raw_result.scalar.return_value = 1
         mock_session.execute.return_value = raw_result
 
         with (
@@ -302,7 +331,7 @@ class TestBatchProcessorProcessBatch:
     ) -> None:
         """Test process_batch handles invalid date strings."""
         raw_result = MagicMock()
-        raw_result.fetchone.return_value = (1,)
+        raw_result.scalar.return_value = 1
         mock_session.execute.return_value = raw_result
 
         with (
@@ -334,7 +363,7 @@ class TestBatchProcessorProcessBatch:
     ) -> None:
         """Test process_batch correctly handles SENT label."""
         raw_result = MagicMock()
-        raw_result.fetchone.return_value = (1,)
+        raw_result.scalar.return_value = 1
         mock_session.execute.return_value = raw_result
 
         with (
@@ -365,7 +394,7 @@ class TestBatchProcessorProcessBatch:
     ) -> None:
         """Test process_batch passes LLM limit correctly."""
         raw_result = MagicMock()
-        raw_result.fetchone.return_value = (1,)
+        raw_result.scalar.return_value = 1
         mock_session.execute.return_value = raw_result
 
         with (
@@ -818,9 +847,24 @@ class TestBatchProcessorStoreEmails:
 
     @pytest.fixture
     def mock_session(self) -> AsyncMock:
-        """Create mock async session."""
+        """Create mock async session with 4-query pattern support."""
         session = AsyncMock()
-        session.execute = AsyncMock()
+
+        # Create results for the 4-query pattern:
+        # 1. exists check (None = doesn't exist)
+        # 2. insert (no return)
+        # 3. get id (returns 1)
+        # 4. emails insert (no return)
+        def make_side_effect() -> list[MagicMock]:
+            exists = MagicMock()
+            exists.scalar.return_value = None
+            insert = MagicMock()
+            get_id = MagicMock()
+            get_id.scalar.return_value = 1
+            emails_insert = MagicMock()
+            return [exists, insert, get_id, emails_insert]
+
+        session.execute.side_effect = make_side_effect()
         return session
 
     @pytest.fixture
@@ -833,10 +877,6 @@ class TestBatchProcessorStoreEmails:
         self, mock_session: AsyncMock, mock_config: MagicMock
     ) -> None:
         """Test _store_emails handles None labels gracefully."""
-        raw_result = MagicMock()
-        raw_result.fetchone.return_value = (1,)
-        mock_session.execute.return_value = raw_result
-
         processor = BatchProcessor(session=mock_session, config=mock_config)
 
         emails = [
@@ -856,10 +896,6 @@ class TestBatchProcessorStoreEmails:
         self, mock_session: AsyncMock, mock_config: MagicMock
     ) -> None:
         """Test _store_emails handles non-list fields gracefully."""
-        raw_result = MagicMock()
-        raw_result.fetchone.return_value = (1,)
-        mock_session.execute.return_value = raw_result
-
         processor = BatchProcessor(session=mock_session, config=mock_config)
 
         emails = [
@@ -882,10 +918,6 @@ class TestBatchProcessorStoreEmails:
         self, mock_session: AsyncMock, mock_config: MagicMock
     ) -> None:
         """Test _store_emails handles empty from_name."""
-        raw_result = MagicMock()
-        raw_result.fetchone.return_value = (1,)
-        mock_session.execute.return_value = raw_result
-
         processor = BatchProcessor(session=mock_session, config=mock_config)
 
         emails = [
@@ -906,10 +938,6 @@ class TestBatchProcessorStoreEmails:
         self, mock_session: AsyncMock, mock_config: MagicMock
     ) -> None:
         """Test _store_emails handles body_html field."""
-        raw_result = MagicMock()
-        raw_result.fetchone.return_value = (1,)
-        mock_session.execute.return_value = raw_result
-
         processor = BatchProcessor(session=mock_session, config=mock_config)
 
         emails = [
@@ -929,9 +957,6 @@ class TestBatchProcessorStoreEmails:
         self, mock_session: AsyncMock, mock_config: MagicMock
     ) -> None:
         """Test _store_emails handles in_reply_to field."""
-        raw_result = MagicMock()
-        raw_result.fetchone.return_value = (1,)
-        mock_session.execute.return_value = raw_result
 
         processor = BatchProcessor(session=mock_session, config=mock_config)
 

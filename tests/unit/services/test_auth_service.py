@@ -115,7 +115,7 @@ class TestCompleteAuthFlow:
 
         result = await auth_service.complete_auth_flow(user_id, code)
 
-        mock_oauth.exchange_code.assert_called_once_with(code)
+        mock_oauth.exchange_code.assert_called_once_with(code, include_redirect_uri=True)
         mock_token_repo.get_by_user.assert_called_once_with(user_id)
         mock_token_repo.create.assert_called_once()
         assert result.access_token == sample_tokens.access_token
@@ -139,7 +139,7 @@ class TestCompleteAuthFlow:
 
         result = await auth_service.complete_auth_flow(user_id, code)
 
-        mock_oauth.exchange_code.assert_called_once_with(code)
+        mock_oauth.exchange_code.assert_called_once_with(code, include_redirect_uri=True)
         mock_token_repo.update.assert_called_once()
         assert result == sample_db_token
 

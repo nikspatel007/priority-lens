@@ -83,6 +83,8 @@ class ConnectionService:
         user_id: UUID,
         provider_type: ProviderType,
         code: str,
+        *,
+        from_mobile: bool = False,
     ) -> ConnectionStatus:
         """Complete OAuth authorization for a provider.
 
@@ -90,6 +92,7 @@ class ConnectionService:
             user_id: User to connect.
             provider_type: Type of provider.
             code: Authorization code from callback.
+            from_mobile: If True, this is a serverAuthCode from mobile OAuth.
 
         Returns:
             Connection status after authorization.
@@ -99,7 +102,7 @@ class ConnectionService:
             AuthorizationError: If authorization fails.
         """
         provider = self._registry.get(provider_type)
-        status = await provider.complete_auth(user_id, code)
+        status = await provider.complete_auth(user_id, code, from_mobile=from_mobile)
 
         await logger.ainfo(
             "connection_established",

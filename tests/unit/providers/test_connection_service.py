@@ -44,7 +44,9 @@ class MockProvider(EmailProvider):
     async def get_auth_url(self, state: str | None = None) -> str:
         return f"https://auth.example.com?state={state or ''}"
 
-    async def complete_auth(self, user_id: UUID, code: str) -> ConnectionStatus:
+    async def complete_auth(
+        self, user_id: UUID, code: str, *, from_mobile: bool = False
+    ) -> ConnectionStatus:
         self._connected = True
         return ConnectionStatus(
             provider=self._provider_type,

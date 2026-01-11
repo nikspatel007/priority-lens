@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
+from contextlib import AbstractAsyncContextManager
 from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
@@ -23,6 +25,9 @@ if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 
 logger = structlog.get_logger(__name__)
+
+# Type alias for session factory
+SessionFactory = Callable[[], AbstractAsyncContextManager["AsyncSession"]]
 
 
 class TurnService:
@@ -187,3 +192,89 @@ class TurnService:
         )
 
         return event
+
+    async def invoke_agent(
+        self,
+        thread_id: UUID,
+        org_id: UUID,
+        user_id: UUID,
+        session_id: UUID,
+        correlation_id: UUID,
+        user_message: str,
+        session_factory: SessionFactory,
+        livekit_room: str | None = None,
+    ) -> int:
+        """Invoke the agent to respond to a user message.
+
+        This method:
+        1. Creates an AgentContext and AgentRunner
+        2. Runs the agent to get streaming events
+        3. Passes events to AgentStreamingService for persistence
+
+        Args:
+            thread_id: Thread UUID.
+            org_id: Organization UUID.
+            user_id: User UUID.
+            session_id: Session UUID.
+            correlation_id: Correlation UUID for the turn.
+            user_message: The user's input text.
+            session_factory: Factory for creating database sessions.
+            livekit_room: Optional LiveKit room for publishing.
+
+        Returns:
+            Number of events emitted by the agent.
+        """
+        from priority_lens.agent.context import AgentContext
+        from priority_lens.agent.graph import AgentRunner
+        from priority_lens.services.agent_streaming import (
+            AgentStreamingService,
+            StreamingContext,
+        )
+
+        await logger.ainfo(
+            "agent_invoke_start",
+            thread_id=str(thread_id),
+            correlation_id=str(correlation_id),
+        )
+
+        # Create agent context
+        from collections.abc import AsyncGenerator
+
+        async def context_session_factory() -> AsyncGenerator[AsyncSession, None]:
+            async with session_factory() as sess:
+                yield sess
+
+        ctx = AgentContext(
+            user_id=user_id,
+            org_id=org_id,
+            thread_id=thread_id,
+            session_factory=context_session_factory,
+        )
+
+        # Create streaming context
+        streaming_ctx = StreamingContext(
+            thread_id=thread_id,
+            org_id=org_id,
+            session_id=session_id,
+            user_id=user_id,
+            correlation_id=correlation_id,
+            livekit_room=livekit_room,
+        )
+
+        # Run agent and stream events
+        runner = AgentRunner(ctx)
+        agent_events_gen = await runner.run_streaming(user_message)
+
+        streaming_service = AgentStreamingService(self._session)
+        emitted_events = await streaming_service.stream_agent_output(
+            streaming_ctx, agent_events_gen
+        )
+
+        await logger.ainfo(
+            "agent_invoke_complete",
+            thread_id=str(thread_id),
+            correlation_id=str(correlation_id),
+            events_count=len(emitted_events),
+        )
+
+        return len(emitted_events)

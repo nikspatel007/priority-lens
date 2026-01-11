@@ -21,6 +21,7 @@ from priority_lens.api.middleware import (
 from priority_lens.api.routes import (
     connections_router,
     health_router,
+    set_connections_session,
     set_inbox_session,
     set_projects_session,
     set_tasks_session,
@@ -52,6 +53,7 @@ def _setup_session_factories(session_factory: SessionFactory) -> None:
     set_projects_session(session_factory)
     set_tasks_session(session_factory)
     set_inbox_session(session_factory)
+    set_connections_session(session_factory)
     set_threads_session(session_factory)
     set_agent_session(session_factory)
     set_actions_session(session_factory)
@@ -143,9 +145,12 @@ def create_app(config: APIConfig | None = None) -> FastAPI:
     setup_cors(app, config)
 
     # Register routes
-    app.include_router(health_router)
-    app.include_router(connections_router)
-    app.include_router(webhooks_router)
+    api_v1_prefix = "/api/v1"
+
+    # Versioned routes (preferred)
+    app.include_router(health_router, prefix=api_v1_prefix)
+    app.include_router(connections_router, prefix=api_v1_prefix)
+    app.include_router(webhooks_router, prefix=api_v1_prefix)
 
     # Import and register project/task/inbox/threads/livekit/agent/actions routes
     from priority_lens.api.routes import (
@@ -158,13 +163,14 @@ def create_app(config: APIConfig | None = None) -> FastAPI:
         threads_router,
     )
 
-    app.include_router(projects_router)
-    app.include_router(tasks_router)
-    app.include_router(inbox_router)
-    app.include_router(threads_router)
-    app.include_router(livekit_router)
-    app.include_router(agent_router)
-    app.include_router(actions_router)
+    # Versioned routes (preferred)
+    app.include_router(projects_router, prefix=api_v1_prefix)
+    app.include_router(tasks_router, prefix=api_v1_prefix)
+    app.include_router(inbox_router, prefix=api_v1_prefix)
+    app.include_router(threads_router, prefix=api_v1_prefix)
+    app.include_router(livekit_router, prefix=api_v1_prefix)
+    app.include_router(agent_router, prefix=api_v1_prefix)
+    app.include_router(actions_router, prefix=api_v1_prefix)
 
     return app
 
@@ -189,3 +195,7 @@ def run_server(config: APIConfig | None = None) -> None:
         reload=config.is_development,
         log_level=config.log_level.lower(),
     )
+
+
+# Create app instance for uvicorn CLI usage (e.g., uvicorn priority_lens.api.main:app)
+app = create_app()
