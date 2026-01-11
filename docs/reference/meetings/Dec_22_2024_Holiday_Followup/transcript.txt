@@ -1,0 +1,2029 @@
+WEBVTT
+
+00:00:01.000 --> 00:00:03.000
+Nik Patel: Turamanda.
+
+00:08:07.000 --> 00:08:09.000
+Josh Smith: I think I'm working.
+
+00:08:10.000 --> 00:08:12.000
+Josh Smith: Oh, hi.
+
+00:08:12.000 --> 00:08:14.000
+Nik Patel: How you doing?
+
+00:08:14.000 --> 00:08:17.000
+Josh Smith: Doing alright, just, you know, just sitting by the…
+
+00:08:18.000 --> 00:08:20.000
+Nik Patel: Oh, nice!
+
+00:08:19.000 --> 00:08:21.000
+Josh Smith: Sitting by the fire…
+
+00:08:21.000 --> 00:08:23.000
+Nik Patel: Well, in the holiday mode.
+
+00:08:23.000 --> 00:08:27.000
+Josh Smith: Yeah, yeah, I'm checked out of… I'm checked out almost, so…
+
+00:08:27.000 --> 00:08:32.000
+Nik Patel: Nice, nice. Are you gone for, like, uh, both weeks, or working…
+
+00:08:28.000 --> 00:08:30.000
+Josh Smith: Alright.
+
+00:08:32.000 --> 00:08:35.000
+Nik Patel: Not… not working on other stuff, but…
+
+00:08:35.000 --> 00:08:38.000
+Josh Smith: I'll be working Monday, Tuesday, and Friday next week.
+
+00:08:38.000 --> 00:08:40.000
+Nik Patel: Monday, Tuesday, Friday next week, and how about this week?
+
+00:08:42.000 --> 00:08:45.000
+Josh Smith: I'll be available… I won't be available Wednesday.
+
+00:08:45.000 --> 00:08:47.000
+Nik Patel: Yep.
+
+00:08:45.000 --> 00:08:48.000
+Josh Smith: Or Thursday, but I'll be available Friday.
+
+00:08:48.000 --> 00:08:50.000
+Nik Patel: Okay.
+
+00:08:48.000 --> 00:08:50.000
+Josh Smith: And… and tomorrow.
+
+00:08:50.000 --> 00:08:54.000
+Nik Patel: Nice. Nice. Um…
+
+00:08:55.000 --> 00:08:57.000
+Nik Patel: Let's see…
+
+00:08:59.000 --> 00:09:01.000
+Nik Patel: Where do we go? Where do we start?
+
+00:09:03.000 --> 00:09:08.000
+Nik Patel: So, I didn't go as far as I wanted to over the weekend.
+
+00:09:08.000 --> 00:09:11.000
+Nik Patel: Uh, just some other stuff came up.
+
+00:09:10.000 --> 00:09:12.000
+Josh Smith: It's all good.
+
+00:09:11.000 --> 00:09:13.000
+Nik Patel: Um…
+
+00:09:13.000 --> 00:09:21.000
+Nik Patel: I have Claude building something right now, just to see if I can see the experience with the GlueStack UI.
+
+00:09:15.000 --> 00:09:17.000
+Josh Smith: Well.
+
+00:09:22.000 --> 00:09:30.000
+Nik Patel: I built a front-end design skill that basically enforces… well, not enforces, but guides the typography and.
+
+00:09:30.000 --> 00:09:35.000
+Nik Patel: font and everything. So, just trying to see how that would come out with.
+
+00:09:32.000 --> 00:09:34.000
+Josh Smith: Yeah.
+
+00:09:36.000 --> 00:09:39.000
+Nik Patel: trying to mimic what I had done with the Google AI Studio.
+
+00:09:39.000 --> 00:09:42.000
+Nik Patel: With our colors instead, and uh…
+
+00:09:42.000 --> 00:09:45.000
+Nik Patel: We'll see what, uh, what happens.
+
+00:09:48.000 --> 00:09:51.000
+Josh Smith: Alright. Last we landed, we have…
+
+00:09:51.000 --> 00:09:55.000
+Josh Smith: A concept for execution mode that's…
+
+00:09:55.000 --> 00:09:57.000
+Josh Smith: As minimal as possible.
+
+00:09:57.000 --> 00:09:59.000
+Nik Patel: Mm-hmm.
+
+00:09:58.000 --> 00:10:03.000
+Josh Smith: Um… we have, you know, Prep and Eagle.
+
+00:10:04.000 --> 00:10:06.000
+Josh Smith: Um…
+
+00:10:04.000 --> 00:10:06.000
+Nik Patel: We, yeah, we need prep and eagle, yeah.
+
+00:10:07.000 --> 00:10:09.000
+Josh Smith: Okay. And of course, we've got…
+
+00:10:09.000 --> 00:10:12.000
+Josh Smith: Much more beyond that, like…
+
+00:10:11.000 --> 00:10:13.000
+Nik Patel: Yes, yes.
+
+00:10:12.000 --> 00:10:15.000
+Josh Smith: But… okay.
+
+00:10:16.000 --> 00:10:20.000
+Josh Smith: Um, so what would you like to discuss, uh, today?
+
+00:10:19.000 --> 00:10:21.000
+Nik Patel: Um…
+
+00:10:22.000 --> 00:10:25.000
+Nik Patel: I think, let me, uh…
+
+00:10:25.000 --> 00:10:30.000
+Nik Patel: sort of talk through what I'm thinking on the execution mode first. Oh, recording, I'm assuming you're okay.
+
+00:10:31.000 --> 00:10:33.000
+Josh Smith: Uh, yeah, I'm…
+
+00:10:34.000 --> 00:10:36.000
+Josh Smith: Yep.
+
+00:10:35.000 --> 00:10:38.000
+Nik Patel: Okay, so I'm thinking, um…
+
+00:10:41.000 --> 00:10:43.000
+Nik Patel: Let's talk through the…
+
+00:10:44.000 --> 00:10:47.000
+Nik Patel: Uh, execution mode for a second.
+
+00:10:47.000 --> 00:10:51.000
+Nik Patel: And then we can jump onto prep mode, and then go into, uh…
+
+00:10:52.000 --> 00:10:55.000
+Nik Patel: Go into the execution mode.
+
+00:10:56.000 --> 00:11:00.000
+Nik Patel: both of them make sense. The part that's still open in my mind is…
+
+00:11:00.000 --> 00:11:05.000
+Nik Patel: How do we, uh… and it doesn't have to be now, just putting this in back of your mind.
+
+00:11:08.000 --> 00:11:11.000
+Nik Patel: Um, sorry, just a sec. Anki?
+
+00:11:15.000 --> 00:11:17.000
+Nik Patel: Be back.
+
+00:11:16.000 --> 00:11:18.000
+Josh Smith: Yeah.
+
+00:11:21.000 --> 00:11:26.000
+Nik Patel: Thank you, bye!
+
+00:11:37.000 --> 00:11:39.000
+Nik Patel: Um…
+
+00:11:39.000 --> 00:11:41.000
+Nik Patel: Okay, so…
+
+00:11:42.000 --> 00:11:47.000
+Nik Patel: Where do I go? Oh, yeah. So, the part that I've been thinking about is…
+
+00:11:48.000 --> 00:11:51.000
+Nik Patel: Uh, do we have some sort of, like, a companion mode?
+
+00:11:52.000 --> 00:11:57.000
+Nik Patel: You know? Um, I don't know one way or the other right now, but just curious about it.
+
+00:11:57.000 --> 00:12:01.000
+Nik Patel: Companion mode is, like, you're working on something together.
+
+00:12:01.000 --> 00:12:03.000
+Nik Patel: Um…
+
+00:12:04.000 --> 00:12:07.000
+Nik Patel: So… we'll figure it out, I guess.
+
+00:12:09.000 --> 00:12:12.000
+Josh Smith: Working on something together.
+
+00:12:12.000 --> 00:12:15.000
+Nik Patel: You know how we had talked about the canvas mode?
+
+00:12:15.000 --> 00:12:19.000
+Nik Patel: Right, where, uh, we could create a canvas and, um…
+
+00:12:19.000 --> 00:12:23.000
+Nik Patel: AI's doing something, humans doing something, they're, like, collaborating together.
+
+00:12:23.000 --> 00:12:25.000
+Josh Smith: Hmm.
+
+00:12:25.000 --> 00:12:33.000
+Nik Patel: Um, that's the only part that I… I was thinking about this weekend, and again, don't know where we go from it, especially on the small screen, but…
+
+00:12:33.000 --> 00:12:36.000
+Nik Patel: like I said, just putting this in the back of your mind.
+
+00:12:37.000 --> 00:12:40.000
+Josh Smith: Alright, and this is for execution mode.
+
+00:12:41.000 --> 00:12:43.000
+Josh Smith: Alright.
+
+00:12:41.000 --> 00:12:48.000
+Nik Patel: it doesn't have to be execution, right? Like, you go from whatever three modes into this mode, where you're working together.
+
+00:12:48.000 --> 00:12:50.000
+Josh Smith: Oh, so use your… use a companion.
+
+00:12:50.000 --> 00:12:52.000
+Nik Patel: Yeah.
+
+00:12:51.000 --> 00:12:57.000
+Josh Smith: Okay. Alright, so what… the best way for me to help is by…
+
+00:12:57.000 --> 00:13:00.000
+Josh Smith: Having a example.
+
+00:13:00.000 --> 00:13:07.000
+Nik Patel: And we… I don't know what the answer looks like either, so I can think through it today, and then we could probably chat about it later.
+
+00:13:00.000 --> 00:13:02.000
+Josh Smith: Like a hybrid.
+
+00:13:07.000 --> 00:13:09.000
+Josh Smith: Alright.
+
+00:13:08.000 --> 00:13:12.000
+Nik Patel: But we could go into prep and execution to give this some time.
+
+00:13:12.000 --> 00:13:17.000
+Josh Smith: Yeah, and, like, to be able to differentiate it clearly from, like, voice.
+
+00:13:17.000 --> 00:13:19.000
+Nik Patel: Mm-hmm.
+
+00:13:18.000 --> 00:13:25.000
+Josh Smith: So, like, of course, voice, I'm just back and forth telling it what I need, and it processing and doing the work.
+
+00:13:25.000 --> 00:13:31.000
+Josh Smith: And then… and then, yeah, figuring what are the instances in which companion would be helpful.
+
+00:13:25.000 --> 00:13:27.000
+Nik Patel: Yep.
+
+00:13:32.000 --> 00:13:34.000
+Josh Smith: Um…
+
+00:13:34.000 --> 00:13:36.000
+Josh Smith: you know…
+
+00:13:37.000 --> 00:13:43.000
+Josh Smith: Is it just me dropping files in and typing some stuff while the companion.
+
+00:13:43.000 --> 00:13:48.000
+Josh Smith: Put some ideas in, and is that… is it suddenly just…
+
+00:13:48.000 --> 00:13:52.000
+Josh Smith: GPT, but designed differently, like…
+
+00:13:53.000 --> 00:13:56.000
+Josh Smith: So… or is it something entirely different, you know?
+
+00:13:56.000 --> 00:14:01.000
+Nik Patel: I think it's GPT, I don't know if it's designed different or not, but…
+
+00:14:01.000 --> 00:14:08.000
+Nik Patel: The experience, probably, in my mind, is we are sharing the same context, we are working on the same thing.
+
+00:14:08.000 --> 00:14:12.000
+Nik Patel: looking at same files, I'm working on something, and I'm asking you to do something.
+
+00:14:13.000 --> 00:14:15.000
+Nik Patel: Stuff like that, you know?
+
+00:14:15.000 --> 00:14:19.000
+Nik Patel: And we could go back and forth and look at it. It's basically a shared context, in a way.
+
+00:14:20.000 --> 00:14:22.000
+Josh Smith: Okay.
+
+00:14:22.000 --> 00:14:26.000
+Nik Patel: We'll… I think it might be easier to do that on a bigger screen.
+
+00:14:28.000 --> 00:14:32.000
+Nik Patel: The other one that I came across, or came up with, was…
+
+00:14:33.000 --> 00:14:38.000
+Nik Patel: What if voice mode is not available? I'm in a silent room, or…
+
+00:14:38.000 --> 00:14:43.000
+Nik Patel: you know, working in a library, or it's not something I can loudly talk about.
+
+00:14:43.000 --> 00:14:46.000
+Nik Patel: Uh, it's a sensitive matter of some kind.
+
+00:14:46.000 --> 00:14:48.000
+Nik Patel: Um, how do I switch to that?
+
+00:14:49.000 --> 00:14:51.000
+Nik Patel: Type mode of some kind.
+
+00:14:52.000 --> 00:14:57.000
+Josh Smith: Yes, that's where… so… let's go over… so…
+
+00:14:59.000 --> 00:15:01.000
+Josh Smith: Yes, we would have to…
+
+00:15:04.000 --> 00:15:06.000
+Josh Smith: Find a way to trigger type mode.
+
+00:15:08.000 --> 00:15:10.000
+Josh Smith: Um…
+
+00:15:12.000 --> 00:15:18.000
+Josh Smith: And, question for you, do you want type mode only to have transcription.
+
+00:15:20.000 --> 00:15:24.000
+Josh Smith: Uh, the… of, uh, for instance, like.
+
+00:15:24.000 --> 00:15:26.000
+Josh Smith: what the… what the AI is saying.
+
+00:15:26.000 --> 00:15:31.000
+Josh Smith: Do you only want that to be in type mode, or would you like to be in voice mode as well?
+
+00:15:32.000 --> 00:15:34.000
+Josh Smith: Um…
+
+00:15:33.000 --> 00:15:37.000
+Nik Patel: Well, that's what I mean, like, what if the voice mode is just not even…
+
+00:15:37.000 --> 00:15:44.000
+Josh Smith: They just even don't even want the voice. So then we'd have to… we'd have to do a… be able to switch between… we'd have to…
+
+00:15:44.000 --> 00:15:46.000
+Nik Patel: Yeah.
+
+00:15:44.000 --> 00:15:48.000
+Josh Smith: Find a way for the user to switch between voice… voice mode and platform.
+
+00:15:47.000 --> 00:15:50.000
+Nik Patel: And text. Yep, yep.
+
+00:15:49.000 --> 00:15:52.000
+Josh Smith: Um, which is different, you know, of course.
+
+00:15:53.000 --> 00:15:56.000
+Josh Smith: This has been solved in various ways already.
+
+00:15:57.000 --> 00:15:59.000
+Josh Smith: It's just, we're defaulting.
+
+00:15:59.000 --> 00:16:04.000
+Josh Smith: In this instance, this experience, we're defaulting to voice mode first, and then going to type mode.
+
+00:16:04.000 --> 00:16:06.000
+Nik Patel: Mm-hmm.
+
+00:16:05.000 --> 00:16:14.000
+Josh Smith: the… the opposite in ChatGPT is that you… you're invo… when you go to voice mode, it's secondary, and you close it to leave it.
+
+00:16:15.000 --> 00:16:17.000
+Nik Patel: Yep.
+
+00:16:15.000 --> 00:16:23.000
+Josh Smith: Um, so, just, like, what would that look like in the reverse for… for type mode? I… I don't think it should be…
+
+00:16:23.000 --> 00:16:33.000
+Josh Smith: I don't… I don't prefer ChatGPT's method where you click it and it puts you in an experience almost like a modal that you can close and leave again.
+
+00:16:34.000 --> 00:16:36.000
+Josh Smith: It's… it almost feels like a…
+
+00:16:36.000 --> 00:16:38.000
+Josh Smith: toggle.
+
+00:16:38.000 --> 00:16:44.000
+Josh Smith: To me, like, do you transition into typing only, or do you transition into talking?
+
+00:16:44.000 --> 00:16:46.000
+Nik Patel: Yeah.
+
+00:16:45.000 --> 00:16:47.000
+Josh Smith: Um, so…
+
+00:16:48.000 --> 00:16:53.000
+Josh Smith: It's just a matter of where do you do that on the screen, and then what is the experience when you…
+
+00:16:53.000 --> 00:16:55.000
+Josh Smith: toggle it.
+
+00:16:56.000 --> 00:16:58.000
+Nik Patel: So, um…
+
+00:16:59.000 --> 00:17:05.000
+Nik Patel: With the voice mode, ChatGPT has these things where it's, like, everything that's being said or being…
+
+00:17:05.000 --> 00:17:10.000
+Nik Patel: told is also being written down in text, right, and you can just switch to now you're back in text mode again.
+
+00:17:08.000 --> 00:17:10.000
+Josh Smith: Yep.
+
+00:17:11.000 --> 00:17:16.000
+Nik Patel: Um, that's easy because it's a chat interface, and you're expecting it to be in the chat.
+
+00:17:16.000 --> 00:17:18.000
+Josh Smith: Mm-hmm.
+
+00:17:17.000 --> 00:17:19.000
+Nik Patel: For us.
+
+00:17:19.000 --> 00:17:21.000
+Nik Patel: That's not the primary thing.
+
+00:17:21.000 --> 00:17:26.000
+Nik Patel: For us, the primary thing is work, so our screen asset is very limited, and…
+
+00:17:26.000 --> 00:17:32.000
+Nik Patel: Gotta work… probably work through that. What I was thinking, for example, is, uh…
+
+00:17:33.000 --> 00:17:37.000
+Nik Patel: Where did you do this? So, when you were doing, like, this task name.
+
+00:17:38.000 --> 00:17:44.000
+Nik Patel: uh, thingy, right? Where we have this… this color is user, or this color is AI, or whatever, either way.
+
+00:17:44.000 --> 00:17:48.000
+Nik Patel: We could have just, like, a third icon, which is just a keyboard icon.
+
+00:17:47.000 --> 00:17:49.000
+Josh Smith: Mm-hmm.
+
+00:17:48.000 --> 00:17:53.000
+Nik Patel: Uh, you click on it, and all of a sudden, it's like a keyboard input text box type of a thing.
+
+00:17:55.000 --> 00:17:57.000
+Nik Patel: Um…
+
+00:17:57.000 --> 00:18:01.000
+Nik Patel: Or something like that. Then the hard part really becomes.
+
+00:18:02.000 --> 00:18:08.000
+Nik Patel: The menu at the bottom, which is also clickable, could get confusing for someone to, like, click that and.
+
+00:18:05.000 --> 00:18:07.000
+Josh Smith: Mm-hmm.
+
+00:18:08.000 --> 00:18:11.000
+Nik Patel: All of a sudden, you lose the thing you were doing and whatnot.
+
+00:18:12.000 --> 00:18:15.000
+Josh Smith: Hmm. Alright.
+
+00:18:21.000 --> 00:18:23.000
+Josh Smith: I mean, this is ideal for mobile.
+
+00:18:24.000 --> 00:18:26.000
+Josh Smith: For desktop, you know.
+
+00:18:27.000 --> 00:18:30.000
+Josh Smith: You can move it up there, but…
+
+00:18:29.000 --> 00:18:36.000
+Nik Patel: Right. No, I agree, it's ideal that it's there. I'm just saying, like, if it's switched into the text mode.
+
+00:18:36.000 --> 00:18:41.000
+Nik Patel: As a text box right above that, that's when it starts to get a bit confusing.
+
+00:18:44.000 --> 00:18:47.000
+Josh Smith: Okay, give me a moment.
+
+00:19:05.000 --> 00:19:07.000
+Josh Smith: Alright.
+
+00:19:07.000 --> 00:19:09.000
+Josh Smith: Of course, ultimately.
+
+00:19:26.000 --> 00:19:31.000
+Josh Smith: Uh, just give me a second. I just need to do a little bit of design work in order to…
+
+00:19:31.000 --> 00:19:33.000
+Josh Smith: demonstrate something.
+
+00:19:33.000 --> 00:19:35.000
+Nik Patel: Okay?
+
+00:19:46.000 --> 00:19:48.000
+Josh Smith: Okay…
+
+00:20:35.000 --> 00:20:40.000
+Josh Smith: Right. I'm gonna just choose some dinky icons.
+
+00:20:40.000 --> 00:20:42.000
+Josh Smith: Give me a moment.
+
+00:20:49.000 --> 00:20:52.000
+Josh Smith: I'm not advocating these icons, I just need something for now.
+
+00:20:52.000 --> 00:20:54.000
+Nik Patel: Yep, yeah, that's fine.
+
+00:21:17.000 --> 00:21:19.000
+Josh Smith: Okay…
+
+00:22:31.000 --> 00:22:33.000
+Josh Smith: Alright.
+
+00:22:34.000 --> 00:22:36.000
+Josh Smith: Imagine…
+
+00:22:40.000 --> 00:22:42.000
+Josh Smith: Okay…
+
+00:22:43.000 --> 00:22:45.000
+Josh Smith: That down here…
+
+00:22:57.000 --> 00:23:01.000
+Josh Smith: Alright, so imagine that this…
+
+00:23:02.000 --> 00:23:05.000
+Josh Smith: centered… down here…
+
+00:23:05.000 --> 00:23:09.000
+Josh Smith: Maybe it's right there, this is on the side…
+
+00:23:13.000 --> 00:23:15.000
+Josh Smith: It's its own thing…
+
+00:23:16.000 --> 00:23:19.000
+Josh Smith: And let's take some variants here.
+
+00:23:20.000 --> 00:23:23.000
+Josh Smith: Give me some different examples of what could happen.
+
+00:23:56.000 --> 00:23:58.000
+Josh Smith: I don't know if you're, uh…
+
+00:23:58.000 --> 00:24:00.000
+Josh Smith: looking where I'm…
+
+00:24:00.000 --> 00:24:02.000
+Nik Patel: Yep, I'm looking.
+
+00:24:02.000 --> 00:24:04.000
+Josh Smith: Alright, so…
+
+00:24:09.000 --> 00:24:12.000
+Josh Smith: Here's one concept, um…
+
+00:24:14.000 --> 00:24:18.000
+Josh Smith: And, um, where it's in line.
+
+00:24:19.000 --> 00:24:21.000
+Josh Smith: And…
+
+00:24:21.000 --> 00:24:24.000
+Josh Smith: Because they already…
+
+00:24:25.000 --> 00:24:29.000
+Josh Smith: Um, because they already have seen the words.
+
+00:24:29.000 --> 00:24:31.000
+Nik Patel: Mm-hmm.
+
+00:24:30.000 --> 00:24:32.000
+Josh Smith: Shade of the words with the icons.
+
+00:24:32.000 --> 00:24:37.000
+Josh Smith: You could potentially collapse it down and keep it all online.
+
+00:24:38.000 --> 00:24:40.000
+Josh Smith: Um…
+
+00:24:42.000 --> 00:24:45.000
+Josh Smith: Other options, of course, are…
+
+00:24:46.000 --> 00:24:50.000
+Josh Smith: And then this, this switches from that to, um…
+
+00:24:52.000 --> 00:24:53.000
+Josh Smith: Let's see…
+
+00:24:54.000 --> 00:24:56.000
+Josh Smith: to this…
+
+00:25:00.000 --> 00:25:01.000
+Josh Smith: you know…
+
+00:25:05.000 --> 00:25:07.000
+Josh Smith: Um…
+
+00:25:07.000 --> 00:25:10.000
+Josh Smith: Where you can start typing in here.
+
+00:25:11.000 --> 00:25:13.000
+Josh Smith: That's one option.
+
+00:25:13.000 --> 00:25:15.000
+Nik Patel: Hmm.
+
+00:25:14.000 --> 00:25:19.000
+Josh Smith: Um, other options… because it's in line with it, you know, you could do that.
+
+00:25:20.000 --> 00:25:23.000
+Josh Smith: Um, where it squeezes. You could also, like.
+
+00:25:24.000 --> 00:25:29.000
+Josh Smith: you lose vertical space, but, um…
+
+00:25:37.000 --> 00:25:39.000
+Josh Smith: You could also…
+
+00:25:42.000 --> 00:25:44.000
+Josh Smith: You know, put it…
+
+00:25:45.000 --> 00:25:48.000
+Josh Smith: Um, either below or above.
+
+00:25:58.000 --> 00:26:00.000
+Josh Smith: Um…
+
+00:26:01.000 --> 00:26:03.000
+Josh Smith: Where it's…
+
+00:26:04.000 --> 00:26:06.000
+Josh Smith: In that instance.
+
+00:26:06.000 --> 00:26:08.000
+Josh Smith: It would, like…
+
+00:26:11.000 --> 00:26:15.000
+Josh Smith: It would expand above the, uh…
+
+00:26:15.000 --> 00:26:17.000
+Josh Smith: the navigation.
+
+00:26:18.000 --> 00:26:20.000
+Josh Smith: Or it could expand below.
+
+00:26:21.000 --> 00:26:27.000
+Josh Smith: Um… if… if you wanted it so that execution, Prep and Eagle.
+
+00:26:27.000 --> 00:26:29.000
+Josh Smith: You stayed on it.
+
+00:26:30.000 --> 00:26:33.000
+Josh Smith: Wherever you went.
+
+00:26:33.000 --> 00:26:36.000
+Josh Smith: Then you could imply that it's…
+
+00:26:41.000 --> 00:26:43.000
+Josh Smith: Well…
+
+00:26:43.000 --> 00:26:46.000
+Josh Smith: Yeah, that wherever you went, it was always…
+
+00:26:48.000 --> 00:26:50.000
+Josh Smith: It was always present.
+
+00:26:52.000 --> 00:26:53.000
+Josh Smith: And…
+
+00:26:52.000 --> 00:26:54.000
+Nik Patel: The interesting thing is…
+
+00:26:57.000 --> 00:27:01.000
+Nik Patel: it doesn't serve any purpose other than knowing that I'm in a particular mode.
+
+00:27:01.000 --> 00:27:05.000
+Nik Patel: Which, assuming our screens will look different in different modes.
+
+00:27:05.000 --> 00:27:08.000
+Nik Patel: I should already know where I am, right?
+
+00:27:07.000 --> 00:27:09.000
+Josh Smith: Mm-hmm.
+
+00:27:10.000 --> 00:27:15.000
+Nik Patel: So we just need a way for them to switch between the modes somehow.
+
+00:27:16.000 --> 00:27:25.000
+Nik Patel: the way ChatGPT, and I think, for that matter, others are doing, is the left of that text box is essentially, like, a plus icon that lets you upload, like.
+
+00:27:26.000 --> 00:27:29.000
+Nik Patel: Images and files and all that stuff on their phone.
+
+00:27:29.000 --> 00:27:31.000
+Josh Smith: Yep.
+
+00:27:30.000 --> 00:27:32.000
+Nik Patel: Um…
+
+00:27:37.000 --> 00:27:40.000
+Nik Patel: I wonder if the modes even make sense there.
+
+00:27:42.000 --> 00:27:45.000
+Josh Smith: You mean the ability to switch?
+
+00:27:45.000 --> 00:27:48.000
+Nik Patel: That one's fine, it's the execution prep in Eagle.
+
+00:27:48.000 --> 00:27:50.000
+Josh Smith: Oh, you mean putting that here?
+
+00:27:50.000 --> 00:27:52.000
+Nik Patel: Yeah.
+
+00:27:51.000 --> 00:27:54.000
+Josh Smith: If it makes sense to put it to the left like that.
+
+00:27:54.000 --> 00:27:56.000
+Nik Patel: Yeah.
+
+00:27:55.000 --> 00:27:58.000
+Josh Smith: Or if it makes sense to just keep it below or keep it above.
+
+00:27:58.000 --> 00:28:04.000
+Nik Patel: Well, do we even want any of them there, or do we have a different way of getting.
+
+00:28:04.000 --> 00:28:06.000
+Nik Patel: Or switching that.
+
+00:28:05.000 --> 00:28:08.000
+Josh Smith: Oh, you mean navigating between these?
+
+00:28:08.000 --> 00:28:11.000
+Nik Patel: Because once we're in execution mode.
+
+00:28:16.000 --> 00:28:20.000
+Nik Patel: the only time I care about that thing is when I want to switch.
+
+00:28:21.000 --> 00:28:27.000
+Josh Smith: Yep. So, oh, so it's persistence has less value, is that what you're saying?
+
+00:28:27.000 --> 00:28:33.000
+Nik Patel: No, I meant, like, other than when I'm ready to switch the mode, it doesn't actually serve any purpose.
+
+00:28:34.000 --> 00:28:36.000
+Josh Smith: Okay.
+
+00:28:37.000 --> 00:28:41.000
+Josh Smith: This, this is the navigation.
+
+00:28:41.000 --> 00:28:45.000
+Nik Patel: Yeah, that portion. Because the way I think about it is, like.
+
+00:28:46.000 --> 00:28:49.000
+Nik Patel: This icon can still be up here.
+
+00:28:50.000 --> 00:28:54.000
+Nik Patel: Right, so switch back to the other mode, and that's just a flip-flop toggle.
+
+00:28:55.000 --> 00:28:57.000
+Josh Smith: Mm-hmm.
+
+00:29:01.000 --> 00:29:06.000
+Nik Patel: And then, if we don't do that, then we have to go back to that hamburger menu switch, in a way.
+
+00:29:09.000 --> 00:29:12.000
+Nik Patel: Or, we move that whole thing up.
+
+00:29:12.000 --> 00:29:14.000
+Nik Patel: Um, like, we have…
+
+00:29:14.000 --> 00:29:21.000
+Nik Patel: profile icon, which I don't know if you even cared at that point, but, like, profile notification mode, or something like that.
+
+00:29:21.000 --> 00:29:23.000
+Josh Smith: Oh, yeah, yeah, yeah.
+
+00:29:25.000 --> 00:29:28.000
+Josh Smith: So, give me a moment.
+
+00:29:36.000 --> 00:29:38.000
+Josh Smith: Yeah.
+
+00:29:40.000 --> 00:29:42.000
+Josh Smith: And I don't even know if you want…
+
+00:29:44.000 --> 00:29:49.000
+Josh Smith: you know, usually, uh, I don't know what you need up there. Um…
+
+00:29:53.000 --> 00:29:55.000
+Josh Smith: It's, um…
+
+00:29:57.000 --> 00:29:59.000
+Josh Smith: Usually you have it…
+
+00:30:01.000 --> 00:30:07.000
+Josh Smith: Now, up there, I think in one of the… in the… one of the concepts I made… where are you?
+
+00:30:09.000 --> 00:30:11.000
+Josh Smith: There you are.
+
+00:30:15.000 --> 00:30:17.000
+Josh Smith: Um…
+
+00:30:18.000 --> 00:30:21.000
+Josh Smith: I put profile down at the bottom left.
+
+00:30:21.000 --> 00:30:25.000
+Josh Smith: And I had a navigation in there, um, which…
+
+00:30:24.000 --> 00:30:27.000
+Nik Patel: For desktop, it makes sense. Do we want it for the mobile?
+
+00:30:27.000 --> 00:30:32.000
+Josh Smith: Mmm, no, because it's not even going to show for mobile. For mobile…
+
+00:30:36.000 --> 00:30:38.000
+Josh Smith: Where am I?
+
+00:30:39.000 --> 00:30:43.000
+Josh Smith: So, if we did mobile, let me just set it to mobile.
+
+00:30:44.000 --> 00:30:47.000
+Josh Smith: So that's mobile right there.
+
+00:31:25.000 --> 00:31:27.000
+Josh Smith: It would be almost like, um…
+
+00:31:29.000 --> 00:31:34.000
+Josh Smith: You'd have to find a way to access additional navigation items.
+
+00:31:35.000 --> 00:31:40.000
+Josh Smith: But would your… could your execution prep be at the top instead of the bottom?
+
+00:31:44.000 --> 00:31:46.000
+Nik Patel: Yeah, it could be.
+
+00:31:47.000 --> 00:31:54.000
+Josh Smith: In that sense… and right here, I mean, it affords you enough space to be able to… if you collapse the copy.
+
+00:31:56.000 --> 00:31:58.000
+Josh Smith: Um…
+
+00:31:58.000 --> 00:32:03.000
+Josh Smith: You could… you could do this, and still save yourself a lot of space, so…
+
+00:32:03.000 --> 00:32:11.000
+Josh Smith: Menu for any additional things, like if you wanted to look at your calendar, or rules, or what have you, and then…
+
+00:32:14.000 --> 00:32:17.000
+Josh Smith: Let's do your switching between the three modes this way.
+
+00:32:17.000 --> 00:32:19.000
+Josh Smith: That would work.
+
+00:32:19.000 --> 00:32:24.000
+Josh Smith: Of course, if you selected that button and got out of this mode.
+
+00:32:25.000 --> 00:32:27.000
+Josh Smith: Um…
+
+00:32:32.000 --> 00:32:35.000
+Josh Smith: It would just kind of…
+
+00:32:41.000 --> 00:32:44.000
+Josh Smith: I know this is chunky looking, but…
+
+00:33:07.000 --> 00:33:13.000
+Nik Patel: I think we could… we could follow the similar format here, right? This keyboard basically goes up here.
+
+00:33:14.000 --> 00:33:16.000
+Josh Smith: Hmm.
+
+00:33:14.000 --> 00:33:18.000
+Nik Patel: And these things get converted into this particular…
+
+00:33:19.000 --> 00:33:21.000
+Josh Smith: So…
+
+00:33:25.000 --> 00:33:27.000
+Nik Patel: Yeah, something like that.
+
+00:33:27.000 --> 00:33:29.000
+Josh Smith: Yeah, could do that.
+
+00:33:30.000 --> 00:33:32.000
+Josh Smith: I would only recommend…
+
+00:33:32.000 --> 00:33:34.000
+Josh Smith: Centering it.
+
+00:33:35.000 --> 00:33:37.000
+Josh Smith: But, yeah.
+
+00:33:38.000 --> 00:33:43.000
+Josh Smith: However that looks, centering it, and then having the text if you want to switch over again, yeah.
+
+00:33:43.000 --> 00:33:47.000
+Josh Smith: We do that. Keep it in the same spots…
+
+00:33:48.000 --> 00:33:51.000
+Josh Smith: What do you think about that?
+
+00:33:54.000 --> 00:33:56.000
+Nik Patel: Then…
+
+00:33:56.000 --> 00:33:58.000
+Nik Patel: on the iPhones, this…
+
+00:34:00.000 --> 00:34:05.000
+Nik Patel: This thing makes it hard for us to have those three things at top, right?
+
+00:34:06.000 --> 00:34:08.000
+Josh Smith: Oh…
+
+00:34:10.000 --> 00:34:13.000
+Josh Smith: No, um, well…
+
+00:34:15.000 --> 00:34:17.000
+Nik Patel: Something like that, yeah.
+
+00:34:18.000 --> 00:34:27.000
+Josh Smith: Which is fine, because those spaces are used anyway for utility actions and content, like cellular battery time.
+
+00:34:28.000 --> 00:34:30.000
+Josh Smith: So…
+
+00:34:31.000 --> 00:34:35.000
+Josh Smith: That stuff's already… that area's already off-limits.
+
+00:34:36.000 --> 00:34:38.000
+Nik Patel: Okay.
+
+00:34:37.000 --> 00:34:40.000
+Josh Smith: Unless you've… have you ever seen an app where they use that space?
+
+00:34:40.000 --> 00:34:44.000
+Nik Patel: Yeah, but more in the background. So, like…
+
+00:34:45.000 --> 00:34:53.000
+Nik Patel: when you go in the background, like, United would keep a small icon on the right-hand side of that bar that shows that you have, like.
+
+00:34:53.000 --> 00:34:56.000
+Nik Patel: 24 minutes you have to do something, or…
+
+00:34:56.000 --> 00:35:01.000
+Nik Patel: Uh, call… it's basically more background actions is when it's being used.
+
+00:35:00.000 --> 00:35:03.000
+Josh Smith: Okay. Interesting.
+
+00:35:05.000 --> 00:35:07.000
+Josh Smith: Alright.
+
+00:35:09.000 --> 00:35:11.000
+Josh Smith: I'll have to look at it.
+
+00:35:11.000 --> 00:35:13.000
+Josh Smith: Yeah, sorry, my…
+
+00:35:14.000 --> 00:35:18.000
+Josh Smith: I'm more versed in desktop than mobile.
+
+00:35:20.000 --> 00:35:27.000
+Josh Smith: Alright. Yeah, I'll download United, because all the apps I'm looking at right now just utilize the, uh…
+
+00:35:27.000 --> 00:35:30.000
+Josh Smith: date cellular battery.
+
+00:35:30.000 --> 00:35:32.000
+Josh Smith: Oh, Wi-Fi.
+
+00:35:33.000 --> 00:35:35.000
+Josh Smith: So…
+
+00:35:38.000 --> 00:35:40.000
+Josh Smith: Interesting.
+
+00:35:40.000 --> 00:35:42.000
+Josh Smith: What version of iPhone do you have?
+
+00:35:42.000 --> 00:35:47.000
+Nik Patel: Uh, now I have 17 Pro Max, but I think it works for anything that has that bar.
+
+00:35:47.000 --> 00:35:49.000
+Josh Smith: Look at you, Mr. Fancy.
+
+00:35:50.000 --> 00:35:52.000
+Josh Smith: I'll be right back.
+
+00:35:50.000 --> 00:35:57.000
+Nik Patel: Um, yeah, it… we had to pick someone, get it, and I got it, but I'm still looking for the fold next year.
+
+00:35:57.000 --> 00:35:59.000
+Josh Smith: Hi.
+
+00:36:07.000 --> 00:36:09.000
+Josh Smith: There we go.
+
+00:36:12.000 --> 00:36:14.000
+Josh Smith: Alright.
+
+00:36:27.000 --> 00:36:32.000
+Josh Smith: Okay? So, um, we have that concept for…
+
+00:36:34.000 --> 00:36:39.000
+Josh Smith: mobile, we could replicate that for desktop, where formerly I had that.
+
+00:36:40.000 --> 00:36:44.000
+Josh Smith: Navigation at the bottom, just move that navigation up at the top.
+
+00:36:45.000 --> 00:36:48.000
+Nik Patel: Seems like, yeah, we can do that for now.
+
+00:36:49.000 --> 00:36:54.000
+Nik Patel: Maybe it needs two hands to get to it, but that's fine. That's probably not the end of the world.
+
+00:36:55.000 --> 00:36:57.000
+Josh Smith: Not at all.
+
+00:36:58.000 --> 00:37:00.000
+Josh Smith: Not at all.
+
+00:37:05.000 --> 00:37:07.000
+Nik Patel: Okay, so we covered that, um…
+
+00:37:09.000 --> 00:37:12.000
+Nik Patel: What else? So…
+
+00:37:14.000 --> 00:37:16.000
+Nik Patel: Now, I guess, prep mode?
+
+00:37:16.000 --> 00:37:18.000
+Nik Patel: We have got 20 minutes, um…
+
+00:37:21.000 --> 00:37:22.000
+Josh Smith: Yep.
+
+00:37:22.000 --> 00:37:24.000
+Nik Patel: Yeah, let's go to quick prep mode.
+
+00:37:24.000 --> 00:37:26.000
+Nik Patel: Are you around tomorrow?
+
+00:37:26.000 --> 00:37:28.000
+Josh Smith: Uh, yeah, I'm around tomorrow.
+
+00:37:29.000 --> 00:37:31.000
+Nik Patel: Okay. I could probably do, like.
+
+00:37:31.000 --> 00:37:36.000
+Nik Patel: 5PM-ish? Well, I don't even know what my schedule looks like tomorrow.
+
+00:37:37.000 --> 00:37:38.000
+Josh Smith: Alright.
+
+00:37:39.000 --> 00:37:42.000
+Josh Smith: Yeah, just, uh, just text me.
+
+00:37:44.000 --> 00:37:45.000
+Nik Patel: Uh, okay, I will.
+
+00:37:46.000 --> 00:37:51.000
+Josh Smith: Um, so prep mode, let's… before we design anything, let's talk about…
+
+00:37:53.000 --> 00:37:56.000
+Josh Smith: Content for prep mode.
+
+00:37:56.000 --> 00:37:59.000
+Josh Smith: So, let's move over, um…
+
+00:38:00.000 --> 00:38:03.000
+Josh Smith: Just because it's a tad easier.
+
+00:38:01.000 --> 00:38:03.000
+Nik Patel: Alright.
+
+00:38:03.000 --> 00:38:05.000
+Josh Smith: Uh, let's…
+
+00:38:05.000 --> 00:38:07.000
+Josh Smith: move.
+
+00:38:08.000 --> 00:38:10.000
+Josh Smith: Over here…
+
+00:38:13.000 --> 00:38:15.000
+Josh Smith: Alright.
+
+00:38:17.000 --> 00:38:19.000
+Josh Smith: Rep mode…
+
+00:38:22.000 --> 00:38:24.000
+Josh Smith: Go…
+
+00:38:33.000 --> 00:38:35.000
+Josh Smith: Hard to get in? Do you have to, like, sign in or something?
+
+00:38:37.000 --> 00:38:41.000
+Nik Patel: do what? I… I can't do, uh…
+
+00:38:41.000 --> 00:38:43.000
+Nik Patel: Where did you go?
+
+00:38:44.000 --> 00:38:46.000
+Josh Smith: Oh, I sent a link in chat.
+
+00:38:46.000 --> 00:38:48.000
+Nik Patel: Oh.
+
+00:38:54.000 --> 00:38:58.000
+Nik Patel: I can only view, there is no added access, but beyond that, I think it's okay.
+
+00:38:58.000 --> 00:39:00.000
+Josh Smith: You should have it. I opened a session.
+
+00:39:07.000 --> 00:39:12.000
+Nik Patel: Okay, no, I have it here, not on the Figma… the board thing.
+
+00:39:13.000 --> 00:39:19.000
+Josh Smith: Yeah. Um, let's talk about prep mode. What… what kind of objects would you see?
+
+00:39:19.000 --> 00:39:23.000
+Josh Smith: on that page, like, for instance, um…
+
+00:39:24.000 --> 00:39:26.000
+Josh Smith: Uh, you know, um…
+
+00:39:26.000 --> 00:39:31.000
+Josh Smith: Your, you know, is it, uh… today's events?
+
+00:39:32.000 --> 00:39:38.000
+Josh Smith: You know, is that an object where it's like a, you know, like, um, a view of…
+
+00:39:38.000 --> 00:39:40.000
+Josh Smith: you know, uh…
+
+00:39:40.000 --> 00:39:42.000
+Josh Smith: You know, in aggregate.
+
+00:39:42.000 --> 00:39:45.000
+Josh Smith: Of all your calendar events?
+
+00:39:47.000 --> 00:39:50.000
+Josh Smith: Uh, that are occurring that day?
+
+00:39:50.000 --> 00:39:57.000
+Nik Patel: Mm-hmm. That's another thing, is like, do we need a simpler way for them to actually go back to the calendar mode and.
+
+00:39:58.000 --> 00:40:04.000
+Nik Patel: email mode or whatever. I don't know if it matters right now, but just FYI. So, it can be calendar.
+
+00:40:04.000 --> 00:40:06.000
+Nik Patel: It can be a task.
+
+00:40:09.000 --> 00:40:12.000
+Josh Smith: Okay, so it's an aggregate of events and tasks.
+
+00:40:12.000 --> 00:40:14.000
+Nik Patel: Pretty much, yeah. Um…
+
+00:40:15.000 --> 00:40:16.000
+Nik Patel: I think…
+
+00:40:17.000 --> 00:40:19.000
+Nik Patel: I think so, yeah.
+
+00:40:19.000 --> 00:40:25.000
+Josh Smith: Alright, so it's an aggregate of all your calendar events or tasks that are occurring or due that day.
+
+00:40:26.000 --> 00:40:29.000
+Josh Smith: Um, you say maybe it's, like, sorted.
+
+00:40:29.000 --> 00:40:31.000
+Josh Smith: chronologically?
+
+00:40:30.000 --> 00:40:35.000
+Nik Patel: Chronologically, and what's the most urgent or new the soonest?
+
+00:40:38.000 --> 00:40:41.000
+Josh Smith: Okay? Great.
+
+00:40:41.000 --> 00:40:45.000
+Josh Smith: Alright, what other ideas do we have for this page, or is that it?
+
+00:40:46.000 --> 00:40:53.000
+Nik Patel: Um, that just shows the list view, and then once we have the list view, we can figure out, um…
+
+00:40:56.000 --> 00:40:58.000
+Nik Patel: like, what to actually show to prep.
+
+00:40:59.000 --> 00:41:01.000
+Josh Smith: Okay.
+
+00:41:01.000 --> 00:41:03.000
+Josh Smith: Okay.
+
+00:41:04.000 --> 00:41:07.000
+Nik Patel: By the way, off topic, but…
+
+00:41:07.000 --> 00:41:10.000
+Nik Patel: If I click on…
+
+00:41:12.000 --> 00:41:14.000
+Nik Patel: Trying to do something with this thing.
+
+00:41:14.000 --> 00:41:18.000
+Nik Patel: So, assume this is the app, right?
+
+00:41:18.000 --> 00:41:21.000
+Nik Patel: I tap on it, it basically does something.
+
+00:41:21.000 --> 00:41:25.000
+Nik Patel: And then users picks, and it does something.
+
+00:41:26.000 --> 00:41:33.000
+Nik Patel: Uh, what do you think of this X- I don't like the orb on the right outer side. Color-wise, what do I need to improve?
+
+00:41:37.000 --> 00:41:44.000
+Josh Smith: Color-wise, I'd, uh… I would not start with color, I'd just start with, uh, interaction. Um…
+
+00:41:43.000 --> 00:41:45.000
+Nik Patel: Okay.
+
+00:41:45.000 --> 00:41:52.000
+Josh Smith: I'd want to play with it. Color… but tonality's… the tonality just looks fine as it is right there. It's dark mode, though.
+
+00:41:53.000 --> 00:41:56.000
+Nik Patel: There is no mode. This is the colors we are going with.
+
+00:41:56.000 --> 00:41:58.000
+Josh Smith: Okay.
+
+00:41:57.000 --> 00:42:08.000
+Nik Patel: So, we'll figure it out. I had Claude just build something for me, just so I could see how much space do I have on the actual screen to be able to play with it, and it does feel like there is, like, decent enough.
+
+00:42:06.000 --> 00:42:08.000
+Josh Smith: Okay.
+
+00:42:08.000 --> 00:42:10.000
+Nik Patel: space, right? Um…
+
+00:42:10.000 --> 00:42:12.000
+Josh Smith: Yep.
+
+00:42:11.000 --> 00:42:17.000
+Nik Patel: I mean, I have a Pro Max, I have a much bigger screen than normal, but at least on the bigger screen, it's a good enough space.
+
+00:42:17.000 --> 00:42:19.000
+Josh Smith: Yeah, it looks fine.
+
+00:42:19.000 --> 00:42:21.000
+Nik Patel: Okay.
+
+00:42:19.000 --> 00:42:22.000
+Josh Smith: It looks fun, and the… the… yeah.
+
+00:42:23.000 --> 00:42:25.000
+Josh Smith: Yeah.
+
+00:42:23.000 --> 00:42:28.000
+Nik Patel: Alright, I'll continue to work through it, and it's just, you know, just wanted to see what this looks like.
+
+00:42:28.000 --> 00:42:31.000
+Josh Smith: Yeah. Would you do that right now?
+
+00:42:31.000 --> 00:42:34.000
+Nik Patel: Yeah, while I was chatting with you, it was working in the background.
+
+00:42:34.000 --> 00:42:36.000
+Josh Smith: Interesting.
+
+00:42:36.000 --> 00:42:44.000
+Josh Smith: Do you want to design out this one thing, today's events and tasks, in aggregate, and then, like, the list view, and then the detail view? Is that what… is it for prep?
+
+00:42:44.000 --> 00:42:46.000
+Nik Patel: I think so, um…
+
+00:42:48.000 --> 00:42:56.000
+Nik Patel: Right, when I think about prep, I generally am thinking about it in three different contexts. I think one thing we're missing.
+
+00:42:56.000 --> 00:43:04.000
+Nik Patel: It's just the people first, but that's something to worry about later. Alright, when I'm thinking about prep, I'm thinking about I need to get something done.
+
+00:43:04.000 --> 00:43:10.000
+Nik Patel: What does it mean? I need to do something for an event, meeting, or whatnot. What do I do?
+
+00:43:10.000 --> 00:43:19.000
+Nik Patel: And then I need to know about the person, like, I'm meeting someone for dinner, or we are going somewhere, how do I, like, be prepped to make sure that I…
+
+00:43:21.000 --> 00:43:27.000
+Nik Patel: I'm looking like a person in front of that person. So it's generally those type of things that come up.
+
+00:43:29.000 --> 00:43:34.000
+Nik Patel: if it's a task, it's more outcome-based, right? So, like, I need to get this done, what do I need to know?
+
+00:43:36.000 --> 00:43:39.000
+Nik Patel: What needs to happen, um, let's make it happen.
+
+00:43:39.000 --> 00:43:44.000
+Nik Patel: Um, if it's a meeting, who's invited, where is the meeting.
+
+00:43:45.000 --> 00:43:48.000
+Nik Patel: when do I need to leave if it's somewhere else?
+
+00:43:51.000 --> 00:43:54.000
+Nik Patel: What's the background on it, if there is an agent, uh…
+
+00:43:56.000 --> 00:44:01.000
+Nik Patel: Actually, agent doing the work and telling me, like, based on this needs to be discussed, here's what you need to know.
+
+00:44:02.000 --> 00:44:04.000
+Nik Patel: And then something.
+
+00:44:04.000 --> 00:44:07.000
+Nik Patel: And then, uh, people that are involved.
+
+00:44:08.000 --> 00:44:15.000
+Nik Patel: What does it mean? What is the role of those people, or what they have been doing, stuff like that. That's what I would think about from a meeting perspective.
+
+00:44:15.000 --> 00:44:19.000
+Nik Patel: And then if I'm walking into a meeting where it's more, like.
+
+00:44:21.000 --> 00:44:25.000
+Nik Patel: Actually, this would be pretty cool. I have not seen anyone do this.
+
+00:44:25.000 --> 00:44:28.000
+Nik Patel: when I'm walking into a meeting.
+
+00:44:28.000 --> 00:44:31.000
+Nik Patel: Generally, there are two modes. One is…
+
+00:44:31.000 --> 00:44:34.000
+Nik Patel: Let's collectively get work done.
+
+00:44:34.000 --> 00:44:36.000
+Nik Patel: Right? Um…
+
+00:44:37.000 --> 00:44:41.000
+Nik Patel: And it's important to know about the work that needs to be done, or…
+
+00:44:41.000 --> 00:44:44.000
+Nik Patel: Uh, a task that needs to be achieved or outcome that we want.
+
+00:44:44.000 --> 00:44:49.000
+Nik Patel: It's equally as important to understand the people that are involved in that meeting.
+
+00:44:49.000 --> 00:44:51.000
+Josh Smith: Mm-hmm.
+
+00:44:49.000 --> 00:44:51.000
+Nik Patel: And they're…
+
+00:44:51.000 --> 00:44:58.000
+Nik Patel: How do I work with them in a way to achieve the goal that we want to achieve? None of the meeting preps.
+
+00:44:58.000 --> 00:45:05.000
+Nik Patel: out there actually do that. They never focus on people. They only focus on tasks. I think if you start to focus on people equally.
+
+00:45:01.000 --> 00:45:03.000
+Josh Smith: Hmm.
+
+00:45:06.000 --> 00:45:08.000
+Nik Patel: That would put us in a much better spot.
+
+00:45:12.000 --> 00:45:14.000
+Josh Smith: Okay.
+
+00:45:15.000 --> 00:45:17.000
+Josh Smith: Okay.
+
+00:45:17.000 --> 00:45:19.000
+Josh Smith: That's a, uh…
+
+00:45:21.000 --> 00:45:25.000
+Josh Smith: That is a path… that is a path of conversation.
+
+00:45:26.000 --> 00:45:28.000
+Josh Smith: Um…
+
+00:45:28.000 --> 00:45:34.000
+Josh Smith: But what I'm hearing from you, you're kind of building, like, a bit of, like, a mind map as we're talking, and I should have been…
+
+00:45:35.000 --> 00:45:37.000
+Josh Smith: Uh…
+
+00:45:37.000 --> 00:45:39.000
+Josh Smith: Recording as you were chatting, but um…
+
+00:45:39.000 --> 00:45:41.000
+Nik Patel: We are recording.
+
+00:45:40.000 --> 00:45:44.000
+Josh Smith: Well, good. Oh, good. We are recording, so you can get this out.
+
+00:45:44.000 --> 00:45:46.000
+Nik Patel: Yep.
+
+00:45:45.000 --> 00:45:48.000
+Josh Smith: Because you were saying, like, um…
+
+00:45:49.000 --> 00:45:52.000
+Josh Smith: Um, logic prep mode, and then, um…
+
+00:45:53.000 --> 00:45:55.000
+Josh Smith: Meeting…
+
+00:45:55.000 --> 00:45:58.000
+Josh Smith: Task… um…
+
+00:46:01.000 --> 00:46:03.000
+Josh Smith: Um…
+
+00:46:05.000 --> 00:46:07.000
+Josh Smith: Meeting, task, movie event…
+
+00:46:09.000 --> 00:46:11.000
+Josh Smith: Um…
+
+00:46:13.000 --> 00:46:15.000
+Josh Smith: Uh…
+
+00:46:15.000 --> 00:46:17.000
+Josh Smith: Meeting, uh, you know, people…
+
+00:46:18.000 --> 00:46:20.000
+Josh Smith: No, uh…
+
+00:46:21.000 --> 00:46:23.000
+Josh Smith: positions, um…
+
+00:46:24.000 --> 00:46:28.000
+Josh Smith: Um, the roles, uh, the roles are responsibilities.
+
+00:46:32.000 --> 00:46:36.000
+Josh Smith: I should put those on separate sections. Roles…
+
+00:46:36.000 --> 00:46:39.000
+Josh Smith: responsibilities…
+
+00:46:39.000 --> 00:46:42.000
+Josh Smith: Um, even down to, um…
+
+00:46:43.000 --> 00:46:45.000
+Josh Smith: Intents and interests…
+
+00:46:46.000 --> 00:46:49.000
+Josh Smith: Um, you know, um…
+
+00:46:49.000 --> 00:46:51.000
+Josh Smith: Communication styles…
+
+00:46:52.000 --> 00:46:56.000
+Josh Smith: Um… meeting also is, like…
+
+00:46:56.000 --> 00:46:58.000
+Josh Smith: The agenda…
+
+00:46:59.000 --> 00:47:01.000
+Josh Smith: Uh, the goal or purpose…
+
+00:47:03.000 --> 00:47:04.000
+Josh Smith: Um, the location…
+
+00:47:05.000 --> 00:47:08.000
+Josh Smith: Um, of course, you know, date.
+
+00:47:08.000 --> 00:47:10.000
+Josh Smith: time, all those things.
+
+00:47:10.000 --> 00:47:13.000
+Josh Smith: task, you know, like…
+
+00:47:14.000 --> 00:47:16.000
+Josh Smith: you know, um…
+
+00:47:16.000 --> 00:47:18.000
+Josh Smith: Um…
+
+00:47:19.000 --> 00:47:21.000
+Josh Smith: Person responsible.
+
+00:47:22.000 --> 00:47:25.000
+Josh Smith: event, you know…
+
+00:47:26.000 --> 00:47:29.000
+Josh Smith: Pause dates, time…
+
+00:47:29.000 --> 00:47:31.000
+Josh Smith: Dress code…
+
+00:47:33.000 --> 00:47:36.000
+Josh Smith: You know, so, like, um, the idea of, like.
+
+00:47:37.000 --> 00:47:42.000
+Josh Smith: Being able to define, like, what's the most important… what are the most important pieces of information.
+
+00:47:42.000 --> 00:47:44.000
+Josh Smith: What are the types?
+
+00:47:45.000 --> 00:47:50.000
+Josh Smith: Uh, we have meeting task, I just said event, because if it's, like, it's not a meeting, but you're going to dinner. You mentioned, like.
+
+00:47:50.000 --> 00:47:52.000
+Nik Patel: Yeah.
+
+00:47:51.000 --> 00:47:52.000
+Josh Smith: Going out to dinner.
+
+00:47:53.000 --> 00:47:58.000
+Josh Smith: Date, time, location, dress code, uh, you know, transportation…
+
+00:48:00.000 --> 00:48:03.000
+Nik Patel: Same for meeting to… meeting as transportation.
+
+00:48:02.000 --> 00:48:04.000
+Josh Smith: Transportation…
+
+00:48:03.000 --> 00:48:05.000
+Nik Patel: optional.
+
+00:48:07.000 --> 00:48:09.000
+Josh Smith: Um…
+
+00:48:09.000 --> 00:48:12.000
+Josh Smith: You know, and, you know, event, if it's a dinner.
+
+00:48:12.000 --> 00:48:17.000
+Josh Smith: You know, or, uh, you know, there's still, like, a goal purpose if, you know, if you're going, um…
+
+00:48:19.000 --> 00:48:20.000
+Josh Smith: golfing.
+
+00:48:21.000 --> 00:48:26.000
+Josh Smith: Um… what do we know about these people? What's your… what's…
+
+00:48:26.000 --> 00:48:30.000
+Josh Smith: What's your agenda for that meeting?
+
+00:48:31.000 --> 00:48:35.000
+Josh Smith: What do you need to know, you know, dress this way, here's your etiquette.
+
+00:48:36.000 --> 00:48:41.000
+Josh Smith: You know, avoid these kinds of conversations. This dude, really, to talk about.
+
+00:48:39.000 --> 00:48:41.000
+Nik Patel: Yeah.
+
+00:48:41.000 --> 00:48:45.000
+Josh Smith: Phishing, and asking questions, you know.
+
+00:48:45.000 --> 00:48:51.000
+Nik Patel: And we had, like, in the original one, we had, like, this calendar, people, outcome type of.
+
+00:48:51.000 --> 00:48:57.000
+Nik Patel: menus. I wonder if those menus probably still have value, just a different way of slicing something.
+
+00:48:52.000 --> 00:48:54.000
+Josh Smith: Mm-hmm.
+
+00:48:57.000 --> 00:48:59.000
+Josh Smith: Yeah.
+
+00:48:58.000 --> 00:49:00.000
+Nik Patel: Because those are more directory…
+
+00:49:01.000 --> 00:49:03.000
+Nik Patel: standard experience type of stuff.
+
+00:49:03.000 --> 00:49:06.000
+Nik Patel: This is priority lens experience, in a way.
+
+00:49:07.000 --> 00:49:14.000
+Josh Smith: But if you can land on, like, these are definitely the ones, then I can take those as objects and we can design against them.
+
+00:49:14.000 --> 00:49:16.000
+Nik Patel: Yeah, I…
+
+00:49:18.000 --> 00:49:22.000
+Josh Smith: Even, like, recommendations, things that are more freeform from…
+
+00:49:24.000 --> 00:49:25.000
+Josh Smith: Or may I? Sorry.
+
+00:49:25.000 --> 00:49:27.000
+Nik Patel: Yeah. And I…
+
+00:49:27.000 --> 00:49:29.000
+Nik Patel: when I think about…
+
+00:49:29.000 --> 00:49:31.000
+Nik Patel: the prep, right? It's…
+
+00:49:32.000 --> 00:49:34.000
+Nik Patel: What, why, how, who.
+
+00:49:37.000 --> 00:49:41.000
+Nik Patel: Everything else probably fits in one of those four.
+
+00:49:37.000 --> 00:49:39.000
+Josh Smith: Um…
+
+00:49:42.000 --> 00:49:44.000
+Josh Smith: Okay.
+
+00:49:46.000 --> 00:49:48.000
+Nik Patel: So, what is this about?
+
+00:49:49.000 --> 00:49:51.000
+Nik Patel: Why does this matter?
+
+00:49:52.000 --> 00:49:56.000
+Nik Patel: How are we doing this, or how do we get where we need to get to, whatever that might be.
+
+00:49:57.000 --> 00:49:58.000
+Nik Patel: Uh, what…
+
+00:49:59.000 --> 00:50:05.000
+Nik Patel: the mechanisms of it, which is what I need to know, and then, uh, people, which is who.
+
+00:50:08.000 --> 00:50:12.000
+Nik Patel: And then different type of prep may have different type of…
+
+00:50:13.000 --> 00:50:16.000
+Nik Patel: Showcasing this, but it's between those four.
+
+00:50:16.000 --> 00:50:19.000
+Nik Patel: Unless I'm… unless I'm missing something.
+
+00:50:19.000 --> 00:50:21.000
+Josh Smith: Okay.
+
+00:50:22.000 --> 00:50:24.000
+Josh Smith: Alright.
+
+00:50:27.000 --> 00:50:31.000
+Nik Patel: And go, what, why, how, what, why, who, how.
+
+00:50:33.000 --> 00:50:35.000
+Nik Patel: Just from, like, a…
+
+00:50:34.000 --> 00:50:36.000
+Josh Smith: I am.
+
+00:50:37.000 --> 00:50:39.000
+Nik Patel: I like your perspective.
+
+00:50:40.000 --> 00:50:43.000
+Josh Smith: And so, from a design… from…
+
+00:50:43.000 --> 00:50:46.000
+Josh Smith: From the design side, you could potentially group.
+
+00:50:46.000 --> 00:50:48.000
+Josh Smith: the objects…
+
+00:50:48.000 --> 00:50:52.000
+Josh Smith: The pieces of data into those four buckets.
+
+00:50:51.000 --> 00:50:53.000
+Nik Patel: Into those for Markets app.
+
+00:50:52.000 --> 00:50:56.000
+Josh Smith: And so, in the… in the details view, so…
+
+00:50:57.000 --> 00:51:02.000
+Josh Smith: Prep is gonna have a list view, and then maybe it'll default to the next one.
+
+00:51:02.000 --> 00:51:10.000
+Josh Smith: And it'll show the past ones for the day. It'll default to the one that's right and upcoming, or the one that you're in the middle of.
+
+00:51:10.000 --> 00:51:12.000
+Josh Smith: And, um…
+
+00:51:13.000 --> 00:51:24.000
+Josh Smith: So if there… if there's one that's… that you're right in the middle of, yeah, it'll default. If there isn't one you're in the middle of, but there's one next, it'll default to that one, and it'll open that one in the details view, right to the right of it.
+
+00:51:24.000 --> 00:51:26.000
+Josh Smith: And it'll have…
+
+00:51:26.000 --> 00:51:28.000
+Josh Smith: this stuff. Uh…
+
+00:51:27.000 --> 00:51:32.000
+Nik Patel: Yeah, different type of information at different times, basically.
+
+00:51:31.000 --> 00:51:34.000
+Josh Smith: Okay. Um…
+
+00:51:34.000 --> 00:51:37.000
+Josh Smith: And I'm assuming that, um…
+
+00:51:37.000 --> 00:51:44.000
+Josh Smith: Um, under how, maybe, under the mechanisms, there's recommended actions…
+
+00:51:44.000 --> 00:51:46.000
+Nik Patel: Yeah.
+
+00:51:45.000 --> 00:51:49.000
+Josh Smith: You could… you could add… you could, um…
+
+00:51:49.000 --> 00:52:00.000
+Josh Smith: You could throw in documents and add documents if you want. You could associate that to a… you could associate that particular meeting to a bigger project.
+
+00:51:53.000 --> 00:51:55.000
+Nik Patel: Yeah.
+
+00:52:00.000 --> 00:52:02.000
+Nik Patel: Yep.
+
+00:52:01.000 --> 00:52:03.000
+Josh Smith: Okay.
+
+00:52:02.000 --> 00:52:09.000
+Nik Patel: And also, um, I think what would be cool is… so how is essentially what you need to know?
+
+00:52:09.000 --> 00:52:19.000
+Nik Patel: Right? And then person can figure out whatever they want to do with it. What would be cool is, as I'm prepping for it, I could give AI some task and say, like, alright, well, it's coming up in 2 hours.
+
+00:52:19.000 --> 00:52:25.000
+Nik Patel: can you go figure this, this, this, and this out for me? And then it essentially creates a section for, like, whatever you had asked.
+
+00:52:27.000 --> 00:52:28.000
+Nik Patel: So…
+
+00:52:29.000 --> 00:52:35.000
+Nik Patel: it's like a built-in task that we give to AIE, I just finished it, it's transactional.
+
+00:52:35.000 --> 00:52:42.000
+Nik Patel: But that's much better, if you could do that, because then prep is done not just as, like, information download to us.
+
+00:52:42.000 --> 00:52:49.000
+Nik Patel: But then, we have given something that we did not have time for. Indeed, the work in this context came back, and we are good.
+
+00:52:49.000 --> 00:52:52.000
+Josh Smith: Oh, kind of like, um…
+
+00:52:54.000 --> 00:52:56.000
+Josh Smith: You know, recommend…
+
+00:52:56.000 --> 00:53:01.000
+Josh Smith: Recommend menu items for me. Um…
+
+00:53:01.000 --> 00:53:03.000
+Josh Smith: Um…
+
+00:53:03.000 --> 00:53:11.000
+Josh Smith: recommend a wine, if it's, like, a dinner. Recommend… what wine should I recommend for this type of person? Give me 3 options.
+
+00:53:07.000 --> 00:53:09.000
+Nik Patel: Yeah.
+
+00:53:11.000 --> 00:53:21.000
+Josh Smith: So, I sent out an email to them, telling them I'll be there, because I haven't done that yet. RSVP, positive, uh, say yes. Um, take a look at the trans… take a look at.
+
+00:53:21.000 --> 00:53:27.000
+Josh Smith: patterns for traffic in the evenings, and let me know exactly what time I need to leave.
+
+00:53:24.000 --> 00:53:26.000
+Nik Patel: Yep.
+
+00:53:27.000 --> 00:53:31.000
+Josh Smith: Uh… hail an Uber for me.
+
+00:53:31.000 --> 00:53:34.000
+Josh Smith: Um, at that time. Uh…
+
+00:53:33.000 --> 00:53:35.000
+Nik Patel: Yep.
+
+00:53:34.000 --> 00:53:39.000
+Josh Smith: Um, so that I can walk out and be… and be right there for me.
+
+00:53:39.000 --> 00:53:45.000
+Nik Patel: Yep, exactly, and just going off of that same dinner type of thing.
+
+00:53:46.000 --> 00:53:49.000
+Nik Patel: Or let's say I was coming into this meeting with you.
+
+00:53:53.000 --> 00:54:00.000
+Nik Patel: I'm going… starting with dinner, though, is, alright, I'm going into this dinner. Last time I had talked with John about.
+
+00:54:01.000 --> 00:54:06.000
+Nik Patel: his new startup. Uh, can you check if there were any updates on his LinkedIn on the startup?
+
+00:54:06.000 --> 00:54:12.000
+Josh Smith: Mmm, oh, okay. Give me a profile on the folks, the most recent information on these folks.
+
+00:54:08.000 --> 00:54:10.000
+Nik Patel: Right?
+
+00:54:11.000 --> 00:54:19.000
+Nik Patel: Yeah, if we could figure that out. The other one, that is more, like, event-based, outside of our system, whatnot, internet search.
+
+00:54:20.000 --> 00:54:24.000
+Nik Patel: On the meetings, let's say you and I were having a meeting.
+
+00:54:25.000 --> 00:54:34.000
+Nik Patel: Well, Nick, you had said you would get the app ready, you have not, um, but you did research about XYZ things. Is any of these things worth bringing up?
+
+00:54:34.000 --> 00:54:40.000
+Nik Patel: oh yeah, this one's good to bring up. Can you find out some, uh, some examples of it that I can bring up so I'm prepared?
+
+00:54:41.000 --> 00:54:43.000
+Josh Smith: Gotcha.
+
+00:54:42.000 --> 00:54:48.000
+Nik Patel: Right? It's more… that's actually a chat mechanism, but it's very contextual chat mechanism.
+
+00:54:48.000 --> 00:54:52.000
+Nik Patel: It would do the work, and it would go away, it would do the work, go away, type of thing.
+
+00:54:52.000 --> 00:54:54.000
+Nik Patel: At least one, technically.
+
+00:54:55.000 --> 00:54:57.000
+Nik Patel: So…
+
+00:54:56.000 --> 00:55:03.000
+Josh Smith: Or yeah, figure out… figure out when Nik lives, check out the latest news articles from that area. Let me know if there's anything of interest.
+
+00:55:03.000 --> 00:55:05.000
+Josh Smith: To bring up.
+
+00:55:06.000 --> 00:55:11.000
+Josh Smith: Or… okay, I see. Or, if I know that Nick is working in this industry, in this space.
+
+00:55:12.000 --> 00:55:16.000
+Josh Smith: Send me some hot topic that's happening in that space right now.
+
+00:55:16.000 --> 00:55:25.000
+Nik Patel: Yeah, exactly. Uh, and it really depends on type of the event, type of the meeting, what you're doing, how you're gonna do about it, or go about doing it.
+
+00:55:25.000 --> 00:55:32.000
+Nik Patel: Um, but what I like is, let's say if we are preparing early, I might give some tasks to AI to do.
+
+00:55:33.000 --> 00:55:40.000
+Nik Patel: Right? And before we actually go into the meeting, AI could come back and say, like, hey, the meeting's coming up, I have done the work for you.
+
+00:55:40.000 --> 00:55:45.000
+Josh Smith: Oh, yeah. And then there's stuff that I would maybe want a reminder for, like, oh gosh.
+
+00:55:46.000 --> 00:55:51.000
+Josh Smith: AI can't pick up my dry cleaning, but it's right down the street. Just a reminder to ping me about that.
+
+00:55:51.000 --> 00:55:53.000
+Nik Patel: Yeah.
+
+00:55:52.000 --> 00:55:54.000
+Josh Smith: Okay.
+
+00:55:55.000 --> 00:55:57.000
+Josh Smith: Okay.
+
+00:55:58.000 --> 00:56:04.000
+Josh Smith: Okay. So, each detail section will have a back-and-forth kind of…
+
+00:56:05.000 --> 00:56:07.000
+Josh Smith: Either text-based or voice-based.
+
+00:56:08.000 --> 00:56:10.000
+Josh Smith: And while we're doing that, it will…
+
+00:56:12.000 --> 00:56:14.000
+Josh Smith: Detail out what the re… what the…
+
+00:56:15.000 --> 00:56:18.000
+Josh Smith: The outcomes were from that conversation.
+
+00:56:19.000 --> 00:56:23.000
+Josh Smith: Okay, so that should occupy the bulk of the experience.
+
+00:56:23.000 --> 00:56:28.000
+Josh Smith: All the other details should be there, like, nice to know, but…
+
+00:56:27.000 --> 00:56:29.000
+Nik Patel: Right.
+
+00:56:28.000 --> 00:56:31.000
+Josh Smith: It should probably…
+
+00:56:31.000 --> 00:56:33.000
+Josh Smith: This is designed to focus on.
+
+00:56:34.000 --> 00:56:38.000
+Josh Smith: Let's get you ready for this event. Let's get you ready for…
+
+00:56:37.000 --> 00:56:39.000
+Nik Patel: Yep.
+
+00:56:38.000 --> 00:56:40.000
+Josh Smith: Okay.
+
+00:56:39.000 --> 00:56:49.000
+Nik Patel: Exactly. Um, okay, I had to drop in a second, but hopefully this helps on, like, what do we do for prep, and I'll do some thinking on the eagle mode tomorrow.
+
+00:56:50.000 --> 00:56:54.000
+Nik Patel: Let me show you what the new version of this looks like.
+
+00:56:54.000 --> 00:56:56.000
+Nik Patel: So this is what the new version is.
+
+00:56:57.000 --> 00:56:59.000
+Nik Patel: The colors are a bit more…
+
+00:56:59.000 --> 00:57:03.000
+Nik Patel: The orb looks a little bit better, um…
+
+00:57:09.000 --> 00:57:14.000
+Josh Smith: Okay. Did you just make that again while we were chatting?
+
+00:57:14.000 --> 00:57:15.000
+Nik Patel: Yep, um…
+
+00:57:16.000 --> 00:57:19.000
+Josh Smith: Yes, it… it has a higher fidelity.
+
+00:57:16.000 --> 00:57:18.000
+Nik Patel: Sorry.
+
+00:57:19.000 --> 00:57:23.000
+Nik Patel: Yes. Um, I'm also used to multitasking, um…
+
+00:57:20.000 --> 00:57:22.000
+Josh Smith: 4.
+
+00:57:23.000 --> 00:57:31.000
+Nik Patel: So anyway, um, I'll actually get this hooked up and wired up and everything, so we can see full experience in action.
+
+00:57:31.000 --> 00:57:34.000
+Nik Patel: Uh, may not happen tomorrow, but this week for sure.
+
+00:57:36.000 --> 00:57:43.000
+Nik Patel: I… I think if we… if you have some time on this, and if you want to, like, go ahead and start drawing something.
+
+00:57:43.000 --> 00:57:48.000
+Nik Patel: or putting some sort of a screen around, that's great. If not, we can talk about that tomorrow.
+
+00:57:47.000 --> 00:57:52.000
+Josh Smith: I have some ideas already in my head on how this would be laid out, so…
+
+00:57:51.000 --> 00:57:56.000
+Nik Patel: Okay, awesome. Um, so I think that happens, then execution happens.
+
+00:57:57.000 --> 00:58:02.000
+Nik Patel: Um, so those 3 modes are good, and then we are essentially figuring out.
+
+00:58:02.000 --> 00:58:09.000
+Nik Patel: where does AI tracking goes, where does your to-do, calendar people, stuff like that. Um, once we, like, align them in a way.
+
+00:58:07.000 --> 00:58:09.000
+Josh Smith: Yeah.
+
+00:58:09.000 --> 00:58:12.000
+Nik Patel: that's probably MP ready.
+
+00:58:12.000 --> 00:58:14.000
+Josh Smith: Okay?
+
+00:58:14.000 --> 00:58:15.000
+Nik Patel: Getting closer.
+
+00:58:15.000 --> 00:58:15.000
+Josh Smith: Hi.
+
+00:58:17.000 --> 00:58:22.000
+Nik Patel: I'm sorry, I clicked on the wrong button, uh…
+
+00:58:21.000 --> 00:58:23.000
+Josh Smith: How are you feeling?
+
+00:58:22.000 --> 00:58:26.000
+Nik Patel: Pretty good, I'm actually pretty excited about how this is coming along.
+
+00:58:26.000 --> 00:58:31.000
+Nik Patel: It feels like it's giving the experience that feels natural, yet different.
+
+00:58:31.000 --> 00:58:38.000
+Nik Patel: I will see when we actually start using it if it's too different, but it doesn't feel like someone has a learning curve here, which was the important thing.
+
+00:58:38.000 --> 00:58:45.000
+Josh Smith: Good, good. And they're not thrown… lobbed at with tons of information and stuff they don't know what to do with, so…
+
+00:58:39.000 --> 00:58:41.000
+Nik Patel: So…
+
+00:58:45.000 --> 00:58:50.000
+Nik Patel: Yep, exactly. So, no, I'm pretty excited about this, for sure.
+
+00:58:46.000 --> 00:58:48.000
+Josh Smith: Right.
+
+00:58:49.000 --> 00:58:52.000
+Josh Smith: Great. Enjoy your day, man.
+
+00:58:52.000 --> 00:58:54.000
+Nik Patel: Alrighty, thank you, have a good one.

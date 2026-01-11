@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Priority Lens - Execution Mode Views</title>
+    <style>
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Priority Lens Color Palette */
+            --primary-50: #E8F4FC;
+            --primary-100: #C5E3F6;
+            --primary-200: #9DD0F0;
+            --primary-300: #74BDEA;
+            --primary-400: #4BAAE4;
+            --primary-500: #2297DE;
+            --primary-600: #1B79B5;
+            --primary-700: #155B8C;
+            --primary-800: #0E3D63;
+            --primary-900: #071F3A;
+
+            --neutral-50: #F8FAFC;
+            --neutral-100: #F1F5F9;
+            --neutral-200: #E2E8F0;
+            --neutral-300: #CBD5E1;
+            --neutral-400: #94A3B8;
+            --neutral-500: #64748B;
+            --neutral-600: #475569;
+            --neutral-700: #334155;
+            --neutral-800: #1E293B;
+            --neutral-900: #0F172A;
+
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --info: #3B82F6;
+
+            /* Fonts */
+            --font-serif: ui-serif, "New York", "Times New Roman", Times, Georgia, Cambria, serif;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: #f0f2f5;
+            padding: 20px;
+        }
+
+        /* Page Layout */
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--neutral-900);
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: var(--neutral-500);
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        /* Comparison Grid */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .view-section {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--neutral-200);
+        }
+
+        .section-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-current {
+            background: var(--neutral-200);
+            color: var(--neutral-700);
+        }
+
+        .badge-new {
+            background: var(--primary-100);
+            color: var(--primary-700);
+        }
+
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--neutral-900);
+        }
+
+        /* Phone Frame */
+        .phone-frame {
+            background: var(--neutral-900);
+            border-radius: 40px;
+            padding: 12px;
+            max-width: 320px;
+            margin: 0 auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .phone-screen {
+            background: var(--neutral-50);
+            border-radius: 32px;
+            overflow: hidden;
+            min-height: 600px;
+        }
+
+        .phone-notch {
+            background: var(--neutral-900);
+            width: 120px;
+            height: 28px;
+            border-radius: 0 0 20px 20px;
+            margin: 0 auto;
+        }
+
+        /* App Header */
+        .app-header {
+            padding: 16px 20px;
+            background: white;
+            border-bottom: 1px solid var(--neutral-100);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .task-progress {
+            font-size: 12px;
+            color: var(--neutral-500);
+        }
+
+        .view-toggle {
+            display: flex;
+            background: var(--neutral-100);
+            border-radius: 10px;
+            padding: 3px;
+        }
+
+        .toggle-btn {
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--neutral-500);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn.active {
+            background: white;
+            color: var(--neutral-900);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .task-title-section {
+            text-align: center;
+        }
+
+        .task-label {
+            font-size: 11px;
+            color: var(--neutral-400);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .task-name {
+            font-family: var(--font-serif);
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--neutral-900);
+        }
+
+        /* Card Swipe View */
+        .carousel-container {
+            padding: 24px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        .side-card {
+            width: 60px;
+            height: 280px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            opacity: 0.5;
+            transform: scale(0.85) rotateY(5deg);
+        }
+
+        .side-card-left {
+            transform: scale(0.85) rotateY(-5deg);
+        }
+
+        .main-card {
+            width: 260px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+            padding: 16px;
+            color: white;
+        }
+
+        .card-type-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .card-from {
+            font-size: 11px;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+
+        .card-sender {
+            font-family: var(--font-serif);
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .card-content {
+            padding: 16px;
+        }
+
+        .card-subject {
+            font-family: var(--font-serif);
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--neutral-900);
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .card-summary {
+            font-size: 13px;
+            color: var(--neutral-600);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: var(--neutral-500);
+        }
+
+        .meta-icon {
+            width: 14px;
+            height: 14px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-primary {
+            background: var(--primary-500);
+            color: white;
+        }
+
+        .action-secondary {
+            background: var(--neutral-100);
+            color: var(--neutral-700);
+        }
+
+        /* Progress Dots */
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            padding: 16px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--neutral-300);
+        }
+
+        .dot.active {
+            width: 20px;
+            background: var(--primary-500);
+        }
+
+        /* Question Section */
+        .question-section {
+            padding: 0 20px 16px;
+            text-align: center;
+        }
+
+        .question-text {
+            font-family: var(--font-serif);
+            font-size: 16px;
+            font-style: italic;
+            color: var(--neutral-700);
+            line-height: 1.5;
+        }
+
+        /* Bottom Actions */
+        .bottom-actions {
+            padding: 16px 20px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .bottom-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .btn-done {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-defer {
+            background: var(--neutral-200);
+            color: var(--neutral-700);
+        }
+
+        /* LIST VIEW STYLES */
+        .list-container {
+            padding: 12px 16px;
+        }
+
+        .list-item {
+            background: white;
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .list-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .list-item.selected {
+            border-color: var(--primary-500);
+            background: var(--primary-50);
+        }
+
+        .list-item-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .list-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary-400), var(--primary-600));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .list-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .list-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .list-sender {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--neutral-900);
+        }
+
+        .list-time {
+            font-size: 11px;
+            color: var(--neutral-400);
+        }
+
+        .list-subject {
+            font-size: 13px;
+            color: var(--neutral-700);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .list-badges {
+            display: flex;
+            gap: 6px;
+        }
+
+        .list-badge {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .badge-urgent {
+            background: #FEE2E2;
+            color: var(--error);
+        }
+
+        .badge-reply {
+            background: #DBEAFE;
+            color: var(--info);
+        }
+
+        .badge-fyi {
+            background: var(--neutral-100);
+            color: var(--neutral-600);
+        }
+
+        /* Expanded Card in List View */
+        .expanded-card {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--neutral-200);
+        }
+
+        .expanded-summary {
+            font-size: 12px;
+            color: var(--neutral-600);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .expanded-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .expanded-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Urgency Indicators */
+        .urgency-bar {
+            width: 3px;
+            height: 100%;
+            border-radius: 2px;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .urgency-critical { background: var(--error); }
+        .urgency-high { background: var(--warning); }
+        .urgency-medium { background: var(--primary-500); }
+        .urgency-low { background: var(--neutral-300); }
+
+        .list-item-wrapper {
+            position: relative;
+            padding-left: 8px;
+        }
+
+        /* Feature Callouts */
+        .feature-list {
+            margin-top: 24px;
+            padding: 16px;
+            background: var(--neutral-50);
+            border-radius: 12px;
+        }
+
+        .feature-list h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--neutral-700);
+            margin-bottom: 12px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: var(--neutral-600);
+        }
+
+        .feature-icon {
+            color: var(--success);
+            flex-shrink: 0;
+        }
+
+        /* Annotations */
+        .annotation {
+            position: absolute;
+            background: var(--neutral-900);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .annotation::before {
+            content: '';
+            position: absolute;
+            border: 6px solid transparent;
+        }
+
+        .annotation-left::before {
+            right: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-left-color: var(--neutral-900);
+        }
+
+        .annotation-right::before {
+            left: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-right-color: var(--neutral-900);
+        }
+
+        /* Description Text */
+        .view-description {
+            margin-top: 20px;
+            padding: 16px;
+            background: var(--neutral-50);
+            border-radius: 12px;
+        }
+
+        .view-description h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--neutral-700);
+            margin-bottom: 8px;
+        }
+
+        .view-description p {
+            font-size: 13px;
+            color: var(--neutral-600);
+            line-height: 1.6;
+        }
+
+        /* Toggle Detail Section */
+        .toggle-detail {
+            margin: 40px 0;
+            padding: 24px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .toggle-detail h3 {
+            font-family: var(--font-serif);
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--neutral-900);
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .toggle-preview {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            padding: 20px;
+            background: var(--neutral-50);
+            border-radius: 16px;
+        }
+
+        .toggle-component {
+            display: flex;
+            background: var(--neutral-200);
+            border-radius: 12px;
+            padding: 4px;
+        }
+
+        .toggle-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--neutral-500);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .toggle-option.active {
+            background: white;
+            color: var(--neutral-900);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-option svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .toggle-arrow {
+            color: var(--neutral-400);
+            font-size: 24px;
+        }
+
+        .toggle-label {
+            font-size: 12px;
+            color: var(--neutral-500);
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 900px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <h1 class="page-title">Execution Mode - View Options</h1>
+        <p class="page-subtitle">Toggle between focused card view and quick-scan list view</p>
+
+        <!-- Toggle Component Detail -->
+        <div class="toggle-detail">
+            <h3>View Toggle Component</h3>
+            <div class="toggle-preview">
+                <div>
+                    <div class="toggle-component">
+                        <div class="toggle-option active">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <rect x="3" y="3" width="18" height="18" rx="3" stroke-width="2"/>
+                            </svg>
+                            Cards
+                        </div>
+                        <div class="toggle-option">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                            </svg>
+                            List
+                        </div>
+                    </div>
+                    <p class="toggle-label">Placed in header, always accessible</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Grid -->
+        <div class="comparison-grid">
+            <!-- Current: Card Swipe View -->
+            <div class="view-section">
+                <div class="section-header">
+                    <span class="section-badge badge-current">Current</span>
+                    <h2 class="section-title">Card Swipe View</h2>
+                </div>
+
+                <div class="phone-frame">
+                    <div class="phone-screen">
+                        <div class="phone-notch"></div>
+
+                        <div class="app-header">
+                            <div class="header-top">
+                                <span class="task-progress">1 of 5 tasks</span>
+                                <div class="view-toggle">
+                                    <div class="toggle-btn active">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:14px;height:14px">
+                                            <rect x="3" y="3" width="18" height="18" rx="3" stroke-width="2"/>
+                                        </svg>
+                                    </div>
+                                    <div class="toggle-btn">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:14px;height:14px">
+                                            <path stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="task-title-section">
+                                <div class="task-label">Your Task</div>
+                                <div class="task-name">Q4 Budget Review</div>
+                            </div>
+                        </div>
+
+                        <div class="carousel-container">
+                            <div class="side-card side-card-left"></div>
+
+                            <div class="main-card">
+                                <div class="card-header">
+                                    <div class="card-type-badge">Needs Reply</div>
+                                    <div class="card-from">Email from</div>
+                                    <div class="card-sender">Sarah Chen</div>
+                                </div>
+                                <div class="card-content">
+                                    <div class="card-subject">Q4 Budget Review - Need your approval</div>
+                                    <div class="card-summary">Requesting approval for $45K marketing budget. Deadline is Friday. 3 attachments included.</div>
+                                    <div class="card-meta">
+                                        <div class="meta-item">
+                                            <svg class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                            2h ago
+                                        </div>
+                                        <div class="meta-item">
+                                            <svg class="meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                                            </svg>
+                                            3 files
+                                        </div>
+                                    </div>
+                                    <div class="card-actions">
+                                        <div class="action-btn action-primary">Reply</div>
+                                        <div class="action-btn action-secondary">Forward</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="side-card"></div>
+                        </div>
+
+                        <div class="progress-dots">
+                            <div class="dot active"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+
+                        <div class="question-section">
+                            <p class="question-text">"How would you like to respond to Sarah's budget request?"</p>
+                        </div>
+
+                        <div class="bottom-actions">
+                            <div class="bottom-btn btn-done">Done</div>
+                            <div class="bottom-btn btn-defer">Defer</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="view-description">
+                    <h4>Best for:</h4>
+                    <p>Deep focus on one task at a time. Full context and AI summary visible. Swipe gesture to preview next/previous tasks. Immersive experience for complex decisions.</p>
+                </div>
+
+                <div class="feature-list">
+                    <h4>Features</h4>
+                    <div class="feature-item">
+                        <span class="feature-icon">&#10003;</span>
+                        <span>Full card with AI summary and context</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">&#10003;</span>
+                        <span>Swipe left/right to navigate</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">&#10003;</span>
+                        <span>Peek at adjacent cards</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">&#10003;</span>
+                        <span>Progress dots show position</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New: List View -->
+            <div class="view-section">
+                <div class="section-header">
+                    <span class="section-badge badge-new">New</span>
+                    <h2 class="section-title">List View</h2>
+                </div>
+
+                <div class="phone-frame">
+                    <div class="phone-screen">
+                        <div class="phone-notch"></div>
+
+                        <div class="app-header">
+                            <div class="header-top">
+                                <span class="task-progress">5 tasks</span>
+                                <div class="view-toggle">
+                                    <div class="toggle-btn">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:14px;height:14px">
+                                            <rect x="3" y="3" width="18" height="18" rx="3" stroke-width="2"/>
+                                        </svg>
+                                    </div>
+                                    <div class="toggle-btn active">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:14px;height:14px">
+                                            <path stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="task-title-section">
+                                <div class="task-label">Your Queue</div>
+                                <div class="task-name">5 items need attention</div>
+                            </div>
+                        </div>
+
+                        <div class="list-container">
+                            <!-- Selected/Expanded Item -->
+                            <div class="list-item selected">
+                                <div class="list-item-header">
+                                    <div class="list-avatar">SC</div>
+                                    <div class="list-content">
+                                        <div class="list-top-row">
+                                            <span class="list-sender">Sarah Chen</span>
+                                            <span class="list-time">2h ago</span>
+                                        </div>
+                                        <div class="list-subject">Q4 Budget Review - Need your approval</div>
+                                        <div class="list-badges">
+                                            <span class="list-badge badge-urgent">Urgent</span>
+                                            <span class="list-badge badge-reply">Needs Reply</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Expanded Content -->
+                                <div class="expanded-card">
+                                    <div class="expanded-summary">Requesting approval for $45K marketing budget. Deadline is Friday. 3 attachments included with detailed breakdown.</div>
+                                    <div class="expanded-actions">
+                                        <div class="expanded-btn action-primary">Reply</div>
+                                        <div class="expanded-btn action-secondary">Forward</div>
+                                        <div class="expanded-btn btn-done" style="background: var(--success); color: white;">Done</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Regular Items -->
+                            <div class="list-item">
+                                <div class="list-item-header">
+                                    <div class="list-avatar" style="background: linear-gradient(135deg, #F59E0B, #D97706);">MJ</div>
+                                    <div class="list-content">
+                                        <div class="list-top-row">
+                                            <span class="list-sender">Mike Johnson</span>
+                                            <span class="list-time">4h ago</span>
+                                        </div>
+                                        <div class="list-subject">Contract renewal - DocuSign ready</div>
+                                        <div class="list-badges">
+                                            <span class="list-badge badge-reply">Action Required</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="list-item">
+                                <div class="list-item-header">
+                                    <div class="list-avatar" style="background: linear-gradient(135deg, #10B981, #059669);">TA</div>
+                                    <div class="list-content">
+                                        <div class="list-top-row">
+                                            <span class="list-sender">Team Asana</span>
+                                            <span class="list-time">5h ago</span>
+                                        </div>
+                                        <div class="list-subject">3 tasks assigned to you this week</div>
+                                        <div class="list-badges">
+                                            <span class="list-badge badge-fyi">FYI</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="list-item">
+                                <div class="list-item-header">
+                                    <div class="list-avatar" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED);">LR</div>
+                                    <div class="list-content">
+                                        <div class="list-top-row">
+                                            <span class="list-sender">Lisa Rodriguez</span>
+                                            <span class="list-time">Yesterday</span>
+                                        </div>
+                                        <div class="list-subject">Design review feedback needed</div>
+                                        <div class="list-badges">
+                                            <span class="list-badge badge-reply">Needs Reply</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="list-item">
+                                <div class="list-item-header">
+                                    <div class="list-avatar" style="background: linear-gradient(135deg, var(--neutral-400), var(--neutral-500));">HR</div>
+                                    <div class="list-content">
+                                        <div class="list-top-row">
+                                            <span class="list-sender">HR Department</span>
+                                            <span class="list-time">Yesterday</span>
+                                        </div>
+                                        <div class="list-subject">Benefits enrollment reminder</div>
+                                        <div class="list-badges">
+                                            <span class="list-badge badge-fyi">FYI</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="view-description">
+                    <h4>Best for:</h4>
+                    <p>Quick scanning and triage. See all tasks at a glance. Tap to expand details inline. Perfect for processing many items quickly or finding a specific task.</p>
+                </div>
+
+                <div class="feature-list">
+                    <h4>Features</h4>
+                    <div class="feature-item">
+                        <span class="feature-icon">&#10003;</span>
+                        <span>See all tasks at once</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">&#10003;</span>
+                        <span>Tap to expand with summary + actions</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">&#10003;</span>
+                        <span>Urgency badges for quick scanning</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">&#10003;</span>
+                        <span>Handle tasks inline without full card</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Flow Section -->
+        <div class="view-section" style="margin-bottom: 40px;">
+            <h2 class="section-title" style="margin-bottom: 20px;">User Flow</h2>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center;">
+                <div style="padding: 20px; background: var(--neutral-50); border-radius: 16px;">
+                    <div style="font-size: 32px; margin-bottom: 8px;">1</div>
+                    <div style="font-weight: 600; margin-bottom: 4px;">Toggle View</div>
+                    <div style="font-size: 13px; color: var(--neutral-500);">Switch between Cards and List using toggle in header</div>
+                </div>
+                <div style="padding: 20px; background: var(--neutral-50); border-radius: 16px;">
+                    <div style="font-size: 32px; margin-bottom: 8px;">2</div>
+                    <div style="font-weight: 600; margin-bottom: 4px;">Select Task</div>
+                    <div style="font-size: 13px; color: var(--neutral-500);">In List: tap to expand. In Cards: swipe to navigate</div>
+                </div>
+                <div style="padding: 20px; background: var(--neutral-50); border-radius: 16px;">
+                    <div style="font-size: 32px; margin-bottom: 8px;">3</div>
+                    <div style="font-weight: 600; margin-bottom: 4px;">Take Action</div>
+                    <div style="font-size: 13px; color: var(--neutral-500);">Reply, Forward, etc. Then mark Done or Defer</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Notes -->
+        <div class="view-section">
+            <h2 class="section-title" style="margin-bottom: 20px;">Implementation Notes</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div>
+                    <h4 style="font-size: 14px; color: var(--neutral-700); margin-bottom: 12px;">State Management</h4>
+                    <pre style="background: var(--neutral-900); color: var(--neutral-100); padding: 16px; border-radius: 12px; font-size: 12px; overflow-x: auto;">
+const [viewMode, setViewMode] = useState<'cards' | 'list'>('cards');
+const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+
+// Persist preference
+useEffect(() => {
+  AsyncStorage.setItem('executionViewMode', viewMode);
+}, [viewMode]);</pre>
+                </div>
+                <div>
+                    <h4 style="font-size: 14px; color: var(--neutral-700); margin-bottom: 12px;">Component Structure</h4>
+                    <pre style="background: var(--neutral-900); color: var(--neutral-100); padding: 16px; border-radius: 12px; font-size: 12px; overflow-x: auto;">
+&lt;ExecutionModeView&gt;
+  &lt;ViewToggle mode={viewMode} onChange={setViewMode} /&gt;
+
+  {viewMode === 'cards' ? (
+    &lt;TaskCarousel tasks={tasks} /&gt;
+  ) : (
+    &lt;TaskList
+      tasks={tasks}
+      selectedId={selectedTaskId}
+      onSelect={setSelectedTaskId}
+    /&gt;
+  )}
+&lt;/ExecutionModeView&gt;</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

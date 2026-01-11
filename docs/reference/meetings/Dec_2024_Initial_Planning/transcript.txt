@@ -1,0 +1,1426 @@
+WEBVTT
+
+00:01:42.000 --> 00:01:44.000
+Nik Patel: Hello.
+
+00:01:44.000 --> 00:01:46.000
+Josh Smith: Oh, hey, Nick, how you doing, man?
+
+00:01:46.000 --> 00:01:51.000
+Nik Patel: Good, um, sorry for being late, just been back-to-back last couple hours.
+
+00:01:53.000 --> 00:01:55.000
+Josh Smith: It's alright, man.
+
+00:01:53.000 --> 00:01:55.000
+Nik Patel: You feeling okay? You sound different.
+
+00:01:56.000 --> 00:02:01.000
+Josh Smith: Yeah, man, I've been… I've been pretty sick since I got back from a conference in Boston.
+
+00:02:02.000 --> 00:02:04.000
+Nik Patel: Uh…
+
+00:02:04.000 --> 00:02:10.000
+Nik Patel: Alright, well, hopefully this weekend's the weekend you get all the rest and get back to, uh, whatever normal means for you.
+
+00:02:10.000 --> 00:02:17.000
+Josh Smith: Yeah, I learned that if you go back to a conference… if you go to a conference, it's gonna be a super spreader event of some sort.
+
+00:02:17.000 --> 00:02:20.000
+Nik Patel: Yes. What was the conference about?
+
+00:02:21.000 --> 00:02:23.000
+Josh Smith: Um, it was for, um…
+
+00:02:23.000 --> 00:02:25.000
+Josh Smith: Um…
+
+00:02:26.000 --> 00:02:29.000
+Josh Smith: Red Rover, uh, company I'm with right now, um…
+
+00:02:29.000 --> 00:02:31.000
+Nik Patel: Oh, you work for Red Rover?
+
+00:02:31.000 --> 00:02:33.000
+Josh Smith: Yeah.
+
+00:02:32.000 --> 00:02:37.000
+Nik Patel: Oh, nice! Mike Sheldon, right? Like, that's the Mike Sheldon and, like, quite a few frontliners there?
+
+00:02:36.000 --> 00:02:38.000
+Josh Smith: Yeah. Yeah.
+
+00:02:39.000 --> 00:02:44.000
+Josh Smith: So, there was a… I'm working on their professional development product.
+
+00:02:45.000 --> 00:02:47.000
+Nik Patel: Got it.
+
+00:02:46.000 --> 00:02:54.000
+Josh Smith: And, uh, I went to a National Learning Forward Conference in Boston. It's professional growth, professional learning.
+
+00:02:54.000 --> 00:02:58.000
+Josh Smith: For K-12 district leaders, so, um.
+
+00:02:58.000 --> 00:03:03.000
+Josh Smith: Yeah, I went up there for 3 days, Monday to Wednesday, to just gather intel.
+
+00:03:04.000 --> 00:03:08.000
+Josh Smith: Um, and, um, I came back with…
+
+00:03:08.000 --> 00:03:10.000
+Josh Smith: This. Oh, yay!
+
+00:03:09.000 --> 00:03:11.000
+Nik Patel: That…
+
+00:03:11.000 --> 00:03:13.000
+Josh Smith: Wonderful.
+
+00:03:13.000 --> 00:03:15.000
+Josh Smith: Yeah.
+
+00:03:14.000 --> 00:03:16.000
+Nik Patel: Oh, man. Um…
+
+00:03:16.000 --> 00:03:18.000
+Josh Smith: You were, uh, you were out too.
+
+00:03:18.000 --> 00:03:21.000
+Nik Patel: I was in San Francisco, yes, um…
+
+00:03:23.000 --> 00:03:25.000
+Nik Patel: For what it's worth, it was a good…
+
+00:03:25.000 --> 00:03:32.000
+Nik Patel: a good couple days. I was there only for, like, 2 days. We had this, like, Gartner workshop. We are…
+
+00:03:34.000 --> 00:03:39.000
+Nik Patel: the team that I'm working in, we are building an AI accelerator.
+
+00:03:40.000 --> 00:03:45.000
+Nik Patel: And, uh, we got a decent size of funding, or decent enough, uh.
+
+00:03:45.000 --> 00:03:54.000
+Nik Patel: for what I would consider good. We asked for more. We asked for, like, 10 million for next year. They gave us 6 million, which…
+
+00:03:54.000 --> 00:03:56.000
+Nik Patel: It's better than zero?
+
+00:03:56.000 --> 00:04:01.000
+Nik Patel: Um, and then from 27 onwards, they are committing to 10 million per year, so…
+
+00:04:02.000 --> 00:04:13.000
+Nik Patel: we were, like, all happy that we got the funding, but now it's… it's one of those startup moments. It's like, oh, I got the… I got the funding, and we invested in me, and the next moment is like, oh, what am I supposed to do with this money, and…
+
+00:04:13.000 --> 00:04:18.000
+Nik Patel: How do I make sure that this money actually shows some value, right? So…
+
+00:04:18.000 --> 00:04:25.000
+Nik Patel: We were just, uh, discussing through that, and had, like, a workshop and, um, team celebration event and stuff like that, but yeah, it was… it was pretty fun.
+
+00:04:26.000 --> 00:04:28.000
+Josh Smith: Awesome, congrats!
+
+00:04:28.000 --> 00:04:34.000
+Nik Patel: Thank you, it's, uh… it's been a bunch… lots of work. Well, actually, funny enough.
+
+00:04:34.000 --> 00:04:42.000
+Nik Patel: I have had worse days trying to get smaller things approved for like $5,000 and $50,000 than it took me to get 6 million, so…
+
+00:04:44.000 --> 00:04:45.000
+Nik Patel: It's funny in a way.
+
+00:04:45.000 --> 00:04:48.000
+Josh Smith: Yeah, oh, reminds me of…
+
+00:04:49.000 --> 00:04:53.000
+Josh Smith: you know, one thing I learned really early on in business, uh, when I was…
+
+00:04:53.000 --> 00:04:57.000
+Josh Smith: Doing contract photography work is that…
+
+00:04:58.000 --> 00:05:04.000
+Josh Smith: Um, when I charge a low amount, like, all my low deals, like.
+
+00:05:05.000 --> 00:05:08.000
+Josh Smith: You know, $100 to $1,000 deals.
+
+00:05:08.000 --> 00:05:12.000
+Josh Smith: The customers were always the piggiest.
+
+00:05:11.000 --> 00:05:13.000
+Nik Patel: Yes, yes, yep.
+
+00:05:12.000 --> 00:05:15.000
+Josh Smith: And the fussiest. And…
+
+00:05:14.000 --> 00:05:16.000
+Nik Patel: Yep.
+
+00:05:16.000 --> 00:05:20.000
+Josh Smith: Always just put you through the wringer, and…
+
+00:05:20.000 --> 00:05:24.000
+Josh Smith: Made you work for every dollar.
+
+00:05:24.000 --> 00:05:29.000
+Josh Smith: But when I had clients that charged me, like, 5, 10K.
+
+00:05:30.000 --> 00:05:38.000
+Josh Smith: They were like, I'm paying you because I trust you, and I know you're gonna do the work, and I expect you to do, so I'm gonna be hands-off.
+
+00:05:38.000 --> 00:05:42.000
+Nik Patel: Yeah, just, uh, make sure you deliver, yeah. Those are the best.
+
+00:05:40.000 --> 00:05:44.000
+Josh Smith: Make sure you deliver. And it's just like…
+
+00:05:44.000 --> 00:05:52.000
+Josh Smith: Why is it so… why is it so much harder for those lower amounts with these people, when the folks that have tons of money, when they.
+
+00:05:47.000 --> 00:05:49.000
+Nik Patel: Yep.
+
+00:05:53.000 --> 00:05:56.000
+Josh Smith: They kind of like just hand it to you and they're like.
+
+00:05:56.000 --> 00:05:58.000
+Josh Smith: Get it done. Yeah.
+
+00:05:58.000 --> 00:06:01.000
+Nik Patel: Uh, yeah, it's such an irony, in a way.
+
+00:06:01.000 --> 00:06:03.000
+Josh Smith: Yeah.
+
+00:06:01.000 --> 00:06:07.000
+Nik Patel: Um… okay. So, to, I think, catch you up a little bit on…
+
+00:06:08.000 --> 00:06:11.000
+Nik Patel: I did not have a chance to do any hands-on yet.
+
+00:06:12.000 --> 00:06:15.000
+Nik Patel: I'm hoping I can actually get to it this weekend, now that I'm back.
+
+00:06:16.000 --> 00:06:20.000
+Nik Patel: But, um, did look into some of the options on what's out there for.
+
+00:06:21.000 --> 00:06:26.000
+Nik Patel: voice agents, what can we use? Like, what might be some good options?
+
+00:06:27.000 --> 00:06:29.000
+Nik Patel: I just need to play with them, see what happens.
+
+00:06:29.000 --> 00:06:32.000
+Nik Patel: then I was starting to look into…
+
+00:06:33.000 --> 00:06:40.000
+Nik Patel: animations for waveform. So, like, when someone talks, like, how do we show that waveform, and how do we make it look good, and all that.
+
+00:06:41.000 --> 00:06:45.000
+Nik Patel: 11Labs has some React components already built.
+
+00:06:45.000 --> 00:06:54.000
+Nik Patel: I'm seeing, like, if anyone has React Native components, not much out there, but it shouldn't be that big of a deal either. There are, like, some tutorials out there that.
+
+00:06:54.000 --> 00:06:58.000
+Nik Patel: That shows how you can make it look nicer, so at least that's good.
+
+00:06:59.000 --> 00:07:03.000
+Nik Patel: Um… then I got into this whole…
+
+00:07:04.000 --> 00:07:14.000
+Nik Patel: uh, rabbit hole yesterday on the websites, and how much of the website is just, like, a static page versus, like, with some 3D animation that actually.
+
+00:07:08.000 --> 00:07:10.000
+Josh Smith: Oh.
+
+00:07:14.000 --> 00:07:16.000
+Nik Patel: Tells the story a little bit better.
+
+00:07:16.000 --> 00:07:21.000
+Nik Patel: Um, so I did see, like, some websites, like, alright, this…
+
+00:07:21.000 --> 00:07:28.000
+Nik Patel: It's an amazing way to tell a story, where it's more visual and less words, and that felt pretty good, and to me, actually, even on brand.
+
+00:07:30.000 --> 00:07:35.000
+Nik Patel: So, then I started thinking about, can we do any animation as part of the app?
+
+00:07:36.000 --> 00:07:40.000
+Nik Patel: Went into seeing, uh, Lottie and…
+
+00:07:40.000 --> 00:07:48.000
+Nik Patel: Skia and, like, some other animation frameworks out there, and was thinking, like, could we use any of that to, like.
+
+00:07:48.000 --> 00:07:52.000
+Nik Patel: Somehow show some meaningful onboarding.
+
+00:07:52.000 --> 00:08:01.000
+Nik Patel: Um, and then went into messaging and, like, spent hours on messaging, just going back and forth on how I want to talk about it, which is what I ended up sending you.
+
+00:08:01.000 --> 00:08:04.000
+Nik Patel: So that's been… that's been my update.
+
+00:08:05.000 --> 00:08:09.000
+Nik Patel: The other thing I'd say, I don't have my phone on me right now, but…
+
+00:08:09.000 --> 00:08:11.000
+Nik Patel: Oh, do I… do you mind if I record the call?
+
+00:08:12.000 --> 00:08:14.000
+Josh Smith: Yeah, good, man.
+
+00:08:20.000 --> 00:08:22.000
+Nik Patel: So…
+
+00:08:22.000 --> 00:08:28.000
+Nik Patel: the, uh, the gesture that I had, um, I had built with the, um, uh, To-do app, heads up.
+
+00:08:28.000 --> 00:08:36.000
+Nik Patel: where I can, like, do double tap on the phone, and it basically opened a voice mode, uh, is turning out to be a habit-forming.
+
+00:08:37.000 --> 00:08:44.000
+Nik Patel: Uh, thing, actually. So, anytime I think about a task, now I'm actually starting to, like, just look for a phone and tap, tap, talk.
+
+00:08:44.000 --> 00:08:46.000
+Nik Patel: And then I'm done.
+
+00:08:47.000 --> 00:08:49.000
+Nik Patel: I created…
+
+00:08:50.000 --> 00:08:57.000
+Nik Patel: an interesting way to get to it without even a double tap, which is, I would essentially call, hey Siri, heads up.
+
+00:08:57.000 --> 00:09:03.000
+Nik Patel: heads up is the app name. So as soon as they say, hey, Siri, heads up, uh, it essentially OP… it…
+
+00:09:03.000 --> 00:09:12.000
+Nik Patel: Siri sends me an intent on the app to say, like, something needs to happen, and when that intent comes through, I'm literally just opening up a voicemail, and you can start talking.
+
+00:09:14.000 --> 00:09:19.000
+Nik Patel: So, even with Siri, I found a way to, like, not need to touch anything and still, like, go through it.
+
+00:09:20.000 --> 00:09:24.000
+Nik Patel: And the reason I was interested in that is, um, I've been…
+
+00:09:25.000 --> 00:09:31.000
+Nik Patel: trying to get onto this, like, note takers, I'm sure you have seen this, devices that are, like.
+
+00:09:32.000 --> 00:09:37.000
+Nik Patel: Note-taker devices, where you could, like, record the meeting, record the call, and…
+
+00:09:37.000 --> 00:09:43.000
+Nik Patel: Not like the ones that you virtually onboard, but it's something that's like an actual physical device that you could take anywhere with you.
+
+00:09:44.000 --> 00:09:47.000
+Nik Patel: Um, so I bought one, I've been trying to sort of, like.
+
+00:09:48.000 --> 00:09:50.000
+Nik Patel: Push myself to use it more.
+
+00:09:50.000 --> 00:09:55.000
+Nik Patel: But it's like, when I need it, where is the device, and what am I supposed to do with it?
+
+00:09:56.000 --> 00:10:01.000
+Nik Patel: And what's been easier, or would have been easier, is my phone's always with me.
+
+00:10:01.000 --> 00:10:06.000
+Nik Patel: So if I… if I could somehow, like, provide that intent to a phone that it's time.
+
+00:10:07.000 --> 00:10:10.000
+Nik Patel: Right? Uh, and it starts recording, that's the best I can expect.
+
+00:10:11.000 --> 00:10:16.000
+Nik Patel: So let's say I'm in a meeting, and I'm, like, at a dinner, and we are talking about something. It's like, oh, this is a great conversation.
+
+00:10:16.000 --> 00:10:19.000
+Nik Patel: Hey, CD, um, ask head stub.
+
+00:10:19.000 --> 00:10:21.000
+Nik Patel: Ask Priority Lens to start recording.
+
+00:10:21.000 --> 00:10:27.000
+Nik Patel: And then, next thing you know, right, it just does it, and from there on, it creates the notes and does everything.
+
+00:10:28.000 --> 00:10:33.000
+Nik Patel: within the priority lens, like, okay, now we are getting the context that I wouldn't have…
+
+00:10:33.000 --> 00:10:35.000
+Nik Patel: Gotten just by doing integrations.
+
+00:10:38.000 --> 00:10:41.000
+Nik Patel: Anyway, so that's something I started thinking through as well.
+
+00:10:42.000 --> 00:10:46.000
+Nik Patel: And that's pretty much as far as I got last week.
+
+00:10:46.000 --> 00:10:48.000
+Josh Smith: Okay.
+
+00:10:48.000 --> 00:10:53.000
+Nik Patel: Still no coding, but the week's not over yet, so we'll see.
+
+00:10:53.000 --> 00:10:58.000
+Josh Smith: Well, you still appear to have made quite a number of advancements?
+
+00:10:58.000 --> 00:11:00.000
+Nik Patel: Yes, I guess.
+
+00:11:01.000 --> 00:11:06.000
+Nik Patel: I did want to really do some coding while I was away, because that would have been the time where.
+
+00:11:06.000 --> 00:11:14.000
+Nik Patel: No other responsibilities, just in the hotel room, knock it out. It just didn't work out like that, so… bit bummed by that, but hey, we can still hear, and I…
+
+00:11:14.000 --> 00:11:18.000
+Nik Patel: I have a feeling we're gonna push it through, and we'll get something done.
+
+00:11:18.000 --> 00:11:23.000
+Josh Smith: Yeah, of course. And, um… hey, I'm on, um…
+
+00:11:24.000 --> 00:11:27.000
+Josh Smith: I'm on your time and pacing, so…
+
+00:11:28.000 --> 00:11:30.000
+Josh Smith: Um…
+
+00:11:32.000 --> 00:11:34.000
+Josh Smith: Let's…
+
+00:11:34.000 --> 00:11:36.000
+Josh Smith: In this time.
+
+00:11:36.000 --> 00:11:38.000
+Nik Patel: Mm-hmm.
+
+00:11:37.000 --> 00:11:39.000
+Josh Smith: Let's first make sure…
+
+00:11:40.000 --> 00:11:45.000
+Josh Smith: We get down a scheduled weekly cadence of connection.
+
+00:11:45.000 --> 00:11:46.000
+Nik Patel: Yeah.
+
+00:11:45.000 --> 00:11:47.000
+Josh Smith: Unless you prefer…
+
+00:11:47.000 --> 00:11:49.000
+Josh Smith: extemporaneous.
+
+00:11:49.000 --> 00:11:51.000
+Josh Smith: Connection, but…
+
+00:11:51.000 --> 00:11:56.000
+Nik Patel: I… I think it's good to have something on the calendar, um…
+
+00:11:57.000 --> 00:12:05.000
+Nik Patel: But likely, chances that if it's during the day, um, we might have to, like, shift around, depending on how the day is going for both of us.
+
+00:12:06.000 --> 00:12:08.000
+Josh Smith: Let's do, um…
+
+00:12:11.000 --> 00:12:18.000
+Josh Smith: Are you, uh… are you more of a Monday, Wednesday, or Tuesday, Thursday, or…
+
+00:12:18.000 --> 00:12:21.000
+Josh Smith: Wednesday, Friday…
+
+00:12:21.000 --> 00:12:24.000
+Nik Patel: So, Friday works…
+
+00:12:24.000 --> 00:12:29.000
+Nik Patel: Pretty much 90% of the time, just mainly because others are not working Fridays, which.
+
+00:12:30.000 --> 00:12:32.000
+Nik Patel: Which means I can. Uh…
+
+00:12:31.000 --> 00:12:33.000
+Josh Smith: Mhm.
+
+00:12:33.000 --> 00:12:36.000
+Nik Patel: Mmm… let's see.
+
+00:12:36.000 --> 00:12:40.000
+Nik Patel: So, normally, I do have this 5 to 6pm meeting with, um…
+
+00:12:40.000 --> 00:12:42.000
+Nik Patel: With one of the client every day.
+
+00:12:43.000 --> 00:12:45.000
+Josh Smith: Every day.
+
+00:12:44.000 --> 00:12:46.000
+Nik Patel: Uh, every weekday, yeah.
+
+00:12:46.000 --> 00:12:48.000
+Josh Smith: Alright, fun.
+
+00:12:49.000 --> 00:12:56.000
+Nik Patel: Yeah, I mean, they're West Coast, so it's like, oh, it's 3PM for me, and it's like, fair, it's 3PM for you, you know? It also makes it easy, because I think I can, like.
+
+00:12:53.000 --> 00:12:55.000
+Josh Smith: Yeah.
+
+00:12:56.000 --> 00:13:00.000
+Nik Patel: Bit more, uh, available there.
+
+00:13:00.000 --> 00:13:02.000
+Nik Patel: Um…
+
+00:13:02.000 --> 00:13:07.000
+Nik Patel: I'm checking my schedule, the good part is I'm expecting my schedule to, like.
+
+00:13:07.000 --> 00:13:12.000
+Nik Patel: Be more open, at least for next couple weeks, as people start to, like, head out for vacation.
+
+00:13:12.000 --> 00:13:14.000
+Josh Smith: Yeah.
+
+00:13:13.000 --> 00:13:18.000
+Nik Patel: So, what… what time would work for you, if we were to chat through things?
+
+00:13:21.000 --> 00:13:24.000
+Nik Patel: Because you're Eastern, right? So you're even ahead…
+
+00:13:25.000 --> 00:13:27.000
+Nik Patel: An hour ahead of me.
+
+00:13:27.000 --> 00:13:29.000
+Nik Patel: I'm curious if there is, like, a…
+
+00:13:29.000 --> 00:13:32.000
+Nik Patel: Evening's better for you, morning's better for you, um…
+
+00:13:33.000 --> 00:13:36.000
+Nik Patel: If afternoons, we just have to find some time and make sure I can stick to it.
+
+00:13:38.000 --> 00:13:41.000
+Josh Smith: take a look at your schedule. We'll do a Friday.
+
+00:13:42.000 --> 00:13:46.000
+Josh Smith: And… a Tuesday or a Wednesday.
+
+00:13:47.000 --> 00:13:51.000
+Nik Patel: I will… in that case, I will probably pick Wednesday.
+
+00:13:51.000 --> 00:13:54.000
+Josh Smith: Wednesday. Alright.
+
+00:13:52.000 --> 00:13:57.000
+Nik Patel: Yeah. So, um, that said, on 24th.
+
+00:13:58.000 --> 00:14:01.000
+Nik Patel: We are picking up a new car, so…
+
+00:14:01.000 --> 00:14:07.000
+Nik Patel: that might get a little shaky, that's the 24th, so it's Christmas Eve, and I'm not sure if you're working that day to begin with.
+
+00:14:09.000 --> 00:14:15.000
+Nik Patel: But at least let's… let's nail down next week, and then week after, I think we have to just adjust to holiday schedules and stuff like that.
+
+00:14:16.000 --> 00:14:21.000
+Josh Smith: Oh, yeah, if we did… our Wednesday-Friday cadence would be…
+
+00:14:21.000 --> 00:14:25.000
+Josh Smith: Would need to shift for next week and the week after.
+
+00:14:25.000 --> 00:14:30.000
+Josh Smith: Uh, for that Wednesday, because that's New Year's Eve, too.
+
+00:14:27.000 --> 00:14:29.000
+Nik Patel: Yeah.
+
+00:14:29.000 --> 00:14:31.000
+Nik Patel: New Year's Eve, exactly.
+
+00:14:30.000 --> 00:14:33.000
+Josh Smith: Yeah, your Christmas Eve and your New Year's Eve.
+
+00:14:33.000 --> 00:14:35.000
+Josh Smith: Um…
+
+00:14:36.000 --> 00:14:38.000
+Josh Smith: Uh, yep.
+
+00:14:38.000 --> 00:14:40.000
+Josh Smith: Good old Saturnalia.
+
+00:14:40.000 --> 00:14:42.000
+Josh Smith: You ever heard of that?
+
+00:14:43.000 --> 00:14:45.000
+Josh Smith: No? Yeah.
+
+00:14:43.000 --> 00:14:47.000
+Nik Patel: Now, that said, um, we started Tumble Leaf.
+
+00:14:47.000 --> 00:14:55.000
+Nik Patel: with Ye, and we've been, like, watching it every day. It's pretty good, actually. I like it, I like watching it, too. It's like, oh, this is a good way for me to, like.
+
+00:14:48.000 --> 00:14:50.000
+Josh Smith: What'd you think?
+
+00:14:55.000 --> 00:15:00.000
+Nik Patel: Talk to him about something, an object, or… we saw, like, kite and torch, and, you know.
+
+00:14:58.000 --> 00:15:00.000
+Josh Smith: Yeah.
+
+00:15:01.000 --> 00:15:03.000
+Josh Smith: Yeah.
+
+00:15:01.000 --> 00:15:04.000
+Nik Patel: All sorts of things, and it's like, this is pretty good.
+
+00:15:04.000 --> 00:15:11.000
+Josh Smith: Oh, awesome! Dude, I loved it. I was so happy it was… it was around when my boys were young, because, yeah, I'm like, oh…
+
+00:15:05.000 --> 00:15:07.000
+Nik Patel: Yeah, I like it.
+
+00:15:10.000 --> 00:15:12.000
+Nik Patel: Yeah.
+
+00:15:11.000 --> 00:15:14.000
+Josh Smith: They're, I mean objects and.
+
+00:15:14.000 --> 00:15:19.000
+Josh Smith: They're, it's slow and it teaches them things about using objects and.
+
+00:15:18.000 --> 00:15:21.000
+Nik Patel: Yeah. Yep.
+
+00:15:20.000 --> 00:15:22.000
+Josh Smith: Yeah. That's cool.
+
+00:15:23.000 --> 00:15:26.000
+Josh Smith: Um… glad it worked. Um…
+
+00:15:28.000 --> 00:15:31.000
+Josh Smith: What about somewhere between…
+
+00:15:33.000 --> 00:15:37.000
+Josh Smith: 4 and 6 CT PM.
+
+00:15:37.000 --> 00:15:40.000
+Josh Smith: On Wednesday and Friday as a normal cadence.
+
+00:15:42.000 --> 00:15:45.000
+Nik Patel: I think it's probably gonna be 4…
+
+00:15:45.000 --> 00:15:49.000
+Nik Patel: Yeah, next week I'll block 4 to 5, for sure.
+
+00:15:49.000 --> 00:15:51.000
+Josh Smith: CT.
+
+00:15:50.000 --> 00:15:54.000
+Nik Patel: Yeah, CD. And then, um…
+
+00:15:55.000 --> 00:16:01.000
+Nik Patel: if I can move the other meeting, I could probably do all 4 to 6. Or, also, do you want to do 2 or 3 next week?
+
+00:16:02.000 --> 00:16:05.000
+Josh Smith: Up to you. I'll do as many as…
+
+00:16:03.000 --> 00:16:08.000
+Nik Patel: why don't we shoot for 3? My goal is that by the time we get into Christmas week.
+
+00:16:09.000 --> 00:16:17.000
+Nik Patel: Not Christmas week, like, by the time we get to Christmas, um, I have enough to be able to come out in the new year with, like, okay, I have built something.
+
+00:16:17.000 --> 00:16:22.000
+Nik Patel: Because that's the week when I know no one's working, and I can essentially, like, go into my…
+
+00:16:22.000 --> 00:16:24.000
+Nik Patel: Code, code mode.
+
+00:16:24.000 --> 00:16:28.000
+Josh Smith: Alright. Wanna do a Monday, Wednesday, Friday next week?
+
+00:16:28.000 --> 00:16:32.000
+Nik Patel: Yeah, let's do that. Uh, Monday, 4 to 5.30 is…
+
+00:16:32.000 --> 00:16:35.000
+Nik Patel: Already, uh, taken, though.
+
+00:16:36.000 --> 00:16:39.000
+Nik Patel: I will… well, I don't know if it's gonna work out.
+
+00:16:40.000 --> 00:16:44.000
+Josh Smith: Well, how about 5… how about if, uh…
+
+00:16:44.000 --> 00:16:49.000
+Josh Smith: About, oh, your 4 to 5:30 is taken CT.
+
+00:16:49.000 --> 00:16:51.000
+Nik Patel: See this taken, yeah.
+
+00:16:54.000 --> 00:16:57.000
+Josh Smith: And how about your 5:30 to 6:30s?
+
+00:16:56.000 --> 00:17:00.000
+Nik Patel: Yeah, that's fine. Anytime after 5.30, I'll make it work.
+
+00:17:02.000 --> 00:17:07.000
+Josh Smith: Well, let's do a Monday, Wednesday, Friday, 5:30 to 6:30. How does that feel?
+
+00:17:07.000 --> 00:17:13.000
+Nik Patel: Oh, no. Uh, so Monday 5.30 to 6.30, I think Wednesday 4 to 5.
+
+00:17:13.000 --> 00:17:17.000
+Nik Patel: And then Friday, uh, we are seeing 4 to 5 as well.
+
+00:17:14.000 --> 00:17:16.000
+Josh Smith: Got it.
+
+00:17:17.000 --> 00:17:18.000
+Josh Smith: Yep.
+
+00:17:17.000 --> 00:17:19.000
+Nik Patel: Okay.
+
+00:17:19.000 --> 00:17:20.000
+Josh Smith: Sound good?
+
+00:17:19.000 --> 00:17:21.000
+Nik Patel: Yep.
+
+00:17:22.000 --> 00:17:24.000
+Josh Smith: Alright.
+
+00:17:31.000 --> 00:17:37.000
+Nik Patel: I think as I'm thinking about what we do next, it seems like we have a really good handle on.
+
+00:17:37.000 --> 00:17:39.000
+Nik Patel: Well, let me put it that way.
+
+00:17:39.000 --> 00:17:43.000
+Nik Patel: Ball's in my court to be able to actually build something and experience it.
+
+00:17:44.000 --> 00:17:47.000
+Nik Patel: Have you… have you tried Google AI Studio yet?
+
+00:17:49.000 --> 00:17:50.000
+Josh Smith: No.
+
+00:17:49.000 --> 00:17:53.000
+Nik Patel: It's probably worth trying for prototyping. Might be… might be pretty cool.
+
+00:17:54.000 --> 00:17:57.000
+Nik Patel: I'll give it a try, though. I can tell you how it goes anyway.
+
+00:18:00.000 --> 00:18:05.000
+Nik Patel: What it is, is, like, similar to using Figma, you could essentially say, these are my screens.
+
+00:18:06.000 --> 00:18:10.000
+Nik Patel: And then, with a button, it will convert that into a prototype for you, that you can, like, start using.
+
+00:18:11.000 --> 00:18:13.000
+Josh Smith: Really?
+
+00:18:13.000 --> 00:18:17.000
+Nik Patel: Supposedly, yeah. I haven't gone too deep, but I've seen some people that.
+
+00:18:18.000 --> 00:18:21.000
+Nik Patel: That I trust using it that way, uh, product people, so we'll see.
+
+00:18:22.000 --> 00:18:24.000
+Josh Smith: Google Design Studio.
+
+00:18:24.000 --> 00:18:26.000
+Nik Patel: AI Studio.
+
+00:18:26.000 --> 00:18:28.000
+Josh Smith: Google AI Studio.
+
+00:18:31.000 --> 00:18:33.000
+Josh Smith: Alright, I'll take a look.
+
+00:18:35.000 --> 00:18:37.000
+Nik Patel: Fantastic.
+
+00:18:37.000 --> 00:18:39.000
+Nik Patel: So then I think, um…
+
+00:18:37.000 --> 00:18:39.000
+Josh Smith: Uh…
+
+00:18:40.000 --> 00:18:46.000
+Nik Patel: What we… assuming that we have the onboarding flow done as is.
+
+00:18:47.000 --> 00:18:52.000
+Nik Patel: Or we just stick to it for now. We need to figure out what our, um…
+
+00:18:53.000 --> 00:18:56.000
+Nik Patel: Dashboards, and rest of the day-to-day.
+
+00:18:57.000 --> 00:18:59.000
+Nik Patel: systems would look like for MVP.
+
+00:18:59.000 --> 00:19:01.000
+Josh Smith: Yes.
+
+00:18:59.000 --> 00:19:02.000
+Nik Patel: I think we get that done, and we'll be in a really, really good spot.
+
+00:19:02.000 --> 00:19:10.000
+Josh Smith: Okay. Do you want to… so, how about next week, we focus on conversations around defining that?
+
+00:19:10.000 --> 00:19:15.000
+Nik Patel: Yeah. Yep. So that… and then, um, you had mentioned just, like.
+
+00:19:12.000 --> 00:19:14.000
+Josh Smith: Okay.
+
+00:19:15.000 --> 00:19:18.000
+Nik Patel: So, a couple things, which is more around.
+
+00:19:19.000 --> 00:19:24.000
+Nik Patel: branding, style guides, basic stuff that I can, like, use for something.
+
+00:19:26.000 --> 00:19:33.000
+Nik Patel: You had mentioned elevator pitch and something we could do together. I could use some help there as well, and uh…
+
+00:19:33.000 --> 00:19:35.000
+Nik Patel: I think that's…
+
+00:19:35.000 --> 00:19:37.000
+Nik Patel: Putting plenty, um…
+
+00:19:37.000 --> 00:19:40.000
+Nik Patel: for what we want to get done in December.
+
+00:19:40.000 --> 00:19:45.000
+Nik Patel: I understand it might be a little bit more than what the scope was, so I'm happy to be flexible on the cost, too.
+
+00:19:46.000 --> 00:19:51.000
+Josh Smith: It's fine. Let's… let's get through… let's get through this time.
+
+00:19:51.000 --> 00:19:54.000
+Josh Smith: Work together.
+
+00:19:54.000 --> 00:19:57.000
+Josh Smith: Um, let's keep it at the cost it is.
+
+00:19:57.000 --> 00:19:59.000
+Nik Patel: Okay, appreciate it.
+
+00:19:58.000 --> 00:20:00.000
+Josh Smith: I wanna make sure…
+
+00:20:01.000 --> 00:20:03.000
+Josh Smith: I care about the alignment between…
+
+00:20:04.000 --> 00:20:06.000
+Josh Smith: The working cadence…
+
+00:20:06.000 --> 00:20:08.000
+Josh Smith: the cost.
+
+00:20:07.000 --> 00:20:09.000
+Nik Patel: Mm-hmm.
+
+00:20:08.000 --> 00:20:13.000
+Josh Smith: Perception of value from you. If that feels good.
+
+00:20:14.000 --> 00:20:19.000
+Josh Smith: Then it's something we can discuss at the end of the month and see, you know.
+
+00:20:19.000 --> 00:20:22.000
+Josh Smith: If that's an arrangement you'd want to…
+
+00:20:22.000 --> 00:20:29.000
+Josh Smith: Continue on a monthly basis, or if it's an arrangement you want to use any given month, you want to say, uh…
+
+00:20:23.000 --> 00:20:25.000
+Nik Patel: Yeah.
+
+00:20:28.000 --> 00:20:30.000
+Nik Patel: Mm-hmm.
+
+00:20:29.000 --> 00:20:35.000
+Josh Smith: I don't need Josh to talk January, I need February, though. And then we can… we can go from there, but…
+
+00:20:33.000 --> 00:20:35.000
+Nik Patel: Yeah.
+
+00:20:36.000 --> 00:20:39.000
+Josh Smith: I'm, um, totally, yeah, it's all good.
+
+00:20:39.000 --> 00:20:45.000
+Nik Patel: Okay, perfect, appreciate it. And yeah, I think it does seem like there will be something that I'd, uh, probably…
+
+00:20:46.000 --> 00:20:54.000
+Nik Patel: have every month that we… I could use your help on, but we'll know once I get through at least the first phase and how people react to it.
+
+00:20:55.000 --> 00:20:59.000
+Nik Patel: it's getting to that point, I think, is the most important part.
+
+00:21:00.000 --> 00:21:08.000
+Nik Patel: Um, as we are thinking through that, the other thing that's probably important is the perception of security, perception of.
+
+00:21:08.000 --> 00:21:13.000
+Nik Patel: Privacy and stuff like that, sort of, like, built into this experience, where…
+
+00:21:14.000 --> 00:21:16.000
+Nik Patel: They see it, uh, that would be useful.
+
+00:21:17.000 --> 00:21:22.000
+Nik Patel: And two things that I had thought of that I would find pretty, uh, pretty helpful.
+
+00:21:22.000 --> 00:21:24.000
+Nik Patel: is, um…
+
+00:21:24.000 --> 00:21:29.000
+Nik Patel: Giving them, like, weekly recaps on, like, this is how your week went, and this is what your next week.
+
+00:21:30.000 --> 00:21:33.000
+Nik Patel: Coming up, looks like, as of blah date.
+
+00:21:36.000 --> 00:21:38.000
+Nik Patel: As well as…
+
+00:21:40.000 --> 00:21:48.000
+Nik Patel: having an ability for… for them to have, like, that retro conversation, and like, this work, this is what I'm thinking through, that, like, having 5-10 minute conversation.
+
+00:21:48.000 --> 00:21:53.000
+Nik Patel: Can set the week in a really good spot for the system to, like, continue to track and follow through.
+
+00:21:53.000 --> 00:21:59.000
+Nik Patel: Um, one of the things that's been asked in the conversations is.
+
+00:22:00.000 --> 00:22:05.000
+Nik Patel: how will you measure the value that you are providing? And I… it's like, well, you'll just know.
+
+00:22:06.000 --> 00:22:09.000
+Nik Patel: But that… that doesn't go well in the enterprise setting, right?
+
+00:22:11.000 --> 00:22:14.000
+Josh Smith: Well, this is… this… this is B2B?
+
+00:22:14.000 --> 00:22:18.000
+Nik Patel: This is, right now, B2C, but we are gonna go in B2B with the team's approach.
+
+00:22:19.000 --> 00:22:27.000
+Josh Smith: Okay. Uh, is it… is it… is it B2C2B, in the sense that you get somebody working for a company who's using it.
+
+00:22:20.000 --> 00:22:22.000
+Nik Patel: Yep.
+
+00:22:27.000 --> 00:22:29.000
+Josh Smith: Um, for their company.
+
+00:22:29.000 --> 00:22:34.000
+Josh Smith: They talk to other folks, you've got multiple people in that company now using it.
+
+00:22:31.000 --> 00:22:33.000
+Nik Patel: Yeah.
+
+00:22:34.000 --> 00:22:44.000
+Josh Smith: But they have personal accounts, and then they suddenly gets… IT gets word of it, and they're like, well, if y'all are using it, we might as well consolidate it under single account.
+
+00:22:44.000 --> 00:22:46.000
+Nik Patel: Yeah.
+
+00:22:45.000 --> 00:22:47.000
+Josh Smith: Create a company level, org level account.
+
+00:22:47.000 --> 00:22:49.000
+Nik Patel: Yeah.
+
+00:22:48.000 --> 00:22:50.000
+Josh Smith: B2C, B2C to B play. Okay.
+
+00:22:49.000 --> 00:22:55.000
+Nik Patel: Yep, and it could go straight from B2B too, but the idea is that it's gonna come because users love it.
+
+00:22:50.000 --> 00:22:52.000
+Josh Smith: It's like your Slack.
+
+00:22:55.000 --> 00:22:59.000
+Nik Patel: Not because we are pushing for it just because we have salespeople.
+
+00:22:59.000 --> 00:23:01.000
+Josh Smith: Yep.
+
+00:22:59.000 --> 00:23:02.000
+Nik Patel: Uh, I… I'm more…
+
+00:23:02.000 --> 00:23:10.000
+Nik Patel: More leaning towards product should speak for itself, and when it does, the sales portion is much easier than sales trying to push it when people don't understand what we are selling.
+
+00:23:11.000 --> 00:23:13.000
+Josh Smith: Okay.
+
+00:23:13.000 --> 00:23:16.000
+Josh Smith: Yep, and those ins… sorry, keep going.
+
+00:23:13.000 --> 00:23:15.000
+Nik Patel: Um, some…
+
+00:23:16.000 --> 00:23:19.000
+Nik Patel: Yeah, some of the things that has come up is…
+
+00:23:20.000 --> 00:23:22.000
+Nik Patel: What do you call it?
+
+00:23:22.000 --> 00:23:27.000
+Nik Patel: show me the amount of time I saved, because I didn't have to worry about meeting scheduling.
+
+00:23:27.000 --> 00:23:36.000
+Nik Patel: prepping, uh, the amount of emails sent, stuff like that, and it's like, yeah, it all sounds good, but there has to be a bigger value that we could show somehow.
+
+00:23:36.000 --> 00:23:38.000
+Nik Patel: That brought you focus, and…
+
+00:23:40.000 --> 00:23:43.000
+Nik Patel: you were able to get better outcomes because priority lens existed.
+
+00:23:44.000 --> 00:23:49.000
+Nik Patel: I don't know what it means yet, but just something that I'm putting on back of your mind, so when you have a chance to think about it.
+
+00:23:52.000 --> 00:23:55.000
+Nik Patel: Um, I think that's…
+
+00:23:55.000 --> 00:23:58.000
+Nik Patel: pretty much all I got next week, I think, is all about.
+
+00:23:59.000 --> 00:24:05.000
+Nik Patel: Assuming that we are connected into at least emails and calendars, multiple emails, multiple calendars.
+
+00:24:05.000 --> 00:24:12.000
+Nik Patel: How do we start to bring focus? How do we start to auto-draft, auto-response, auto-schedule.
+
+00:24:13.000 --> 00:24:15.000
+Nik Patel: Put in, uh, put, like.
+
+00:24:15.000 --> 00:24:18.000
+Nik Patel: Prep and brief… briefs in general.
+
+00:24:18.000 --> 00:24:25.000
+Nik Patel: like, basic stuff like that, right? None of that is rocket science right now. Pretty much every big companies are even starting to do it.
+
+00:24:26.000 --> 00:24:34.000
+Nik Patel: But I'm… their mindset has always been, like, transactional. You have this meeting coming up, and I'll show you what could we do.
+
+00:24:34.000 --> 00:24:39.000
+Nik Patel: Um, we want to see… take, like, more holistic approach, which is more focused on.
+
+00:24:39.000 --> 00:24:41.000
+Nik Patel: Focus, clarity…
+
+00:24:42.000 --> 00:24:44.000
+Nik Patel: Time, outcome people, stuff like that.
+
+00:24:46.000 --> 00:24:50.000
+Nik Patel: Anyway, I'll pause there, but that's where I think my mind goes.
+
+00:24:46.000 --> 00:24:48.000
+Josh Smith: Yeah.
+
+00:24:51.000 --> 00:24:55.000
+Josh Smith: Yeah, the multiple emails calendar, um…
+
+00:24:58.000 --> 00:25:04.000
+Josh Smith: That's gonna be fun. That… depending upon your priorities, that could be a conversation, um…
+
+00:25:05.000 --> 00:25:10.000
+Josh Smith: The week after next and into the, into the week after that, the last 2 weeks of December.
+
+00:25:10.000 --> 00:25:12.000
+Nik Patel: Mm-hmm.
+
+00:25:10.000 --> 00:25:15.000
+Josh Smith: Um, because the calendar, there's… there's potentially a lot of value out of.
+
+00:25:16.000 --> 00:25:22.000
+Josh Smith: Out of that, um, but the, the experience of it needs to be really simple.
+
+00:25:22.000 --> 00:25:24.000
+Nik Patel: Yeah.
+
+00:25:23.000 --> 00:25:29.000
+Josh Smith: Um, overall, ensuring a perception of trust.
+
+00:25:29.000 --> 00:25:38.000
+Josh Smith: Aligning it to the current design language of a lot of these existing AI tools in my view is like.
+
+00:25:38.000 --> 00:25:43.000
+Josh Smith: Um, precision in the design but simplicity.
+
+00:25:43.000 --> 00:25:45.000
+Nik Patel: Yes. Yeah, don't make me think.
+
+00:25:45.000 --> 00:25:47.000
+Josh Smith: Yeah.
+
+00:25:47.000 --> 00:25:49.000
+Josh Smith: just, um…
+
+00:25:49.000 --> 00:25:57.000
+Josh Smith: Nothing ostentatious, nothing no unnecessary embellishment.
+
+00:25:57.000 --> 00:25:59.000
+Josh Smith: Um…
+
+00:25:57.000 --> 00:25:59.000
+Nik Patel: Mm-hmm.
+
+00:25:59.000 --> 00:26:02.000
+Josh Smith: So, um…
+
+00:26:02.000 --> 00:26:08.000
+Josh Smith: Yes, working through that. Articulating clear, uh, value, okay.
+
+00:26:08.000 --> 00:26:10.000
+Josh Smith: Um…
+
+00:26:10.000 --> 00:26:13.000
+Josh Smith: If you're being asked to do that.
+
+00:26:13.000 --> 00:26:15.000
+Josh Smith: Um… alright.
+
+00:26:16.000 --> 00:26:18.000
+Josh Smith: We can go through some exercises there.
+
+00:26:19.000 --> 00:26:21.000
+Josh Smith: Um…
+
+00:26:23.000 --> 00:26:28.000
+Josh Smith: Designing, um, you, you, you talked about daily, weekly summary, summarization.
+
+00:26:29.000 --> 00:26:35.000
+Nik Patel: Yeah, of some kind, something that, like, brings everything together for someone to say, okay, this was worth it, you know, this…
+
+00:26:30.000 --> 00:26:32.000
+Josh Smith: And…
+
+00:26:32.000 --> 00:26:34.000
+Josh Smith: Okay.
+
+00:26:36.000 --> 00:26:37.000
+Nik Patel: I'm glad I had priority lens.
+
+00:26:38.000 --> 00:26:40.000
+Josh Smith: Mm-hmm, and…
+
+00:26:40.000 --> 00:26:42.000
+Josh Smith: Um…
+
+00:26:43.000 --> 00:26:50.000
+Josh Smith: And you also talked about something I missed, um, which was, like, a 5-minute…
+
+00:26:51.000 --> 00:26:54.000
+Josh Smith: Start of the week. Is it the start of the week or end of the week?
+
+00:26:51.000 --> 00:26:54.000
+Nik Patel: Yes. It's more so, like.
+
+00:26:54.000 --> 00:27:02.000
+Nik Patel: Uh, could be either. Uh, it's more of, like, a retro conversation, alright, based on what's coming up, here's what I want you to pay attention to, here's what's on one mind.
+
+00:27:02.000 --> 00:27:08.000
+Nik Patel: And, like, I can start to delegate some of that to priority lens, so then it's not a mental clutter in my mind.
+
+00:27:09.000 --> 00:27:12.000
+Nik Patel: it's out, my mental bandwid's open, I can focus on something else.
+
+00:27:15.000 --> 00:27:21.000
+Nik Patel: Um, we will talk more about it next week, but I've been sort of thinking about this.
+
+00:27:21.000 --> 00:27:23.000
+Nik Patel: This whole concept of…
+
+00:27:24.000 --> 00:27:26.000
+Nik Patel: Um, some of this…
+
+00:27:26.000 --> 00:27:28.000
+Nik Patel: Conversations become, like.
+
+00:27:29.000 --> 00:27:33.000
+Nik Patel: Instantaneous workflows that continues to run in the background.
+
+00:27:33.000 --> 00:27:39.000
+Nik Patel: And even more, uh, people can, like, create their own best practices and can share amongst other users.
+
+00:27:40.000 --> 00:27:48.000
+Nik Patel: So, could become a marketplace of, oh, I have built these agents, and this style of working really works, you're welcome to try it, and people can import and say.
+
+00:27:40.000 --> 00:27:42.000
+Josh Smith: Hmm.
+
+00:27:48.000 --> 00:27:52.000
+Nik Patel: I want to do this, or I want to update it to my own work style.
+
+00:27:52.000 --> 00:27:56.000
+Nik Patel: And what that does, it allows us to open up.
+
+00:27:56.000 --> 00:28:06.000
+Nik Patel: many things that are considered good practices, but no one has time to actually implement any of those practices, right? Now we are saying we will implement it, you just have to follow it.
+
+00:28:06.000 --> 00:28:08.000
+Nik Patel: It's, uh, it's basically…
+
+00:28:09.000 --> 00:28:18.000
+Nik Patel: Probably bad analogy, but if you try to create a diet plan for yourself, it generally doesn't go well, but if you have a coach that's giving you a diet plan and that's all you get to eat.
+
+00:28:18.000 --> 00:28:23.000
+Nik Patel: it's easier to say, okay, well, I just have to agree to it, and I don't have to think about it.
+
+00:28:26.000 --> 00:28:28.000
+Josh Smith: Alright.
+
+00:28:27.000 --> 00:28:32.000
+Nik Patel: So, that is more… I… we'll see when it happens. I'm thinking it's more, like.
+
+00:28:32.000 --> 00:28:39.000
+Nik Patel: post-MVP features, but I definitely see value in this. I'm basically getting inspiration from.
+
+00:28:39.000 --> 00:28:45.000
+Nik Patel: uh, development community that is doing this with Cloud Code and building Cloud skills and agents and.
+
+00:28:45.000 --> 00:28:50.000
+Nik Patel: Hey, here's what I built, someone give it a try, you'll love it, you know, how they open source things that works for them.
+
+00:28:51.000 --> 00:28:56.000
+Nik Patel: Um, it is a simpler way for people to build a community and, like, continue to keep the momentum versus.
+
+00:28:56.000 --> 00:28:58.000
+Nik Patel: I'm on my own.
+
+00:28:59.000 --> 00:29:01.000
+Josh Smith: So, like…
+
+00:29:04.000 --> 00:29:10.000
+Josh Smith: Could I build an agent, um, just so I understand, I need to get in the weeds a little with examples.
+
+00:29:09.000 --> 00:29:11.000
+Nik Patel: Mm-hmm.
+
+00:29:10.000 --> 00:29:13.000
+Josh Smith: If I built an agent that trolled…
+
+00:29:13.000 --> 00:29:16.000
+Josh Smith: That was able to identify, um…
+
+00:29:17.000 --> 00:29:19.000
+Josh Smith: Identify, um…
+
+00:29:20.000 --> 00:29:22.000
+Josh Smith: annoying marketing…
+
+00:29:22.000 --> 00:29:30.000
+Josh Smith: Sequences and troll them and lead them on to the point that it frustrates them back and they never contact me again.
+
+00:29:31.000 --> 00:29:33.000
+Josh Smith: I could put that up on…
+
+00:29:33.000 --> 00:29:39.000
+Nik Patel: Yeah, have it, yeah. But, yeah, something like that, right? Like, the simpler things that people do today is…
+
+00:29:39.000 --> 00:29:45.000
+Nik Patel: they, like, auto-tag some of the emails, if you look at Superhuman and some of the other ones, even including Google.
+
+00:29:45.000 --> 00:29:50.000
+Nik Patel: Google would automatically tag it to an update, or a shopping, or forum, or…
+
+00:29:50.000 --> 00:30:01.000
+Nik Patel: social or important into those categories on its own, right? I could simply say when the emails come up within this mindset, I want you to tag them and put them here, and here's what you need to do about it.
+
+00:29:54.000 --> 00:29:56.000
+Josh Smith: Okay.
+
+00:30:02.000 --> 00:30:06.000
+Nik Patel: So, um, if you… if I'm starting to get…
+
+00:30:06.000 --> 00:30:13.000
+Nik Patel: let's say, as a leader, I get a bunch of cold inbounds, which I don't care about. I do not want to hear them.
+
+00:30:13.000 --> 00:30:17.000
+Nik Patel: But if you see something along the lines of.
+
+00:30:17.000 --> 00:30:22.000
+Nik Patel: Hey, this is how you can build an agent, because my team need to think through it, just let me know about it.
+
+00:30:22.000 --> 00:30:27.000
+Nik Patel: Right? So, like, it's… it's filtering everything out, but something that I care about actually gets…
+
+00:30:28.000 --> 00:30:36.000
+Nik Patel: in front of me is worth it. And then, it would be like, once you do that, I want you to research the company, I want you to look at XYZ things.
+
+00:30:36.000 --> 00:30:43.000
+Nik Patel: ask them some follow-up questions, go through the follow-ups, and get me to a point where, when I look at it, the answer should include XYZ stuff.
+
+00:30:43.000 --> 00:30:46.000
+Nik Patel: Because you have communicated with them, that's what I want.
+
+00:30:47.000 --> 00:30:53.000
+Nik Patel: Right? And now it's essentially a workflow tool that I simply created, and it becomes the best practices on.
+
+00:30:47.000 --> 00:30:49.000
+Josh Smith: Okay.
+
+00:30:53.000 --> 00:31:00.000
+Nik Patel: whatever. Um, I'm making it up, but the idea is that I'm creating my, like.
+
+00:31:00.000 --> 00:31:05.000
+Nik Patel: background workflows, uh, that I can, like, set in a way that makes sense for me.
+
+00:31:06.000 --> 00:31:11.000
+Nik Patel: And from there on, I could hand it… others could use it, or at least I can use it in…
+
+00:31:11.000 --> 00:31:17.000
+Nik Patel: do something with it. I don't know what it will mean yet, but it… I think there is some value in it, we'll see.
+
+00:31:19.000 --> 00:31:21.000
+Josh Smith: Okay.
+
+00:31:21.000 --> 00:31:26.000
+Josh Smith: Alright, is this, like, is this… how is this related to creating rules?
+
+00:31:26.000 --> 00:31:29.000
+Nik Patel: Um, very similar.
+
+00:31:29.000 --> 00:31:37.000
+Nik Patel: Uh, it's natural language right now, so you're basically saying it in a natural language, and then we are converting them into rules that the system can execute.
+
+00:31:38.000 --> 00:31:41.000
+Josh Smith: Alright, what's the difference between a rule and an agent?
+
+00:31:41.000 --> 00:31:46.000
+Nik Patel: Um… rule is transactional, agent is long-running.
+
+00:31:46.000 --> 00:31:49.000
+Josh Smith: Can you convert a role into an agent?
+
+00:31:49.000 --> 00:31:52.000
+Nik Patel: Uh… possibly, yes.
+
+00:31:52.000 --> 00:31:54.000
+Josh Smith: Possibly.
+
+00:31:53.000 --> 00:31:55.000
+Nik Patel: Yep. So, um…
+
+00:31:56.000 --> 00:32:01.000
+Nik Patel: The rule is, when the email comes in, check it and apply a tag. That's a rule.
+
+00:32:01.000 --> 00:32:04.000
+Nik Patel: An agent is, you need to check, um…
+
+00:32:04.000 --> 00:32:09.000
+Nik Patel: Like, every morning before I wake up, you need to create a daily brief, and here's what it needs to look like.
+
+00:32:10.000 --> 00:32:17.000
+Nik Patel: Right? Anytime something comes up, if you see an email where there's a prospect, I want you to do the research on that person and, like.
+
+00:32:18.000 --> 00:32:24.000
+Nik Patel: put that in my… in my… whatever people tab that we have, so that I'm starting to build my CRM and, like.
+
+00:32:24.000 --> 00:32:32.000
+Nik Patel: starting to capture the data that could come handy for me later. Uh, show me insights that I did not know about. Like, those are more long-running.
+
+00:32:32.000 --> 00:32:39.000
+Nik Patel: in the background, always executing type of things, versus rule is, I did this on an email, and then I'm not gonna think about that email ever.
+
+00:32:44.000 --> 00:32:46.000
+Josh Smith: Got you.
+
+00:32:48.000 --> 00:32:53.000
+Nik Patel: Um, but anyway, like I said, we could chat about it more next week, uh, and see where it goes.
+
+00:32:54.000 --> 00:33:01.000
+Nik Patel: I'll put some more thoughts into what would make sense from a dashboard perspective, but this is where I'm really looking for.
+
+00:33:01.000 --> 00:33:06.000
+Nik Patel: For your expertise to say, this is how we should structure it, this is how we make it easy, simple.
+
+00:33:07.000 --> 00:33:10.000
+Nik Patel: and then convert that into UI components for us.
+
+00:33:11.000 --> 00:33:12.000
+Nik Patel: Uh, mobile first, yep.
+
+00:33:11.000 --> 00:33:13.000
+Josh Smith: Oh, yeah.
+
+00:33:13.000 --> 00:33:15.000
+Josh Smith: Yep, that's gonna be fun.
+
+00:33:14.000 --> 00:33:16.000
+Nik Patel: Yeah.
+
+00:33:17.000 --> 00:33:19.000
+Josh Smith: Alright.
+
+00:33:19.000 --> 00:33:21.000
+Josh Smith: That's helpful information.
+
+00:33:21.000 --> 00:33:28.000
+Josh Smith: Yeah, when it comes to rule or agent in the language, if technically on the back end they're different, but on the front end…
+
+00:33:28.000 --> 00:33:30.000
+Josh Smith: Your users…
+
+00:33:30.000 --> 00:33:32.000
+Nik Patel: It's all agents, in a way.
+
+00:33:30.000 --> 00:33:32.000
+Josh Smith: see them.
+
+00:33:32.000 --> 00:33:38.000
+Josh Smith: Yeah, if your users think of them as the same thing, it's just one of them's simple and the other's a bit more complex.
+
+00:33:38.000 --> 00:33:43.000
+Josh Smith: It sometimes makes more sense to just call them the same thing.
+
+00:33:42.000 --> 00:33:50.000
+Nik Patel: Yeah, absolutely, yes. Um, in fact, there's this whole thing that we were talking about, right? Like, what do we call our assistant?
+
+00:33:50.000 --> 00:33:58.000
+Nik Patel: That the voice assistant thing, and then it could be even just as simple as, like, hey, remember this, and then voice… voice assistant behind the scene creates the rules.
+
+00:33:58.000 --> 00:34:03.000
+Nik Patel: But my entry point is always that, like, one person, and I never have to think about anything else. So, um…
+
+00:34:03.000 --> 00:34:06.000
+Nik Patel: I'm sure we could think about, like, ways where…
+
+00:34:06.000 --> 00:34:11.000
+Nik Patel: it's not overwhelming, it's simple, I'm talking to one thing, and that one thing knows everything.
+
+00:34:12.000 --> 00:34:15.000
+Nik Patel: Regardless of how the system itself is developed.
+
+00:34:16.000 --> 00:34:18.000
+Josh Smith: Understood.
+
+00:34:19.000 --> 00:34:21.000
+Josh Smith: Okay.
+
+00:34:21.000 --> 00:34:23.000
+Josh Smith: Awesome.
+
+00:34:21.000 --> 00:34:27.000
+Nik Patel: Great. Well, I hope you feel better, have a great weekend, and I will see you on Monday.
+
+00:34:28.000 --> 00:34:33.000
+Josh Smith: You too, I've captured… I've captured my own notes for this conversation that I will…
+
+00:34:33.000 --> 00:34:36.000
+Josh Smith: Uh, keep in mind for… yeah, when we meet next Monday.
+
+00:34:36.000 --> 00:34:39.000
+Nik Patel: Sounds like a plan. Great. Thanks, Josh.
+
+00:34:39.000 --> 00:34:41.000
+Josh Smith: Take care.
+
+00:34:40.000 --> 00:34:42.000
+Nik Patel: I agree, safe.

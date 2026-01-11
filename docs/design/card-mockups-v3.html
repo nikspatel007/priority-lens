@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Priority Lens - Fluid Design v3</title>
+  <style>
+    :root {
+      --primary-500: #2297DE;
+      --neutral-50: #F8FAFC;
+      --neutral-100: #F1F5F9;
+      --neutral-200: #E2E8F0;
+      --neutral-300: #CBD5E1;
+      --neutral-400: #94A3B8;
+      --neutral-500: #64748B;
+      --neutral-600: #475569;
+      --neutral-700: #334155;
+      --neutral-800: #1E293B;
+      --neutral-900: #0F172A;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --error: #EF4444;
+      --font-serif: ui-serif, "New York", Georgia, serif;
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--neutral-100);
+      min-height: 100vh;
+      padding: 32px 24px;
+    }
+
+    .container {
+      max-width: 390px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .page-header h1 {
+      font-family: var(--font-serif);
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--neutral-900);
+    }
+
+    .page-header p {
+      font-size: 14px;
+      color: var(--neutral-400);
+      margin-top: 8px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--neutral-400);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      margin-top: 64px;
+    }
+
+    /* ========================================
+       CARD - The Stage
+       ======================================== */
+
+    .card {
+      background: white;
+      border-radius: 32px;
+      padding: 40px 32px;
+      margin-bottom: 24px;
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.02),
+        0 4px 16px rgba(0, 0, 0, 0.04),
+        0 16px 48px rgba(0, 0, 0, 0.06);
+      position: relative;
+      overflow: visible;
+    }
+
+    /* ========================================
+       PHYSICAL DOCUMENT - Tilted with shadow
+       ======================================== */
+
+    .document-preview {
+      position: relative;
+      width: 140px;
+      height: 180px;
+      margin: 24px auto 32px;
+      perspective: 1000px;
+    }
+
+    .document {
+      width: 100%;
+      height: 100%;
+      background: white;
+      border-radius: 8px;
+      transform: rotate(-6deg);
+      box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.04),
+        0 8px 16px rgba(0, 0, 0, 0.06),
+        0 24px 48px rgba(0, 0, 0, 0.08),
+        -4px 8px 24px rgba(0, 0, 0, 0.04);
+      border: 1px solid var(--neutral-100);
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .document:hover {
+      transform: rotate(-3deg) translateY(-4px);
+      box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.04),
+        0 16px 32px rgba(0, 0, 0, 0.08),
+        0 32px 64px rgba(0, 0, 0, 0.1),
+        -8px 16px 32px rgba(0, 0, 0, 0.06);
+    }
+
+    .document-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .document-lines {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .document-line {
+      height: 6px;
+      background: var(--neutral-100);
+      border-radius: 3px;
+    }
+
+    .document-line:nth-child(1) { width: 80%; }
+    .document-line:nth-child(2) { width: 100%; }
+    .document-line:nth-child(3) { width: 60%; }
+    .document-line:nth-child(4) { width: 90%; }
+
+    /* ========================================
+       FLOATING BADGE - Positioned freely
+       ======================================== */
+
+    .floating-badge {
+      position: absolute;
+      top: -8px;
+      right: 24px;
+      background: var(--error);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow:
+        0 2px 8px rgba(239, 68, 68, 0.3),
+        0 4px 16px rgba(239, 68, 68, 0.2);
+      transform: rotate(3deg);
+    }
+
+    .floating-badge.warning {
+      background: var(--warning);
+      box-shadow:
+        0 2px 8px rgba(245, 158, 11, 0.3),
+        0 4px 16px rgba(245, 158, 11, 0.2);
+    }
+
+    /* ========================================
+       AVATAR - Overlapping, organic
+       ======================================== */
+
+    .avatar-cluster {
+      display: flex;
+      justify-content: center;
+      margin: 24px 0;
+    }
+
+    .avatar-cluster .avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 3px solid white;
+      margin-left: -16px;
+      box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.1),
+        0 4px 16px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 600;
+      transition: transform 0.2s ease, z-index 0.2s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .avatar-cluster .avatar:first-child {
+      margin-left: 0;
+    }
+
+    .avatar-cluster .avatar:hover {
+      transform: translateY(-4px) scale(1.1);
+      z-index: 10;
+    }
+
+    .avatar-cluster .avatar:nth-child(1) { transform: rotate(-5deg); background: linear-gradient(135deg, #818CF8, #6366F1); color: white; }
+    .avatar-cluster .avatar:nth-child(2) { transform: rotate(3deg); background: linear-gradient(135deg, #F472B6, #EC4899); color: white; z-index: 2; }
+    .avatar-cluster .avatar:nth-child(3) { transform: rotate(-2deg); background: linear-gradient(135deg, #34D399, #10B981); color: white; }
+
+    /* ========================================
+       TIME BLOCK - 3D Card Effect
+       ======================================== */
+
+    .time-block {
+      background: var(--neutral-900);
+      color: white;
+      padding: 32px;
+      border-radius: 24px;
+      margin: 24px -8px;
+      transform: rotate(-1deg);
+      box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.1),
+        0 12px 32px rgba(0, 0, 0, 0.15),
+        0 24px 48px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .time-block:hover {
+      transform: rotate(0deg) scale(1.02);
+    }
+
+    .time-block-time {
+      font-family: var(--font-serif);
+      font-size: 48px;
+      font-weight: 600;
+      letter-spacing: -1px;
+    }
+
+    .time-block-meta {
+      font-size: 15px;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+
+    /* ========================================
+       AMOUNT DISPLAY - Dramatic
+       ======================================== */
+
+    .amount-display {
+      text-align: center;
+      padding: 40px 0;
+    }
+
+    .amount {
+      font-family: var(--font-serif);
+      font-size: 72px;
+      font-weight: 600;
+      color: var(--neutral-900);
+      letter-spacing: -3px;
+      line-height: 1;
+    }
+
+    .amount-label {
+      font-size: 16px;
+      color: var(--neutral-400);
+      margin-top: 12px;
+    }
+
+    /* ========================================
+       QUICK REPLIES - Scattered naturally
+       ======================================== */
+
+    .replies-scattered {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin: 24px 0;
+    }
+
+    .reply-chip {
+      padding: 14px 22px;
+      background: var(--neutral-100);
+      border-radius: 100px;
+      font-size: 15px;
+      color: var(--neutral-700);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .reply-chip:nth-child(1) { transform: rotate(-2deg); }
+    .reply-chip:nth-child(2) { transform: rotate(1deg); }
+    .reply-chip:nth-child(3) { transform: rotate(-1deg); }
+
+    .reply-chip:hover {
+      background: var(--neutral-900);
+      color: white;
+      transform: translateY(-2px) rotate(0deg);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* ========================================
+       QUOTED MESSAGE - Offset
+       ======================================== */
+
+    .quote-block {
+      position: relative;
+      padding: 24px;
+      padding-left: 32px;
+      margin: 32px 0;
+      margin-left: -16px;
+      background: linear-gradient(135deg, var(--neutral-50) 0%, white 100%);
+      border-radius: 20px;
+      transform: rotate(-0.5deg);
+    }
+
+    .quote-block::before {
+      content: """;
+      position: absolute;
+      top: 8px;
+      left: 12px;
+      font-family: var(--font-serif);
+      font-size: 64px;
+      color: var(--neutral-200);
+      line-height: 1;
+    }
+
+    .quote-text {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      color: var(--neutral-700);
+      line-height: 1.5;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ========================================
+       PERSON CARD - Offset with depth
+       ======================================== */
+
+    .person-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      background: var(--neutral-50);
+      border-radius: 20px;
+      margin-left: -8px;
+      margin-right: 24px;
+      transform: rotate(-1deg);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      transition: transform 0.2s ease;
+    }
+
+    .person-card:hover {
+      transform: rotate(0deg) translateX(4px);
+    }
+
+    .person-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .person-info {
+      flex: 1;
+    }
+
+    .person-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--neutral-800);
+    }
+
+    .person-role {
+      font-size: 14px;
+      color: var(--neutral-500);
+    }
+
+    /* ========================================
+       TIME SLOT CARDS - Stacked
+       ======================================== */
+
+    .time-slots-stacked {
+      position: relative;
+      height: 180px;
+      margin: 32px 0;
+    }
+
+    .time-slot-card {
+      position: absolute;
+      width: 100%;
+      padding: 20px 24px;
+      background: white;
+      border-radius: 20px;
+      border: 2px solid var(--neutral-200);
+      box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.04),
+        0 8px 24px rgba(0, 0, 0, 0.06);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .time-slot-card:nth-child(1) {
+      top: 0;
+      transform: rotate(-2deg);
+      z-index: 1;
+    }
+
+    .time-slot-card:nth-child(2) {
+      top: 80px;
+      transform: rotate(1deg);
+      z-index: 2;
+    }
+
+    .time-slot-card.selected {
+      border-color: var(--neutral-900);
+      z-index: 10;
+      transform: rotate(0deg) scale(1.02);
+      box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.08),
+        0 16px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .time-slot-card:hover:not(.selected) {
+      transform: rotate(0deg) translateY(-4px);
+      z-index: 5;
+    }
+
+    .slot-day {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--neutral-800);
+    }
+
+    .slot-time {
+      font-size: 14px;
+      color: var(--neutral-500);
+      margin-top: 2px;
+    }
+
+    .slot-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    .slot-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* ========================================
+       BUTTONS - Grounded
+       ======================================== */
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .button {
+      flex: 1;
+      padding: 18px 24px;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .button-primary {
+      background: var(--neutral-900);
+      color: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .button-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .button-secondary {
+      background: var(--neutral-100);
+      color: var(--neutral-700);
+    }
+
+    .button-secondary:hover {
+      background: var(--neutral-200);
+    }
+
+    /* ========================================
+       CARD TITLE
+       ======================================== */
+
+    .card-title {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--neutral-900);
+      text-align: center;
+    }
+
+    .card-subtitle {
+      font-size: 15px;
+      color: var(--neutral-500);
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    /* ========================================
+       CONTEXT - Tucked away
+       ======================================== */
+
+    .context-tuck {
+      background: var(--neutral-50);
+      margin: 24px -32px -40px;
+      padding: 24px 32px;
+      border-radius: 0 0 32px 32px;
+    }
+
+    .context-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--neutral-400);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .context-text {
+      font-size: 14px;
+      color: var(--neutral-600);
+      line-height: 1.5;
+      margin-top: 8px;
+    }
+
+    /* ========================================
+       ATTACHMENT ROW - Tilted
+       ======================================== */
+
+    .attachment-tilted {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      background: white;
+      border-radius: 16px;
+      margin: 24px 0;
+      transform: rotate(-1.5deg);
+      box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.02),
+        0 4px 12px rgba(0, 0, 0, 0.06),
+        0 8px 24px rgba(0, 0, 0, 0.04);
+      border: 1px solid var(--neutral-100);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .attachment-tilted:hover {
+      transform: rotate(0deg) translateY(-2px);
+      box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.04),
+        0 8px 24px rgba(0, 0, 0, 0.08),
+        0 16px 32px rgba(0, 0, 0, 0.06);
+    }
+
+    .attachment-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .attachment-icon.pdf { background: linear-gradient(135deg, #EF4444, #DC2626); }
+    .attachment-icon.xls { background: linear-gradient(135deg, #10B981, #059669); }
+
+    .attachment-info {
+      flex: 1;
+    }
+
+    .attachment-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--neutral-800);
+    }
+
+    .attachment-meta {
+      font-size: 12px;
+      color: var(--neutral-400);
+    }
+
+    /* ========================================
+       ERROR PULSE
+       ======================================== */
+
+    .error-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: var(--error);
+      color: white;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      transform: rotate(2deg);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .error-dot {
+      width: 8px;
+      height: 8px;
+      background: white;
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.8); }
+    }
+
+    .error-code {
+      font-family: "SF Mono", monospace;
+      font-size: 13px;
+      color: var(--neutral-500);
+      background: var(--neutral-50);
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin: 20px 0;
+      transform: rotate(-0.5deg);
+    }
+
+    /* ========================================
+       TEXT LINK
+       ======================================== */
+
+    .text-link {
+      font-size: 14px;
+      color: var(--neutral-400);
+      text-align: center;
+      margin-top: 16px;
+      cursor: pointer;
+    }
+
+    .text-link:hover {
+      color: var(--neutral-600);
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="page-header">
+      <h1>Priority Lens</h1>
+      <p>Fluid Design v3</p>
+    </div>
+
+    <!-- ========================================
+         INVOICE - Document as hero
+         ======================================== -->
+
+    <p class="section-label">Payment</p>
+
+    <div class="card">
+      <div class="floating-badge warning">Due Friday</div>
+
+      <div class="person-card">
+        <div class="person-avatar" style="background: #18181B; color: white; font-size: 10px; font-weight: 700;">SUPA</div>
+        <div class="person-info">
+          <div class="person-name">Supabase</div>
+          <div class="person-role">Pro Plan · Monthly</div>
+        </div>
+      </div>
+
+      <div class="document-preview">
+        <div class="document">
+          <div class="document-icon">PDF</div>
+          <div class="document-lines">
+            <div class="document-line"></div>
+            <div class="document-line"></div>
+            <div class="document-line"></div>
+            <div class="document-line"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="amount-display">
+        <div class="amount">$25</div>
+        <div class="amount-label">Invoice #QXYVKG-00008</div>
+      </div>
+
+      <div class="button-row">
+        <button class="button button-primary">Pay Now</button>
+        <button class="button button-secondary">Later</button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         EMAIL REPLY - Quote as hero
+         ======================================== -->
+
+    <p class="section-label">Reply Needed</p>
+
+    <div class="card">
+      <div class="floating-badge">Urgent</div>
+
+      <div class="person-card">
+        <div class="person-avatar" style="background: linear-gradient(135deg, #818CF8, #6366F1); color: white;">SC</div>
+        <div class="person-info">
+          <div class="person-name">Sarah Chen</div>
+          <div class="person-role">VP Engineering</div>
+        </div>
+      </div>
+
+      <div class="quote-block">
+        <p class="quote-text">Can you review the proposal and share your thoughts before our 3pm?</p>
+      </div>
+
+      <div class="replies-scattered">
+        <span class="reply-chip">On it</span>
+        <span class="reply-chip">Need more time</span>
+        <span class="reply-chip">Let's discuss</span>
+      </div>
+
+      <div class="button-row">
+        <button class="button button-primary">Send Reply</button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         MEETING - Time block as hero
+         ======================================== -->
+
+    <p class="section-label">Tomorrow</p>
+
+    <div class="card">
+      <div class="time-block">
+        <div class="time-block-time">10:00 AM</div>
+        <div class="time-block-meta">45 min · Zoom</div>
+      </div>
+
+      <div class="card-title">Product Roadmap Sync</div>
+
+      <div class="avatar-cluster">
+        <div class="avatar">AK</div>
+        <div class="avatar">JS</div>
+        <div class="avatar">NP</div>
+      </div>
+
+      <div class="button-row">
+        <button class="button button-primary">Accept</button>
+        <button class="button button-secondary">Decline</button>
+      </div>
+      <div class="text-link">Propose different time</div>
+    </div>
+
+    <!-- ========================================
+         SCHEDULE - Stacked time cards
+         ======================================== -->
+
+    <p class="section-label">Schedule</p>
+
+    <div class="card">
+      <div class="card-title">Q4 Planning Review</div>
+      <div class="card-subtitle">4 attendees</div>
+
+      <div class="time-slots-stacked">
+        <div class="time-slot-card selected">
+          <div class="slot-day">Tuesday, Jan 7</div>
+          <div class="slot-time">2:00 PM – 3:00 PM</div>
+          <div class="slot-status">
+            <span class="slot-dot" style="background: var(--success);"></span>
+            <span style="color: var(--success);">Everyone's free</span>
+          </div>
+        </div>
+        <div class="time-slot-card">
+          <div class="slot-day">Wednesday, Jan 8</div>
+          <div class="slot-time">10:00 AM – 11:00 AM</div>
+          <div class="slot-status">
+            <span class="slot-dot" style="background: var(--warning);"></span>
+            <span style="color: var(--warning);">1 conflict</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button class="button button-primary">Send Invite</button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         UNDERSTAND - Context tucked
+         ======================================== -->
+
+    <p class="section-label">Needs Decision</p>
+
+    <div class="card">
+      <div class="card-title" style="text-align: left;">Q4 Budget Review</div>
+      <div class="card-subtitle" style="text-align: left;">5 messages · 3 people</div>
+
+      <div class="attachment-tilted">
+        <div class="attachment-icon xls">XLS</div>
+        <div class="attachment-info">
+          <div class="attachment-name">Q4_Budget_v3.xlsx</div>
+          <div class="attachment-meta">Updated 2 hours ago</div>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button class="button button-primary">Reply</button>
+        <button class="button button-secondary">Open Sheet</button>
+      </div>
+
+      <div class="context-tuck">
+        <div class="context-label">Summary</div>
+        <p class="context-text">Sarah proposed 15% increase. Mike raised timeline concerns. Waiting on your approval.</p>
+      </div>
+    </div>
+
+    <!-- ========================================
+         EXPIRING - Minimal
+         ======================================== -->
+
+    <p class="section-label">Expiring</p>
+
+    <div class="card">
+      <div class="floating-badge warning" style="right: auto; left: 24px;">72 hours</div>
+
+      <div style="text-align: center; padding-top: 24px;">
+        <div class="card-title">Keep your monitors?</div>
+        <div class="card-subtitle">Browse AI will pause due to inactivity</div>
+      </div>
+
+      <div class="button-row" style="margin-top: 48px;">
+        <button class="button button-primary">Keep Active</button>
+        <button class="button button-secondary">Let Go</button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         ERROR - Alert
+         ======================================== -->
+
+    <p class="section-label">Alert</p>
+
+    <div class="card" style="background: linear-gradient(180deg, white 0%, #FEF2F2 100%);">
+      <div class="error-badge">
+        <div class="error-dot"></div>
+        Build Failed
+      </div>
+
+      <div class="card-title" style="text-align: left; margin-top: 20px;">learning-companion</div>
+      <div class="error-code">Module not found: @clerk/nextjs</div>
+
+      <div class="button-row">
+        <button class="button button-primary">Open Render</button>
+        <button class="button button-secondary">GitHub</button>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

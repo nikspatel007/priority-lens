@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Priority Lens - Card Design Mockups</title>
+  <style>
+    /* ========================================
+       PRIORITY LENS DESIGN SYSTEM
+       ======================================== */
+
+    :root {
+      /* Primary Blues */
+      --primary-50: #E8F4FC;
+      --primary-100: #C5E3F6;
+      --primary-200: #9DD0F0;
+      --primary-300: #74BDEA;
+      --primary-400: #4BAAE4;
+      --primary-500: #2297DE;
+      --primary-600: #1B79B5;
+      --primary-700: #155B8C;
+      --primary-800: #0E3D63;
+      --primary-900: #071F3A;
+
+      /* Neutral Grays */
+      --neutral-50: #F8FAFC;
+      --neutral-100: #F1F5F9;
+      --neutral-200: #E2E8F0;
+      --neutral-300: #CBD5E1;
+      --neutral-400: #94A3B8;
+      --neutral-500: #64748B;
+      --neutral-600: #475569;
+      --neutral-700: #334155;
+      --neutral-800: #1E293B;
+      --neutral-900: #0F172A;
+
+      /* Accent */
+      --success: #10B981;
+      --warning: #F59E0B;
+      --error: #EF4444;
+      --info: #3B82F6;
+
+      /* Typography */
+      --font-serif: ui-serif, "New York", "Times New Roman", Georgia, serif;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+      /* Spacing */
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+
+      /* Radius */
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-full: 9999px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--neutral-100);
+      min-height: 100vh;
+      padding: var(--space-6);
+    }
+
+    .container {
+      max-width: 390px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--neutral-900);
+      margin-bottom: var(--space-2);
+    }
+
+    .section-label {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--neutral-400);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--space-3);
+      margin-top: var(--space-8);
+    }
+
+    /* ========================================
+       CARD BASE
+       ======================================== */
+
+    .card {
+      background: white;
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      margin-bottom: var(--space-5);
+      box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.04),
+        0 4px 12px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--neutral-100);
+    }
+
+    .card-urgent {
+      border-left: 4px solid var(--error);
+    }
+
+    /* ========================================
+       AVATAR
+       ======================================== */
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      background: var(--primary-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary-700);
+      flex-shrink: 0;
+    }
+
+    .avatar-sm {
+      width: 36px;
+      height: 36px;
+      font-size: 14px;
+      border-radius: var(--radius-sm);
+    }
+
+    .avatar-circle {
+      border-radius: var(--radius-full);
+    }
+
+    .avatar-stack {
+      display: flex;
+      align-items: center;
+    }
+
+    .avatar-stack .avatar {
+      margin-left: -8px;
+      border: 2px solid white;
+    }
+
+    .avatar-stack .avatar:first-child {
+      margin-left: 0;
+    }
+
+    /* ========================================
+       HEADER ROW
+       ======================================== */
+
+    .header-row {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      margin-bottom: var(--space-5);
+    }
+
+    .header-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .header-title {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--neutral-900);
+      line-height: 1.3;
+    }
+
+    .header-subtitle {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      color: var(--neutral-500);
+      margin-top: var(--space-1);
+    }
+
+    /* ========================================
+       HERO NUMBER
+       ======================================== */
+
+    .hero-number {
+      font-family: var(--font-serif);
+      font-size: 40px;
+      font-weight: 600;
+      color: var(--neutral-900);
+      text-align: center;
+      line-height: 1;
+    }
+
+    .hero-label {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      color: var(--neutral-500);
+      text-align: center;
+      margin-top: var(--space-2);
+    }
+
+    .hero-time {
+      font-family: var(--font-serif);
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--neutral-900);
+      line-height: 1;
+    }
+
+    .hero-duration {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      color: var(--neutral-400);
+      margin-top: var(--space-1);
+    }
+
+    /* ========================================
+       QUOTED TEXT
+       ======================================== */
+
+    .quoted-text {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      color: var(--neutral-700);
+      line-height: 1.5;
+      font-style: italic;
+      position: relative;
+      padding-left: var(--space-4);
+      border-left: 2px solid var(--neutral-200);
+    }
+
+    /* ========================================
+       DIVIDER
+       ======================================== */
+
+    .divider {
+      height: 1px;
+      background: var(--neutral-100);
+      margin: var(--space-5) 0;
+    }
+
+    /* ========================================
+       ATTACHMENT
+       ======================================== */
+
+    .attachment {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      background: var(--neutral-50);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .attachment:hover {
+      background: var(--neutral-100);
+    }
+
+    .attachment-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--error);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .attachment-icon.pdf { background: #EF4444; }
+    .attachment-icon.doc { background: #3B82F6; }
+    .attachment-icon.xls { background: #10B981; }
+
+    .attachment-info {
+      flex: 1;
+    }
+
+    .attachment-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--neutral-800);
+    }
+
+    .attachment-meta {
+      font-size: 12px;
+      color: var(--neutral-400);
+      margin-top: 2px;
+    }
+
+    /* ========================================
+       TIME SLOTS
+       ======================================== */
+
+    .time-slots {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .time-slot {
+      display: flex;
+      align-items: center;
+      padding: var(--space-4);
+      background: var(--neutral-50);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.15s ease;
+    }
+
+    .time-slot:hover {
+      background: var(--primary-50);
+      border-color: var(--primary-200);
+    }
+
+    .time-slot.selected {
+      background: var(--primary-50);
+      border-color: var(--primary-500);
+    }
+
+    .time-slot-radio {
+      width: 20px;
+      height: 20px;
+      border-radius: var(--radius-full);
+      border: 2px solid var(--neutral-300);
+      margin-right: var(--space-4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .time-slot.selected .time-slot-radio {
+      border-color: var(--primary-500);
+      background: var(--primary-500);
+    }
+
+    .time-slot.selected .time-slot-radio::after {
+      content: "";
+      width: 8px;
+      height: 8px;
+      background: white;
+      border-radius: var(--radius-full);
+    }
+
+    .time-slot-content {
+      flex: 1;
+    }
+
+    .time-slot-day {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--neutral-800);
+    }
+
+    .time-slot-time {
+      font-size: 13px;
+      color: var(--neutral-500);
+      margin-top: 2px;
+    }
+
+    .time-slot-status {
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: var(--radius-full);
+    }
+
+    .status-dot.available { background: var(--success); }
+    .status-dot.conflict { background: var(--warning); }
+
+    /* ========================================
+       QUICK REPLIES
+       ======================================== */
+
+    .quick-replies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+    }
+
+    .quick-reply {
+      padding: var(--space-2) var(--space-4);
+      background: var(--neutral-100);
+      border-radius: var(--radius-full);
+      font-size: 14px;
+      color: var(--neutral-700);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+    }
+
+    .quick-reply:hover {
+      background: var(--primary-50);
+      color: var(--primary-700);
+      border-color: var(--primary-200);
+    }
+
+    /* ========================================
+       COMPOSE INPUT
+       ======================================== */
+
+    .compose-input {
+      width: 100%;
+      padding: var(--space-4);
+      border: 1px solid var(--neutral-200);
+      border-radius: var(--radius-md);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      color: var(--neutral-800);
+      resize: none;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .compose-input::placeholder {
+      color: var(--neutral-400);
+    }
+
+    .compose-input:focus {
+      border-color: var(--primary-500);
+    }
+
+    /* ========================================
+       BUTTONS
+       ======================================== */
+
+    .button-row {
+      display: flex;
+      gap: var(--space-3);
+      margin-top: var(--space-5);
+    }
+
+    .button {
+      flex: 1;
+      padding: var(--space-4) var(--space-5);
+      border-radius: var(--radius-md);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: none;
+      text-align: center;
+    }
+
+    .button-primary {
+      background: var(--primary-500);
+      color: white;
+    }
+
+    .button-primary:hover {
+      background: var(--primary-600);
+    }
+
+    .button-secondary {
+      background: var(--neutral-100);
+      color: var(--neutral-700);
+    }
+
+    .button-secondary:hover {
+      background: var(--neutral-200);
+    }
+
+    .button-outline {
+      background: transparent;
+      color: var(--neutral-600);
+      border: 1px solid var(--neutral-200);
+    }
+
+    .button-outline:hover {
+      background: var(--neutral-50);
+      border-color: var(--neutral-300);
+    }
+
+    .button-external {
+      background: var(--neutral-800);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+    }
+
+    .button-external:hover {
+      background: var(--neutral-900);
+    }
+
+    .button-external::after {
+      content: "→";
+      font-size: 18px;
+    }
+
+    /* ========================================
+       TEXT LINK
+       ======================================== */
+
+    .text-link {
+      font-size: 14px;
+      color: var(--neutral-500);
+      text-align: center;
+      margin-top: var(--space-4);
+      cursor: pointer;
+    }
+
+    .text-link:hover {
+      color: var(--primary-600);
+    }
+
+    /* ========================================
+       BADGE
+       ======================================== */
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-urgent {
+      background: #FEE2E2;
+      color: #DC2626;
+    }
+
+    .badge-warning {
+      background: #FEF3C7;
+      color: #D97706;
+    }
+
+    .badge-success {
+      background: #D1FAE5;
+      color: #059669;
+    }
+
+    /* ========================================
+       CONTEXT SECTION
+       ======================================== */
+
+    .context-section {
+      background: var(--neutral-50);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin: var(--space-4) 0;
+    }
+
+    .context-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--neutral-400);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--space-2);
+    }
+
+    .context-text {
+      font-size: 14px;
+      color: var(--neutral-600);
+      line-height: 1.5;
+    }
+
+    /* ========================================
+       DECISION LIST
+       ======================================== */
+
+    .decision-list {
+      margin-top: var(--space-3);
+    }
+
+    .decision-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-2) 0;
+    }
+
+    .decision-checkbox {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 2px solid var(--neutral-300);
+      margin-top: 2px;
+    }
+
+    .decision-text {
+      font-size: 14px;
+      color: var(--neutral-700);
+    }
+
+    /* ========================================
+       THREAD INDICATOR
+       ======================================== */
+
+    .thread-indicator {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 13px;
+      color: var(--neutral-500);
+      margin-bottom: var(--space-4);
+    }
+
+    .thread-indicator svg {
+      width: 16px;
+      height: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <h1>Priority Lens</h1>
+    <p style="color: var(--neutral-500); font-size: 14px;">Card Design Mockups</p>
+
+    <!-- ========================================
+         EMAIL - REPLY (IN-APP ACTION)
+         ======================================== -->
+
+    <p class="section-label">Email Reply (In-App)</p>
+
+    <div class="card card-urgent">
+      <div class="header-row">
+        <div class="avatar avatar-circle">SC</div>
+        <div class="header-content">
+          <div class="header-title">Sarah Chen</div>
+          <div class="header-subtitle">VP Engineering · Acme Corp</div>
+        </div>
+        <span class="badge badge-urgent">Urgent</span>
+      </div>
+
+      <p class="quoted-text">
+        "Can you review the proposal and share your thoughts before our 3pm meeting?"
+      </p>
+
+      <div class="divider"></div>
+
+      <div class="quick-replies">
+        <span class="quick-reply">On it, reviewing now</span>
+        <span class="quick-reply">Need more time</span>
+        <span class="quick-reply">Let's discuss</span>
+      </div>
+
+      <textarea class="compose-input" rows="2" placeholder="Write a reply..."></textarea>
+
+      <div class="button-row">
+        <button class="button button-primary">Send Reply</button>
+        <button class="button button-secondary">View Thread</button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         CALENDAR - SCHEDULE (IN-APP ACTION)
+         ======================================== -->
+
+    <p class="section-label">Schedule Meeting (In-App)</p>
+
+    <div class="card">
+      <div style="font-size: 12px; color: var(--neutral-400); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: var(--space-2);">Schedule</div>
+      <div style="font-family: var(--font-serif); font-size: 22px; font-weight: 600; color: var(--neutral-900); margin-bottom: var(--space-4);">Q4 Planning Review</div>
+
+      <div class="avatar-stack" style="margin-bottom: var(--space-5);">
+        <div class="avatar avatar-sm avatar-circle">SC</div>
+        <div class="avatar avatar-sm avatar-circle" style="background: #DBEAFE; color: #1D4ED8;">MJ</div>
+        <div class="avatar avatar-sm avatar-circle" style="background: #FCE7F3; color: #BE185D;">AK</div>
+        <span style="margin-left: var(--space-3); font-size: 14px; color: var(--neutral-500);">4 attendees</span>
+      </div>
+
+      <div style="font-size: 13px; color: var(--neutral-500); margin-bottom: var(--space-3);">Available times:</div>
+
+      <div class="time-slots">
+        <div class="time-slot selected">
+          <div class="time-slot-radio"></div>
+          <div class="time-slot-content">
+            <div class="time-slot-day">Tuesday, Jan 7</div>
+            <div class="time-slot-time">2:00 PM – 3:00 PM</div>
+          </div>
+          <div class="time-slot-status">
+            <span class="status-dot available"></span>
+            <span style="color: var(--success); font-size: 12px;">All available</span>
+          </div>
+        </div>
+
+        <div class="time-slot">
+          <div class="time-slot-radio"></div>
+          <div class="time-slot-content">
+            <div class="time-slot-day">Wednesday, Jan 8</div>
+            <div class="time-slot-time">10:00 AM – 11:00 AM</div>
+          </div>
+          <div class="time-slot-status">
+            <span class="status-dot conflict"></span>
+            <span style="color: var(--warning); font-size: 12px;">Mike has conflict</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button class="button button-primary">Send Invite</button>
+        <button class="button button-outline">Other Times</button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         CALENDAR - ACCEPT/DECLINE (IN-APP)
+         ======================================== -->
+
+    <p class="section-label">Meeting Response (In-App)</p>
+
+    <div class="card">
+      <div style="font-size: 12px; color: var(--neutral-400); margin-bottom: var(--space-1);">Tomorrow</div>
+      <div class="hero-time">10:00 AM</div>
+      <div class="hero-duration">45 min · Zoom</div>
+
+      <div class="divider"></div>
+
+      <div style="font-family: var(--font-serif); font-size: 18px; font-weight: 600; color: var(--neutral-900); margin-bottom: var(--space-3);">Product Roadmap Sync</div>
+
+      <div class="avatar-stack" style="margin-bottom: var(--space-2);">
+        <div class="avatar avatar-sm avatar-circle">AK</div>
+        <div class="avatar avatar-sm avatar-circle" style="background: #DBEAFE; color: #1D4ED8;">JS</div>
+        <div class="avatar avatar-sm avatar-circle" style="background: #D1FAE5; color: #059669;">NP</div>
+      </div>
+      <div style="font-size: 13px; color: var(--neutral-500);">Anna, Josh, and you</div>
+
+      <div class="button-row">
+        <button class="button button-primary">Accept</button>
+        <button class="button button-outline">Decline</button>
+        <button class="button button-secondary">Reschedule</button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         INVOICE - EXTERNAL ROUTE
+         ======================================== -->
+
+    <p class="section-label">Invoice (External)</p>
+
+    <div class="card">
+      <div class="header-row">
+        <div class="avatar" style="background: #1C1C1C; color: white; font-size: 12px; font-weight: 700;">SUPA</div>
+        <div class="header-content">
+          <div class="header-title">Supabase</div>
+          <div class="header-subtitle">Monthly Pro Plan</div>
+        </div>
+      </div>
+
+      <div style="text-align: center; padding: var(--space-4) 0;">
+        <div class="hero-number">$25</div>
+        <div class="hero-label">Due Friday</div>
+      </div>
+
+      <div class="attachment">
+        <div class="attachment-icon pdf">PDF</div>
+        <div class="attachment-info">
+          <div class="attachment-name">Invoice #QXYVKG-00008</div>
+          <div class="attachment-meta">Tap to preview</div>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button class="button button-external" style="flex: 1;">Pay in Supabase</button>
+      </div>
+
+      <div class="text-link">Add to expenses</div>
+    </div>
+
+    <!-- ========================================
+         UNDERSTAND - THREAD CONTEXT
+         ======================================== -->
+
+    <p class="section-label">Understand (Thread Context)</p>
+
+    <div class="card">
+      <div class="thread-indicator">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <span>5 messages · 3 people</span>
+      </div>
+
+      <div style="font-family: var(--font-serif); font-size: 18px; font-weight: 600; color: var(--neutral-900); margin-bottom: var(--space-4);">RE: Q4 Budget Review</div>
+
+      <div class="context-section">
+        <div class="context-label">Summary</div>
+        <div class="context-text">
+          Sarah proposed 15% budget increase for Q1. Mike raised concerns about timeline. Team is waiting on your approval to proceed.
+        </div>
+      </div>
+
+      <div class="context-section" style="background: transparent; padding: 0; margin-bottom: 0;">
+        <div class="context-label">Decisions needed</div>
+        <div class="decision-list">
+          <div class="decision-item">
+            <div class="decision-checkbox"></div>
+            <div class="decision-text">Approve budget increase?</div>
+          </div>
+          <div class="decision-item">
+            <div class="decision-checkbox"></div>
+            <div class="decision-text">Confirm Q1 start date?</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="attachment">
+        <div class="attachment-icon xls">XLS</div>
+        <div class="attachment-info">
+          <div class="attachment-name">Q4_Budget_v3.xlsx</div>
+          <div class="attachment-meta">Updated 2 hours ago</div>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button class="button button-primary">Reply</button>
+        <button class="button button-secondary">Open Sheet</button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         QUICK DECISION - ACTION REQUIRED
+         ======================================== -->
+
+    <p class="section-label">Quick Decision</p>
+
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-4);">
+        <div class="header-row" style="margin-bottom: 0;">
+          <div class="avatar" style="background: #7C3AED; color: white; font-size: 14px;">B</div>
+          <div class="header-content">
+            <div class="header-title">Browse AI</div>
+            <div class="header-subtitle">Your monitors</div>
+          </div>
+        </div>
+        <span class="badge badge-warning">72 hours</span>
+      </div>
+
+      <div style="font-family: var(--font-serif); font-size: 17px; color: var(--neutral-700); line-height: 1.5; margin-bottom: var(--space-4);">
+        Your web monitors will be paused due to inactivity. Keep them running?
+      </div>
+
+      <div class="button-row">
+        <button class="button button-primary">Keep Active</button>
+        <button class="button button-outline">Let It Go</button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         BUILD FAILED - EXTERNAL
+         ======================================== -->
+
+    <p class="section-label">Alert (External)</p>
+
+    <div class="card card-urgent">
+      <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4);">
+        <div style="width: 12px; height: 12px; background: var(--error); border-radius: var(--radius-full);"></div>
+        <span style="font-size: 13px; font-weight: 600; color: var(--error);">Build Failed</span>
+      </div>
+
+      <div style="font-family: var(--font-serif); font-size: 18px; font-weight: 600; color: var(--neutral-900); margin-bottom: var(--space-2);">learning-companion</div>
+
+      <div style="font-family: var(--font-mono, monospace); font-size: 13px; color: var(--neutral-500); background: var(--neutral-50); padding: var(--space-3); border-radius: var(--radius-sm); margin-bottom: var(--space-4);">
+        Module not found: @clerk/nextjs
+      </div>
+
+      <div class="button-row">
+        <button class="button button-external">Open Render</button>
+        <button class="button button-outline">View in GitHub</button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         FOLLOW UP - WITH CONTEXT
+         ======================================== -->
+
+    <p class="section-label">Follow Up</p>
+
+    <div class="card">
+      <div class="header-row">
+        <div class="avatar avatar-circle">AW</div>
+        <div class="header-content">
+          <div class="header-title">Alex Wong</div>
+          <div class="header-subtitle">CEO · Acme Corp</div>
+        </div>
+      </div>
+
+      <div class="context-section">
+        <div class="context-label">Last contact · Dec 28</div>
+        <div class="context-text">
+          Discussed partnership opportunity. They need a proposal by Jan 10 to present to their board.
+        </div>
+      </div>
+
+      <div style="font-size: 13px; color: var(--neutral-500); margin-bottom: var(--space-3);">Suggested times:</div>
+
+      <div style="display: flex; gap: var(--space-3); margin-bottom: var(--space-4);">
+        <div style="flex: 1; padding: var(--space-3); background: var(--neutral-50); border-radius: var(--radius-sm); text-align: center; cursor: pointer;" class="time-option">
+          <div style="font-weight: 600; color: var(--neutral-800);">Tue 2pm</div>
+          <div style="font-size: 12px; color: var(--neutral-400);">Jan 7</div>
+        </div>
+        <div style="flex: 1; padding: var(--space-3); background: var(--neutral-50); border-radius: var(--radius-sm); text-align: center; cursor: pointer;">
+          <div style="font-weight: 600; color: var(--neutral-800);">Wed 10am</div>
+          <div style="font-size: 12px; color: var(--neutral-400);">Jan 8</div>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button class="button button-primary">Send Invite</button>
+        <button class="button button-secondary">Open in Gmail</button>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

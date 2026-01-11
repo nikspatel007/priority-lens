@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Priority Lens - Restrained Design v4</title>
+  <style>
+    :root {
+      --primary-500: #2297DE;
+      --neutral-50: #F8FAFC;
+      --neutral-100: #F1F5F9;
+      --neutral-200: #E2E8F0;
+      --neutral-300: #CBD5E1;
+      --neutral-400: #94A3B8;
+      --neutral-500: #64748B;
+      --neutral-600: #475569;
+      --neutral-700: #334155;
+      --neutral-800: #1E293B;
+      --neutral-900: #0F172A;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --error: #EF4444;
+      --font-serif: ui-serif, "New York", Georgia, serif;
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--neutral-100);
+      min-height: 100vh;
+      padding: 32px 24px;
+    }
+
+    .container {
+      max-width: 390px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .page-header h1 {
+      font-family: var(--font-serif);
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--neutral-900);
+    }
+
+    .page-header p {
+      font-size: 14px;
+      color: var(--neutral-400);
+      margin-top: 8px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--neutral-400);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      margin-top: 64px;
+    }
+
+    /* ========================================
+       CARD - Clean stage, no effects
+       ======================================== */
+
+    .card {
+      background: white;
+      border-radius: 28px;
+      padding: 32px 28px;
+      margin-bottom: 24px;
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.03),
+        0 2px 8px rgba(0, 0, 0, 0.04),
+        0 8px 24px rgba(0, 0, 0, 0.06);
+      position: relative;
+    }
+
+    /* ========================================
+       PHYSICAL DOCUMENTS - Real artifacts get tilt
+       ======================================== */
+
+    .document-artifact {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      background: white;
+      border-radius: 14px;
+      margin: 20px 0;
+      transform: rotate(-2deg);
+      box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.04),
+        0 4px 12px rgba(0, 0, 0, 0.06),
+        0 8px 24px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--neutral-100);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .document-artifact:hover {
+      transform: rotate(-0.5deg) translateY(-2px);
+      box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.04),
+        0 8px 20px rgba(0, 0, 0, 0.08),
+        0 16px 32px rgba(0, 0, 0, 0.06);
+    }
+
+    .doc-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .doc-icon.pdf { background: linear-gradient(135deg, #EF4444, #DC2626); }
+    .doc-icon.xls { background: linear-gradient(135deg, #10B981, #059669); }
+    .doc-icon.doc { background: linear-gradient(135deg, #3B82F6, #2563EB); }
+
+    .doc-info { flex: 1; }
+
+    .doc-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--neutral-800);
+    }
+
+    .doc-meta {
+      font-size: 12px;
+      color: var(--neutral-400);
+      margin-top: 2px;
+    }
+
+    /* ========================================
+       BADGES - Functional, no tilt
+       ======================================== */
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .badge-urgent {
+      background: var(--error);
+      color: white;
+    }
+
+    .badge-warning {
+      background: var(--warning);
+      color: white;
+    }
+
+    .badge-info {
+      background: var(--neutral-100);
+      color: var(--neutral-600);
+    }
+
+    /* ========================================
+       PERSON ROW - Clean UI element
+       ======================================== */
+
+    .person-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .person-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .person-info { flex: 1; }
+
+    .person-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--neutral-800);
+    }
+
+    .person-role {
+      font-size: 13px;
+      color: var(--neutral-500);
+      margin-top: 1px;
+    }
+
+    /* ========================================
+       QUOTE - Content highlight, subtle
+       ======================================== */
+
+    .quote {
+      padding: 20px 24px;
+      background: var(--neutral-50);
+      border-radius: 16px;
+      margin: 16px 0;
+      border-left: 3px solid var(--neutral-300);
+    }
+
+    .quote-text {
+      font-family: var(--font-serif);
+      font-size: 17px;
+      color: var(--neutral-700);
+      line-height: 1.5;
+    }
+
+    /* ========================================
+       AMOUNT - Typography as hero
+       ======================================== */
+
+    .amount-hero {
+      text-align: center;
+      padding: 32px 0 24px;
+    }
+
+    .amount-value {
+      font-family: var(--font-serif);
+      font-size: 64px;
+      font-weight: 600;
+      color: var(--neutral-900);
+      letter-spacing: -2px;
+      line-height: 1;
+    }
+
+    .amount-label {
+      font-size: 14px;
+      color: var(--neutral-400);
+      margin-top: 8px;
+    }
+
+    /* ========================================
+       TIME DISPLAY - Clean, prominent
+       ======================================== */
+
+    .time-hero {
+      background: var(--neutral-900);
+      color: white;
+      padding: 28px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+
+    .time-value {
+      font-family: var(--font-serif);
+      font-size: 42px;
+      font-weight: 600;
+      letter-spacing: -1px;
+    }
+
+    .time-meta {
+      font-size: 14px;
+      opacity: 0.6;
+      margin-top: 4px;
+    }
+
+    /* ========================================
+       AVATARS - Clean row
+       ======================================== */
+
+    .avatar-row {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .avatar-row .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid white;
+      margin-left: -10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .avatar-row .avatar:first-child { margin-left: 0; }
+
+    /* ========================================
+       OPTION CARDS - Stacked for "pick one"
+       ======================================== */
+
+    .options-stack {
+      position: relative;
+      margin: 24px 0;
+    }
+
+    .option-card {
+      padding: 18px 20px;
+      background: white;
+      border-radius: 16px;
+      border: 2px solid var(--neutral-200);
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .option-card:hover {
+      border-color: var(--neutral-400);
+    }
+
+    .option-card.selected {
+      border-color: var(--neutral-900);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .option-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--neutral-800);
+    }
+
+    .option-subtitle {
+      font-size: 13px;
+      color: var(--neutral-500);
+      margin-top: 2px;
+    }
+
+    .option-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    /* ========================================
+       QUICK REPLIES - Flat buttons
+       ======================================== */
+
+    .quick-replies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .reply-btn {
+      padding: 12px 18px;
+      background: var(--neutral-100);
+      border-radius: 100px;
+      font-size: 14px;
+      color: var(--neutral-700);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: none;
+    }
+
+    .reply-btn:hover {
+      background: var(--neutral-900);
+      color: white;
+    }
+
+    /* ========================================
+       BUTTONS - Functional, grounded
+       ======================================== */
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 16px 20px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: var(--neutral-900);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--neutral-800);
+    }
+
+    .btn-secondary {
+      background: var(--neutral-100);
+      color: var(--neutral-700);
+    }
+
+    .btn-secondary:hover {
+      background: var(--neutral-200);
+    }
+
+    /* ========================================
+       TITLES
+       ======================================== */
+
+    .card-title {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--neutral-900);
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      color: var(--neutral-500);
+      margin-top: 4px;
+    }
+
+    /* ========================================
+       CONTEXT FOOTER
+       ======================================== */
+
+    .context-footer {
+      background: var(--neutral-50);
+      margin: 24px -28px -32px;
+      padding: 20px 28px;
+      border-radius: 0 0 28px 28px;
+    }
+
+    .context-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--neutral-400);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .context-text {
+      font-size: 14px;
+      color: var(--neutral-600);
+      line-height: 1.5;
+      margin-top: 6px;
+    }
+
+    /* ========================================
+       TEXT LINK
+       ======================================== */
+
+    .text-link {
+      font-size: 14px;
+      color: var(--neutral-400);
+      text-align: center;
+      margin-top: 12px;
+      cursor: pointer;
+    }
+
+    .text-link:hover {
+      color: var(--neutral-600);
+    }
+
+    /* ========================================
+       ERROR STATE
+       ======================================== */
+
+    .error-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: var(--error);
+      color: white;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .error-dot {
+      width: 6px;
+      height: 6px;
+      background: white;
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .code-block {
+      font-family: "SF Mono", monospace;
+      font-size: 13px;
+      color: var(--neutral-600);
+      background: var(--neutral-50);
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin: 16px 0;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="page-header">
+      <h1>Priority Lens</h1>
+      <p>v4 - Restraint</p>
+    </div>
+
+    <!-- ========================================
+         INVOICE - Document artifact tilted
+         ======================================== -->
+
+    <p class="section-label">Payment</p>
+
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+        <div class="person-row" style="margin-bottom: 0;">
+          <div class="person-avatar" style="background: #18181B; font-size: 9px; font-weight: 700; border-radius: 10px;">SUPA</div>
+          <div class="person-info">
+            <div class="person-name">Supabase</div>
+            <div class="person-role">Pro Plan</div>
+          </div>
+        </div>
+        <span class="badge badge-warning">Due Fri</span>
+      </div>
+
+      <!-- Real document - gets tilt -->
+      <div class="document-artifact">
+        <div class="doc-icon pdf">PDF</div>
+        <div class="doc-info">
+          <div class="doc-name">Invoice #QXYVKG-00008</div>
+          <div class="doc-meta">View invoice details</div>
+        </div>
+      </div>
+
+      <div class="amount-hero">
+        <div class="amount-value">$25</div>
+        <div class="amount-label">Monthly subscription</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary">Pay Now</button>
+        <button class="btn btn-secondary">Remind Me</button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         EMAIL - Quote is content, no tilt
+         ======================================== -->
+
+    <p class="section-label">Reply Needed</p>
+
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+        <div class="person-row" style="margin-bottom: 0;">
+          <div class="person-avatar" style="background: linear-gradient(135deg, #818CF8, #6366F1);">SC</div>
+          <div class="person-info">
+            <div class="person-name">Sarah Chen</div>
+            <div class="person-role">VP Engineering</div>
+          </div>
+        </div>
+        <span class="badge badge-urgent">Urgent</span>
+      </div>
+
+      <div class="quote">
+        <p class="quote-text">Can you review the proposal and share your thoughts before our 3pm?</p>
+      </div>
+
+      <div class="quick-replies">
+        <button class="reply-btn">On it</button>
+        <button class="reply-btn">Need more time</button>
+        <button class="reply-btn">Let's discuss</button>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary">Send Reply</button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         MEETING - Time as hero, clean
+         ======================================== -->
+
+    <p class="section-label">Tomorrow</p>
+
+    <div class="card">
+      <div class="time-hero">
+        <div class="time-value">10:00 AM</div>
+        <div class="time-meta">45 min via Zoom</div>
+      </div>
+
+      <div class="card-title" style="text-align: center;">Product Roadmap Sync</div>
+
+      <div class="avatar-row">
+        <div class="avatar" style="background: linear-gradient(135deg, #818CF8, #6366F1);">AK</div>
+        <div class="avatar" style="background: linear-gradient(135deg, #F472B6, #EC4899);">JS</div>
+        <div class="avatar" style="background: linear-gradient(135deg, #34D399, #10B981);">NP</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary">Accept</button>
+        <button class="btn btn-secondary">Decline</button>
+      </div>
+      <div class="text-link">Propose different time</div>
+    </div>
+
+    <!-- ========================================
+         SCHEDULING - Options to pick
+         ======================================== -->
+
+    <p class="section-label">Schedule</p>
+
+    <div class="card">
+      <div class="card-title">Q4 Planning Review</div>
+      <div class="card-subtitle">4 attendees</div>
+
+      <div class="options-stack">
+        <div class="option-card selected">
+          <div class="option-title">Tuesday, Jan 7</div>
+          <div class="option-subtitle">2:00 PM - 3:00 PM</div>
+          <div class="option-status">
+            <span class="status-dot" style="background: var(--success);"></span>
+            <span style="color: var(--success);">Everyone available</span>
+          </div>
+        </div>
+        <div class="option-card">
+          <div class="option-title">Wednesday, Jan 8</div>
+          <div class="option-subtitle">10:00 AM - 11:00 AM</div>
+          <div class="option-status">
+            <span class="status-dot" style="background: var(--warning);"></span>
+            <span style="color: var(--warning);">1 conflict</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary">Send Invite</button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         REVIEW - Attachment is real document
+         ======================================== -->
+
+    <p class="section-label">Needs Decision</p>
+
+    <div class="card">
+      <div class="card-title">Q4 Budget Review</div>
+      <div class="card-subtitle">5 messages from 3 people</div>
+
+      <!-- Real document artifact - gets tilt -->
+      <div class="document-artifact">
+        <div class="doc-icon xls">XLS</div>
+        <div class="doc-info">
+          <div class="doc-name">Q4_Budget_v3.xlsx</div>
+          <div class="doc-meta">Updated 2 hours ago</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary">Reply</button>
+        <button class="btn btn-secondary">Open</button>
+      </div>
+
+      <div class="context-footer">
+        <div class="context-label">Summary</div>
+        <p class="context-text">Sarah proposed 15% increase. Mike raised timeline concerns. Waiting on your approval.</p>
+      </div>
+    </div>
+
+    <!-- ========================================
+         ERROR - Status indicator, no frills
+         ======================================== -->
+
+    <p class="section-label">Alert</p>
+
+    <div class="card">
+      <div class="error-indicator">
+        <div class="error-dot"></div>
+        Build Failed
+      </div>
+
+      <div class="card-title">learning-companion</div>
+      <div class="card-subtitle">Render deployment</div>
+
+      <div class="code-block">Module not found: @clerk/nextjs</div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary">Open Render</button>
+        <button class="btn btn-secondary">GitHub</button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         EXPIRING - Minimal
+         ======================================== -->
+
+    <p class="section-label">Expiring</p>
+
+    <div class="card" style="text-align: center;">
+      <span class="badge badge-warning" style="margin-bottom: 16px;">72 hours left</span>
+
+      <div class="card-title">Keep your monitors?</div>
+      <div class="card-subtitle">Browse AI will pause due to inactivity</div>
+
+      <div class="btn-row" style="margin-top: 28px;">
+        <button class="btn btn-primary">Keep Active</button>
+        <button class="btn btn-secondary">Let Go</button>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

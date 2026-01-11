@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Priority Lens - Interactive Cards</title>
+  <style>
+    :root {
+      --font-serif: ui-serif, "New York", Georgia, serif;
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-sans);
+      background: #F5F5F7;
+      min-height: 100vh;
+      padding: 40px 24px;
+    }
+
+    .container {
+      max-width: 390px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #86868B;
+      margin-bottom: 12px;
+      margin-top: 48px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .data-badge {
+      font-size: 10px;
+      background: #E5E5EA;
+      color: #636366;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: "SF Mono", monospace;
+    }
+
+    /* ========================================
+       BASE CARD
+       ======================================== */
+
+    .card {
+      background: white;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 0.5px rgba(0,0,0,0.04),
+        0 4px 24px rgba(0,0,0,0.06);
+      margin-bottom: 24px;
+    }
+
+    .card-body {
+      padding: 24px;
+    }
+
+    /* ========================================
+       COMMON ELEMENTS
+       ======================================== */
+
+    .person-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 500;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .person-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1C1C1E;
+    }
+
+    .person-meta {
+      font-size: 13px;
+      color: #86868B;
+    }
+
+    .badge {
+      padding: 5px 12px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-urgent { background: #FF3B30; color: white; }
+    .badge-warning { background: #FF9F0A; color: white; }
+    .badge-info { background: #E5E5EA; color: #636366; }
+
+    .btn {
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      flex: 1;
+    }
+
+    .btn-dark { background: #1C1C1E; color: white; }
+    .btn-light { background: #F5F5F7; color: #1C1C1E; }
+    .btn-success { background: #34C759; color: white; }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    /* ========================================
+       EMAIL CARD - Expandable message
+       Data: EmailCache
+       ======================================== */
+
+    .email-card .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .urgent-indicator {
+      width: 10px;
+      height: 10px;
+      background: #FF3B30;
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(255, 59, 48, 0.2);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 3px rgba(255, 59, 48, 0.2); }
+      50% { box-shadow: 0 0 0 6px rgba(255, 59, 48, 0.1); }
+    }
+
+    /* Message bubble - tappable to expand */
+    .message-preview {
+      background: #F5F5F7;
+      border-radius: 20px;
+      border-top-left-radius: 6px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .message-preview:hover {
+      background: #EBEBF0;
+    }
+
+    .message-preview.expanded {
+      background: #F5F5F7;
+    }
+
+    .message-snippet {
+      font-family: var(--font-serif);
+      font-size: 17px;
+      color: #1C1C1E;
+      line-height: 1.45;
+    }
+
+    .message-full {
+      display: none;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #E5E5EA;
+    }
+
+    .message-preview.expanded .message-full {
+      display: block;
+    }
+
+    .message-full-text {
+      font-size: 15px;
+      color: #3C3C43;
+      line-height: 1.5;
+    }
+
+    .expand-hint {
+      font-size: 12px;
+      color: #86868B;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .message-preview.expanded .expand-hint {
+      display: none;
+    }
+
+    /* Attachments in email */
+    .attachments-row {
+      display: none;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .message-preview.expanded .attachments-row {
+      display: flex;
+    }
+
+    .attachment-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: white;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid #E5E5EA;
+    }
+
+    .attachment-chip:hover {
+      border-color: #1C1C1E;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .attachment-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .attachment-icon.pdf { background: linear-gradient(135deg, #FF3B30, #D70015); }
+    .attachment-icon.xls { background: linear-gradient(135deg, #34C759, #248A3D); }
+
+    .attachment-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: #1C1C1E;
+    }
+
+    /* Quick replies */
+    .quick-replies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .reply-pill {
+      padding: 12px 18px;
+      background: #F5F5F7;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #1C1C1E;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: none;
+    }
+
+    .reply-pill:hover {
+      background: #1C1C1E;
+      color: white;
+    }
+
+    .reply-pill.selected {
+      background: #1C1C1E;
+      color: white;
+    }
+
+    /* Data field annotation */
+    .field-hint {
+      font-size: 9px;
+      color: #86868B;
+      font-family: "SF Mono", monospace;
+      margin-top: 2px;
+    }
+
+    /* ========================================
+       MEETING CARD - With attendee details
+       Data: CalendarEventCache
+       ======================================== */
+
+    .meeting-card .time-block {
+      background: linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 100%);
+      padding: 28px 24px;
+      position: relative;
+    }
+
+    .meeting-time {
+      font-family: var(--font-serif);
+      font-size: 48px;
+      font-weight: 500;
+      color: white;
+      letter-spacing: -2px;
+    }
+
+    .meeting-duration {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      margin-top: 4px;
+    }
+
+    .meeting-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255,255,255,0.15);
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .meeting-content {
+      padding: 24px;
+    }
+
+    .meeting-title {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 600;
+      color: #1C1C1E;
+      text-align: center;
+    }
+
+    .meeting-location {
+      font-size: 13px;
+      color: #86868B;
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    /* Attendee row - tappable to expand */
+    .attendees-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .attendee-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 3px solid white;
+      margin-left: -10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: white;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .attendee-avatar:first-child { margin-left: 0; }
+
+    .attendee-avatar:hover {
+      transform: translateY(-6px) scale(1.1);
+      z-index: 10;
+    }
+
+    .attendee-more {
+      background: #E5E5EA;
+      color: #636366;
+      font-size: 12px;
+    }
+
+    /* Attendee expanded list */
+    .attendees-expanded {
+      display: none;
+      background: #F5F5F7;
+      border-radius: 16px;
+      padding: 16px;
+      margin: 16px 0;
+    }
+
+    .attendees-expanded.show {
+      display: block;
+    }
+
+    .attendee-list-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #E5E5EA;
+    }
+
+    .attendee-list-item:last-child {
+      border-bottom: none;
+    }
+
+    .attendee-list-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .attendee-list-info {
+      flex: 1;
+    }
+
+    .attendee-list-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1C1C1E;
+    }
+
+    .attendee-list-email {
+      font-size: 12px;
+      color: #86868B;
+    }
+
+    .attendee-status {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+
+    .status-accepted { background: #D1FAE5; color: #065F46; }
+    .status-pending { background: #FEF3C7; color: #92400E; }
+
+    /* ========================================
+       DOCUMENTS CARD - Expandable stack
+       Data: EmailCache attachments
+       ======================================== */
+
+    .docs-card .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .docs-title {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 600;
+      color: #1C1C1E;
+    }
+
+    .docs-meta {
+      font-size: 13px;
+      color: #86868B;
+      margin-top: 2px;
+    }
+
+    /* Document stack - collapsed */
+    .doc-stack {
+      position: relative;
+      height: 140px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .doc-stack.expanded {
+      height: auto;
+    }
+
+    .doc-preview {
+      position: absolute;
+      width: 100px;
+      height: 130px;
+      background: white;
+      border-radius: 8px;
+      border: 1px solid #E5E5EA;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      left: 50%;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .doc-preview:nth-child(1) {
+      transform: translateX(-50%) rotate(-3deg);
+      z-index: 3;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+
+    .doc-preview:nth-child(2) {
+      transform: translateX(-35%) rotate(2deg);
+      z-index: 2;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .doc-preview:nth-child(3) {
+      transform: translateX(-65%) rotate(-6deg);
+      z-index: 1;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .doc-stack:hover .doc-preview:nth-child(1) {
+      transform: translateX(-50%) rotate(-1deg) translateY(-4px);
+    }
+
+    .doc-stack:hover .doc-preview:nth-child(2) {
+      transform: translateX(-25%) rotate(4deg);
+    }
+
+    .doc-stack:hover .doc-preview:nth-child(3) {
+      transform: translateX(-75%) rotate(-8deg);
+    }
+
+    .doc-type {
+      width: 24px;
+      height: 24px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 7px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .doc-type.xls { background: linear-gradient(135deg, #34C759, #248A3D); }
+    .doc-type.pdf { background: linear-gradient(135deg, #FF3B30, #D70015); }
+    .doc-type.doc { background: linear-gradient(135deg, #007AFF, #0056B3); }
+
+    .doc-lines {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .doc-line {
+      height: 4px;
+      background: #F5F5F7;
+      border-radius: 2px;
+    }
+
+    /* Document list - expanded */
+    .doc-list {
+      display: none;
+    }
+
+    .doc-stack.expanded .doc-list {
+      display: block;
+    }
+
+    .doc-stack.expanded .doc-preview {
+      display: none;
+    }
+
+    .doc-list-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+      background: #F5F5F7;
+      border-radius: 14px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .doc-list-item:hover {
+      background: #EBEBF0;
+    }
+
+    .doc-list-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .doc-list-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .doc-list-info {
+      flex: 1;
+    }
+
+    .doc-list-name {
+      font-size: 15px;
+      font-weight: 500;
+      color: #1C1C1E;
+    }
+
+    .doc-list-meta {
+      font-size: 12px;
+      color: #86868B;
+      margin-top: 2px;
+    }
+
+    .doc-list-action {
+      font-size: 13px;
+      color: #007AFF;
+      font-weight: 500;
+    }
+
+    /* Collapse hint */
+    .stack-hint {
+      text-align: center;
+      font-size: 12px;
+      color: #86868B;
+      margin-top: 8px;
+    }
+
+    .doc-stack.expanded .stack-hint {
+      display: none;
+    }
+
+    .collapse-btn {
+      display: none;
+      text-align: center;
+      font-size: 13px;
+      color: #007AFF;
+      font-weight: 500;
+      margin-top: 12px;
+      cursor: pointer;
+    }
+
+    .doc-stack.expanded + .collapse-btn {
+      display: block;
+    }
+
+    /* Context summary */
+    .context-box {
+      background: #F5F5F7;
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+
+    .context-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #86868B;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .context-text {
+      font-size: 14px;
+      color: #1C1C1E;
+      line-height: 1.5;
+      margin-top: 6px;
+    }
+
+    /* ========================================
+       DOCUMENT PREVIEW MODAL
+       ======================================== */
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 100;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-sheet {
+      background: white;
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 390px;
+      max-height: 85vh;
+      overflow: hidden;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.show .modal-sheet {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid #E5E5EA;
+    }
+
+    .modal-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #1C1C1E;
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #F5F5F7;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #86868B;
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+    }
+
+    .preview-placeholder {
+      background: #F5F5F7;
+      border-radius: 12px;
+      height: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .preview-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .preview-filename {
+      font-size: 15px;
+      font-weight: 500;
+      color: #1C1C1E;
+    }
+
+    .preview-meta {
+      font-size: 13px;
+      color: #86868B;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    /* ========================================
+       DATA MAPPING ANNOTATIONS
+       ======================================== */
+
+    .data-annotation {
+      background: #FFF3CD;
+      border: 1px dashed #FFD60A;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-top: 16px;
+      font-size: 12px;
+      color: #856404;
+    }
+
+    .data-annotation code {
+      background: rgba(0,0,0,0.06);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: "SF Mono", monospace;
+      font-size: 11px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <h1 style="font-family: var(--font-serif); font-size: 28px; color: #1C1C1E; margin-bottom: 8px;">Interactive Cards</h1>
+    <p style="font-size: 14px; color: #86868B;">Tap elements to see expanded states</p>
+
+    <!-- ========================================
+         EMAIL CARD
+         ======================================== -->
+
+    <p class="section-label">
+      Email Reply
+      <span class="data-badge">EmailCache</span>
+    </p>
+
+    <div class="card email-card">
+      <div class="card-body">
+        <div class="card-header">
+          <div class="person-row">
+            <div class="avatar" style="background: linear-gradient(145deg, #667EEA, #764BA2); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);">SC</div>
+            <div>
+              <div class="person-name">Sarah Chen</div>
+              <div class="person-meta">VP Engineering</div>
+            </div>
+          </div>
+          <div class="urgent-indicator"></div>
+        </div>
+
+        <!-- Tappable message - click to expand -->
+        <div class="message-preview" onclick="this.classList.toggle('expanded')">
+          <div class="message-snippet">Can you review the proposal and share your thoughts before our 3pm?</div>
+
+          <div class="expand-hint">
+            <span>Tap to see full message</span>
+            <span style="opacity: 0.5;">↓</span>
+          </div>
+
+          <!-- Expanded content -->
+          <div class="message-full">
+            <div class="message-full-text">
+              Hi team,<br><br>
+              I've attached the updated proposal with the changes we discussed. Can you review and share your thoughts before our 3pm sync?<br><br>
+              Specifically looking for feedback on:<br>
+              • Budget allocation for Q4<br>
+              • Timeline feasibility<br>
+              • Resource requirements<br><br>
+              Thanks!<br>
+              Sarah
+            </div>
+
+            <!-- Attachments appear when expanded -->
+            <div class="attachments-row" style="display: flex;">
+              <div class="attachment-chip" onclick="event.stopPropagation(); showModal('proposal')">
+                <div class="attachment-icon pdf">PDF</div>
+                <span class="attachment-name">Q4_Proposal.pdf</span>
+              </div>
+              <div class="attachment-chip" onclick="event.stopPropagation(); showModal('budget')">
+                <div class="attachment-icon xls">XLS</div>
+                <span class="attachment-name">Budget.xlsx</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="quick-replies">
+          <button class="reply-pill" onclick="selectReply(this)">On it</button>
+          <button class="reply-pill" onclick="selectReply(this)">Need more time</button>
+          <button class="reply-pill" onclick="selectReply(this)">Let's discuss</button>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-dark">Send Reply</button>
+        </div>
+
+        <div class="data-annotation">
+          <strong>Data mapping:</strong><br>
+          <code>from_name</code> → Person name<br>
+          <code>snippet</code> → Message preview<br>
+          <code>is_important</code> → Urgent indicator<br>
+          <code>attachments[]</code> → Attachment chips
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================
+         MEETING CARD
+         ======================================== -->
+
+    <p class="section-label">
+      Meeting
+      <span class="data-badge">CalendarEventCache</span>
+    </p>
+
+    <div class="card meeting-card">
+      <div class="time-block">
+        <div class="meeting-badge">Tomorrow</div>
+        <div class="meeting-time">10:00 AM</div>
+        <div class="meeting-duration">45 min via Zoom</div>
+      </div>
+
+      <div class="meeting-content">
+        <div class="meeting-title">Product Roadmap Sync</div>
+        <div class="meeting-location">Zoom • Meeting ID: 123-456-789</div>
+
+        <!-- Tappable attendees -->
+        <div class="attendees-row" onclick="document.getElementById('attendeesList').classList.toggle('show')">
+          <div class="attendee-avatar" style="background: linear-gradient(135deg, #667EEA, #764BA2);">AK</div>
+          <div class="attendee-avatar" style="background: linear-gradient(135deg, #F093FB, #F5576C);">JS</div>
+          <div class="attendee-avatar" style="background: linear-gradient(135deg, #4FACFE, #00F2FE);">NP</div>
+          <div class="attendee-avatar attendee-more">+2</div>
+        </div>
+
+        <!-- Expanded attendee list -->
+        <div class="attendees-expanded" id="attendeesList">
+          <div class="attendee-list-item">
+            <div class="attendee-list-avatar" style="background: linear-gradient(135deg, #667EEA, #764BA2);">AK</div>
+            <div class="attendee-list-info">
+              <div class="attendee-list-name">Alex Kim</div>
+              <div class="attendee-list-email">alex@company.com</div>
+            </div>
+            <span class="attendee-status status-accepted">Accepted</span>
+          </div>
+          <div class="attendee-list-item">
+            <div class="attendee-list-avatar" style="background: linear-gradient(135deg, #F093FB, #F5576C);">JS</div>
+            <div class="attendee-list-info">
+              <div class="attendee-list-name">Jamie Smith</div>
+              <div class="attendee-list-email">jamie@company.com</div>
+            </div>
+            <span class="attendee-status status-accepted">Accepted</span>
+          </div>
+          <div class="attendee-list-item">
+            <div class="attendee-list-avatar" style="background: linear-gradient(135deg, #4FACFE, #00F2FE);">NP</div>
+            <div class="attendee-list-info">
+              <div class="attendee-list-name">Nik Patel</div>
+              <div class="attendee-list-email">nik@company.com</div>
+            </div>
+            <span class="attendee-status status-pending">Pending</span>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-success">Accept</button>
+          <button class="btn btn-light">Decline</button>
+        </div>
+
+        <div class="data-annotation">
+          <strong>Data mapping:</strong><br>
+          <code>start_time</code> → Time display<br>
+          <code>title</code> → Meeting title<br>
+          <code>location</code> → Location/link<br>
+          <code>attendees[]</code> → Avatars & list
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================
+         DOCUMENTS CARD
+         ======================================== -->
+
+    <p class="section-label">
+      Review Thread
+      <span class="data-badge">EmailCache + attachments</span>
+    </p>
+
+    <div class="card docs-card">
+      <div class="card-body">
+        <div class="card-header">
+          <div>
+            <div class="docs-title">Q4 Budget Review</div>
+            <div class="docs-meta">3 attachments • 5 messages</div>
+          </div>
+          <span class="badge badge-warning">Decision needed</span>
+        </div>
+
+        <!-- Tappable document stack -->
+        <div class="doc-stack" id="docStack" onclick="this.classList.toggle('expanded')">
+          <!-- Collapsed: visual stack -->
+          <div class="doc-preview">
+            <div class="doc-type xls">XLS</div>
+            <div class="doc-lines">
+              <div class="doc-line" style="width: 80%;"></div>
+              <div class="doc-line" style="width: 100%;"></div>
+              <div class="doc-line" style="width: 60%;"></div>
+            </div>
+          </div>
+          <div class="doc-preview">
+            <div class="doc-type pdf">PDF</div>
+            <div class="doc-lines">
+              <div class="doc-line" style="width: 70%;"></div>
+              <div class="doc-line" style="width: 90%;"></div>
+            </div>
+          </div>
+          <div class="doc-preview">
+            <div class="doc-type doc">DOC</div>
+            <div class="doc-lines">
+              <div class="doc-line" style="width: 90%;"></div>
+              <div class="doc-line" style="width: 70%;"></div>
+            </div>
+          </div>
+
+          <!-- Expanded: document list -->
+          <div class="doc-list">
+            <div class="doc-list-item" onclick="event.stopPropagation(); showModal('budget')">
+              <div class="doc-list-icon" style="background: linear-gradient(135deg, #34C759, #248A3D);">XLS</div>
+              <div class="doc-list-info">
+                <div class="doc-list-name">Q4_Budget_v3.xlsx</div>
+                <div class="doc-list-meta">Updated 2 hours ago • 245 KB</div>
+              </div>
+              <span class="doc-list-action">Preview</span>
+            </div>
+            <div class="doc-list-item" onclick="event.stopPropagation(); showModal('proposal')">
+              <div class="doc-list-icon" style="background: linear-gradient(135deg, #FF3B30, #D70015);">PDF</div>
+              <div class="doc-list-info">
+                <div class="doc-list-name">Budget_Proposal.pdf</div>
+                <div class="doc-list-meta">Jan 2, 2026 • 1.2 MB</div>
+              </div>
+              <span class="doc-list-action">Preview</span>
+            </div>
+            <div class="doc-list-item" onclick="event.stopPropagation(); showModal('notes')">
+              <div class="doc-list-icon" style="background: linear-gradient(135deg, #007AFF, #0056B3);">DOC</div>
+              <div class="doc-list-info">
+                <div class="doc-list-name">Meeting_Notes.docx</div>
+                <div class="doc-list-meta">Dec 28, 2025 • 89 KB</div>
+              </div>
+              <span class="doc-list-action">Preview</span>
+            </div>
+          </div>
+
+          <div class="stack-hint">Tap to see all documents</div>
+        </div>
+        <div class="collapse-btn" onclick="document.getElementById('docStack').classList.remove('expanded')">Collapse</div>
+
+        <div class="context-box">
+          <div class="context-label">AI Summary</div>
+          <div class="context-text">Sarah proposed 15% budget increase for engineering. Mike raised timeline concerns. Thread waiting on your approval to proceed.</div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-dark">Reply</button>
+          <button class="btn btn-light">View Thread</button>
+        </div>
+
+        <div class="data-annotation">
+          <strong>Data mapping:</strong><br>
+          <code>subject</code> → Card title<br>
+          <code>attachments[]</code> → Document stack<br>
+          <code>ai_summary</code> → Context box (generated)
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========================================
+       DOCUMENT PREVIEW MODAL
+       ======================================== -->
+
+  <div class="modal-overlay" id="previewModal" onclick="hideModal()">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span class="modal-title" id="modalTitle">Document Preview</span>
+        <button class="modal-close" onclick="hideModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="preview-placeholder">
+          <div class="preview-icon" id="previewIcon" style="background: linear-gradient(135deg, #34C759, #248A3D);">XLS</div>
+          <div class="preview-filename" id="previewFilename">Q4_Budget_v3.xlsx</div>
+          <div class="preview-meta" id="previewMeta">245 KB • Updated 2 hours ago</div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-dark">Open in App</button>
+          <button class="btn btn-light">Share</button>
+        </div>
+
+        <div class="data-annotation" style="margin-top: 24px;">
+          <strong>On tap:</strong><br>
+          • "Open in App" → Deep link to Google Sheets/Drive<br>
+          • For images → Show inline preview<br>
+          • For PDFs → Native PDF viewer
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function selectReply(el) {
+      document.querySelectorAll('.reply-pill').forEach(p => p.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    function showModal(type) {
+      const modal = document.getElementById('previewModal');
+      const title = document.getElementById('modalTitle');
+      const icon = document.getElementById('previewIcon');
+      const filename = document.getElementById('previewFilename');
+      const meta = document.getElementById('previewMeta');
+
+      const docs = {
+        budget: {
+          title: 'Spreadsheet Preview',
+          icon: 'XLS',
+          iconBg: 'linear-gradient(135deg, #34C759, #248A3D)',
+          filename: 'Q4_Budget_v3.xlsx',
+          meta: '245 KB • Updated 2 hours ago'
+        },
+        proposal: {
+          title: 'PDF Preview',
+          icon: 'PDF',
+          iconBg: 'linear-gradient(135deg, #FF3B30, #D70015)',
+          filename: 'Q4_Proposal.pdf',
+          meta: '1.2 MB • Jan 2, 2026'
+        },
+        notes: {
+          title: 'Document Preview',
+          icon: 'DOC',
+          iconBg: 'linear-gradient(135deg, #007AFF, #0056B3)',
+          filename: 'Meeting_Notes.docx',
+          meta: '89 KB • Dec 28, 2025'
+        }
+      };
+
+      const doc = docs[type] || docs.budget;
+      title.textContent = doc.title;
+      icon.textContent = doc.icon;
+      icon.style.background = doc.iconBg;
+      filename.textContent = doc.filename;
+      meta.textContent = doc.meta;
+
+      modal.classList.add('show');
+    }
+
+    function hideModal() {
+      document.getElementById('previewModal').classList.remove('show');
+    }
+  </script>
+</body>
+</html>

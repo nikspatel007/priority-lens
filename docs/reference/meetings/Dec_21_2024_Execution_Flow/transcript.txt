@@ -1,0 +1,679 @@
+WEBVTT
+
+00:00:48.000 --> 00:00:51.000
+Josh Smith: No, I don't… I don't mind if you record this.
+
+00:00:51.000 --> 00:00:54.000
+Nik Patel: I was gonna say, I'm gonna get to that faster.
+
+00:00:57.000 --> 00:01:01.000
+Nik Patel: Alright, uh, is it in progress?
+
+00:01:03.000 --> 00:01:08.000
+Nik Patel: Alright, let's get to it. Well, hopefully you're feeling better, it is going well, let's get to it.
+
+00:01:07.000 --> 00:01:09.000
+Josh Smith: Oh, yeah, thanks man, yeah.
+
+00:01:10.000 --> 00:01:14.000
+Nik Patel: Sorry about that, that's on me. I did not even realize the time.
+
+00:01:10.000 --> 00:01:12.000
+Josh Smith: Dude.
+
+00:01:14.000 --> 00:01:17.000
+Josh Smith: It's all good, man, I'm on your time.
+
+00:01:17.000 --> 00:01:26.000
+Nik Patel: Yeah, but like, I had said I would be there and I, I actually randomly just opened the phone and saw your message, oh, it's already that time, you know, it's like, come on.
+
+00:01:17.000 --> 00:01:19.000
+Josh Smith: Yes, sir.
+
+00:01:26.000 --> 00:01:28.000
+Nik Patel: Gotta get back together.
+
+00:01:26.000 --> 00:01:29.000
+Josh Smith: It's all good.
+
+00:01:28.000 --> 00:01:30.000
+Nik Patel: You bet.
+
+00:01:29.000 --> 00:01:40.000
+Josh Smith: Okay. I got ideas here, and if Bo ever told you about me, I tend to have ideas that are, like, way off the deep end of what people are expecting.
+
+00:01:33.000 --> 00:01:34.000
+Nik Patel: Okay.
+
+00:01:41.000 --> 00:01:44.000
+Josh Smith: So… okay.
+
+00:01:41.000 --> 00:01:43.000
+Nik Patel: In a good way, yeah.
+
+00:01:46.000 --> 00:01:48.000
+Josh Smith: Um, so…
+
+00:01:49.000 --> 00:01:51.000
+Josh Smith: Um…
+
+00:01:51.000 --> 00:01:54.000
+Josh Smith: We just got off of this concept.
+
+00:01:54.000 --> 00:01:57.000
+Josh Smith: So, let me just put it next to this one.
+
+00:01:59.000 --> 00:02:01.000
+Nik Patel: Mm-hmm.
+
+00:01:59.000 --> 00:02:01.000
+Josh Smith: Okay.
+
+00:02:04.000 --> 00:02:05.000
+Josh Smith: Okay.
+
+00:02:07.000 --> 00:02:11.000
+Josh Smith: And, um, in some… I feel like…
+
+00:02:11.000 --> 00:02:17.000
+Josh Smith: Um, we could go right back into it. But before we do, um, here's a concept for navigation, maybe terrible.
+
+00:02:19.000 --> 00:02:21.000
+Josh Smith: Um…
+
+00:02:22.000 --> 00:02:24.000
+Josh Smith: Um…
+
+00:02:34.000 --> 00:02:38.000
+Josh Smith: whether it's called… I mean, it's… whether it's called Execution Mode or whatever.
+
+00:02:39.000 --> 00:02:41.000
+Josh Smith: Um…
+
+00:02:46.000 --> 00:02:48.000
+Nik Patel: Packard mode, getting done mode.
+
+00:02:48.000 --> 00:02:50.000
+Josh Smith: What mode, you say?
+
+00:02:50.000 --> 00:02:52.000
+Nik Patel: God mode, get it done.
+
+00:02:51.000 --> 00:02:53.000
+Josh Smith: God mode, get…
+
+00:02:53.000 --> 00:02:56.000
+Josh Smith: Get… get it done…
+
+00:02:57.000 --> 00:02:59.000
+Josh Smith: GID mode?
+
+00:03:00.000 --> 00:03:02.000
+Nik Patel: Oh, yeah, good morning.
+
+00:03:03.000 --> 00:03:05.000
+Nik Patel: Anyway, um…
+
+00:03:03.000 --> 00:03:06.000
+Josh Smith: Get her… get her done.
+
+00:03:06.000 --> 00:03:08.000
+Josh Smith: Get her done.
+
+00:03:08.000 --> 00:03:17.000
+Josh Smith: Um, anyway, this is… so, the idea… and it would look much prettier than this, of course. Um, but, like, um…
+
+00:03:25.000 --> 00:03:28.000
+Josh Smith: That, like, your navigation is here.
+
+00:03:29.000 --> 00:03:31.000
+Josh Smith: I was thinking, like, what if they're…
+
+00:03:34.000 --> 00:03:36.000
+Josh Smith: What if…
+
+00:03:37.000 --> 00:03:41.000
+Josh Smith: By default, they get into an experience where there's no left-hand navigation.
+
+00:03:43.000 --> 00:03:45.000
+Nik Patel: Um…
+
+00:03:46.000 --> 00:03:51.000
+Nik Patel: Yeah, I mean, the way it's going right now, it doesn't seem like there will be any. Well, that's not true.
+
+00:03:52.000 --> 00:03:54.000
+Josh Smith: Well, let's just say this.
+
+00:03:53.000 --> 00:03:57.000
+Nik Patel: For the app, that won't be. I don't know how we want to handle that on the web.
+
+00:03:57.000 --> 00:03:59.000
+Josh Smith: Yeah, yeah.
+
+00:03:59.000 --> 00:04:04.000
+Josh Smith: That there may be a navigation, but the navigation is no longer prominent.
+
+00:04:04.000 --> 00:04:07.000
+Josh Smith: It's no longer, like, the…
+
+00:04:06.000 --> 00:04:09.000
+Nik Patel: Oh, like, in front of you, yeah, okay.
+
+00:04:08.000 --> 00:04:10.000
+Josh Smith: It's no longer stealing your attention.
+
+00:04:10.000 --> 00:04:12.000
+Nik Patel: Okay.
+
+00:04:13.000 --> 00:04:16.000
+Josh Smith: Um, these are just thoughts. Um…
+
+00:04:17.000 --> 00:04:21.000
+Josh Smith: But that, um, it would be a similar concept here.
+
+00:04:22.000 --> 00:04:24.000
+Josh Smith: Um, where…
+
+00:04:25.000 --> 00:04:27.000
+Josh Smith: It's talking to you.
+
+00:04:27.000 --> 00:04:32.000
+Josh Smith: Uh, and as I mentioned yesterday, uh, there are components, um.
+
+00:04:32.000 --> 00:04:35.000
+Josh Smith: that… it…
+
+00:04:36.000 --> 00:04:38.000
+Josh Smith: Um…
+
+00:04:40.000 --> 00:04:42.000
+Josh Smith: There are components that…
+
+00:04:43.000 --> 00:04:48.000
+Josh Smith: are consistent throughout any kind of task. Um…
+
+00:04:47.000 --> 00:04:49.000
+Nik Patel: Uh-huh.
+
+00:04:48.000 --> 00:04:52.000
+Josh Smith: This would be the task, it's the task name itself.
+
+00:05:04.000 --> 00:05:10.000
+Josh Smith: So I'm trying to get these components together. There would be the concept of, um…
+
+00:05:11.000 --> 00:05:14.000
+Josh Smith: Navigation across these tasks.
+
+00:05:15.000 --> 00:05:17.000
+Josh Smith: So I'm just gonna represent that here.
+
+00:05:40.000 --> 00:05:43.000
+Josh Smith: There's the concept of the, um…
+
+00:05:44.000 --> 00:05:46.000
+Josh Smith: The John talking.
+
+00:05:52.000 --> 00:05:54.000
+Nik Patel: Can I recommend something?
+
+00:05:53.000 --> 00:05:55.000
+Josh Smith: Yeah.
+
+00:05:55.000 --> 00:05:57.000
+Nik Patel: So, what if we did it this way?
+
+00:05:57.000 --> 00:05:59.000
+Nik Patel: I like the talk.
+
+00:05:59.000 --> 00:06:03.000
+Nik Patel: The task, sure, like, you know, violators or whatnot.
+
+00:06:03.000 --> 00:06:08.000
+Nik Patel: Move that, um, voice mode right below, um…
+
+00:06:08.000 --> 00:06:11.000
+Nik Patel: Where it says Execution Mode, and make it, like, a small line.
+
+00:06:13.000 --> 00:06:15.000
+Josh Smith: This thing.
+
+00:06:15.000 --> 00:06:18.000
+Nik Patel: Right, but, like, keep the Execution mode at the bottom.
+
+00:06:18.000 --> 00:06:20.000
+Josh Smith: Oh, okay.
+
+00:06:20.000 --> 00:06:24.000
+Nik Patel: Actually, I should be able to do it. So what I'm saying was, um…
+
+00:06:22.000 --> 00:06:24.000
+Josh Smith: Do it.
+
+00:06:25.000 --> 00:06:27.000
+Nik Patel: If this is here.
+
+00:06:29.000 --> 00:06:31.000
+Josh Smith: Yeah.
+
+00:06:30.000 --> 00:06:33.000
+Nik Patel: Basically, it's something like this.
+
+00:06:32.000 --> 00:06:34.000
+Josh Smith: Okay.
+
+00:06:33.000 --> 00:06:41.000
+Nik Patel: And then this just basically… the whole need for it to exist goes away, which opens up a canvas for us to, like, show the things that we want to show, because that's where…
+
+00:06:41.000 --> 00:06:43.000
+Nik Patel: We should be paying attention.
+
+00:06:43.000 --> 00:06:47.000
+Josh Smith: Yes, and in that sense, we could even move this thing, like…
+
+00:06:51.000 --> 00:06:56.000
+Josh Smith: This… this thing is still necessary, but it can kind of get in the way in desktop.
+
+00:06:56.000 --> 00:06:59.000
+Nik Patel: Yep, let me show you what I'm thinking there. So…
+
+00:06:58.000 --> 00:07:00.000
+Josh Smith: Yeah.
+
+00:07:04.000 --> 00:07:08.000
+Josh Smith: Okay, it all exists in, like, um…
+
+00:07:11.000 --> 00:07:14.000
+Nik Patel: And change the… I don't know how to change the color here. Oh, here.
+
+00:07:13.000 --> 00:07:15.000
+Josh Smith: Oh, that was it.
+
+00:07:15.000 --> 00:07:17.000
+Nik Patel: Um…
+
+00:07:16.000 --> 00:07:18.000
+Josh Smith: I can change it for you.
+
+00:07:18.000 --> 00:07:20.000
+Josh Smith: What do you want it?
+
+00:07:19.000 --> 00:07:25.000
+Nik Patel: Just make anything, doesn't matter. Okay, so basically what it does is, um.
+
+00:07:25.000 --> 00:07:33.000
+Nik Patel: when the user's talking, it would highlight that, and then waves. When the lens was talking, it would highlight that, and the waves.
+
+00:07:33.000 --> 00:07:37.000
+Josh Smith: Alright, and then, uh, so I'm gonna do this too, um…
+
+00:07:37.000 --> 00:07:42.000
+Josh Smith: There'll be, it's not, it's not gonna look like this is gonna look prettier.
+
+00:07:43.000 --> 00:07:45.000
+Josh Smith: But like a pretty downward arrow.
+
+00:07:45.000 --> 00:07:48.000
+Josh Smith: Um, it's not gonna look like this, but…
+
+00:07:49.000 --> 00:07:51.000
+Josh Smith: And be like…
+
+00:07:51.000 --> 00:07:53.000
+Josh Smith: Focused on the one…
+
+00:07:55.000 --> 00:08:02.000
+Nik Patel: Well, the way I'm thinking about it, it would pulsate, right? That's how we know the art pulsating is how we know it's basically active.
+
+00:08:02.000 --> 00:08:04.000
+Josh Smith: Okay.
+
+00:08:04.000 --> 00:08:18.000
+Nik Patel: Also, we could do errors and stuff like that, that's fine. But all to say, that opens up a significant amount of screen asset for us, both desktop but mainly on the mobile, where we could show information that someone could see and say, like, oh, I know what you're talking about, I know what I'm talking about.
+
+00:08:18.000 --> 00:08:26.000
+Josh Smith: Great. And the transcription of what they're saying, one after the other, could be, like, placed right above it, you think?
+
+00:08:26.000 --> 00:08:28.000
+Nik Patel: Do we need transcription?
+
+00:08:29.000 --> 00:08:36.000
+Nik Patel: If we do need transcription, we are taking, like, bottom half, and then we have the top half available.
+
+00:08:37.000 --> 00:08:43.000
+Josh Smith: Okay… this is where, like, maybe on mobile you don't need transcription?
+
+00:08:43.000 --> 00:08:45.000
+Nik Patel: Yeah.
+
+00:08:44.000 --> 00:08:46.000
+Josh Smith: Um…
+
+00:08:46.000 --> 00:08:53.000
+Josh Smith: I'll move it off, I'll de-scope it. Down the road, you're going to get requests for it, especially, um…
+
+00:08:49.000 --> 00:08:51.000
+Nik Patel: Mm-hmm.
+
+00:08:56.000 --> 00:08:59.000
+Josh Smith: As you mentioned, like, when you're talking.
+
+00:08:59.000 --> 00:09:04.000
+Josh Smith: Making sure that what you're saying is translated accurately, um…
+
+00:09:03.000 --> 00:09:05.000
+Nik Patel: Mm-hmm.
+
+00:09:04.000 --> 00:09:06.000
+Josh Smith: But I'll remove it for now.
+
+00:09:06.000 --> 00:09:08.000
+Nik Patel: Okay.
+
+00:09:07.000 --> 00:09:09.000
+Josh Smith: Okay, and in here…
+
+00:09:10.000 --> 00:09:17.000
+Josh Smith: Uh, yesterday, I was talking about how… was it yesterday or the day before? The day before. Talking about how it, like, would show stuff.
+
+00:09:17.000 --> 00:09:22.000
+Josh Smith: And you were talking about this concept where, like, it, like, you could just show components on the page?
+
+00:09:24.000 --> 00:09:26.000
+Nik Patel: Yeah, um…
+
+00:09:28.000 --> 00:09:31.000
+Nik Patel: Sorry, I'm stuffing stuff in my mouth while I'm talking.
+
+00:09:30.000 --> 00:09:32.000
+Josh Smith: Do your thing, do your thing.
+
+00:09:32.000 --> 00:09:35.000
+Josh Smith: You gotta eat, you gotta take care of yourself.
+
+00:09:44.000 --> 00:09:46.000
+Josh Smith: Thumbs up.
+
+00:09:46.000 --> 00:09:47.000
+Nik Patel: Yeah, I don't know, I did that.
+
+00:10:05.000 --> 00:10:09.000
+Nik Patel: I'm just, uh, finding a link that can probably make it easy to understand what I'm saying.
+
+00:10:21.000 --> 00:10:24.000
+Nik Patel: Yep, let me share my screen.
+
+00:10:33.000 --> 00:10:35.000
+Nik Patel: Okay, so…
+
+00:10:39.000 --> 00:10:48.000
+Nik Patel: Alright, you see this thing? Actually, here, let me just put it here. So, uh, it's called, like, multi-stack Conversation Generative UI. It's a pretty good concept, in a way.
+
+00:10:48.000 --> 00:10:50.000
+Nik Patel: So what it does is…
+
+00:10:51.000 --> 00:10:56.000
+Nik Patel: As you are, uh, streaming the data, generally it's just text, right?
+
+00:10:56.000 --> 00:11:02.000
+Nik Patel: But there comes a time where, um, you are trying to do something and it's not just a text, you're showing the actual behavior.
+
+00:11:03.000 --> 00:11:09.000
+Nik Patel: So, um, this is all easy stuff to do, but when it gets pretty interesting.
+
+00:11:09.000 --> 00:11:11.000
+Nik Patel: Is something like this.
+
+00:11:11.000 --> 00:11:12.000
+Josh Smith: Yeah.
+
+00:11:13.000 --> 00:11:15.000
+Nik Patel: I can't show it.
+
+00:11:17.000 --> 00:11:20.000
+Nik Patel: So when you say, like, what is the weather in Tokyo?
+
+00:11:20.000 --> 00:11:22.000
+Josh Smith: Yeah.
+
+00:11:20.000 --> 00:11:27.000
+Nik Patel: it actually shows you this component. So what it does is it says, okay, now I need to show weather information.
+
+00:11:27.000 --> 00:11:31.000
+Nik Patel: And it triggers weather component and renders the weather component on the fly.
+
+00:11:31.000 --> 00:11:33.000
+Josh Smith: Okay.
+
+00:11:32.000 --> 00:11:35.000
+Nik Patel: So, in our case, it could be, like.
+
+00:11:35.000 --> 00:11:39.000
+Nik Patel: Text component, document component, calendar component, stuff like that.
+
+00:11:38.000 --> 00:11:40.000
+Josh Smith: list component…
+
+00:11:40.000 --> 00:11:45.000
+Nik Patel: Yeah, it can show that depending on the type of information we are expecting, yeah.
+
+00:11:41.000 --> 00:11:43.000
+Josh Smith: time component.
+
+00:11:45.000 --> 00:11:50.000
+Nik Patel: Now, I don't know how many types of components we'd have, but this is a great experience that I haven't seen anywhere.
+
+00:11:51.000 --> 00:11:53.000
+Josh Smith: That would be cool.
+
+00:11:57.000 --> 00:11:59.000
+Nik Patel: And the reason I think…
+
+00:11:59.000 --> 00:12:04.000
+Nik Patel: we might be able to do something like this, let me share, stop sharing, uh, is…
+
+00:12:05.000 --> 00:12:09.000
+Nik Patel: there are certain things that we know are going to be common. What times do I need to pick?
+
+00:12:09.000 --> 00:12:14.000
+Nik Patel: What my calendar looks like, what are my meeting notes, uh, who are the people involved, like, some of those things.
+
+00:12:15.000 --> 00:12:19.000
+Nik Patel: meeting briefs and stuff like that, we can start to put them in a…
+
+00:12:19.000 --> 00:12:21.000
+Nik Patel: In a way where it's much, much easier.
+
+00:12:21.000 --> 00:12:23.000
+Nik Patel: Easier to deal with.
+
+00:12:23.000 --> 00:12:25.000
+Josh Smith: Okay.
+
+00:12:24.000 --> 00:12:28.000
+Nik Patel: So, anyway, yeah, that's… that's what I was thinking, um…
+
+00:12:30.000 --> 00:12:34.000
+Nik Patel: I think it might work out, we just need to know which ones we want, and then start with that.
+
+00:12:45.000 --> 00:12:50.000
+Nik Patel: Also, it's, uh… it's 3PM, just want to make sure you don't have to drop, or if you have to.
+
+00:12:46.000 --> 00:12:47.000
+Josh Smith: Alright.
+
+00:12:49.000 --> 00:12:52.000
+Josh Smith: Um, do you have to drop?
+
+00:12:52.000 --> 00:12:55.000
+Nik Patel: Uh, in 2 minutes, or 5 minutes, maybe.
+
+00:12:54.000 --> 00:13:02.000
+Josh Smith: Yeah, I have to drop in a couple minutes here. Alright, here's what I mentioned the other day, the kind of… whether or not you would want to flow like this, but the…
+
+00:13:02.000 --> 00:13:09.000
+Josh Smith: Here's what I'm seeing for this task, and all the pieces included. Did I get that right? Here's what I can do for you, thoughts?
+
+00:13:09.000 --> 00:13:16.000
+Josh Smith: Here's an example of how I'd start out taking care of this. That's kind of like an if they want to just check, oh, that's how you're gonna write the email, okay.
+
+00:13:17.000 --> 00:13:19.000
+Josh Smith: Um, the first email.
+
+00:13:19.000 --> 00:13:25.000
+Josh Smith: Not every single email in the whole thing, just like, what's the first piece? Show me the first piece so I can get comfortable.
+
+00:13:25.000 --> 00:13:31.000
+Josh Smith: And then, like, alright, I'm on it, anything else you'd like to share? Oh, good. Alright, on to the next thing. The idea of, like.
+
+00:13:31.000 --> 00:13:41.000
+Josh Smith: if… are there 4 pieces to it? And can we break out, or are there X number of pieces, and can we break out those pieces? So, like, the first part is the, hey, what I'm seeing.
+
+00:13:41.000 --> 00:13:49.000
+Josh Smith: You have a task. It's at this time, or in this date, so you could show the calendar… a calendar component and a time clock component, um…
+
+00:13:49.000 --> 00:13:52.000
+Josh Smith: It's with these people, and you could show, like.
+
+00:13:52.000 --> 00:13:59.000
+Josh Smith: Like, the names of them in a list view, boom, boom, boom, boom, with their email addresses, and, like, to be able to say, like, um…
+
+00:13:59.000 --> 00:14:02.000
+Josh Smith: To be able to build those out, and to be like, okay.
+
+00:14:02.000 --> 00:14:05.000
+Josh Smith: When they show a list of people, always show…
+
+00:14:05.000 --> 00:14:11.000
+Josh Smith: If they have it, name, position, email. Name, position, email, name, position, email, and then you can just design that component.
+
+00:14:12.000 --> 00:14:17.000
+Josh Smith: Like, so, yeah, like, what are the most common chunks of information that come back?
+
+00:14:18.000 --> 00:14:23.000
+Josh Smith: Don't, don't provide visuals for every single thing, just, like, what are the most common ones.
+
+00:14:23.000 --> 00:14:26.000
+Josh Smith: Then get those, show those on the screen.
+
+00:14:27.000 --> 00:14:30.000
+Josh Smith: ask, did I get it right or not? Um…
+
+00:14:30.000 --> 00:14:35.000
+Josh Smith: Um… if… and then allow them… allow the person to talk and to respond.
+
+00:14:36.000 --> 00:14:41.000
+Josh Smith: Uh, and then the whole, here's what I can do for you, that's where, like, in the instance that I need to schedule time. Alright, well…
+
+00:14:42.000 --> 00:14:43.000
+Josh Smith: Here's the agenda.
+
+00:14:44.000 --> 00:14:50.000
+Josh Smith: here's what… here's what I can do. I can coordinate this entire… I can coordinate finding this… the right time for you.
+
+00:14:50.000 --> 00:14:59.000
+Josh Smith: Um, and so it could show the agenda, the stuff now that they're generating, because the first thing is, here's stuff that I've analyzed.
+
+00:14:59.000 --> 00:15:04.000
+Josh Smith: The second is, here's stuff I've generated already, and stuff I'm going to generate.
+
+00:15:04.000 --> 00:15:13.000
+Josh Smith: Um, you could even, like, squash… you could even squash 2 and 3 if you wanted to, and just have an example email, too.
+
+00:15:13.000 --> 00:15:16.000
+Josh Smith: Here's what I can do for you. Um…
+
+00:15:16.000 --> 00:15:18.000
+Josh Smith: And then, um…
+
+00:15:18.000 --> 00:15:22.000
+Josh Smith: And then they say yes, and then the last thing is just, like, um…
+
+00:15:23.000 --> 00:15:27.000
+Josh Smith: Great! Anything else you'd like to share before I begin? Just, like, a last… a last…
+
+00:15:27.000 --> 00:15:32.000
+Josh Smith: A lasted, uh, opportunity and.
+
+00:15:33.000 --> 00:15:35.000
+Josh Smith: Um…
+
+00:15:37.000 --> 00:15:40.000
+Josh Smith: And then once that's done, they move on to the next one.
+
+00:15:41.000 --> 00:15:43.000
+Josh Smith: Oh, you're mute.
+
+00:15:44.000 --> 00:15:48.000
+Nik Patel: One of the things we should build into this is when we show these components, give it action.
+
+00:15:49.000 --> 00:15:58.000
+Nik Patel: approve, reject, yes, no, change, something like that. Because every time it approves, we know that we are getting good results, and we could use that behind the scene to say, these are.
+
+00:15:52.000 --> 00:15:54.000
+Josh Smith: Oh, yeah.
+
+00:15:58.000 --> 00:16:02.000
+Nik Patel: Good components for us to, like, get to a point where it's, like, you upload, like.
+
+00:16:02.000 --> 00:16:06.000
+Nik Patel: Last 8 out of 8 and 10 times do you want us to go on auto?
+
+00:16:06.000 --> 00:16:08.000
+Josh Smith: Oh…
+
+00:16:06.000 --> 00:16:13.000
+Nik Patel: we'll do that, like, we'll do that way out in future, but in the beginning, for now, it's just approve. We'll track that, and then worry about the…
+
+00:16:14.000 --> 00:16:17.000
+Nik Patel: Auto rule creation later.
+
+00:16:16.000 --> 00:16:20.000
+Josh Smith: Makes sense. That makes a lot of sense. Um…
+
+00:16:22.000 --> 00:16:29.000
+Josh Smith: That makes a lot of sense. I was, uh, because I have been… I have been approaching concepting with you based on the…
+
+00:16:29.000 --> 00:16:33.000
+Josh Smith: target of folks who already have a high trust in AI.
+
+00:16:33.000 --> 00:16:35.000
+Nik Patel: Yep.
+
+00:16:33.000 --> 00:16:40.000
+Josh Smith: People who have low trust, you're right, they want to see and they want to prove over time before the AI says, oh.
+
+00:16:39.000 --> 00:16:41.000
+Nik Patel: Hmm.
+
+00:16:40.000 --> 00:16:43.000
+Josh Smith: We notice you're trusting this, you want us to take care of it for you, so yeah.
+
+00:16:43.000 --> 00:16:53.000
+Nik Patel: Yeah, yeah, and right now, right, even when it comes up, even if they say, yeah, this looks good, send it, we'll essentially mark it as approved button clicked in itself, which gives us the data that we need behind the scene.
+
+00:16:53.000 --> 00:16:57.000
+Nik Patel: What's working, what's not working, evaluations, stuff like that.
+
+00:16:56.000 --> 00:17:01.000
+Josh Smith: Makes sense. Cool. Does this help inch you a bit further this time?
+
+00:17:01.000 --> 00:17:11.000
+Nik Patel: bit further, yeah, I think when we talk tomorrow, um, I want to see if we can take some examples, and then just go after… we took emails, we took some stuff, and like, yes, it's working, it's working.
+
+00:17:11.000 --> 00:17:17.000
+Nik Patel: then I think we'll have a pretty good handle on the structure that screen needs to take, and then I can start to, like, save.
+
+00:17:17.000 --> 00:17:27.000
+Nik Patel: Because this weekend, I want to build at least the Gmail flow of it, Gmail calendar, and say, alright, start to ingest, and then I want to show, like, what do I do with that ingestion, so this will really help.
+
+00:17:21.000 --> 00:17:23.000
+Josh Smith: Okay.
+
+00:17:28.000 --> 00:17:30.000
+Nik Patel: Alrighty. Thank you, appreciate it.
+
+00:17:28.000 --> 00:17:31.000
+Josh Smith: Sure, we'll do… no problem, take care, man.
+
+00:17:30.000 --> 00:17:32.000
+Nik Patel: You're going to see it.

@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Priority Lens - Bold v5</title>
+  <style>
+    :root {
+      --font-serif: ui-serif, "New York", Georgia, serif;
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-sans);
+      background: #F5F5F7;
+      min-height: 100vh;
+      padding: 40px 24px;
+    }
+
+    .container {
+      max-width: 390px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #86868B;
+      margin-bottom: 12px;
+      margin-top: 56px;
+    }
+
+    /* ========================================
+       PAYMENT CARD - Amount is the hero
+       Giant number, document feels precious
+       ======================================== */
+
+    .payment-card {
+      background: linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%);
+      border-radius: 32px;
+      padding: 0;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 0.5px rgba(0,0,0,0.04),
+        0 4px 24px rgba(0,0,0,0.06),
+        0 16px 40px rgba(0,0,0,0.04);
+    }
+
+    .payment-header {
+      padding: 28px 28px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .vendor-lockup {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .vendor-logo {
+      width: 40px;
+      height: 40px;
+      background: #1C1C1E;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      font-weight: 700;
+      color: #3ECF8E;
+      letter-spacing: 0.5px;
+    }
+
+    .vendor-name {
+      font-size: 17px;
+      font-weight: 600;
+      color: #1C1C1E;
+    }
+
+    .vendor-plan {
+      font-size: 13px;
+      color: #86868B;
+    }
+
+    .due-pill {
+      background: #FF9F0A;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .payment-amount-section {
+      padding: 48px 28px 40px;
+      text-align: center;
+      position: relative;
+    }
+
+    .amount-giant {
+      font-family: var(--font-serif);
+      font-size: 96px;
+      font-weight: 500;
+      color: #1C1C1E;
+      letter-spacing: -6px;
+      line-height: 0.9;
+    }
+
+    .amount-label {
+      font-size: 15px;
+      color: #86868B;
+      margin-top: 8px;
+    }
+
+    /* The invoice - feels like a real slip of paper */
+    .invoice-slip {
+      position: absolute;
+      right: 24px;
+      top: 20px;
+      width: 72px;
+      height: 96px;
+      background: white;
+      border-radius: 6px;
+      transform: rotate(6deg);
+      box-shadow:
+        0 1px 2px rgba(0,0,0,0.08),
+        0 4px 12px rgba(0,0,0,0.06),
+        0 8px 24px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      padding: 10px 8px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .invoice-slip:hover {
+      transform: rotate(3deg) scale(1.05) translateY(-4px);
+      box-shadow:
+        0 2px 4px rgba(0,0,0,0.08),
+        0 8px 24px rgba(0,0,0,0.1),
+        0 16px 32px rgba(0,0,0,0.08);
+    }
+
+    .invoice-icon {
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(135deg, #FF3B30, #FF2D55);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .invoice-lines {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 8px;
+    }
+
+    .invoice-line {
+      height: 4px;
+      background: #F5F5F7;
+      border-radius: 2px;
+    }
+
+    .invoice-line:nth-child(1) { width: 70%; }
+    .invoice-line:nth-child(2) { width: 100%; }
+    .invoice-line:nth-child(3) { width: 50%; }
+
+    .payment-actions {
+      padding: 0 20px 20px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 16px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-dark {
+      background: #1C1C1E;
+      color: white;
+    }
+
+    .btn-dark:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    .btn-light {
+      background: #F5F5F7;
+      color: #1C1C1E;
+    }
+
+    /* ========================================
+       EMAIL CARD - Conversation bubble feel
+       Person feels present, quote feels spoken
+       ======================================== */
+
+    .email-card {
+      background: white;
+      border-radius: 32px;
+      padding: 24px;
+      box-shadow:
+        0 0 0 0.5px rgba(0,0,0,0.04),
+        0 4px 24px rgba(0,0,0,0.06);
+    }
+
+    .email-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .sender-avatar-large {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #667EEA 0%, #764BA2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 500;
+      color: white;
+      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+    }
+
+    .sender-info {
+      flex: 1;
+    }
+
+    .sender-name-large {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1C1C1E;
+    }
+
+    .sender-context {
+      font-size: 14px;
+      color: #86868B;
+    }
+
+    .urgent-dot {
+      width: 12px;
+      height: 12px;
+      background: #FF3B30;
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.2);
+      animation: urgentPulse 2s infinite;
+    }
+
+    @keyframes urgentPulse {
+      0%, 100% { box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.2); }
+      50% { box-shadow: 0 0 0 8px rgba(255, 59, 48, 0.1); }
+    }
+
+    /* Speech bubble effect */
+    .message-bubble {
+      background: #F5F5F7;
+      border-radius: 24px;
+      border-top-left-radius: 8px;
+      padding: 24px;
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .message-text {
+      font-family: var(--font-serif);
+      font-size: 19px;
+      color: #1C1C1E;
+      line-height: 1.45;
+    }
+
+    .reply-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .reply-pill {
+      padding: 14px 20px;
+      background: #F5F5F7;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #1C1C1E;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+
+    .reply-pill:hover {
+      background: #1C1C1E;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* ========================================
+       MEETING CARD - Time dominates
+       Feels like a calendar block come to life
+       ======================================== */
+
+    .meeting-card {
+      background: linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 100%);
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow:
+        0 8px 32px rgba(0,0,0,0.3),
+        0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .meeting-time-block {
+      padding: 36px 28px 28px;
+      position: relative;
+    }
+
+    .meeting-time-giant {
+      font-family: var(--font-serif);
+      font-size: 56px;
+      font-weight: 500;
+      color: white;
+      letter-spacing: -2px;
+    }
+
+    .meeting-duration {
+      font-size: 16px;
+      color: rgba(255,255,255,0.5);
+      margin-top: 4px;
+    }
+
+    .meeting-tomorrow-badge {
+      position: absolute;
+      top: 28px;
+      right: 24px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      padding: 8px 16px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .meeting-content {
+      background: white;
+      padding: 28px;
+      border-radius: 28px 28px 32px 32px;
+      margin: 0 4px 4px;
+    }
+
+    .meeting-title {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 600;
+      color: #1C1C1E;
+      text-align: center;
+    }
+
+    .attendees-visual {
+      display: flex;
+      justify-content: center;
+      margin: 24px 0;
+      position: relative;
+    }
+
+    .attendee-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 3px solid white;
+      margin-left: -12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 600;
+      color: white;
+      position: relative;
+      transition: transform 0.2s ease, z-index 0s;
+    }
+
+    .attendee-avatar:first-child { margin-left: 0; }
+
+    .attendee-avatar:hover {
+      transform: translateY(-8px) scale(1.1);
+      z-index: 10;
+    }
+
+    .meeting-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-accept {
+      background: #34C759;
+      color: white;
+    }
+
+    .btn-accept:hover {
+      box-shadow: 0 4px 16px rgba(52, 199, 89, 0.4);
+    }
+
+    .btn-decline {
+      background: #F5F5F7;
+      color: #1C1C1E;
+    }
+
+    /* ========================================
+       SCHEDULING CARD - Pick your slot
+       Options feel like physical cards
+       ======================================== */
+
+    .schedule-card {
+      background: white;
+      border-radius: 32px;
+      padding: 28px;
+      box-shadow:
+        0 0 0 0.5px rgba(0,0,0,0.04),
+        0 4px 24px rgba(0,0,0,0.06);
+    }
+
+    .schedule-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .schedule-title {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 600;
+      color: #1C1C1E;
+    }
+
+    .schedule-meta {
+      font-size: 14px;
+      color: #86868B;
+      margin-top: 4px;
+    }
+
+    .time-slots {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .time-slot {
+      padding: 20px;
+      background: #F5F5F7;
+      border-radius: 20px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .time-slot:hover {
+      background: #EBEBF0;
+    }
+
+    .time-slot.selected {
+      background: white;
+      border-color: #1C1C1E;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .time-slot.selected::after {
+      content: "";
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 24px;
+      height: 24px;
+      background: #1C1C1E;
+      border-radius: 50%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white' stroke-width='3'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M5 13l4 4L19 7'/%3E%3C/svg%3E");
+      background-size: 14px;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .slot-day {
+      font-size: 17px;
+      font-weight: 600;
+      color: #1C1C1E;
+    }
+
+    .slot-time {
+      font-size: 14px;
+      color: #86868B;
+      margin-top: 2px;
+    }
+
+    .slot-availability {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      padding: 6px 12px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .slot-availability.good {
+      background: rgba(52, 199, 89, 0.15);
+      color: #248A3D;
+    }
+
+    .slot-availability.warning {
+      background: rgba(255, 159, 10, 0.15);
+      color: #B25000;
+    }
+
+    .avail-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    /* ========================================
+       ALERT CARD - Error demands attention
+       Red glow, code feels technical
+       ======================================== */
+
+    .alert-card {
+      background: linear-gradient(180deg, #FFFFFF 0%, #FFF5F5 100%);
+      border-radius: 32px;
+      padding: 28px;
+      border: 1px solid rgba(255, 59, 48, 0.15);
+      box-shadow:
+        0 0 0 0.5px rgba(255, 59, 48, 0.1),
+        0 4px 24px rgba(255, 59, 48, 0.08);
+    }
+
+    .alert-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #FF3B30;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .alert-pulse {
+      width: 8px;
+      height: 8px;
+      background: white;
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.8); }
+    }
+
+    .alert-title {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 600;
+      color: #1C1C1E;
+    }
+
+    .alert-subtitle {
+      font-size: 14px;
+      color: #86868B;
+      margin-top: 2px;
+    }
+
+    .error-code-block {
+      background: #1C1C1E;
+      color: #FF6B6B;
+      padding: 16px 20px;
+      border-radius: 16px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 13px;
+      margin: 20px 0;
+      overflow-x: auto;
+    }
+
+    .alert-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* ========================================
+       DOCUMENT PREVIEW - Feels like paper
+       ======================================== */
+
+    .doc-preview-card {
+      background: white;
+      border-radius: 32px;
+      padding: 28px;
+      box-shadow:
+        0 0 0 0.5px rgba(0,0,0,0.04),
+        0 4px 24px rgba(0,0,0,0.06);
+    }
+
+    .doc-preview-header {
+      margin-bottom: 20px;
+    }
+
+    .doc-preview-title {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 600;
+      color: #1C1C1E;
+    }
+
+    .doc-preview-meta {
+      font-size: 14px;
+      color: #86868B;
+      margin-top: 4px;
+    }
+
+    .doc-stack {
+      position: relative;
+      height: 160px;
+      margin: 24px 0;
+    }
+
+    .doc-page {
+      position: absolute;
+      width: 140px;
+      height: 180px;
+      background: white;
+      border-radius: 8px;
+      border: 1px solid #E5E5E7;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      left: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .doc-page:nth-child(1) {
+      transform: translateX(-50%) rotate(-4deg);
+      z-index: 3;
+      box-shadow:
+        0 2px 8px rgba(0,0,0,0.06),
+        0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    .doc-page:nth-child(2) {
+      transform: translateX(-40%) rotate(2deg);
+      z-index: 2;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .doc-page:nth-child(3) {
+      transform: translateX(-60%) rotate(-8deg);
+      z-index: 1;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .doc-stack:hover .doc-page:nth-child(1) {
+      transform: translateX(-50%) rotate(-2deg) translateY(-8px);
+    }
+
+    .doc-stack:hover .doc-page:nth-child(2) {
+      transform: translateX(-30%) rotate(6deg);
+    }
+
+    .doc-stack:hover .doc-page:nth-child(3) {
+      transform: translateX(-70%) rotate(-12deg);
+    }
+
+    .doc-type-badge {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    .doc-type-badge.xls { background: linear-gradient(135deg, #34C759, #248A3D); }
+    .doc-type-badge.pdf { background: linear-gradient(135deg, #FF3B30, #D70015); }
+    .doc-type-badge.doc { background: linear-gradient(135deg, #007AFF, #0056B3); }
+
+    .doc-lines-mini {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .doc-line-mini {
+      height: 5px;
+      background: #F5F5F7;
+      border-radius: 2px;
+    }
+
+    .context-summary {
+      background: #F5F5F7;
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+    }
+
+    .context-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #86868B;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .context-text {
+      font-size: 14px;
+      color: #1C1C1E;
+      line-height: 1.5;
+      margin-top: 6px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- ========================================
+         PAYMENT - Giant amount, floating invoice
+         ======================================== -->
+
+    <p class="section-label">Due Friday</p>
+
+    <div class="payment-card">
+      <div class="payment-header">
+        <div class="vendor-lockup">
+          <div class="vendor-logo">SUPA</div>
+          <div>
+            <div class="vendor-name">Supabase</div>
+            <div class="vendor-plan">Pro Plan</div>
+          </div>
+        </div>
+        <span class="due-pill">3 days</span>
+      </div>
+
+      <div class="payment-amount-section">
+        <div class="invoice-slip">
+          <div class="invoice-icon">PDF</div>
+          <div class="invoice-lines">
+            <div class="invoice-line"></div>
+            <div class="invoice-line"></div>
+            <div class="invoice-line"></div>
+          </div>
+        </div>
+
+        <div class="amount-giant">$25</div>
+        <div class="amount-label">Monthly subscription</div>
+      </div>
+
+      <div class="payment-actions">
+        <button class="btn btn-dark">Pay Now</button>
+        <button class="btn btn-light">Later</button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         EMAIL - Feels like a conversation
+         ======================================== -->
+
+    <p class="section-label">Waiting on you</p>
+
+    <div class="email-card">
+      <div class="email-header">
+        <div class="sender-avatar-large">SC</div>
+        <div class="sender-info">
+          <div class="sender-name-large">Sarah Chen</div>
+          <div class="sender-context">VP Engineering</div>
+        </div>
+        <div class="urgent-dot"></div>
+      </div>
+
+      <div class="message-bubble">
+        <p class="message-text">Can you review the proposal and share your thoughts before our 3pm?</p>
+      </div>
+
+      <div class="reply-options">
+        <button class="reply-pill">On it</button>
+        <button class="reply-pill">Need more time</button>
+        <button class="reply-pill">Let's discuss</button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         MEETING - Dark time block, white content
+         ======================================== -->
+
+    <p class="section-label">Tomorrow</p>
+
+    <div class="meeting-card">
+      <div class="meeting-time-block">
+        <div class="meeting-tomorrow-badge">Tomorrow</div>
+        <div class="meeting-time-giant">10:00 AM</div>
+        <div class="meeting-duration">45 minutes via Zoom</div>
+      </div>
+
+      <div class="meeting-content">
+        <div class="meeting-title">Product Roadmap Sync</div>
+
+        <div class="attendees-visual">
+          <div class="attendee-avatar" style="background: linear-gradient(135deg, #667EEA, #764BA2); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);">AK</div>
+          <div class="attendee-avatar" style="background: linear-gradient(135deg, #F093FB, #F5576C); box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);">JS</div>
+          <div class="attendee-avatar" style="background: linear-gradient(135deg, #4FACFE, #00F2FE); box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);">NP</div>
+        </div>
+
+        <div class="meeting-actions">
+          <button class="btn btn-accept">Accept</button>
+          <button class="btn btn-decline">Decline</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================
+         SCHEDULING - Selectable time slots
+         ======================================== -->
+
+    <p class="section-label">Find a time</p>
+
+    <div class="schedule-card">
+      <div class="schedule-header">
+        <div class="schedule-title">Q4 Planning Review</div>
+        <div class="schedule-meta">4 attendees</div>
+      </div>
+
+      <div class="time-slots">
+        <div class="time-slot selected">
+          <div class="slot-day">Tuesday, Jan 7</div>
+          <div class="slot-time">2:00 PM - 3:00 PM</div>
+          <div class="slot-availability good">
+            <span class="avail-dot" style="background: #34C759;"></span>
+            Everyone's free
+          </div>
+        </div>
+
+        <div class="time-slot">
+          <div class="slot-day">Wednesday, Jan 8</div>
+          <div class="slot-time">10:00 AM - 11:00 AM</div>
+          <div class="slot-availability warning">
+            <span class="avail-dot" style="background: #FF9F0A;"></span>
+            1 conflict
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-dark" style="width: 100%;">Send Invite</button>
+    </div>
+
+    <!-- ========================================
+         DOCUMENTS - Stack of papers
+         ======================================== -->
+
+    <p class="section-label">Needs your input</p>
+
+    <div class="doc-preview-card">
+      <div class="doc-preview-header">
+        <div class="doc-preview-title">Q4 Budget Review</div>
+        <div class="doc-preview-meta">3 attachments from 5 messages</div>
+      </div>
+
+      <div class="doc-stack">
+        <div class="doc-page">
+          <div class="doc-type-badge xls">XLS</div>
+          <div class="doc-lines-mini">
+            <div class="doc-line-mini" style="width: 80%;"></div>
+            <div class="doc-line-mini" style="width: 100%;"></div>
+            <div class="doc-line-mini" style="width: 60%;"></div>
+            <div class="doc-line-mini" style="width: 90%;"></div>
+          </div>
+        </div>
+        <div class="doc-page">
+          <div class="doc-type-badge pdf">PDF</div>
+          <div class="doc-lines-mini">
+            <div class="doc-line-mini" style="width: 70%;"></div>
+            <div class="doc-line-mini" style="width: 100%;"></div>
+            <div class="doc-line-mini" style="width: 50%;"></div>
+          </div>
+        </div>
+        <div class="doc-page">
+          <div class="doc-type-badge doc">DOC</div>
+          <div class="doc-lines-mini">
+            <div class="doc-line-mini" style="width: 90%;"></div>
+            <div class="doc-line-mini" style="width: 70%;"></div>
+            <div class="doc-line-mini" style="width: 80%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="context-summary">
+        <div class="context-label">Summary</div>
+        <p class="context-text">Sarah proposed 15% increase for engineering. Mike raised concerns about timeline. Waiting on your approval to proceed.</p>
+      </div>
+
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-dark">Reply</button>
+        <button class="btn btn-light">View Thread</button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         ERROR - Red glow, technical feel
+         ======================================== -->
+
+    <p class="section-label">Needs attention</p>
+
+    <div class="alert-card">
+      <div class="alert-badge">
+        <div class="alert-pulse"></div>
+        Build Failed
+      </div>
+
+      <div class="alert-title">learning-companion</div>
+      <div class="alert-subtitle">Render deployment</div>
+
+      <div class="error-code-block">
+        Module not found: @clerk/nextjs
+      </div>
+
+      <div class="alert-actions">
+        <button class="btn btn-dark">Open Render</button>
+        <button class="btn btn-light">GitHub</button>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

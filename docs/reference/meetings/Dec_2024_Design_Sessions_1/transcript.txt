@@ -1,0 +1,2224 @@
+WEBVTT
+
+00:10:01.000 --> 00:10:03.000
+Nik Patel: Hey, Josh.
+
+00:10:42.000 --> 00:10:44.000
+Josh Smith: Oh, hey!
+
+00:10:51.000 --> 00:10:53.000
+Nik Patel: Can you hear me fine?
+
+00:10:52.000 --> 00:10:54.000
+Josh Smith: Can hear you now, yeah.
+
+00:10:54.000 --> 00:10:56.000
+Nik Patel: Awesome.
+
+00:10:56.000 --> 00:10:58.000
+Nik Patel: How are you doing?
+
+00:10:58.000 --> 00:11:00.000
+Josh Smith: Doing okay, thanks.
+
+00:11:00.000 --> 00:11:04.000
+Nik Patel: Oh, you sound much better, so I'm assuming you're feeling a bit better?
+
+00:11:04.000 --> 00:11:07.000
+Josh Smith: Slow recovery, yeah, slow recovery.
+
+00:11:08.000 --> 00:11:11.000
+Josh Smith: Um, I still have been in, like…
+
+00:11:11.000 --> 00:11:15.000
+Josh Smith: Brain fog for like head colds for like.
+
+00:11:15.000 --> 00:11:17.000
+Josh Smith: Over a week now, but…
+
+00:11:17.000 --> 00:11:20.000
+Josh Smith: Uh, at least my voice doesn't sound like I'm…
+
+00:11:21.000 --> 00:11:23.000
+Josh Smith: Uh, near death, yeah, so…
+
+00:11:24.000 --> 00:11:27.000
+Nik Patel: You sound much better, I'm hoping it just gets better from here.
+
+00:11:27.000 --> 00:11:29.000
+Josh Smith: Yeah, thanks. How you been?
+
+00:11:29.000 --> 00:11:33.000
+Nik Patel: Uh, good! It's, uh, it's been a busy day, um…
+
+00:11:34.000 --> 00:11:37.000
+Nik Patel: So, um…
+
+00:11:37.000 --> 00:11:42.000
+Nik Patel: I may have a hard stop, I'm trying to figure out if I'm gonna have a hard stop or not.
+
+00:11:44.000 --> 00:11:47.000
+Nik Patel: But I'm glad you dive in, uh, when you are.
+
+00:11:47.000 --> 00:11:50.000
+Josh Smith: Alright, let's dive in.
+
+00:11:48.000 --> 00:11:50.000
+Nik Patel: Do you mind if I make up the call?
+
+00:11:51.000 --> 00:11:55.000
+Josh Smith: Do I mind if you record the call?
+
+00:11:56.000 --> 00:11:58.000
+Josh Smith: No.
+
+00:11:56.000 --> 00:11:59.000
+Nik Patel: Ah, that's a long thinking, huh?
+
+00:11:59.000 --> 00:12:01.000
+Josh Smith: No, I don't mind at all.
+
+00:12:00.000 --> 00:12:03.000
+Nik Patel: I know, just kidding. Um…
+
+00:12:01.000 --> 00:12:03.000
+Josh Smith: Yeah.
+
+00:12:03.000 --> 00:12:06.000
+Nik Patel: Give me one sec, I'm trying to adjust my camera.
+
+00:12:20.000 --> 00:12:22.000
+Nik Patel: Doesn't work, okay.
+
+00:12:25.000 --> 00:12:26.000
+Nik Patel: Mission stuck…
+
+00:12:29.000 --> 00:12:32.000
+Nik Patel: Here we go, I guess that's better.
+
+00:12:35.000 --> 00:12:42.000
+Nik Patel: Let me record, and then let's get started. Um, the sound comes out fine. I changed where my mic is.
+
+00:12:44.000 --> 00:12:46.000
+Josh Smith: Yeah, I think so.
+
+00:12:50.000 --> 00:12:53.000
+Nik Patel: Alrighty, uh, going back to Figma, then?
+
+00:12:53.000 --> 00:12:55.000
+Josh Smith: Yeah.
+
+00:12:55.000 --> 00:12:57.000
+Nik Patel: Uh, where do you want to start?
+
+00:12:58.000 --> 00:13:03.000
+Josh Smith: Well, I don't know if you wanted to talk about that thing you sent me, um…
+
+00:13:03.000 --> 00:13:07.000
+Nik Patel: Oh, yeah, I could, um… there is not much there yet.
+
+00:13:07.000 --> 00:13:09.000
+Nik Patel: Um…
+
+00:13:09.000 --> 00:13:17.000
+Nik Patel: It seems like it's a daily brief, and… but it… they're moving in the same direction that we are, uh, just a completely different.
+
+00:13:18.000 --> 00:13:20.000
+Nik Patel: Uh, approach.
+
+00:13:21.000 --> 00:13:23.000
+Josh Smith: Yeah, they are. Um…
+
+00:13:24.000 --> 00:13:29.000
+Josh Smith: What they're doing here is, like… and I'm gonna break out these objects, because this might be helpful for us. Um…
+
+00:13:34.000 --> 00:13:38.000
+Josh Smith: Top of mind… they're top of mind, um…
+
+00:13:38.000 --> 00:13:44.000
+Josh Smith: It's a combination of like 4 things, kind of. They have the action, they have, um.
+
+00:13:44.000 --> 00:13:51.000
+Josh Smith: amount of time it would take, which I don't know if you'd want to leverage. I was assuming no.
+
+00:13:51.000 --> 00:13:57.000
+Nik Patel: I don't trust, uh, anything AI says it's gonna take, right? Like, especially how fast things are changing.
+
+00:13:54.000 --> 00:13:56.000
+Josh Smith: Yeah.
+
+00:13:57.000 --> 00:14:05.000
+Nik Patel: Things that used to take a month takes hours, things that used to take hours takes months, and it's… there is just, like, not a reliable way on it right now.
+
+00:14:05.000 --> 00:14:08.000
+Josh Smith: Yeah, I was thinking the same, I was like, this…
+
+00:14:08.000 --> 00:14:15.000
+Josh Smith: Who, who decided to add that one in? Uh, and for them to put it in front of the action itself was just like…
+
+00:14:16.000 --> 00:14:19.000
+Josh Smith: Like that, that makes it harder to.
+
+00:14:19.000 --> 00:14:28.000
+Josh Smith: read the actions. Um, they have a more details link, they call details, but then they also have an, uh, actual, uh, action button.
+
+00:14:28.000 --> 00:14:34.000
+Josh Smith: Uh, where they can. So, if they can provide an action, they do, whether it's add to calendar or draft email.
+
+00:14:28.000 --> 00:14:30.000
+Nik Patel: Yep.
+
+00:14:34.000 --> 00:14:37.000
+Josh Smith: Of course, from what I understand with priority lens.
+
+00:14:39.000 --> 00:14:42.000
+Josh Smith: You're going well beyond this, it's…
+
+00:14:42.000 --> 00:14:44.000
+Josh Smith: coordinate scheduling.
+
+00:14:44.000 --> 00:14:48.000
+Josh Smith: Um, it's not, oh, add to calendar.
+
+00:14:49.000 --> 00:14:59.000
+Josh Smith: So, um, but their, their structure is, um, like, action, more details, link, and if possible, some action button, and I'm not gonna put in there, um…
+
+00:15:00.000 --> 00:15:05.000
+Josh Smith: I'm not gonna add in the time, because I don't think that's relevant, but these could be relevant, um…
+
+00:15:06.000 --> 00:15:08.000
+Josh Smith: 30…
+
+00:15:08.000 --> 00:15:11.000
+Josh Smith: Then they have the FYI.
+
+00:15:11.000 --> 00:15:13.000
+Josh Smith: Which is…
+
+00:15:14.000 --> 00:15:16.000
+Josh Smith: Um…
+
+00:15:16.000 --> 00:15:25.000
+Josh Smith: Financial note, your rent payment is scheduled for tomorrow, your auto loan is scheduled Friday, RSVP Maya's birthday party.
+
+00:15:26.000 --> 00:15:28.000
+Josh Smith: RSVP needed, which is an action.
+
+00:15:29.000 --> 00:15:31.000
+Josh Smith: So…
+
+00:15:31.000 --> 00:15:36.000
+Josh Smith: Uh, your delivery details, delivery. Kids Rainbows are scheduled to delivery…
+
+00:15:36.000 --> 00:15:40.000
+Josh Smith: To 50% off site-wide and then they put like deals in there and like.
+
+00:15:44.000 --> 00:15:46.000
+Josh Smith: I don't know. Um…
+
+00:15:47.000 --> 00:15:49.000
+Josh Smith: Whoa.
+
+00:15:50.000 --> 00:15:52.000
+Josh Smith: What did you do, Nick?
+
+00:15:52.000 --> 00:15:54.000
+Nik Patel: Whatever, what did I do?
+
+00:15:53.000 --> 00:15:56.000
+Josh Smith: What did you do? Was that me? Could have been me.
+
+00:16:00.000 --> 00:16:03.000
+Josh Smith: Oh, did you want that frame there?
+
+00:16:02.000 --> 00:16:05.000
+Nik Patel: Nope, wasn't me? Sorry about that.
+
+00:16:03.000 --> 00:16:11.000
+Josh Smith: Oh, okay. Maybe it was me. Uh, and then on your calendar, and then they have it on your calendar, and of course, it's just, like, like, strings of text.
+
+00:16:11.000 --> 00:16:13.000
+Nik Patel: Mm-hmm.
+
+00:16:12.000 --> 00:16:17.000
+Josh Smith: It's like… what I'm assuming, though, I've built this before, um…
+
+00:16:18.000 --> 00:16:25.000
+Josh Smith: What I'm… you tell me otherwise, what I'm assuming is the opportunity to have, like, a full-on, like.
+
+00:16:25.000 --> 00:16:30.000
+Josh Smith: like a calendar. Colin… that's exactly how you spell calendar, Josh.
+
+00:16:30.000 --> 00:16:32.000
+Josh Smith: Um…
+
+00:16:32.000 --> 00:16:35.000
+Josh Smith: A calendar that has, like, your, um…
+
+00:16:35.000 --> 00:16:42.000
+Josh Smith: your calendar up here, you know, with, like, your, um, you know, August, blah blah blah, with your… your…
+
+00:16:42.000 --> 00:16:47.000
+Josh Smith: Dates and everything, and your, um, your actual calendar events for that day.
+
+00:16:47.000 --> 00:16:49.000
+Nik Patel: Yep.
+
+00:16:48.000 --> 00:16:56.000
+Josh Smith: That are all scheduled across… and it's a view across all of your calendars, but it's representing it as a one schedule, because.
+
+00:16:56.000 --> 00:16:59.000
+Josh Smith: You're one human. Um…
+
+00:16:58.000 --> 00:17:00.000
+Nik Patel: Mm-hmm.
+
+00:16:59.000 --> 00:17:02.000
+Josh Smith: Um, I'm assuming that's something you want, right?
+
+00:17:02.000 --> 00:17:07.000
+Nik Patel: Yes, I think the bigger thing that I'm thinking through is…
+
+00:17:07.000 --> 00:17:10.000
+Nik Patel: Do we want to follow similar…
+
+00:17:12.000 --> 00:17:14.000
+Nik Patel: What's the right word? Similar setup.
+
+00:17:15.000 --> 00:17:17.000
+Nik Patel: that they have.
+
+00:17:18.000 --> 00:17:23.000
+Nik Patel: from a screen… not screen, like, yes, UI perspective, but then also from…
+
+00:17:25.000 --> 00:17:31.000
+Nik Patel: experience perspective, because the way we were thinking about it was a little bit different. Similar pieces of information, but.
+
+00:17:32.000 --> 00:17:37.000
+Nik Patel: a little bit different. This is obviously, like, easy to read and easy to generate from an LLM perspective.
+
+00:17:38.000 --> 00:17:40.000
+Nik Patel: Um, is that how we want to talk about, and…
+
+00:17:40.000 --> 00:17:44.000
+Nik Patel: Is this what we want the experience to look like as well?
+
+00:17:46.000 --> 00:17:51.000
+Josh Smith: No, well, I… let me know your thoughts. My gut is, um…
+
+00:17:52.000 --> 00:17:55.000
+Josh Smith: This reads, this reads like.
+
+00:17:59.000 --> 00:18:03.000
+Josh Smith: These don't read like objects, it just reads like strings of text.
+
+00:18:03.000 --> 00:18:05.000
+Nik Patel: Yeah.
+
+00:18:03.000 --> 00:18:06.000
+Josh Smith: Um, and…
+
+00:18:08.000 --> 00:18:13.000
+Josh Smith: I was initially assuming what you were building, that these were objects that.
+
+00:18:13.000 --> 00:18:20.000
+Josh Smith: Could be enhanced and have more complexity to them over time, um, and be… can be connected to larger initiatives.
+
+00:18:20.000 --> 00:18:22.000
+Josh Smith: Um…
+
+00:18:25.000 --> 00:18:29.000
+Josh Smith: Morning, Elisa, here's your game plan for the day.
+
+00:18:33.000 --> 00:18:38.000
+Josh Smith: You could potentially, if you wanted to align it like this, you could. I might…
+
+00:18:39.000 --> 00:18:43.000
+Josh Smith: Recommend, though, not designing it to look like strings of text.
+
+00:18:43.000 --> 00:18:46.000
+Nik Patel: I'm with you, I don't want to either.
+
+00:18:47.000 --> 00:18:53.000
+Nik Patel: I think that's where experience comes pretty handy on how we… how we think about it. Um…
+
+00:18:54.000 --> 00:18:58.000
+Nik Patel: I've been thinking about what… what we were saying on…
+
+00:18:59.000 --> 00:19:01.000
+Nik Patel: Um…
+
+00:19:01.000 --> 00:19:06.000
+Nik Patel: the flow of, like, there is an execution mode, right? There is the prep mode.
+
+00:19:07.000 --> 00:19:11.000
+Josh Smith: Oh, no, be careful, Nick. Be careful what you say.
+
+00:19:07.000 --> 00:19:09.000
+Nik Patel: Um…
+
+00:19:10.000 --> 00:19:12.000
+Nik Patel: I just invited him. Um…
+
+00:19:14.000 --> 00:19:18.000
+Nik Patel: Alright, let's… hey, let us get you up. So, um…
+
+00:19:14.000 --> 00:19:16.000
+Bo Motlagh: Hello.
+
+00:19:18.000 --> 00:19:24.000
+Nik Patel: We are… we have been going through screens, uh, figuring out, like, what the experience would be for our users.
+
+00:19:24.000 --> 00:19:26.000
+Nik Patel: And thinking about…
+
+00:19:26.000 --> 00:19:29.000
+Nik Patel: How, one, it differentiates.
+
+00:19:29.000 --> 00:19:38.000
+Nik Patel: Our product, but second, it makes it sticky, and it actually serves the audience that we care about, which are busy people, don't have much time to, like, go through deep.
+
+00:19:39.000 --> 00:19:41.000
+Nik Patel: Deep stuff, but they just want to execute and get stuff done.
+
+00:19:41.000 --> 00:19:43.000
+Bo Motlagh: Nice.
+
+00:19:44.000 --> 00:19:46.000
+Nik Patel: We are prioritizing voice mode.
+
+00:19:46.000 --> 00:19:49.000
+Nik Patel: Which is an additional complexity that.
+
+00:19:49.000 --> 00:19:54.000
+Nik Patel: That we had to think through, but I think from a user perspective, it's a much better experience.
+
+00:19:54.000 --> 00:20:01.000
+Nik Patel: So I built that Google Studio, Google AI Studio thing. It's a lot of work, but at least it proved that it can be done.
+
+00:20:02.000 --> 00:20:05.000
+Nik Patel: Then we had started talking about…
+
+00:20:05.000 --> 00:20:09.000
+Nik Patel: What happens once they land on the platform? Or, like, land…
+
+00:20:09.000 --> 00:20:12.000
+Nik Patel: on a… for lack of better drums homepage.
+
+00:20:12.000 --> 00:20:17.000
+Nik Patel: And… there were, like, few modes that we were talking about. One was execution mode.
+
+00:20:18.000 --> 00:20:20.000
+Nik Patel: Um, and Josh had this great idea of.
+
+00:20:20.000 --> 00:20:29.000
+Nik Patel: Instead of showing them everything, let's only show them one thing at a time. You have 8 things, I'm going to show you what matters now, let's talk about it. You get that done, you move on to next.
+
+00:20:29.000 --> 00:20:31.000
+Bo Motlagh: Okay.
+
+00:20:30.000 --> 00:20:37.000
+Nik Patel: Then there was a prep mode, which is, uh, you have these things coming up, here's the briefs for you on whatever you need to prep on.
+
+00:20:38.000 --> 00:20:40.000
+Nik Patel: Right? Um…
+
+00:20:41.000 --> 00:20:45.000
+Nik Patel: And then there were two mores I'm blanking out on at this point.
+
+00:20:44.000 --> 00:20:49.000
+Josh Smith: You had, uh, you had bird's eye view, or you were coming to Eagle view.
+
+00:20:47.000 --> 00:20:54.000
+Nik Patel: Uh, Eagle View, yes. Yep, Eagle View is what's going on across everything and stuff that I'm dealing with.
+
+00:20:54.000 --> 00:21:02.000
+Nik Patel: And then that's another way for you to get deeper into, here's what's going on, here's what you need to know about, here's what you need to execute on, go back onto execution mode again.
+
+00:21:02.000 --> 00:21:04.000
+Bo Motlagh: Okay.
+
+00:21:03.000 --> 00:21:06.000
+Josh Smith: And, uh, what AI is doing was your fourth one.
+
+00:21:06.000 --> 00:21:09.000
+Nik Patel: And that was the fourth one, thank you. So…
+
+00:21:09.000 --> 00:21:11.000
+Nik Patel: I feel…
+
+00:21:11.000 --> 00:21:14.000
+Nik Patel: That it's worth it, but would love.
+
+00:21:14.000 --> 00:21:25.000
+Nik Patel: I guess, Josh, you think that too now, or maybe it's just me thinking about it, but I am of a mindset that we need to have a view which essentially shows what AI is doing for you.
+
+00:21:27.000 --> 00:21:32.000
+Josh Smith: Sure. Ease of… ease of mind, just centralizing…
+
+00:21:29.000 --> 00:21:31.000
+Nik Patel: Yeah.
+
+00:21:32.000 --> 00:21:35.000
+Bo Motlagh: When you say what it's doing for you, what does that mean? Sorry.
+
+00:21:35.000 --> 00:21:40.000
+Nik Patel: Um, I'm running these follow-ups for you, I'm gonna set up that meeting for you, I have done this thing.
+
+00:21:38.000 --> 00:21:41.000
+Bo Motlagh: Oh. Yeah.
+
+00:21:40.000 --> 00:21:45.000
+Nik Patel: a to-do task list that AI itself is tracking and finishing.
+
+00:21:46.000 --> 00:21:50.000
+Nik Patel: Right? And then everything else is more for you and your teams and delegation and stuff like that.
+
+00:21:51.000 --> 00:21:53.000
+Bo Motlagh: I mean, honestly, it sounds like…
+
+00:21:53.000 --> 00:21:58.000
+Bo Motlagh: like, a stand-up with me and Casey. Like, that's… that's how these conversations go, right? Um…
+
+00:21:59.000 --> 00:22:01.000
+Nik Patel: That portion, yes.
+
+00:22:00.000 --> 00:22:02.000
+Bo Motlagh: Yeah.
+
+00:22:01.000 --> 00:22:08.000
+Nik Patel: Um, and the whole idea was, this basically is a different way of approaching things.
+
+00:22:08.000 --> 00:22:17.000
+Nik Patel: So now we are not even talking about emails or text, or blah, we are talking about work. And we are talking about a piece or unit of work that needs to get done, or that you need to know about.
+
+00:22:18.000 --> 00:22:26.000
+Nik Patel: And it puts us in a different category. We are still in, like, AI productivity category, but it's easier for us to not be compared against via another email client.
+
+00:22:27.000 --> 00:22:29.000
+Bo Motlagh: Okay.
+
+00:22:29.000 --> 00:22:35.000
+Nik Patel: Um, again, we are taking on… technically, I'm thinking, like, how it's taking on more complexity than…
+
+00:22:35.000 --> 00:22:37.000
+Nik Patel: Uh, than we would have otherwise.
+
+00:22:37.000 --> 00:22:41.000
+Nik Patel: But as a user, this makes more sense that we do it this way.
+
+00:22:40.000 --> 00:22:44.000
+Bo Motlagh: Yeah, but you could… you could layer that, right? Like…
+
+00:22:45.000 --> 00:22:53.000
+Bo Motlagh: you… I actually don't know if it's… I mean, it's more scope, I don't know if it's that much more complex. It depends how you layer the data access.
+
+00:22:54.000 --> 00:22:59.000
+Nik Patel: If I talk about it, you'll be like, dude, just slow down. Um…
+
+00:22:59.000 --> 00:23:02.000
+Nik Patel: So what I've been thinking about is…
+
+00:23:02.000 --> 00:23:05.000
+Nik Patel: We would essentially create a few tools.
+
+00:23:05.000 --> 00:23:09.000
+Nik Patel: And give agents a sandbox to be able to execute on those things.
+
+00:23:09.000 --> 00:23:15.000
+Nik Patel: That's just the standard way for any production agents work in general, especially the big ones that are out there.
+
+00:23:16.000 --> 00:23:20.000
+Nik Patel: Um, with the idea being if I… so, one of the…
+
+00:23:18.000 --> 00:23:20.000
+Bo Motlagh: You want to be able to commit.
+
+00:23:20.000 --> 00:23:28.000
+Nik Patel: Not just commit, uh, it's an execution, but it executes in a sandbox, not in a shared environment, just because of the security reasons.
+
+00:23:29.000 --> 00:23:31.000
+Bo Motlagh: Okay.
+
+00:23:29.000 --> 00:23:33.000
+Nik Patel: Um, but the example that we were going through was…
+
+00:23:35.000 --> 00:23:37.000
+Nik Patel: Let's say an email came through.
+
+00:23:37.000 --> 00:23:41.000
+Nik Patel: for example, you and I are talking about things, and we have to get something done.
+
+00:23:42.000 --> 00:23:47.000
+Nik Patel: the whole thought was, uh, AI would tell you something, it's like, hey, here's what you need to know about, here's the context.
+
+00:23:47.000 --> 00:23:54.000
+Nik Patel: Right? And then you talk to it and say, alright, this makes sense, can you… can you ask Josh to take care of it, and then have them set up a meeting once it's done?
+
+00:23:55.000 --> 00:24:01.000
+Nik Patel: Agent would take that, convert that into actions, and send them out with whatever mechanism it needs to send out with.
+
+00:24:02.000 --> 00:24:07.000
+Nik Patel: So, like, it could still be an email behind the scene that Priority Lens ends up sending.
+
+00:24:02.000 --> 00:24:04.000
+Bo Motlagh: Okay.
+
+00:24:07.000 --> 00:24:14.000
+Nik Patel: Right? But as far as the execution of… and the experience goes, it's a simple conversation that you were having with that.
+
+00:24:14.000 --> 00:24:16.000
+Nik Patel: Putting quick person.
+
+00:24:16.000 --> 00:24:19.000
+Bo Motlagh: Okay, what does sandbox mean in this context?
+
+00:24:19.000 --> 00:24:23.000
+Nik Patel: So, um, there are things that it would have to execute upon.
+
+00:24:23.000 --> 00:24:29.000
+Nik Patel: Um, couple of these things could be, you need to do this research and you need to get me the data before we do something.
+
+00:24:30.000 --> 00:24:41.000
+Nik Patel: The sandbox is… we are only opening up some of the tools that matters for some of these items that we need to take an action on, and not just, like, strictly allowing everyone to do everything.
+
+00:24:41.000 --> 00:24:47.000
+Nik Patel: Especially, I don't want to open up secrets, um, that we will require for us to send these API calls.
+
+00:24:47.000 --> 00:24:54.000
+Nik Patel: So, Sandbox would have some of those MCPs, like, email MCP open up, and it knows how to talk to, like, Gmail versus Outlook versus Blah.
+
+00:24:54.000 --> 00:24:59.000
+Nik Patel: And agent only knows about it, agent takes actions, and stuff is more abstracted away from it.
+
+00:25:00.000 --> 00:25:02.000
+Bo Motlagh: Okay.
+
+00:25:03.000 --> 00:25:05.000
+Bo Motlagh: But that…
+
+00:25:05.000 --> 00:25:16.000
+Bo Motlagh: Okay. You're not really isolating anything, though, right? I mean, like, you're… the MCP interface can abstract all of that away anyway. Like, you're not… you're not giving access to secrets just because it can access the API.
+
+00:25:16.000 --> 00:25:21.000
+Nik Patel: the difference being, um, if I'm giving MCP into my system context.
+
+00:25:21.000 --> 00:25:26.000
+Nik Patel: My system context gets bloated up pretty quickly, and I start to lose the results.
+
+00:25:26.000 --> 00:25:28.000
+Nik Patel: And, uh…
+
+00:25:29.000 --> 00:25:35.000
+Nik Patel: quality of those results, because my context, uh, is already, like, being picked up by MCP tools.
+
+00:25:36.000 --> 00:25:40.000
+Bo Motlagh: Why do you want to use MCP here, as opposed to…
+
+00:25:39.000 --> 00:25:47.000
+Nik Patel: It could be… it could be just tools, bash scripts, Python, doesn't matter. It's just something that doesn't need to be in the context, because I want the context to be available for human conversation.
+
+00:25:42.000 --> 00:25:44.000
+Bo Motlagh: Got it.
+
+00:25:49.000 --> 00:25:51.000
+Bo Motlagh: Okay.
+
+00:25:51.000 --> 00:25:56.000
+Nik Patel: It could be… and when I say sandbox, it's a straight-up, like, small, like, node…
+
+00:25:56.000 --> 00:26:01.000
+Nik Patel: thing that just got created, or, like, a small Docker container, executed on it, and you're done.
+
+00:26:04.000 --> 00:26:09.000
+Bo Motlagh: Oh, so you're saying the LLM… the task…
+
+00:26:10.000 --> 00:26:18.000
+Bo Motlagh: So, you're basically… okay, so you're basically… you want to spawn agents for tasks. I see what you're saying. Okay, you don't want a centralized system just doing everything for you.
+
+00:26:19.000 --> 00:26:23.000
+Nik Patel: Well, to the user, that's what it would look like. Behind the scene, it's gonna be different.
+
+00:26:25.000 --> 00:26:28.000
+Bo Motlagh: What's the benefit, though? I guess, like…
+
+00:26:27.000 --> 00:26:34.000
+Nik Patel: Um, I could run different agents. Concurrency, I could run different agents for different type of context.
+
+00:26:28.000 --> 00:26:30.000
+Bo Motlagh: And concurrency?
+
+00:26:34.000 --> 00:26:41.000
+Nik Patel: I might have created, like, 5 agents that's supposed to do some stuff and stuff like that, right? They have their own little boxes to work with.
+
+00:26:42.000 --> 00:26:46.000
+Bo Motlagh: But the user isn't thinking about agents, right? Like, yeah.
+
+00:26:45.000 --> 00:26:47.000
+Nik Patel: Wow.
+
+00:26:46.000 --> 00:26:50.000
+Bo Motlagh: You would, but you're not normal, neither am I.
+
+00:26:49.000 --> 00:26:53.000
+Nik Patel: Yes, users just talking to private events, yeah.
+
+00:26:51.000 --> 00:26:55.000
+Bo Motlagh: There we go. So that's a purely…
+
+00:26:55.000 --> 00:27:01.000
+Bo Motlagh: So is that a purely architectural thing? Like, is this… or… so the experience… or is the experience showing.
+
+00:27:01.000 --> 00:27:03.000
+Bo Motlagh: I'm spawning something to handle that.
+
+00:27:03.000 --> 00:27:05.000
+Bo Motlagh: Shouldn't it?
+
+00:27:05.000 --> 00:27:07.000
+Nik Patel: That's a Josh Brown number.
+
+00:27:07.000 --> 00:27:09.000
+Bo Motlagh: Okay.
+
+00:27:09.000 --> 00:27:15.000
+Bo Motlagh: So, like, Cloud Code does that, right? It'll say, I'll spawn something to handle that and get back to you.
+
+00:27:16.000 --> 00:27:18.000
+Nik Patel: Yeah, but…
+
+00:27:21.000 --> 00:27:26.000
+Nik Patel: Okay, let me give… we had talked about this highly, well, but, uh, good…
+
+00:27:25.000 --> 00:27:29.000
+Bo Motlagh: By the way, if I push you on a tangent, tell me to shut up, so…
+
+00:27:29.000 --> 00:27:37.000
+Nik Patel: I think this, and then we should go back into that execution mode, probably together would be a good idea. But the whole… so there are two types of execution that happens.
+
+00:27:37.000 --> 00:27:42.000
+Nik Patel: Actually, uh… we did write that down on Figma somewhere, didn't we?
+
+00:27:45.000 --> 00:27:48.000
+Nik Patel: Oh yeah, here, let me share my screen for a sec.
+
+00:27:52.000 --> 00:27:54.000
+Nik Patel: Alright, you see that?
+
+00:27:55.000 --> 00:27:56.000
+Bo Motlagh: Yep.
+
+00:27:56.000 --> 00:28:01.000
+Nik Patel: Okay, so we were talking about, like, when you… when you land on the… for the first time, what do we do?
+
+00:28:01.000 --> 00:28:05.000
+Nik Patel: And, uh, Josh had mentioned this scenario on…
+
+00:28:05.000 --> 00:28:10.000
+Nik Patel: Um, it looked at some email. In an email, you had said you'd get something done in the after day, and you have not.
+
+00:28:10.000 --> 00:28:15.000
+Bo Motlagh: Oh, sorry, I'm seeing a new audio device detected, is that what I'm supposed to be seeing?
+
+00:28:14.000 --> 00:28:20.000
+Nik Patel: Oh yeah, no. Um, then you were saying Discord, not the priority line stream now.
+
+00:28:15.000 --> 00:28:18.000
+Bo Motlagh: Okay.
+
+00:28:22.000 --> 00:28:23.000
+Nik Patel: There you go.
+
+00:28:24.000 --> 00:28:26.000
+Bo Motlagh: There it is.
+
+00:28:25.000 --> 00:28:33.000
+Nik Patel: Okay. So, um, we were talking about, like, what type of actions happen. I need to do something, someone else needs to do something.
+
+00:28:33.000 --> 00:28:39.000
+Nik Patel: Um, yadda yadda. One of them was, in an email, it was like, I'll set up a meeting.
+
+00:28:39.000 --> 00:28:45.000
+Nik Patel: Right? So now, Priority Lens basically brings it up and says, like, hey, you are on the hook for scheduling a meeting.
+
+00:28:45.000 --> 00:28:51.000
+Nik Patel: I can do it for you. We think it's a 30-minute meeting with this agent, that might be okay, and here's…
+
+00:28:51.000 --> 00:28:54.000
+Nik Patel: What the participants look like.
+
+00:28:54.000 --> 00:28:56.000
+Nik Patel: Do you want me to take care of it?
+
+00:28:57.000 --> 00:29:01.000
+Nik Patel: you say yes, and it'd say, okay, I'll take care of it, and then you move on to next thing.
+
+00:29:02.000 --> 00:29:04.000
+Bo Motlagh: Okay.
+
+00:29:03.000 --> 00:29:07.000
+Nik Patel: So, you are not waiting for it to actually get that done.
+
+00:29:07.000 --> 00:29:12.000
+Nik Patel: Uh, you're assuming it's gonna get it done, and you go on to the agent view if you want to see what all type of things it's, uh…
+
+00:29:13.000 --> 00:29:20.000
+Nik Patel: it's, uh, tracking, because the meeting won't just get scheduled. It could be that it has to go and.
+
+00:29:17.000 --> 00:29:19.000
+Bo Motlagh: Mm-hmm.
+
+00:29:20.000 --> 00:29:25.000
+Nik Patel: uh, figure out, like, do I need to go back and forth with the person or people.
+
+00:29:25.000 --> 00:29:33.000
+Nik Patel: to find the right times and calendar holds, and this and that. And that's where the sandboxes come into picture, because it's a small process that would.
+
+00:29:33.000 --> 00:29:36.000
+Nik Patel: Continue to run on its own, stuff like that.
+
+00:29:35.000 --> 00:29:41.000
+Bo Motlagh: I got you. So, are you thinking, like, a, um… you know how, like, GCP.
+
+00:29:36.000 --> 00:29:38.000
+Nik Patel: Yep.
+
+00:29:41.000 --> 00:29:57.000
+Bo Motlagh: has, like, a task indicator at the top of the screen, like, working on this, and you don't… it doesn't actually go… come into your view unless you click into it. Is that important, do you think? Like, if it… if it goes off and started doing 3 things to have, like, something that lets you know that that's happening, or are you just trusting it?
+
+00:29:57.000 --> 00:30:02.000
+Nik Patel: Um, it would… you would go onto the screen to see what agent's doing.
+
+00:29:58.000 --> 00:30:00.000
+Bo Motlagh: Or is that the question?
+
+00:30:02.000 --> 00:30:11.000
+Nik Patel: Because agent priority land, sorry, would be doing multiple things, and it will show you all the things it's doing, and you can click on one of them on what's going on with that whole thing.
+
+00:30:11.000 --> 00:30:13.000
+Bo Motlagh: Oh, I see what you're saying.
+
+00:30:13.000 --> 00:30:15.000
+Bo Motlagh: Okay.
+
+00:30:14.000 --> 00:30:20.000
+Nik Patel: Because you might have given it 5 different tasks. It might be, like, tracking a few different things behind the scene, all the newsletter come up.
+
+00:30:21.000 --> 00:30:26.000
+Nik Patel: you need to put them in a daily brief. Alright, I'm checking this for today, I have, like, this 3 newsletters that has already come in.
+
+00:30:26.000 --> 00:30:31.000
+Nik Patel: I'm gonna basically prepare a brief for you tomorrow. Stuff like that, right? And it starts to create that.
+
+00:30:31.000 --> 00:30:36.000
+Nik Patel: The reason I… I also liked it from a go-to-market perspective is then we can start to say.
+
+00:30:37.000 --> 00:30:44.000
+Nik Patel: for $20, you only get, like, 3 concurrent, just, like, actions and stuff like that. If you have more than 3 rules, it's not happening right away, or we're gonna stop.
+
+00:30:39.000 --> 00:30:41.000
+Bo Motlagh: Yeah.
+
+00:30:45.000 --> 00:30:48.000
+Nik Patel: We can ask you to do more, because it's costing us money now.
+
+00:30:48.000 --> 00:30:52.000
+Bo Motlagh: I mean, to be fair, for 20 bucks, you could say you don't actually get any agent spawning.
+
+00:30:53.000 --> 00:30:55.000
+Bo Motlagh: The centralized system can handle it.
+
+00:30:55.000 --> 00:30:57.000
+Nik Patel: Fair. Um…
+
+00:30:57.000 --> 00:31:03.000
+Bo Motlagh: Because I'm right, right? Like, what you're describing is convenience, because it lets you walk away from it, but…
+
+00:31:03.000 --> 00:31:10.000
+Bo Motlagh: If I'm understanding how the architecture would work, the centralized system could just do everything in line for you as well, right?
+
+00:31:10.000 --> 00:31:15.000
+Nik Patel: we want people to, like, continue to get through that task. That's the value we want them to see.
+
+00:31:14.000 --> 00:31:16.000
+Bo Motlagh: I see. Okay.
+
+00:31:17.000 --> 00:31:22.000
+Nik Patel: Right? Okay, let me pause here, let's go back to what we were talking about.
+
+00:31:23.000 --> 00:31:27.000
+Nik Patel: Anything I messed up or said the wrong way that I had not said before?
+
+00:31:29.000 --> 00:31:31.000
+Josh Smith: No, you're good.
+
+00:31:31.000 --> 00:31:36.000
+Nik Patel: Okay? Alright, so… I think we should go on to that execution.
+
+00:31:36.000 --> 00:31:40.000
+Nik Patel: Let me ask this, should we talk about execution, or should we talk about prep?
+
+00:31:40.000 --> 00:31:42.000
+Nik Patel: Or Eagle, you are AI.
+
+00:31:43.000 --> 00:31:45.000
+Josh Smith: I'm ready to talk about the execution mode.
+
+00:31:45.000 --> 00:31:54.000
+Nik Patel: Yeah. So, is it safe to say the idea is still you get onboarded? By the way, Bo, did you have a chance to look at that AI Studio link I had sent you?
+
+00:31:55.000 --> 00:31:57.000
+Bo Motlagh: No.
+
+00:31:56.000 --> 00:31:59.000
+Nik Patel: Okay, um, it's pretty straightforward.
+
+00:31:57.000 --> 00:31:59.000
+Bo Motlagh: When did you send it?
+
+00:32:00.000 --> 00:32:02.000
+Bo Motlagh: Word.
+
+00:32:01.000 --> 00:32:06.000
+Nik Patel: 3 AM over the weekend, whatever, I don't remember.
+
+00:32:06.000 --> 00:32:09.000
+Bo Motlagh: Oh, that's a link. I thought it was a screenshot.
+
+00:32:07.000 --> 00:32:09.000
+Nik Patel: It wasn't…
+
+00:32:10.000 --> 00:32:12.000
+Nik Patel: Uh, no. Um…
+
+00:32:10.000 --> 00:32:14.000
+Bo Motlagh: I see it. I'm there now. This is The Verge? Or no, this is an article.
+
+00:32:16.000 --> 00:32:18.000
+Nik Patel: Oh, yeah, you're looking at something completely different.
+
+00:32:18.000 --> 00:32:21.000
+Bo Motlagh: Excellent. I'm gonna stop talking, you just continue to.
+
+00:32:21.000 --> 00:32:24.000
+Nik Patel: I'll see if I can find that link for you.
+
+00:32:25.000 --> 00:32:30.000
+Nik Patel: Anyway, um, if not, I'll probably find it and send it to you again. So, um…
+
+00:32:28.000 --> 00:32:30.000
+Bo Motlagh: Okay.
+
+00:32:31.000 --> 00:32:36.000
+Nik Patel: The idea is that we go through that process, and…
+
+00:32:36.000 --> 00:32:42.000
+Nik Patel: Go through the onboarding process, and as soon as onboarding's done, we are landing straight on the, um…
+
+00:32:44.000 --> 00:32:48.000
+Nik Patel: execution mode. Is that fair? We are… that's where we are still ending, right?
+
+00:32:48.000 --> 00:32:53.000
+Josh Smith: Mm-hmm. Yeah. Yeah, it goes… so, yeah, the idea is that it now knows.
+
+00:32:53.000 --> 00:32:59.000
+Josh Smith: Now has a sense of your projects, and now has a sense of the immediate tasks you need to take.
+
+00:32:59.000 --> 00:33:02.000
+Josh Smith: And now it's going to go through…
+
+00:33:02.000 --> 00:33:07.000
+Josh Smith: Each one, and convey what it can do to take care of.
+
+00:33:07.000 --> 00:33:13.000
+Josh Smith: those tasks for you. Or to assist you, or to assist you with them. Uh…
+
+00:33:09.000 --> 00:33:11.000
+Nik Patel: Okay.
+
+00:33:13.000 --> 00:33:15.000
+Josh Smith: The idea we're talking about is once you're done that.
+
+00:33:16.000 --> 00:33:20.000
+Josh Smith: Then it can take you to somewhere else, whether that's to the prep.
+
+00:33:21.000 --> 00:33:24.000
+Josh Smith: or to the Eagle view, um…
+
+00:33:21.000 --> 00:33:23.000
+Nik Patel: Mm-hmm.
+
+00:33:24.000 --> 00:33:28.000
+Josh Smith: It could take you there afterward, so…
+
+00:33:34.000 --> 00:33:36.000
+Josh Smith: Thinking, thinking…
+
+00:33:36.000 --> 00:33:38.000
+Nik Patel: pinging.
+
+00:33:43.000 --> 00:33:48.000
+Nik Patel: Here's, um, going back to what we were talking about before, um…
+
+00:33:48.000 --> 00:33:52.000
+Nik Patel: It seems like there's a system we can employ, which is…
+
+00:33:53.000 --> 00:33:58.000
+Nik Patel: figure out who's responsible for this thing. Is it an FYI or not? Just start… start tagging them.
+
+00:33:58.000 --> 00:34:01.000
+Nik Patel: It's an action required, it's an FYI.
+
+00:34:01.000 --> 00:34:03.000
+Nik Patel: something, right?
+
+00:34:04.000 --> 00:34:09.000
+Nik Patel: Anything that has action required, identify who's supposed to take an action. Do I need to follow up?
+
+00:34:09.000 --> 00:34:13.000
+Nik Patel: Or do I need to take an action myself as a user?
+
+00:34:13.000 --> 00:34:17.000
+Nik Patel: That's probably gonna be common, regardless of what type of thing it is.
+
+00:34:17.000 --> 00:34:24.000
+Nik Patel: So I assume we did that, and then the thing that we are literally showing is action required tags alone.
+
+00:34:27.000 --> 00:34:34.000
+Nik Patel: Right? Okay, so then we say, alright, well, action required, um, this one needed a follow-up.
+
+00:34:34.000 --> 00:34:36.000
+Nik Patel: No one has followed up, do you want me to?
+
+00:34:36.000 --> 00:34:39.000
+Nik Patel: Yes, please go ahead and ask. Well…
+
+00:34:39.000 --> 00:34:41.000
+Nik Patel: Okay, I will do that. Done.
+
+00:34:42.000 --> 00:34:48.000
+Nik Patel: Right, I'll let you know what happens after. Alright, so that's out of mind, out of sight, it's okay, AI's tracking it.
+
+00:34:48.000 --> 00:34:50.000
+Nik Patel: I need to take an action.
+
+00:34:50.000 --> 00:34:59.000
+Nik Patel: you need to schedule a meeting, you had said you would, here are your options. I checked your times, I recommend 30 minutes meeting, here's the agenda.
+
+00:34:59.000 --> 00:35:05.000
+Nik Patel: Here's, uh, people that we should be inviting. I can send 3 times out, and I can take care from there.
+
+00:35:05.000 --> 00:35:09.000
+Nik Patel: Do you want to do that? Yes, now done with it.
+
+00:35:08.000 --> 00:35:10.000
+Josh Smith: Hmm?
+
+00:35:10.000 --> 00:35:13.000
+Nik Patel: Um, then there's an action required, which is, um…
+
+00:35:13.000 --> 00:35:22.000
+Nik Patel: put a deck together for an important sales meeting tomorrow. Okay, well, you're not gonna finish that in 2 seconds right now, so what I recommend is.
+
+00:35:22.000 --> 00:35:31.000
+Nik Patel: We'll basically block your calendar for tomorrow, it's gonna take 30 minutes, do you need more? Yes. Is there anything that you want me to prep on before you get into the meeting? Yes, this is this and this.
+
+00:35:31.000 --> 00:35:38.000
+Nik Patel: Okay, I'll set up the time, let's move on to the next thing. And I think we are just going through this on, like, first 5-10, and then just…
+
+00:35:38.000 --> 00:35:43.000
+Nik Patel: Pausing there. Um, okay, we have taken care of all the actions that needed to be taken.
+
+00:35:44.000 --> 00:35:48.000
+Nik Patel: here's all the other stuff you need to know about. FYI, FYI, FYI, FYI.
+
+00:35:48.000 --> 00:35:50.000
+Nik Patel: Right? And then…
+
+00:35:51.000 --> 00:35:57.000
+Nik Patel: that FI could also, like, start to link into prep mode in a way, and that's a good way to transition into prep.
+
+00:35:59.000 --> 00:36:01.000
+Josh Smith: Yes.
+
+00:35:59.000 --> 00:36:03.000
+Nik Patel: Now, the real interesting thing could be.
+
+00:36:04.000 --> 00:36:08.000
+Nik Patel: Is there a reason for us to lend them on a prep mode instead of execution mode?
+
+00:36:13.000 --> 00:36:16.000
+Josh Smith: If there's nothing to execute on.
+
+00:36:16.000 --> 00:36:18.000
+Nik Patel: That's fair.
+
+00:36:17.000 --> 00:36:22.000
+Josh Smith: And the idea of hitting them up with the execution mode immediately is…
+
+00:36:23.000 --> 00:36:27.000
+Josh Smith: To immediately demonstrate that value to them.
+
+00:36:26.000 --> 00:36:28.000
+Nik Patel: Value, yeah.
+
+00:36:27.000 --> 00:36:32.000
+Josh Smith: Yeah, if you get… if you get them… if you take them to prep mode first, and they see everything…
+
+00:36:33.000 --> 00:36:42.000
+Josh Smith: Uh, what they have to prep for, they're like, oh, that's nice, uh, if there isn't something nagging on the screen that's like, hey, execute on these, hey, hey, hey, you know, you've got accidents, let's go through them together.
+
+00:36:42.000 --> 00:36:49.000
+Josh Smith: I mean, that would, if you wanted to go to prep first, I would recommend some way of just nudging them to be like.
+
+00:36:50.000 --> 00:36:53.000
+Josh Smith: Manually now go to these…
+
+00:36:53.000 --> 00:36:56.000
+Josh Smith: these things over here. However, um…
+
+00:36:57.000 --> 00:37:02.000
+Josh Smith: I've worked for where I, I don't know if you've worked for very wealthy people or.
+
+00:37:03.000 --> 00:37:05.000
+Josh Smith: They, they don't want to do anything.
+
+00:37:05.000 --> 00:37:10.000
+Josh Smith: So, and I don't know if that's your market or not, but to be pampered.
+
+00:37:10.000 --> 00:37:16.000
+Josh Smith: And to not have to click on the items would be nice, uh, to be taken to them first.
+
+00:37:16.000 --> 00:37:20.000
+Josh Smith: Um, there's something you're doing here, too, that I want to call out that…
+
+00:37:21.000 --> 00:37:26.000
+Josh Smith: I mean, I'm okay with, but I don't… it's like waiting for the market.
+
+00:37:26.000 --> 00:37:30.000
+Josh Smith: Waiting for the… what do you call that? The trust, um…
+
+00:37:30.000 --> 00:37:35.000
+Josh Smith: The trust within the market for AI, you're going a step beyond.
+
+00:37:35.000 --> 00:37:41.000
+Josh Smith: Like, you know, write an email for me and I'd like to review it and make my edits before you do anything.
+
+00:37:42.000 --> 00:37:45.000
+Josh Smith: Uh, you know, two, just take care of the whole thing for me.
+
+00:37:46.000 --> 00:37:56.000
+Josh Smith: Um, I think it's provocative, but I can't, I'm, I'm UX on this end here, I'm not going to make a determination for you about.
+
+00:37:56.000 --> 00:37:58.000
+Josh Smith: Whether or not the, um…
+
+00:37:58.000 --> 00:38:03.000
+Josh Smith: Whether or not the world is… your particular market is ready for and wanting that level of.
+
+00:38:04.000 --> 00:38:07.000
+Josh Smith: That level of take care of things for me, um…
+
+00:38:07.000 --> 00:38:09.000
+Josh Smith: I would.
+
+00:38:07.000 --> 00:38:13.000
+Bo Motlagh: Google… Google employees are doing this right now, so it's weird.
+
+00:38:11.000 --> 00:38:13.000
+Josh Smith: Alright.
+
+00:38:13.000 --> 00:38:17.000
+Bo Motlagh: like, so I… I've been chatting with, um…
+
+00:38:17.000 --> 00:38:21.000
+Bo Motlagh: the Google rep in our area, and he…
+
+00:38:22.000 --> 00:38:28.000
+Bo Motlagh: it's very obvious, but it's also just good enough where you're just like, I mean, that works.
+
+00:38:27.000 --> 00:38:29.000
+Josh Smith: Yeah.
+
+00:38:28.000 --> 00:38:35.000
+Bo Motlagh: Um, but it's definitely clear that he's not writing those emails. And it's very clear when he is, so, um…
+
+00:38:31.000 --> 00:38:33.000
+Josh Smith: Yeah.
+
+00:38:35.000 --> 00:38:38.000
+Bo Motlagh: And sometimes it, like, replies pretty quickly.
+
+00:38:38.000 --> 00:38:45.000
+Bo Motlagh: So you're just like, there's gotta be a button somewhere where he's just basically saying, handle that for me, and it does.
+
+00:38:45.000 --> 00:38:48.000
+Bo Motlagh: It's kind of weird.
+
+00:38:49.000 --> 00:38:51.000
+Josh Smith: Interesting stuff.
+
+00:38:50.000 --> 00:38:54.000
+Nik Patel: Would we, um, ease them into it with some sort of experience?
+
+00:38:56.000 --> 00:39:01.000
+Nik Patel: Here's what I would type. Does this look good? Oh yeah, here's the changes I made, sure.
+
+00:39:04.000 --> 00:39:06.000
+Josh Smith: Um, so…
+
+00:39:07.000 --> 00:39:13.000
+Josh Smith: You could, I mean, this is another thing, this is another scope creep, but to have a, um…
+
+00:39:14.000 --> 00:39:20.000
+Josh Smith: Something they could manually… they could decide to do if they wanted to, which is do, like, a personalization setup.
+
+00:39:22.000 --> 00:39:28.000
+Josh Smith: Um, I don't know if that's necessary or not, where you actually just talk to the agent, and the agent will ask you a series of questions.
+
+00:39:28.000 --> 00:39:30.000
+Josh Smith: And what it's really doing is…
+
+00:39:31.000 --> 00:39:33.000
+Josh Smith: Getting a sense of your…
+
+00:39:33.000 --> 00:39:35.000
+Bo Motlagh: Oh.
+
+00:39:34.000 --> 00:39:42.000
+Josh Smith: Yeah, your personality, your communication style, um, it's already gone through all your emails, it knows your written style.
+
+00:39:41.000 --> 00:39:43.000
+Nik Patel: Yep.
+
+00:39:42.000 --> 00:39:44.000
+Josh Smith: But…
+
+00:39:45.000 --> 00:39:50.000
+Bo Motlagh: That should probably be an onboarding dialogue concept that you can opt into, right?
+
+00:39:51.000 --> 00:39:56.000
+Nik Patel: So, yes, we have the onboarding concept. So, we have a couple options here, right? One option is…
+
+00:39:57.000 --> 00:39:59.000
+Nik Patel: The onboarding continues.
+
+00:40:02.000 --> 00:40:05.000
+Nik Patel: Somehow, and it feels like it's an onboarding.
+
+00:40:05.000 --> 00:40:11.000
+Nik Patel: Second, it's an execution mode, and we are, like, starting to train the system, as you say, year or nay to something.
+
+00:40:11.000 --> 00:40:13.000
+Bo Motlagh: Hmm.
+
+00:40:11.000 --> 00:40:18.000
+Nik Patel: here's what I would say. Yeah, well, can you change this, this, and this? Okay, it seems like your style is this, is that correct? Yeah, do you want me to take care of it from here on?
+
+00:40:19.000 --> 00:40:23.000
+Nik Patel: I'll basically use the similar concept moving forward.
+
+00:40:23.000 --> 00:40:27.000
+Nik Patel: Which is onboarding without onboarding, right? It's an execution plus…
+
+00:40:27.000 --> 00:40:29.000
+Nik Patel: personalization together.
+
+00:40:29.000 --> 00:40:32.000
+Nik Patel: and again, I'm throwing ideas at the world, so…
+
+00:40:32.000 --> 00:40:34.000
+Josh Smith: Yep.
+
+00:40:33.000 --> 00:40:35.000
+Nik Patel: Shut him down.
+
+00:40:33.000 --> 00:40:38.000
+Bo Motlagh: You need a… you need a flag, just to know… to make sure it doesn't keep doing that, but…
+
+00:40:39.000 --> 00:40:44.000
+Bo Motlagh: And is there a place they can edit that? Are you thinking about this, or either of you…
+
+00:40:44.000 --> 00:40:46.000
+Bo Motlagh: Like, the way…
+
+00:40:46.000 --> 00:40:53.000
+Bo Motlagh: you can create a narrative for yourself, like in GPT, in terms of how it interacts with you? Is that kind of what you're thinking about, or is this just…
+
+00:40:55.000 --> 00:40:57.000
+Bo Motlagh: Simpler than that, I don't know.
+
+00:40:57.000 --> 00:40:59.000
+Josh Smith: How it represents you in conversation.
+
+00:40:59.000 --> 00:41:07.000
+Bo Motlagh: But, like, that's a prompt, right? Like, that's, um… that then every interaction has to be mapped to?
+
+00:41:08.000 --> 00:41:12.000
+Bo Motlagh: Um… and what happens when you want to change that?
+
+00:41:13.000 --> 00:41:18.000
+Bo Motlagh: Like, and I've actually been through that, like, um…
+
+00:41:19.000 --> 00:41:21.000
+Bo Motlagh: I realized that my…
+
+00:41:21.000 --> 00:41:27.000
+Bo Motlagh: After a few months, that might… that, you know, my tone needs to change, or something like that, and so you have to make an adjustment.
+
+00:41:29.000 --> 00:41:32.000
+Bo Motlagh: Make me less rigid.
+
+00:41:34.000 --> 00:41:37.000
+Nik Patel: Um… I mean…
+
+00:41:35.000 --> 00:41:37.000
+Bo Motlagh: Stop telling everyone to off.
+
+00:41:39.000 --> 00:41:41.000
+Nik Patel: It's a fair point that…
+
+00:41:42.000 --> 00:41:45.000
+Nik Patel: I need to review everything before you hit send.
+
+00:41:45.000 --> 00:41:50.000
+Nik Patel: to… I trust you enough to be able to send this, and it's not gonna be the worst thing in the world.
+
+00:41:51.000 --> 00:41:53.000
+Josh Smith: One of those, like, uh…
+
+00:41:54.000 --> 00:41:55.000
+Bo Motlagh: Can this just be a toggle?
+
+00:41:55.000 --> 00:41:59.000
+Josh Smith: Yeah, like, take care of it, or I want to review it.
+
+00:41:59.000 --> 00:42:02.000
+Bo Motlagh: You could even make it global, like…
+
+00:42:02.000 --> 00:42:08.000
+Bo Motlagh: If the toggle is switched on, it never lets it go without an official go.
+
+00:42:09.000 --> 00:42:12.000
+Nik Patel: It's dangerously skip permissions flag on cloud code.
+
+00:42:12.000 --> 00:42:15.000
+Bo Motlagh: Yeah, pretty much.
+
+00:42:17.000 --> 00:42:19.000
+Josh Smith: Yeah, and… you…
+
+00:42:18.000 --> 00:42:21.000
+Bo Motlagh: From a scope perspective, that's easier to do.
+
+00:42:21.000 --> 00:42:23.000
+Nik Patel: Yeah.
+
+00:42:21.000 --> 00:42:26.000
+Bo Motlagh: Man, you're constructing a lot on these prompts, okay?
+
+00:42:25.000 --> 00:42:27.000
+Nik Patel: Yeah, and…
+
+00:42:27.000 --> 00:42:33.000
+Nik Patel: The way I'm thinking about it, and I know, like, every time I say something, I'm thinking in the back of my mind, like, oh, technically this is gonna…
+
+00:42:32.000 --> 00:42:35.000
+Bo Motlagh: Why did I just say I'm gonna build that area?
+
+00:42:34.000 --> 00:42:40.000
+Nik Patel: Yeah, um, but the part that I'm liking is, if we can nail down the UX.
+
+00:42:40.000 --> 00:42:48.000
+Nik Patel: Then we know we are working towards building that UX, um, and that's, that's the part that's going to differentiate us from a stickiness perspective, so.
+
+00:42:43.000 --> 00:42:45.000
+Bo Motlagh: Yeah.
+
+00:42:48.000 --> 00:42:53.000
+Nik Patel: trying not to compromise on the UX, and then figure out tech S after.
+
+00:42:53.000 --> 00:43:00.000
+Bo Motlagh: What does it mean that it doesn't send right away? Is that, like, does that mean it's ending up in your drafts?
+
+00:43:00.000 --> 00:43:05.000
+Bo Motlagh: Um, or is that something else from a UX perspective? Is it completely different, sort of, visually?
+
+00:43:07.000 --> 00:43:10.000
+Nik Patel: So, we haven't decided yet.
+
+00:43:10.000 --> 00:43:12.000
+Bo Motlagh: Okay.
+
+00:43:10.000 --> 00:43:13.000
+Nik Patel: Ideally, it would show up in your queue to review.
+
+00:43:13.000 --> 00:43:17.000
+Nik Patel: We have this, like, this is what you need to get done type of a thing.
+
+00:43:19.000 --> 00:43:20.000
+Nik Patel: The, the…
+
+00:43:19.000 --> 00:43:26.000
+Bo Motlagh: if I were… if I were to go from priority lens, and then just say, well, let me just see what happened in Outlook as a result of that.
+
+00:43:26.000 --> 00:43:32.000
+Bo Motlagh: Is that just in my drafts folder as a result of that interaction, or is that even… not even incorporated into the system yet?
+
+00:43:32.000 --> 00:43:34.000
+Nik Patel: Not yet.
+
+00:43:33.000 --> 00:43:35.000
+Bo Motlagh: Got it, okay.
+
+00:43:35.000 --> 00:43:44.000
+Nik Patel: we could do it, right? We could just convert that into a draft and save it there and pull it from there. Um, haven't gone that far yet. That's what Fixer does, that's what I think Superhuman does.
+
+00:43:43.000 --> 00:43:45.000
+Bo Motlagh: Most of them do, yeah.
+
+00:43:45.000 --> 00:43:47.000
+Nik Patel: Yeah.
+
+00:43:47.000 --> 00:43:49.000
+Josh Smith: Asking…
+
+00:43:48.000 --> 00:43:51.000
+Bo Motlagh: By the way, uh, um…
+
+00:43:51.000 --> 00:43:57.000
+Bo Motlagh: Frank… bailed on Fixer, he just couldn't… he couldn't wrap his head around its model.
+
+00:43:57.000 --> 00:43:59.000
+Bo Motlagh: And it was driving him crazy.
+
+00:43:59.000 --> 00:44:02.000
+Nik Patel: Meaning what? Like, as a user?
+
+00:44:01.000 --> 00:44:06.000
+Bo Motlagh: Yeah, his messages kept disappearing, because it kept reorganizing everything, and he hated it.
+
+00:44:06.000 --> 00:44:12.000
+Nik Patel: Yeah, Superhuman's the same. Uh, it creates its own tags. I'm using Superhuman now.
+
+00:44:08.000 --> 00:44:10.000
+Bo Motlagh: Yeah.
+
+00:44:12.000 --> 00:44:17.000
+Nik Patel: Uh, there's one thing I liked about Superhuman, everything else, I can't get myself to use it. Um…
+
+00:44:17.000 --> 00:44:25.000
+Nik Patel: And I'm trying. Uh, there was this thing where I needed to do expenses, and there was a chatbot in the back, like, after…
+
+00:44:25.000 --> 00:44:32.000
+Nik Patel: on the side, and I said, like, find all the flights that I had to San Francisco, and tell me the cost, and convert that into CSV, and it did.
+
+00:44:32.000 --> 00:44:34.000
+Bo Motlagh: Hmm.
+
+00:44:32.000 --> 00:44:37.000
+Nik Patel: Which was pretty amazing, because, like, thank God, because it would have taken a long time for me to do it.
+
+00:44:38.000 --> 00:44:44.000
+Nik Patel: So that type of thing, I think, was worth it, but that also means that they are indexing every single email.
+
+00:44:44.000 --> 00:44:46.000
+Nik Patel: that goes on.
+
+00:44:47.000 --> 00:44:48.000
+Bo Motlagh: Mm-hmm.
+
+00:44:47.000 --> 00:44:49.000
+Nik Patel: Otherwise, they can't do it themselves that fast.
+
+00:44:50.000 --> 00:44:52.000
+Nik Patel: They're indexing it, for sure.
+
+00:44:52.000 --> 00:44:54.000
+Bo Motlagh: Yep.
+
+00:44:54.000 --> 00:44:55.000
+Nik Patel: So, anyway…
+
+00:44:54.000 --> 00:44:58.000
+Josh Smith: Um… I'm… there's a part of me that…
+
+00:44:58.000 --> 00:45:04.000
+Josh Smith: Says, be happy to go through the experience of having everything be automatic without any review.
+
+00:45:05.000 --> 00:45:10.000
+Josh Smith: The point where review is needed, that thing, that can make the experience pretty complex.
+
+00:45:10.000 --> 00:45:14.000
+Josh Smith: Because when we were talking about that initial idea of coordinating…
+
+00:45:14.000 --> 00:45:22.000
+Josh Smith: multiple people and figuring out schedules, that's potentially a whole bunch of emails that are going back and forth, and to ask.
+
+00:45:22.000 --> 00:45:27.000
+Josh Smith: A person to review every single one of those before it goes out is cumbersome.
+
+00:45:27.000 --> 00:45:28.000
+Nik Patel: Yeah.
+
+00:45:27.000 --> 00:45:29.000
+Josh Smith: daunting, and…
+
+00:45:29.000 --> 00:45:31.000
+Josh Smith: Um…
+
+00:45:32.000 --> 00:45:38.000
+Josh Smith: Is that counter productive to the in in.
+
+00:45:38.000 --> 00:45:42.000
+Josh Smith: Tent value of the tool itself, if that makes sense.
+
+00:45:42.000 --> 00:45:49.000
+Josh Smith: Especially if down the road you want to… you want this thing to be able to identify the…
+
+00:45:50.000 --> 00:45:52.000
+Josh Smith: The way that each individual person.
+
+00:45:52.000 --> 00:45:58.000
+Josh Smith: That you're working with wants to receive information, and being able to cater to that.
+
+00:45:59.000 --> 00:46:01.000
+Josh Smith: Anyway…
+
+00:46:03.000 --> 00:46:05.000
+Josh Smith: So…
+
+00:46:06.000 --> 00:46:08.000
+Josh Smith: We could start with the UX of…
+
+00:46:09.000 --> 00:46:11.000
+Josh Smith: Automatic.
+
+00:46:12.000 --> 00:46:14.000
+Bo Motlagh: Automagic.
+
+00:46:13.000 --> 00:46:15.000
+Josh Smith: Yeah.
+
+00:46:15.000 --> 00:46:23.000
+Josh Smith: I'm comfortable, like, I don't… I can't speak for the market, but I'm comfortable with it, just being like, hey, coordinate, I don't, like, coordinate, I know you're not gonna, like.
+
+00:46:23.000 --> 00:46:26.000
+Josh Smith: You're not gonna, like, send, like…
+
+00:46:26.000 --> 00:46:29.000
+Josh Smith: Nazi propaganda, you know.
+
+00:46:28.000 --> 00:46:32.000
+Bo Motlagh: You never know. I told you what happened the first time I… I…
+
+00:46:33.000 --> 00:46:45.000
+Bo Motlagh: So the first time, I did a rudimentary thing where I connected Claude Code to my email, like, full on. I gave… I had to code a piece of it, but it basically gave it full access to everything in my email, and the ability to send any messages I wanted.
+
+00:46:45.000 --> 00:46:53.000
+Bo Motlagh: And then I told it to tell Nick… write an email to Nick to explain how I did it, and the first thing it did was pull my secrets and put them in the email and send them.
+
+00:46:56.000 --> 00:47:00.000
+Nik Patel: It's like, I'm assuming these are not the real secrets, it's like, delete that email.
+
+00:46:59.000 --> 00:47:04.000
+Bo Motlagh: Yeah. They were the real secrets.
+
+00:47:04.000 --> 00:47:06.000
+Josh Smith: To Picard?
+
+00:47:06.000 --> 00:47:11.000
+Bo Motlagh: No, no, uh, I… uh, to Nick, Nick Patel, so…
+
+00:47:10.000 --> 00:47:13.000
+Josh Smith: Nick, oh, you see?
+
+00:47:11.000 --> 00:47:15.000
+Bo Motlagh: Yeah, yeah, so I… I wrote… I had Claude.
+
+00:47:15.000 --> 00:47:26.000
+Bo Motlagh: I had basically clawed… I have it set up now. It could… it can read my entire inbox for a month, and tell me what's going on, and organize things, and whatever. I just… rudimentary…
+
+00:47:26.000 --> 00:47:34.000
+Bo Motlagh: call it a very primitive version of what Nick's talking about here. And then I gave it the ability to write emails for me.
+
+00:47:34.000 --> 00:47:39.000
+Bo Motlagh: And so I told it, hey, we just spent some time designing and building this in you.
+
+00:47:40.000 --> 00:47:45.000
+Bo Motlagh: summarize it and write it… write an email to my friend Nick Patel explaining how I did it.
+
+00:47:46.000 --> 00:47:49.000
+Bo Motlagh: And it did. In detail.
+
+00:47:50.000 --> 00:47:52.000
+Bo Motlagh: Too much detail.
+
+00:47:51.000 --> 00:47:57.000
+Nik Patel: This is why Sandbox matters, because Sandbox would not open up any of the secrets, and, like, I could…
+
+00:47:57.000 --> 00:48:02.000
+Nik Patel: Start to, like, block some of those things, but that's besides the point for now.
+
+00:48:01.000 --> 00:48:07.000
+Josh Smith: Well, if somebody, like, and if somebody responded to any email from you through.
+
+00:48:07.000 --> 00:48:10.000
+Josh Smith: Through priority lens, and they responded being like, hey.
+
+00:48:11.000 --> 00:48:13.000
+Josh Smith: What does Nick think of me?
+
+00:48:14.000 --> 00:48:17.000
+Josh Smith: And then it goes through all your emails.
+
+00:48:17.000 --> 00:48:19.000
+Josh Smith: And it comes back.
+
+00:48:17.000 --> 00:48:19.000
+Bo Motlagh: It's honest, it's not gonna lie.
+
+00:48:19.000 --> 00:48:24.000
+Josh Smith: It says, based on the prior emails, he had been corresponding with his supervisor about you.
+
+00:48:25.000 --> 00:48:26.000
+Josh Smith: And here's what he…
+
+00:48:25.000 --> 00:48:32.000
+Bo Motlagh: Oh, that's interesting. Is that an intentional piece? Like, are you allowing a team's email system to cross-reference? Okay, good.
+
+00:48:32.000 --> 00:48:34.000
+Nik Patel: Not yet.
+
+00:48:33.000 --> 00:48:36.000
+Bo Motlagh: Don't do that, that's not a good thing.
+
+00:48:42.000 --> 00:48:44.000
+Nik Patel: Yeah, I mean…
+
+00:48:44.000 --> 00:48:46.000
+Bo Motlagh: Oh, excuse me.
+
+00:48:45.000 --> 00:48:47.000
+Nik Patel: Risks exist.
+
+00:48:47.000 --> 00:48:57.000
+Nik Patel: Back to this, though, um, the way we could approach it is, here's what we will automatically do, and here's where we essentially stop and ask you to review no matter what.
+
+00:48:57.000 --> 00:48:59.000
+Nik Patel: Whatever that here's what means.
+
+00:49:01.000 --> 00:49:10.000
+Bo Motlagh: When you… I mean, Josh, when you say it gets very complicated, I guess, what are you imagining as a consequence of that experience flow?
+
+00:49:15.000 --> 00:49:17.000
+Josh Smith: Um…
+
+00:49:17.000 --> 00:49:19.000
+Josh Smith: So…
+
+00:49:19.000 --> 00:49:24.000
+Josh Smith: The first scenario that we were discussing was…
+
+00:49:25.000 --> 00:49:27.000
+Josh Smith: Priority lens coordinating…
+
+00:49:27.000 --> 00:49:31.000
+Josh Smith: Scheduling a meeting, and let's just say it's with 5 other people.
+
+00:49:31.000 --> 00:49:32.000
+Bo Motlagh: Mm-hmm.
+
+00:49:32.000 --> 00:49:36.000
+Josh Smith: Uh, so there… so Priority Lens sends out…
+
+00:49:37.000 --> 00:49:42.000
+Josh Smith: Five emails, one to each participant to talk about coordinating a time and finding the right time.
+
+00:49:43.000 --> 00:49:45.000
+Bo Motlagh: Isn't that just one E-Mus?
+
+00:49:45.000 --> 00:49:47.000
+Josh Smith: For now.
+
+00:49:46.000 --> 00:49:48.000
+Bo Motlagh: Okay.
+
+00:49:48.000 --> 00:49:50.000
+Josh Smith: Could be…
+
+00:49:51.000 --> 00:49:53.000
+Josh Smith: You mean one email with…
+
+00:49:53.000 --> 00:49:55.000
+Josh Smith: All 5 people on that.
+
+00:49:53.000 --> 00:49:56.000
+Bo Motlagh: Yeah.
+
+00:49:55.000 --> 00:49:57.000
+Josh Smith: Sure, could be a thread.
+
+00:49:57.000 --> 00:49:59.000
+Bo Motlagh: Mm-hmm.
+
+00:49:58.000 --> 00:50:00.000
+Josh Smith: It'll be a back and forth.
+
+00:50:00.000 --> 00:50:02.000
+Josh Smith: But if…
+
+00:50:03.000 --> 00:50:06.000
+Josh Smith: The… the constant…
+
+00:50:06.000 --> 00:50:08.000
+Josh Smith: pinging of…
+
+00:50:08.000 --> 00:50:12.000
+Josh Smith: like, me, if I were using prior to lens, of me saying.
+
+00:50:13.000 --> 00:50:18.000
+Josh Smith: I got information back, and I wrote an email. Can you review it before I send it?
+
+00:50:17.000 --> 00:50:19.000
+Bo Motlagh: Mm-hmm.
+
+00:50:18.000 --> 00:50:27.000
+Josh Smith: oh, someone else pinged and responded to that about not being available these days. I found some days here that are available, and I wrote an email.
+
+00:50:27.000 --> 00:50:29.000
+Josh Smith: Would you like to review that?
+
+00:50:29.000 --> 00:50:32.000
+Josh Smith: Imagine getting distracted throughout the day by that.
+
+00:50:33.000 --> 00:50:38.000
+Josh Smith: And so, when I say complexity, I… I shouldn't say that, I say it's…
+
+00:50:38.000 --> 00:50:40.000
+Josh Smith: cumbersome?
+
+00:50:39.000 --> 00:50:41.000
+Bo Motlagh: I see what you mean, okay.
+
+00:50:40.000 --> 00:50:42.000
+Josh Smith: And…
+
+00:50:43.000 --> 00:50:48.000
+Josh Smith: Does someone who wants that level of control with that low level of trust.
+
+00:50:50.000 --> 00:50:54.000
+Josh Smith: Is that… what's the perception of value for them?
+
+00:50:56.000 --> 00:51:03.000
+Josh Smith: And, like, it's almost like you… the tool has diminishing returns now, you could have just coordinated it yourself.
+
+00:51:06.000 --> 00:51:08.000
+Josh Smith: You're just not writing the email anymore.
+
+00:51:08.000 --> 00:51:13.000
+Nik Patel: Yep. Here's where I'm leaning right now, um, and correct me if this is too far.
+
+00:51:09.000 --> 00:51:11.000
+Bo Motlagh: Yeah.
+
+00:51:14.000 --> 00:51:21.000
+Nik Patel: for now, let it make the decisions. We are beta users, and at least we can track it ourselves and see if we need to get more stricter on it.
+
+00:51:23.000 --> 00:51:26.000
+Nik Patel: For beta, I'd give it all permissions.
+
+00:51:26.000 --> 00:51:31.000
+Nik Patel: and then start to pull back and say, like, this is the times where you should not. Obviously, we'll have some more there too, but…
+
+00:51:32.000 --> 00:51:36.000
+Bo Motlagh: Yeah. I mean, as an experience there, it could be as…
+
+00:51:37.000 --> 00:51:42.000
+Bo Motlagh: It could be as simple… well, I don't know about experience, but from a data perspective.
+
+00:51:42.000 --> 00:51:47.000
+Bo Motlagh: Like, what I would imagine would make sense is for a given subject or thread.
+
+00:51:48.000 --> 00:51:50.000
+Bo Motlagh: To be able to turn that off.
+
+00:51:50.000 --> 00:51:56.000
+Bo Motlagh: Like, you got this, you're good, stop, stop asking me. Um…
+
+00:51:52.000 --> 00:51:53.000
+Nik Patel: Yeah.
+
+00:51:55.000 --> 00:51:56.000
+Josh Smith: Yeah, leave me alone.
+
+00:51:56.000 --> 00:52:00.000
+Bo Motlagh: Or vice versa. Like, whoa, hold on.
+
+00:52:00.000 --> 00:52:02.000
+Nik Patel: What if, um…
+
+00:52:02.000 --> 00:52:04.000
+Nik Patel: So, Josh, what if this were the…
+
+00:52:04.000 --> 00:52:07.000
+Nik Patel: These were the agents themselves.
+
+00:52:07.000 --> 00:52:13.000
+Nik Patel: and now I think I'm convoluting a little bit more, but we want to land on execution page.
+
+00:52:14.000 --> 00:52:19.000
+Nik Patel: execution page can do 3 things. One is, here's what you need to get done, let's get it done.
+
+00:52:20.000 --> 00:52:24.000
+Nik Patel: Second, um, here are the agents that you could, like.
+
+00:52:24.000 --> 00:52:28.000
+Nik Patel: Let loose, and they'll take care of it for you moving forward.
+
+00:52:28.000 --> 00:52:33.000
+Nik Patel: And start to set your preferences, your tone, your language, how you talk about things.
+
+00:52:33.000 --> 00:52:35.000
+Nik Patel: People, stuff like that.
+
+00:52:35.000 --> 00:52:42.000
+Nik Patel: Um, so the idea being, we will find something where follow-up is required. If not, then…
+
+00:52:42.000 --> 00:52:47.000
+Nik Patel: We can give them an example of, like, hey, this is what an agent could look like, do you want to turn it on?
+
+00:52:47.000 --> 00:52:50.000
+Nik Patel: Sure, no, I'll do it later. That's it.
+
+00:52:50.000 --> 00:52:55.000
+Nik Patel: And then, sure, I'll do it later, is a preference that just gets set.
+
+00:52:55.000 --> 00:53:01.000
+Nik Patel: If they said, sure, you can go back to agents and see what… what agents are, like, available to you in running.
+
+00:53:02.000 --> 00:53:05.000
+Bo Motlagh: I think from an MVP perspective, your first instinct is better.
+
+00:53:07.000 --> 00:53:09.000
+Bo Motlagh: Split it through.
+
+00:53:09.000 --> 00:53:11.000
+Nik Patel: Uh, sure.
+
+00:53:13.000 --> 00:53:15.000
+Bo Motlagh: Less control.
+
+00:53:18.000 --> 00:53:20.000
+Bo Motlagh: I'm just thinking about…
+
+00:53:19.000 --> 00:53:24.000
+Nik Patel: But we still have to think… we still have to think of that as an agent that needs to continuously run.
+
+00:53:24.000 --> 00:53:27.000
+Bo Motlagh: Yeah.
+
+00:53:27.000 --> 00:53:32.000
+Nik Patel: So behind the scene, we still have to create an agent that tracks and does something with it, right?
+
+00:53:32.000 --> 00:53:36.000
+Bo Motlagh: It's the conditional interface that you're describing that I think would be…
+
+00:53:36.000 --> 00:53:38.000
+Nik Patel: Okay.
+
+00:53:37.000 --> 00:53:43.000
+Bo Motlagh: more complicated than… the back end of that isn't… isn't crazy. It's infrastructure, it's not crazy.
+
+00:53:44.000 --> 00:53:51.000
+Bo Motlagh: I would think the… you tell me, Josh, but I think the UX he just described is far more complicated.
+
+00:53:51.000 --> 00:53:54.000
+Josh Smith: I've been thinking of all the touchpoints, like…
+
+00:53:54.000 --> 00:54:02.000
+Josh Smith: Do they need to get pinged on their… for it to be the least cumbersome? Do they need to get pinged on their phone? Hey, would you like to review this? Is it a Slack?
+
+00:54:03.000 --> 00:54:06.000
+Josh Smith: Uh, hey, party lens, um…
+
+00:54:06.000 --> 00:54:11.000
+Josh Smith: It's looking like it's gonna be Tuesday at 2pm. Here's the email I'm gonna send. Would you like to review?
+
+00:54:11.000 --> 00:54:20.000
+Josh Smith: Uh, and then the history of that, uh, and then the point in time where you can decide that they're good with it, and they can take care of it, not only for this one, but for future ones.
+
+00:54:20.000 --> 00:54:23.000
+Josh Smith: Um, the experience we'll get.
+
+00:54:24.000 --> 00:54:29.000
+Josh Smith: the details that are required to make that simple… simple, uh, will…
+
+00:54:29.000 --> 00:54:31.000
+Bo Motlagh: Not to mention the…
+
+00:54:31.000 --> 00:54:33.000
+Bo Motlagh: You've just described a lot of…
+
+00:54:34.000 --> 00:54:39.000
+Bo Motlagh: Metadata contingent conditional logic for every element of the screen.
+
+00:54:37.000 --> 00:54:39.000
+Nik Patel: Mm-hmm.
+
+00:54:41.000 --> 00:54:47.000
+Nik Patel: Okay, so it seems like we are just saying we'll find something that has a follow-up, if it does.
+
+00:54:47.000 --> 00:54:59.000
+Nik Patel: basically find actions and say, I can take care of these actions for you, if we can. And we'll… we'll figure out what we allow from day one, and what we don't allow from day one. If we allow for it, it's allowed, if we don't allow for it, it's not allowed.
+
+00:55:01.000 --> 00:55:05.000
+Nik Patel: My thinking… what I was thinking behind the scene was.
+
+00:55:06.000 --> 00:55:11.000
+Nik Patel: each of those things that are allowed would also have a tag, like AI tracking, or user…
+
+00:55:12.000 --> 00:55:17.000
+Nik Patel: review, or whatever, and then the system will basically start to track everything that's AI tracking.
+
+00:55:18.000 --> 00:55:20.000
+Nik Patel: And big actions on it.
+
+00:55:23.000 --> 00:55:26.000
+Nik Patel: Because once we know the action needs to be taken, it's not, like…
+
+00:55:27.000 --> 00:55:30.000
+Nik Patel: It's hard, but it's not, like, crazy hard for now.
+
+00:55:30.000 --> 00:55:33.000
+Nik Patel: It's finding when we can need to take action.
+
+00:55:35.000 --> 00:55:38.000
+Bo Motlagh: This is an interesting interface conversation.
+
+00:55:38.000 --> 00:55:43.000
+Nik Patel: See, that's what we… we have been having fun. Well, I've been having fun. Josh probably is, like, pulling his hair as, like…
+
+00:55:43.000 --> 00:55:45.000
+Nik Patel: This dude.
+
+00:55:45.000 --> 00:55:47.000
+Josh Smith: Oh, no, no, no, no, I'm cool.
+
+00:55:48.000 --> 00:55:50.000
+Bo Motlagh: That's it.
+
+00:55:48.000 --> 00:55:50.000
+Josh Smith: I'm usually the dumbest one in the room, so…
+
+00:55:51.000 --> 00:55:53.000
+Nik Patel: Yeah, the smartest.
+
+00:55:52.000 --> 00:55:54.000
+Bo Motlagh: Okay.
+
+00:55:55.000 --> 00:55:57.000
+Josh Smith: Um…
+
+00:55:57.000 --> 00:56:01.000
+Bo Motlagh: You've got your thinking face on. I know that face.
+
+00:56:00.000 --> 00:56:02.000
+Josh Smith: Oh, mine?
+
+00:56:01.000 --> 00:56:03.000
+Bo Motlagh: Yes.
+
+00:56:02.000 --> 00:56:04.000
+Josh Smith: Oh my god…
+
+00:56:04.000 --> 00:56:06.000
+Bo Motlagh: Three years of it.
+
+00:56:05.000 --> 00:56:07.000
+Josh Smith: 3, I was gonna say, 3 years.
+
+00:56:06.000 --> 00:56:11.000
+Bo Motlagh: Three years of him staring at me going, huh.
+
+00:56:15.000 --> 00:56:17.000
+Josh Smith: For the execution mode.
+
+00:56:19.000 --> 00:56:21.000
+Nik Patel: Okay, so…
+
+00:56:20.000 --> 00:56:22.000
+Josh Smith: Thank you. Mm-hmm.
+
+00:56:21.000 --> 00:56:23.000
+Nik Patel: Go ahead.
+
+00:56:24.000 --> 00:56:26.000
+Josh Smith: I'm thinking it should be just as simple as onboarding.
+
+00:56:28.000 --> 00:56:30.000
+Josh Smith: Uh, you…
+
+00:56:28.000 --> 00:56:33.000
+Nik Patel: Here's what you need to get done, here's what I recommend, do you want me to get it done?
+
+00:56:33.000 --> 00:56:35.000
+Josh Smith: Yeah, using that one example we had.
+
+00:56:36.000 --> 00:56:38.000
+Josh Smith: Looks like you need to schedule…
+
+00:56:39.000 --> 00:56:41.000
+Josh Smith: Um…
+
+00:56:42.000 --> 00:56:45.000
+Josh Smith: Looks like you need to schedule this meeting with five folks.
+
+00:56:45.000 --> 00:56:47.000
+Josh Smith: Um…
+
+00:56:47.000 --> 00:56:53.000
+Josh Smith: I have their, you know, not that it would be this, but… because I'm pedantic, um, but…
+
+00:56:53.000 --> 00:56:55.000
+Josh Smith: I have their emails.
+
+00:56:55.000 --> 00:56:57.000
+Josh Smith: It's about this topic.
+
+00:56:57.000 --> 00:57:00.000
+Josh Smith: Um, looks like this type of meeting. It's, uh…
+
+00:57:01.000 --> 00:57:02.000
+Josh Smith: Uh, workshop, whatever.
+
+00:57:03.000 --> 00:57:06.000
+Josh Smith: About 2 hours. Here's a sample agenda.
+
+00:57:06.000 --> 00:57:11.000
+Josh Smith: Would you like me to coordinate… I have access to your calendar, would you like me to coordinate?
+
+00:57:11.000 --> 00:57:13.000
+Josh Smith: Uh, a good time.
+
+00:57:13.000 --> 00:57:15.000
+Josh Smith: Um…
+
+00:57:15.000 --> 00:57:21.000
+Josh Smith: And this is… imagine that this is Priority Lens talking.
+
+00:57:21.000 --> 00:57:24.000
+Josh Smith: Through this. And it's showing stuff on the screen.
+
+00:57:25.000 --> 00:57:27.000
+Josh Smith: As it's talking.
+
+00:57:27.000 --> 00:57:31.000
+Josh Smith: Looks like you have a meeting. These 5 people, boom, boom, boom.
+
+00:57:31.000 --> 00:57:33.000
+Josh Smith: Here's a sample agenda.
+
+00:57:34.000 --> 00:57:36.000
+Josh Smith: Looks like it's gonna be 2 hours.
+
+00:57:37.000 --> 00:57:43.000
+Josh Smith: You could even, instead of, would you like to take care of it, you could start with, does this sound right?
+
+00:57:44.000 --> 00:57:57.000
+Josh Smith: And then I can respond and be like, yeah, that's right, but, um, I think it's gonna need to be 3 hours, and I know every… I already know that everyone says… everyone was saying Thursday would be a good day, so I'd like you to narrow on a Thursday in the future.
+
+00:57:57.000 --> 00:57:59.000
+Josh Smith: And it has to be in the next 3 weeks.
+
+00:58:00.000 --> 00:58:02.000
+Josh Smith: Oh, great. Okay.
+
+00:58:02.000 --> 00:58:04.000
+Josh Smith: you know, um…
+
+00:58:04.000 --> 00:58:06.000
+Josh Smith: Here's a sample…
+
+00:58:06.000 --> 00:58:13.000
+Josh Smith: Um, you know, I could take care of scheduling this for you. Here's a sample, uh, email.
+
+00:58:13.000 --> 00:58:20.000
+Josh Smith: That I would… I would likely send in this instance, um, but I'll send it all over… I'll… I'll get back to you when we have a date.
+
+00:58:21.000 --> 00:58:24.000
+Josh Smith: And it'll show up on your calendar. Would you like me to take care of it?
+
+00:58:24.000 --> 00:58:29.000
+Josh Smith: Yeah, go for it. Great. Is there anything else I should know before I start?
+
+00:58:29.000 --> 00:58:33.000
+Josh Smith: Oh, yeah, yeah, yeah, um, you know, and blah blah blah.
+
+00:58:33.000 --> 00:58:36.000
+Josh Smith: Done. Alright, great, next one.
+
+00:58:38.000 --> 00:58:41.000
+Josh Smith: Uh, and then it goes to the next one.
+
+00:58:41.000 --> 00:58:43.000
+Josh Smith: Wherever that is. And…
+
+00:58:44.000 --> 00:58:48.000
+Josh Smith: The idea of it being able to, like, generate and show content.
+
+00:58:49.000 --> 00:58:52.000
+Josh Smith: As you're talking, you to be able to talk through it.
+
+00:58:53.000 --> 00:59:03.000
+Josh Smith: And then… just go to the next one. That's… that's a concept that was on my brain, that was, like, and it shows you somewhere on the top that you have 3… this… you're in one of four tasks.
+
+00:59:03.000 --> 00:59:09.000
+Josh Smith: now you're at 2 or 4, now you're at 3 or 4, then you're done. Alright, great. Let's show you your day. Boom, prep mode.
+
+00:59:10.000 --> 00:59:14.000
+Josh Smith: Tasks are done, I got it. You can always go up here.
+
+00:59:14.000 --> 00:59:17.000
+Josh Smith: To see my progress on these.
+
+00:59:17.000 --> 00:59:20.000
+Josh Smith: Let's show you… let's show you what your day looks like.
+
+00:59:20.000 --> 00:59:22.000
+Josh Smith: And then it takes you to prep mode.
+
+00:59:22.000 --> 00:59:24.000
+Nik Patel: Okay.
+
+00:59:23.000 --> 00:59:27.000
+Josh Smith: I know it's, like, dead simple. It relies heavily on voice.
+
+00:59:28.000 --> 00:59:30.000
+Josh Smith: Um…
+
+00:59:32.000 --> 00:59:35.000
+Josh Smith: I don't know. I'm just… spitballing.
+
+00:59:37.000 --> 00:59:40.000
+Nik Patel: Love that. Um, but…
+
+00:59:41.000 --> 00:59:45.000
+Nik Patel: I was experimenting on this before, but Versal AI, uh…
+
+00:59:45.000 --> 00:59:51.000
+Nik Patel: SDK allows you to, like, bring in React… bring in React components.
+
+00:59:51.000 --> 00:59:56.000
+Nik Patel: And render them on the fly that looks different depending on the type of a tool being called.
+
+00:59:57.000 --> 01:00:01.000
+Bo Motlagh: Do you have to be in… do you have to be in Vercel to do that?
+
+00:59:57.000 --> 00:59:59.000
+Josh Smith: Really?
+
+01:00:01.000 --> 01:00:08.000
+Nik Patel: No, no, no, no, Vercel's AI SDK, not the Vercel itself. AI SDK generates VIA components, so…
+
+01:00:03.000 --> 01:00:06.000
+Bo Motlagh: Okay. Got it, got it.
+
+01:00:08.000 --> 01:00:19.000
+Nik Patel: What I was thinking about is this tool call essentially ends up generating a component that is a calendar component, and it shows a calendar, which is what makes it a dynamic UI that is.
+
+01:00:19.000 --> 01:00:21.000
+Nik Patel: Tied to voice.
+
+01:00:22.000 --> 01:00:29.000
+Nik Patel: And now that sort of experience basically differentiates us, and you are in this talk, get it done, see it, talk, see, get it done more.
+
+01:00:30.000 --> 01:00:33.000
+Bo Motlagh: Love it. The only…
+
+01:00:31.000 --> 01:00:40.000
+Nik Patel: It, again, it's an additional work, but we need that differentiation, given that, like, there are a bunch of people popping up everywhere saying we can do this.
+
+01:00:40.000 --> 01:00:45.000
+Bo Motlagh: Um, yeah, I think, you know, the only thing that I'd be worried about, which is security there.
+
+01:00:48.000 --> 01:00:50.000
+Nik Patel: Uh, in what sense?
+
+01:00:50.000 --> 01:00:52.000
+Bo Motlagh: You're talking about…
+
+01:00:53.000 --> 01:00:57.000
+Bo Motlagh: Generating executable code on the fly, and rendering it.
+
+01:00:55.000 --> 01:00:58.000
+Nik Patel: No, it's just a component.
+
+01:00:59.000 --> 01:01:04.000
+Nik Patel: that gets called and gets rendered on the fly. So you could build the calendar component, pass it the data and gets…
+
+01:01:01.000 --> 01:01:03.000
+Josh Smith: Like, uh…
+
+01:01:04.000 --> 01:01:08.000
+Nik Patel: injected into your existing way of doing things.
+
+01:01:07.000 --> 01:01:13.000
+Bo Motlagh: Sure, but that calendar component is JavaScript that's being written somewhere, right?
+
+01:01:13.000 --> 01:01:15.000
+Nik Patel: It's already written, it's a tool call.
+
+01:01:15.000 --> 01:01:18.000
+Bo Motlagh: Oh, what am I missing? Sorry.
+
+01:01:17.000 --> 01:01:23.000
+Nik Patel: So, it only gets… look at, uh, Versal AI's…
+
+01:01:23.000 --> 01:01:30.000
+Nik Patel: weather render tool. I have to jump, but, um, basically, if you ask a weather, instead of saying your weather is, like, 79 right now.
+
+01:01:31.000 --> 01:01:35.000
+Nik Patel: Uh, it would essentially show you the whole weather widget. It's called widgets or something.
+
+01:01:31.000 --> 01:01:33.000
+Bo Motlagh: Yeah.
+
+01:01:35.000 --> 01:01:38.000
+Bo Motlagh: I see it here, I'll look it up, the SDK video.
+
+01:01:38.000 --> 01:01:40.000
+Nik Patel: Yep.
+
+01:01:39.000 --> 01:01:41.000
+Bo Motlagh: Alright. Oof.
+
+01:01:40.000 --> 01:01:46.000
+Nik Patel: Okay, gotta jump. I can join again later if you have some time, but if not, I think Friday's the next time we are chatting.
+
+01:01:46.000 --> 01:01:54.000
+Josh Smith: Okay, was… I know we only got a small time to talk about that execution mode concept, but was that enough for you to think about?
+
+01:01:55.000 --> 01:02:02.000
+Nik Patel: I think, yes, um, I still want to go through, like, a quick, dirty wireframe that I can start to convert into actual UI this weekend.
+
+01:02:02.000 --> 01:02:04.000
+Josh Smith: Do you need that before Friday?
+
+01:02:04.000 --> 01:02:07.000
+Nik Patel: If we could, yes, not we can wait.
+
+01:02:07.000 --> 01:02:09.000
+Josh Smith: Alright, hit me up tomorrow.
+
+01:02:09.000 --> 01:02:11.000
+Nik Patel: Ready? Will do.
+
+01:02:10.000 --> 01:02:13.000
+Bo Motlagh: Awesome. See you guys.
+
+01:02:11.000 --> 01:02:14.000
+Nik Patel: Ah.
+
+01:02:14.000 --> 01:02:18.000
+Nik Patel: What was their, like, uh… what was their feedback on it?
