@@ -95,7 +95,7 @@ function FeatureItem({ title, description }: FeatureItemProps): React.JSX.Elemen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.primary,
+    backgroundColor: colors.backgrounds.primary,
   },
   content: {
     flex: 1,

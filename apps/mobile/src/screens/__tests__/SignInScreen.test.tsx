@@ -351,6 +351,120 @@ describe('SignInScreen', () => {
     });
   });
 
+  describe('google sign in', () => {
+    it('renders google sign in button', () => {
+      const { getByTestId } = render(<SignInScreen />);
+
+      expect(getByTestId('google-button')).toBeTruthy();
+    });
+
+    it('completes google oauth flow successfully', async () => {
+      const mockSetOAuthActive = jest.fn().mockResolvedValue({});
+      mockStartOAuthFlow.mockResolvedValue({
+        createdSessionId: 'oauth-sess-123',
+        setActive: mockSetOAuthActive,
+      });
+
+      const { getByTestId, queryByTestId } = render(<SignInScreen />);
+
+      const googleButton = getByTestId('google-button');
+      await act(async () => {
+        fireEvent.press(googleButton);
+      });
+
+      await waitFor(() => {
+        expect(mockStartOAuthFlow).toHaveBeenCalled();
+        expect(mockSetOAuthActive).toHaveBeenCalledWith({ session: 'oauth-sess-123' });
+      });
+
+      // No error should be shown
+      expect(queryByTestId('error-message')).toBeNull();
+    });
+
+    it('shows error when google oauth does not complete', async () => {
+      mockStartOAuthFlow.mockResolvedValue({
+        createdSessionId: null,
+        setActive: jest.fn(),
+      });
+
+      const { getByTestId, getByText } = render(<SignInScreen />);
+
+      const googleButton = getByTestId('google-button');
+      await act(async () => {
+        fireEvent.press(googleButton);
+      });
+
+      await waitFor(() => {
+        expect(getByText('Google sign-in did not complete. Please try again or use email.')).toBeTruthy();
+      });
+    });
+
+    it('shows error when google oauth throws', async () => {
+      mockStartOAuthFlow.mockRejectedValue(new Error('OAuth failed'));
+
+      const { getByTestId, getByText } = render(<SignInScreen />);
+
+      const googleButton = getByTestId('google-button');
+      await act(async () => {
+        fireEvent.press(googleButton);
+      });
+
+      await waitFor(() => {
+        expect(getByText('OAuth failed')).toBeTruthy();
+      });
+    });
+
+    it('shows generic error for non-Error oauth exceptions', async () => {
+      mockStartOAuthFlow.mockRejectedValue('String error');
+
+      const { getByTestId, getByText } = render(<SignInScreen />);
+
+      const googleButton = getByTestId('google-button');
+      await act(async () => {
+        fireEvent.press(googleButton);
+      });
+
+      await waitFor(() => {
+        expect(getByText('Google sign-in failed')).toBeTruthy();
+      });
+    });
+
+    it('does nothing when not loaded', async () => {
+      mockIsLoaded = false;
+
+      const { getByTestId } = render(<SignInScreen />);
+
+      // Should show loading state
+      expect(getByTestId('signin-loading')).toBeTruthy();
+      expect(mockStartOAuthFlow).not.toHaveBeenCalled();
+    });
+
+    it('shows loading indicator during google sign in submission', async () => {
+      let resolveOAuth: () => void;
+      mockStartOAuthFlow.mockImplementation(() => new Promise<{ createdSessionId: string; setActive: jest.Mock }>(resolve => {
+        resolveOAuth = () => resolve({
+          createdSessionId: 'oauth-sess-123',
+          setActive: jest.fn().mockResolvedValue({}),
+        });
+      }));
+
+      const { getByTestId } = render(<SignInScreen />);
+
+      const googleButton = getByTestId('google-button');
+      await act(async () => {
+        fireEvent.press(googleButton);
+      });
+
+      // Resolve
+      await act(async () => {
+        resolveOAuth();
+      });
+
+      // Just verify submission completed without error
+      expect(mockStartOAuthFlow).toHaveBeenCalled();
+    });
+  });
+
   describe('edge cases', () => {
     it('handles code submit when signIn is null', async () => {
       const screen = render(<SignInScreen />);

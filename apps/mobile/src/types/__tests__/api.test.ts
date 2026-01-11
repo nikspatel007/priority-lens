@@ -247,4 +247,57 @@ describe('Interface Structures', () => {
     expect(tokenResponse.token).toBe('jwt-token');
     expect(tokenResponse.room_name).toBe('room-123');
   });
+
+  it('UIBlock has required fields', () => {
+    const block: import('../api').UIBlock = {
+      id: 'block-123',
+      type: 'text',
+      props: { value: 'Hello' },
+      layout: { padding: 8 },
+      children: [],
+      actions: [{ trigger: 'press', type: 'test.action' }],
+    };
+
+    expect(block.id).toBe('block-123');
+    expect(block.type).toBe('text');
+    expect(block.props).toEqual({ value: 'Hello' });
+  });
+
+  it('UIAction has required fields', () => {
+    const action: import('../api').UIAction = {
+      trigger: 'press',
+      type: 'navigate',
+      payload: { screen: 'Settings' },
+    };
+
+    expect(action.trigger).toBe('press');
+    expect(action.type).toBe('navigate');
+  });
+
+  it('LayoutProps has optional fields', () => {
+    const layout: import('../api').LayoutProps = {
+      padding: 16,
+      margin: 8,
+      gap: 4,
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    };
+
+    expect(layout.padding).toBe(16);
+    expect(layout.alignItems).toBe('center');
+  });
+
+  it('SyncStatusResponse has required fields', () => {
+    const sync: import('../api').SyncStatusResponse = {
+      status: 'syncing',
+      emails_synced: 500,
+      total_emails: 1000,
+      progress: 0.5,
+      error: null,
+    };
+
+    expect(sync.status).toBe('syncing');
+    expect(sync.progress).toBe(0.5);
+  });
 });

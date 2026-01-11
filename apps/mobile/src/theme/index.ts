@@ -42,8 +42,9 @@ export const colors = {
   error: '#F44336',
   info: '#2196F3',
 
-  // Background
-  background: {
+  // Background (string alias + object for details)
+  background: '#FFFFFF',
+  backgrounds: {
     primary: '#FFFFFF',
     secondary: '#F5F5F5',
     tertiary: '#EEEEEE',
@@ -53,12 +54,14 @@ export const colors = {
   text: {
     primary: '#212121',
     secondary: '#757575',
+    tertiary: '#9E9E9E',
     disabled: '#9E9E9E',
     inverse: '#FFFFFF',
   },
 
-  // Surface
-  surface: {
+  // Surface (string alias + object for details)
+  surface: '#FFFFFF',
+  surfaces: {
     card: '#FFFFFF',
     elevated: '#FFFFFF',
   },
@@ -69,10 +72,31 @@ export const colors = {
     medium: '#BDBDBD',
     dark: '#9E9E9E',
   },
+
+  // Voice UI colors
+  voice: {
+    agent: '#2196F3', // Blue for Lenso/agent orb
+    agentGlow: '#64B5F6', // Lighter blue for glow effect
+    user: '#9C27B0', // Purple for user orb
+    userGlow: '#CE93D8', // Lighter purple for glow effect
+    waveform: '#BDBDBD', // Neutral waveform color
+    waveformActive: '#2196F3', // Active waveform
+  },
 } as const;
 
 export const typography = {
-  // Font families
+  // Font families (nested structure for SDUI compatibility)
+  sans: {
+    fontFamily: 'System',
+  },
+  serif: {
+    fontFamily: 'Georgia',
+  },
+  mono: {
+    fontFamily: 'Menlo',
+  },
+
+  // Font families (flat structure for legacy compatibility)
   fontFamily: {
     serif: 'Georgia',
     sans: 'System',
@@ -91,8 +115,28 @@ export const typography = {
     '4xl': 36,
   },
 
+  // Font size aliases
+  size: {
+    xs: 12,
+    sm: 14,
+    base: 16,
+    lg: 18,
+    xl: 20,
+    '2xl': 24,
+    '3xl': 30,
+    '4xl': 36,
+  },
+
   // Font weights
   fontWeight: {
+    normal: '400' as const,
+    medium: '500' as const,
+    semibold: '600' as const,
+    bold: '700' as const,
+  },
+
+  // Font weight aliases
+  weight: {
     normal: '400' as const,
     medium: '500' as const,
     semibold: '600' as const,
@@ -186,11 +230,40 @@ export const animation = {
   },
 } as const;
 
+// Simplified color aliases for component use
+const colorAliases = {
+  primary: colors.primary[500],
+  primaryLight: colors.primary[200],
+  secondary: '#9C27B0', // Purple for user
+  secondaryLight: '#E1BEE7',
+  surface: colors.surfaces.card,
+  textPrimary: colors.text.primary,
+  textSecondary: colors.text.secondary,
+  white: '#FFFFFF',
+  black: '#000000',
+  disabled: colors.gray[400],
+  error: colors.error,
+} as const;
+
 // Combined theme object
 export const theme = {
-  colors,
+  colors: {
+    ...colors,
+    ...colorAliases,
+  },
   typography,
-  spacing,
+  spacing: {
+    ...spacing,
+    xs: spacing[0.5],
+    sm: spacing[1],
+    md: spacing[2],
+    lg: spacing[3],
+    xl: spacing[4],
+  },
+  fontSizes: {
+    ...typography.fontSize,
+    md: typography.fontSize.base, // alias for base (16px)
+  },
   borderRadius,
   shadows,
   animation,

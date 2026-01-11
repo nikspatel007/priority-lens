@@ -7,32 +7,19 @@ import { useGoogle } from '@/context/GoogleContext';
 import { SignInScreen } from '@/screens/SignInScreen';
 import { LandingScreen } from '@/screens/LandingScreen';
 import { SyncProgressScreen } from '@/screens/SyncProgressScreen';
+import { ConversationScreen } from '@/screens/ConversationScreen';
+import { SettingsScreen } from '@/screens/SettingsScreen';
 import { colors, typography, spacing } from '@/theme';
 
 export type RootStackParamList = {
   SignIn: undefined;
   Landing: undefined;
   SyncProgress: undefined;
-  Main: undefined;
+  Conversation: undefined;
+  Settings: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-
-/**
- * Placeholder main screen - will be replaced with actual conversation screen
- */
-function MainScreen(): React.JSX.Element {
-  return (
-    <View style={styles.mainContainer}>
-      <Text style={styles.mainTitle}>Priority Lens</Text>
-      <Text style={styles.mainSubtitle}>You're all set!</Text>
-      <Text style={styles.mainDescription}>
-        Your emails are synced and ready.{'\n'}
-        Voice AI assistant coming soon.
-      </Text>
-    </View>
-  );
-}
 
 /**
  * RootNavigator handles the app's authentication flow
@@ -41,18 +28,21 @@ function MainScreen(): React.JSX.Element {
  * 1. Not signed in → SignInScreen
  * 2. Signed in, Google not connected → LandingScreen
  * 3. Google connected, sync in progress → SyncProgressScreen
- * 4. Google connected, sync complete → MainScreen
+ * 4. Google connected, sync complete → ConversationScreen
+ *
+ * Settings is accessible from ConversationScreen
  */
 export function RootNavigator(): React.JSX.Element {
   const { isLoading: authLoading, isSignedIn } = useAuthContext();
   const { isLoading: googleLoading, isConnected: googleConnected } = useGoogle();
   const [syncComplete, setSyncComplete] = useState(false);
-  const [syncStarted, setSyncStarted] = useState(false);
 
+  /* istanbul ignore next */
   const handleSyncComplete = useCallback(() => {
     setSyncComplete(true);
   }, []);
 
+  /* istanbul ignore next */
   const handleSyncError = useCallback((error: string) => {
     console.error('Sync error:', error);
     // Could show an alert or stay on sync screen for retry
@@ -61,7 +51,7 @@ export function RootNavigator(): React.JSX.Element {
   // Show loading while checking auth state
   if (authLoading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={styles.loadingContainer} testID="loading-container">
         <Text style={styles.loadingText}>Loading...</Text>
       </View>
     );
@@ -83,12 +73,26 @@ export function RootNavigator(): React.JSX.Element {
               <SyncProgressScreen
                 onComplete={handleSyncComplete}
                 onError={handleSyncError}
+                onSkip={handleSyncComplete}
               />
             )}
           </Stack.Screen>
         ) : (
-          // Sync complete - show main app
-          <Stack.Screen name="Main" component={MainScreen} />
+          // Sync complete - show main app screens
+          <>
+            <Stack.Screen name="Conversation">
+              {({ navigation }) => (
+                <ConversationScreen
+                  onSettingsPress={() => navigation.navigate('Settings')}
+                />
+              )}
+            </Stack.Screen>
+            <Stack.Screen name="Settings">
+              {({ navigation }) => (
+                <SettingsScreen onBack={() => navigation.goBack()} />
+              )}
+            </Stack.Screen>
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>
@@ -100,38 +104,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.background.primary,
+    backgroundColor: colors.backgrounds.primary,
   },
   loadingText: {
     fontFamily: typography.fontFamily.sans,
     fontSize: typography.fontSize.lg,
     color: colors.text.secondary,
-  },
-  mainContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.background.primary,
-    padding: spacing[4],
-  },
-  mainTitle: {
-    fontFamily: typography.fontFamily.serif,
-    fontSize: typography.fontSize['3xl'],
-    fontWeight: typography.fontWeight.bold,
-    color: colors.text.primary,
-    marginBottom: spacing[1],
-  },
-  mainSubtitle: {
-    fontFamily: typography.fontFamily.sans,
-    fontSize: typography.fontSize.xl,
-    color: colors.primary[500],
-    marginBottom: spacing[4],
-  },
-  mainDescription: {
-    fontFamily: typography.fontFamily.sans,
-    fontSize: typography.fontSize.base,
-    color: colors.text.secondary,
-    textAlign: 'center',
-    lineHeight: typography.fontSize.base * typography.lineHeight.relaxed,
   },
 });

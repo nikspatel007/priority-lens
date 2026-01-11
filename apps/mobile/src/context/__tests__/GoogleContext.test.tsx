@@ -8,6 +8,7 @@ import {
   type GoogleContextValue,
 } from '../GoogleContext';
 import * as googleAuth from '@/services/googleAuth';
+import * as api from '@/services/api';
 
 // Mock googleAuth service
 jest.mock('@/services/googleAuth', () => ({
@@ -20,7 +21,13 @@ jest.mock('@/services/googleAuth', () => ({
   getCurrentGoogleUser: jest.fn(),
 }));
 
+// Mock API service
+jest.mock('@/services/api', () => ({
+  getGmailConnectionStatus: jest.fn(),
+}));
+
 const mockGoogleAuth = googleAuth as jest.Mocked<typeof googleAuth>;
+const mockApi = api as jest.Mocked<typeof api>;
 
 const mockUser = {
   id: 'google-user-123',
@@ -60,6 +67,10 @@ describe('GoogleContext', () => {
       success: false,
       error: 'cancelled',
       message: 'No previous session found',
+    });
+    // Default to backend not connected
+    mockApi.getGmailConnectionStatus.mockResolvedValue({
+      is_connected: false,
     });
   });
 
@@ -106,12 +117,16 @@ describe('GoogleContext', () => {
       });
     });
 
-    it('sets isConnected and user on successful silent sign-in', async () => {
+    it('sets isConnected and user on successful silent sign-in when backend is connected', async () => {
       mockGoogleAuth.silentSignIn.mockResolvedValue({
         success: true,
         user: mockUser,
         idToken: 'mock-id-token',
         serverAuthCode: 'mock-server-auth-code',
+      });
+      // Backend confirms connection
+      mockApi.getGmailConnectionStatus.mockResolvedValue({
+        is_connected: true,
       });
 
       const { getByTestId } = render(
@@ -126,7 +141,53 @@ describe('GoogleContext', () => {
       });
     });
 
-    it('calls onConnectionComplete on successful silent sign-in with server auth code', async () => {
+    it('sets isConnected to false when silent sign-in succeeds but backend is not connected', async () => {
+      mockGoogleAuth.silentSignIn.mockResolvedValue({
+        success: true,
+        user: mockUser,
+        idToken: 'mock-id-token',
+        serverAuthCode: 'mock-server-auth-code',
+      });
+      // Backend says not connected (needs fresh sign-in)
+      mockApi.getGmailConnectionStatus.mockResolvedValue({
+        is_connected: false,
+      });
+
+      const { getByTestId } = render(
+        <GoogleProvider webClientId="web-client-id">
+          <TestConsumer />
+        </GoogleProvider>
+      );
+
+      await waitFor(() => {
+        expect(getByTestId('isConnected').props.children).toBe('false');
+        expect(getByTestId('isLoading').props.children).toBe('false');
+      });
+    });
+
+    it('sets isConnected to false when backend check fails', async () => {
+      mockGoogleAuth.silentSignIn.mockResolvedValue({
+        success: true,
+        user: mockUser,
+        idToken: 'mock-id-token',
+        serverAuthCode: 'mock-server-auth-code',
+      });
+      // Backend check fails (network error)
+      mockApi.getGmailConnectionStatus.mockRejectedValue(new Error('Network error'));
+
+      const { getByTestId } = render(
+        <GoogleProvider webClientId="web-client-id">
+          <TestConsumer />
+        </GoogleProvider>
+      );
+
+      await waitFor(() => {
+        expect(getByTestId('isConnected').props.children).toBe('false');
+        expect(getByTestId('isLoading').props.children).toBe('false');
+      });
+    });
+
+    it('does not call onConnectionComplete on silent sign-in (only on connect)', async () => {
       const onConnectionComplete = jest.fn().mockResolvedValue(undefined);
       mockGoogleAuth.silentSignIn.mockResolvedValue({
         success: true,
@@ -134,28 +195,8 @@ describe('GoogleContext', () => {
         idToken: 'mock-id-token',
         serverAuthCode: 'mock-server-auth-code',
       });
-
-      render(
-        <GoogleProvider
-          webClientId="web-client-id"
-          onConnectionComplete={onConnectionComplete}
-        >
-          <TestConsumer />
-        </GoogleProvider>
-      );
-
-      await waitFor(() => {
-        expect(onConnectionComplete).toHaveBeenCalledWith('mock-server-auth-code');
-      });
-    });
-
-    it('does not call onConnectionComplete when serverAuthCode is null', async () => {
-      const onConnectionComplete = jest.fn().mockResolvedValue(undefined);
-      mockGoogleAuth.silentSignIn.mockResolvedValue({
-        success: true,
-        user: mockUser,
-        idToken: 'mock-id-token',
-        serverAuthCode: null,
+      mockApi.getGmailConnectionStatus.mockResolvedValue({
+        is_connected: true,
       });
 
       render(
@@ -177,6 +218,7 @@ describe('GoogleContext', () => {
         await new Promise((r) => setTimeout(r, 100));
       });
 
+      // onConnectionComplete is NOT called during silent sign-in
       expect(onConnectionComplete).not.toHaveBeenCalled();
     });
 
@@ -312,6 +354,10 @@ describe('GoogleContext', () => {
         idToken: 'mock-id-token',
         serverAuthCode: 'mock-server-auth-code',
       });
+      // Backend confirms connection
+      mockApi.getGmailConnectionStatus.mockResolvedValue({
+        is_connected: true,
+      });
 
       let contextValue: GoogleContextValue | undefined;
       const { getByTestId } = render(
@@ -389,6 +435,10 @@ describe('GoogleContext', () => {
         user: mockUser,
         idToken: 'mock-id-token',
         serverAuthCode: 'mock-server-auth-code',
+      });
+      // Backend confirms connection
+      mockApi.getGmailConnectionStatus.mockResolvedValue({
+        is_connected: true,
       });
       mockGoogleAuth.revokeGoogleAccess.mockResolvedValue(undefined);
 

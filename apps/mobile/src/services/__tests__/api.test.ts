@@ -26,6 +26,7 @@ import {
   executeAction,
   getActionTypes,
   getSyncStatus,
+  getGmailConnectionStatus,
   completeGoogleConnection,
 } from '../api';
 
@@ -976,6 +977,32 @@ describe('Sync API', () => {
 
       expect(result.status).toBe('failed');
       expect(result.error).toBe('Network error');
+    });
+  });
+
+  describe('getGmailConnectionStatus', () => {
+    it('fetches gmail connection status', async () => {
+      const mockResponse = {
+        connected: true,
+        email: 'test@gmail.com',
+        last_sync: '2024-01-01T00:00:00Z',
+      };
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve(mockResponse),
+      });
+
+      const result = await getGmailConnectionStatus();
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        'http://localhost:8000/api/v1/connections/gmail',
+        expect.objectContaining({
+          method: 'GET',
+        })
+      );
+      expect(result).toEqual(mockResponse);
     });
   });
 

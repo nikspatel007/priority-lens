@@ -354,6 +354,39 @@ export interface CompleteConnectionResponse {
 }
 
 // ============================================================================
+// SDUI Types
+// ============================================================================
+
+export interface UIAction {
+  trigger: 'press' | 'longPress' | 'swipe';
+  type: string;
+  payload?: Record<string, unknown>;
+}
+
+export interface LayoutProps {
+  padding?: number;
+  margin?: number;
+  gap?: number;
+  flex?: number;
+  alignItems?: 'flex-start' | 'center' | 'flex-end' | 'stretch';
+  justifyContent?:
+    | 'flex-start'
+    | 'center'
+    | 'flex-end'
+    | 'space-between'
+    | 'space-around';
+}
+
+export interface UIBlock {
+  id: string;
+  type: string;
+  props?: Record<string, unknown>;
+  layout?: LayoutProps;
+  children?: UIBlock[];
+  actions?: UIAction[];
+}
+
+// ============================================================================
 // API Error Types
 // ============================================================================
 

@@ -30,9 +30,10 @@ describe('Theme', () => {
     });
 
     it('has background colors', () => {
-      expect(colors.background.primary).toBe('#FFFFFF');
-      expect(colors.background.secondary).toBe('#F5F5F5');
-      expect(colors.background.tertiary).toBe('#EEEEEE');
+      expect(colors.background).toBe('#FFFFFF');
+      expect(colors.backgrounds.primary).toBe('#FFFFFF');
+      expect(colors.backgrounds.secondary).toBe('#F5F5F5');
+      expect(colors.backgrounds.tertiary).toBe('#EEEEEE');
     });
 
     it('has text colors', () => {
@@ -43,14 +44,24 @@ describe('Theme', () => {
     });
 
     it('has surface colors', () => {
-      expect(colors.surface.card).toBe('#FFFFFF');
-      expect(colors.surface.elevated).toBe('#FFFFFF');
+      expect(colors.surface).toBe('#FFFFFF');
+      expect(colors.surfaces.card).toBe('#FFFFFF');
+      expect(colors.surfaces.elevated).toBe('#FFFFFF');
     });
 
     it('has border colors', () => {
       expect(colors.border.light).toBe('#E0E0E0');
       expect(colors.border.medium).toBe('#BDBDBD');
       expect(colors.border.dark).toBe('#9E9E9E');
+    });
+
+    it('has voice UI colors', () => {
+      expect(colors.voice.agent).toBe('#2196F3');
+      expect(colors.voice.agentGlow).toBe('#64B5F6');
+      expect(colors.voice.user).toBe('#9C27B0');
+      expect(colors.voice.userGlow).toBe('#CE93D8');
+      expect(colors.voice.waveform).toBe('#BDBDBD');
+      expect(colors.voice.waveformActive).toBe('#2196F3');
     });
   });
 
@@ -147,12 +158,56 @@ describe('Theme', () => {
   });
 
   describe('theme object', () => {
-    it('combines all theme values', () => {
-      expect(theme.colors).toBe(colors);
+    it('includes base color palettes', () => {
+      // Base palettes are spread into theme.colors
+      expect(theme.colors.gray[500]).toBe(colors.gray[500]);
+      expect(theme.colors.success).toBe(colors.success);
+    });
+
+    it('includes color aliases', () => {
+      expect(theme.colors.primary).toBe('#2196F3');
+      expect(theme.colors.primaryLight).toBe('#90CAF9');
+      expect(theme.colors.secondary).toBe('#9C27B0');
+      expect(theme.colors.secondaryLight).toBe('#E1BEE7');
+      expect(theme.colors.surface).toBe('#FFFFFF');
+      expect(theme.colors.textPrimary).toBe('#212121');
+      expect(theme.colors.textSecondary).toBe('#757575');
+      expect(theme.colors.white).toBe('#FFFFFF');
+      expect(theme.colors.black).toBe('#000000');
+      expect(theme.colors.disabled).toBe('#BDBDBD');
+      expect(theme.colors.error).toBe('#F44336');
+    });
+
+    it('includes typography', () => {
       expect(theme.typography).toBe(typography);
-      expect(theme.spacing).toBe(spacing);
+    });
+
+    it('includes spacing with aliases', () => {
+      expect(theme.spacing[1]).toBe(8);
+      expect(theme.spacing.xs).toBe(4);
+      expect(theme.spacing.sm).toBe(8);
+      expect(theme.spacing.md).toBe(16);
+      expect(theme.spacing.lg).toBe(24);
+      expect(theme.spacing.xl).toBe(32);
+    });
+
+    it('includes fontSizes', () => {
+      expect(theme.fontSizes.xs).toBe(typography.fontSize.xs);
+      expect(theme.fontSizes.sm).toBe(typography.fontSize.sm);
+      expect(theme.fontSizes.base).toBe(typography.fontSize.base);
+      expect(theme.fontSizes.md).toBe(typography.fontSize.base); // md is an alias for base
+      expect(theme.fontSizes.lg).toBe(typography.fontSize.lg);
+    });
+
+    it('includes borderRadius', () => {
       expect(theme.borderRadius).toBe(borderRadius);
+    });
+
+    it('includes shadows', () => {
       expect(theme.shadows).toBe(shadows);
+    });
+
+    it('includes animation', () => {
       expect(theme.animation).toBe(animation);
     });
   });

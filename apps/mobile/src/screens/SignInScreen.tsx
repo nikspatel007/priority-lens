@@ -34,6 +34,7 @@ export function SignInScreen(): React.JSX.Element {
   const [error, setError] = useState<string | null>(null);
 
   const handleGoogleSignIn = useCallback(async () => {
+    /* istanbul ignore next - defensive check, button not rendered when !isLoaded */
     if (!isLoaded) return;
 
     setIsSubmitting(true);
@@ -44,7 +45,7 @@ export function SignInScreen(): React.JSX.Element {
       const { createdSessionId, setActive: setOAuthActive } =
         await startGoogleOAuthFlow({ redirectUrl });
 
-      if (createdSessionId) {
+      if (createdSessionId && setOAuthActive) {
         await setOAuthActive({ session: createdSessionId });
         return;
       }
@@ -233,7 +234,7 @@ export function SignInScreen(): React.JSX.Element {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.primary,
+    backgroundColor: colors.backgrounds.primary,
   },
   content: {
     flex: 1,
@@ -292,7 +293,7 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.sans,
     fontSize: typography.fontSize.base,
     color: colors.text.primary,
-    backgroundColor: colors.background.primary,
+    backgroundColor: colors.backgrounds.primary,
     marginBottom: spacing[2],
   },
   button: {
