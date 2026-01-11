@@ -5,9 +5,11 @@ import { ClerkProvider, ClerkLoaded } from '@clerk/clerk-expo';
 import * as WebBrowser from 'expo-web-browser';
 import { AuthProvider } from '@/context/AuthContext';
 import { GoogleProvider } from '@/context/GoogleContext';
+import { LiveKitProvider } from '@/context/LiveKitContext';
 import { RootNavigator } from '@/navigation/RootNavigator';
 import { tokenCache } from '@/context/TokenCache';
 import { completeGoogleConnection } from '@/services/api';
+import { ErrorBoundary } from '@/components/error/ErrorBoundary';
 import { StyleSheet } from 'react-native';
 
 // Required for Clerk OAuth flows (Expo WebBrowser)
@@ -60,23 +62,32 @@ export default function App(): React.JSX.Element {
   return (
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
-        <ClerkProvider
-          publishableKey={CLERK_PUBLISHABLE_KEY}
-          tokenCache={tokenCache}
+        <ErrorBoundary
+          onError={(error, errorInfo) => {
+            console.error('App Error:', error.message);
+            console.error('Component Stack:', errorInfo.componentStack);
+          }}
         >
-          <ClerkLoaded>
-            <AuthProvider>
-              <GoogleProvider
-                webClientId={GOOGLE_WEB_CLIENT_ID}
-                iosClientId={GOOGLE_IOS_CLIENT_ID}
-                onConnectionComplete={handleGoogleConnection}
-              >
-                <RootNavigator />
-                <StatusBar style="auto" />
-              </GoogleProvider>
-            </AuthProvider>
-          </ClerkLoaded>
-        </ClerkProvider>
+          <ClerkProvider
+            publishableKey={CLERK_PUBLISHABLE_KEY}
+            tokenCache={tokenCache}
+          >
+            <ClerkLoaded>
+              <AuthProvider>
+                <GoogleProvider
+                  webClientId={GOOGLE_WEB_CLIENT_ID}
+                  iosClientId={GOOGLE_IOS_CLIENT_ID}
+                  onConnectionComplete={handleGoogleConnection}
+                >
+                  <LiveKitProvider>
+                    <RootNavigator />
+                    <StatusBar style="auto" />
+                  </LiveKitProvider>
+                </GoogleProvider>
+              </AuthProvider>
+            </ClerkLoaded>
+          </ClerkProvider>
+        </ErrorBoundary>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

@@ -76,23 +76,25 @@ SessionDep = Annotated[AsyncSession, Depends(get_session)]
 def _get_user_id(user: ClerkUser) -> UUID:
     """Get UUID from ClerkUser.id string.
 
+    Uses uuid5 with DNS namespace to generate consistent UUIDs from Clerk IDs.
+    This matches the approach in connections.py.
+
     Args:
         user: Authenticated user.
 
     Returns:
         User ID as UUID.
     """
-    try:
-        return UUID(user.id)
-    except ValueError:
-        import hashlib
+    import uuid as uuid_module
 
-        hash_bytes = hashlib.md5(user.id.encode()).digest()  # noqa: S324
-        return UUID(bytes=hash_bytes)
+    return uuid_module.uuid5(uuid_module.NAMESPACE_DNS, user.id)
 
 
 def _get_org_id(user: ClerkUser) -> UUID:
     """Get organization UUID from ClerkUser.
+
+    Uses the default organization ID to match how users are provisioned
+    in connections.py.
 
     Args:
         user: Authenticated user.
@@ -100,9 +102,10 @@ def _get_org_id(user: ClerkUser) -> UUID:
     Returns:
         Organization ID as UUID.
     """
-    # For now, use user_id as org_id (single-user organizations)
-    # In future, this could be extracted from user metadata or a separate lookup
-    return _get_user_id(user)
+    import uuid as uuid_module
+
+    # Use the default organization ID (matches connections.py)
+    return uuid_module.UUID("00000000-0000-0000-0000-000000000001")
 
 
 @router.post("", response_model=ThreadResponse, status_code=status.HTTP_201_CREATED)

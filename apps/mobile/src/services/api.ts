@@ -69,7 +69,12 @@ async function getAuthHeaders(): Promise<Record<string, string>> {
     const token = await authTokenGetter();
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
+      console.log('Auth token added to request');
+    } else {
+      console.warn('Auth token getter returned null');
     }
+  } else {
+    console.warn('No auth token getter set');
   }
 
   return headers;
@@ -97,12 +102,14 @@ function buildUrl(
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     let detail: string | undefined;
+    let errorBody: Record<string, unknown> | undefined;
     try {
-      const errorBody = await response.json();
-      detail = errorBody.detail || errorBody.message;
+      errorBody = await response.json();
+      detail = (errorBody?.detail || errorBody?.message) as string | undefined;
     } catch {
       // Ignore JSON parse errors
     }
+    console.error('API error:', response.status, response.url, errorBody);
     const error = new Error(detail || `HTTP ${response.status}`) as Error & {
       status?: number;
       detail?: string;

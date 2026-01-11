@@ -31,6 +31,32 @@ jest.mock('react-native', () => {
     return Component;
   };
 
+  // Mock Animated.Value class
+  class MockAnimatedValue {
+    constructor(value) {
+      this._value = value;
+    }
+    setValue(value) {
+      this._value = value;
+    }
+    interpolate() {
+      return this;
+    }
+  }
+
+  // Factory function to create mock animations
+  function createMockAnimation() {
+    return {
+      start: function(callback) {
+        if (callback) {
+          setTimeout(function() { callback({ finished: true }); }, 0);
+        }
+      },
+      stop: function() {},
+      reset: function() {},
+    };
+  }
+
   return {
     Platform: {
       OS: 'ios',
@@ -44,16 +70,41 @@ jest.mock('react-native', () => {
       get: jest.fn(() => ({ width: 375, height: 812 })),
     },
     Animated: {
-      Value: jest.fn(),
+      Value: MockAnimatedValue,
       View: createMockComponent('Animated.View'),
       Text: createMockComponent('Animated.Text'),
-      timing: jest.fn(() => ({ start: jest.fn() })),
-      spring: jest.fn(() => ({ start: jest.fn() })),
+      timing: function() { return createMockAnimation(); },
+      spring: function() { return createMockAnimation(); },
+      loop: function(animation) {
+        return {
+          start: function(callback) {
+            if (callback) setTimeout(function() { callback({ finished: true }); }, 0);
+          },
+          stop: function() {},
+        };
+      },
+      sequence: function() { return createMockAnimation(); },
+      parallel: function() { return createMockAnimation(); },
+      delay: function() { return createMockAnimation(); },
     },
     View: createMockComponent('View'),
     Text: createMockComponent('Text'),
     TextInput: createMockComponent('TextInput'),
-    TouchableOpacity: createMockComponent('TouchableOpacity'),
+    TouchableOpacity: (props) => {
+      const React = require('react');
+      const { onPress, disabled, children, ...rest } = props;
+      // Create a press handler that respects disabled prop
+      const handlePress = () => {
+        if (!disabled && onPress) {
+          onPress();
+        }
+      };
+      return React.createElement('TouchableOpacity', {
+        ...rest,
+        onPress: handlePress,
+        disabled,
+      }, children);
+    },
     KeyboardAvoidingView: createMockComponent('KeyboardAvoidingView'),
     ActivityIndicator: createMockComponent('ActivityIndicator'),
     ScrollView: createMockComponent('ScrollView'),
@@ -61,14 +112,71 @@ jest.mock('react-native', () => {
     Image: createMockComponent('Image'),
     Pressable: createMockComponent('Pressable'),
     NativeModules: {},
+    Alert: {
+      alert: jest.fn(),
+    },
+    Keyboard: {
+      addListener: jest.fn().mockImplementation(() => ({ remove: jest.fn() })),
+      dismiss: jest.fn(),
+      removeAllListeners: jest.fn(),
+    },
   };
 });
 
-// Mock react-native-reanimated
+// Mock react-native-reanimated with inline mock (compatible with newer versions)
 jest.mock('react-native-reanimated', () => {
-  const Reanimated = require('react-native-reanimated/mock');
-  Reanimated.default.call = () => {};
-  return Reanimated;
+  const React = require('react');
+
+  const createMockComponent = (name) => {
+    const Component = (props) => {
+      return React.createElement(name, props, props.children);
+    };
+    Component.displayName = name;
+    return Component;
+  };
+
+  // Create a shared value mock that allows property assignment
+  const createSharedValue = (initial) => {
+    let _value = initial;
+    return {
+      get value() { return _value; },
+      set value(v) { _value = v; },
+    };
+  };
+
+  return {
+    default: {
+      call: jest.fn(),
+      createAnimatedComponent: (component) => component,
+      View: createMockComponent('Animated.View'),
+      Text: createMockComponent('Animated.Text'),
+    },
+    View: createMockComponent('Animated.View'),
+    Text: createMockComponent('Animated.Text'),
+    useSharedValue: jest.fn(createSharedValue),
+    useAnimatedStyle: jest.fn(() => ({})),
+    useDerivedValue: jest.fn((fn) => ({ value: fn() })),
+    useAnimatedProps: jest.fn(() => ({})),
+    withTiming: jest.fn((value) => value),
+    withSpring: jest.fn((value) => value),
+    withRepeat: jest.fn((value) => value),
+    withSequence: jest.fn((...values) => values[0]),
+    withDelay: jest.fn((_, value) => value),
+    Easing: {
+      linear: jest.fn(),
+      ease: jest.fn(),
+      inOut: jest.fn((easing) => easing),
+    },
+    interpolate: jest.fn((value) => value),
+    Extrapolate: {
+      CLAMP: 'clamp',
+      EXTEND: 'extend',
+    },
+    runOnJS: jest.fn((fn) => fn),
+    runOnUI: jest.fn((fn) => fn),
+    cancelAnimation: jest.fn(),
+    createAnimatedComponent: (component) => component,
+  };
 });
 
 // Mock expo-secure-store
@@ -175,6 +283,54 @@ jest.mock('@livekit/react-native', () => ({
   },
   registerGlobals: jest.fn(),
 }));
+
+// Mock livekit-client with a MockRoom class for LiveKitContext
+jest.mock('livekit-client', () => {
+  class MockRoom {
+    _connected = false;
+    _handlers = new Map();
+    localParticipant = {
+      setMicrophoneEnabled: jest.fn().mockResolvedValue(undefined),
+    };
+
+    get state() {
+      return this._connected ? 'connected' : 'disconnected';
+    }
+
+    async connect() {
+      this._connected = true;
+    }
+
+    async disconnect() {
+      this._connected = false;
+    }
+
+    on(event, handler) {
+      this._handlers.set(event, handler);
+      return this;
+    }
+
+    off(event, handler) {
+      this._handlers.delete(event);
+      return this;
+    }
+
+    async performRpc() {
+      return '';
+    }
+  }
+
+  return {
+    Room: MockRoom,
+    RoomEvent: {
+      Connected: 'connected',
+      Disconnected: 'disconnected',
+      DataReceived: 'dataReceived',
+      ParticipantConnected: 'participantConnected',
+      ActiveSpeakersChanged: 'activeSpeakersChanged',
+    },
+  };
+});
 
 // Mock @react-navigation
 jest.mock('@react-navigation/native', () => ({

@@ -11,10 +11,13 @@ import { getSyncStatus } from '@/services/api';
 import type { SyncStatusResponse, SyncStatus } from '@/types/api';
 
 const POLL_INTERVAL_MS = 2500;
+const MAX_RETRIES = 3;
 
 interface SyncProgressScreenProps {
   onComplete?: () => void;
   onError?: (error: string) => void;
+  /** Allow skipping sync (useful for dev/testing or when backend is unavailable) */
+  onSkip?: () => void;
 }
 
 /**
@@ -29,14 +32,18 @@ interface SyncProgressScreenProps {
 export function SyncProgressScreen({
   onComplete,
   onError,
+  onSkip,
 }: SyncProgressScreenProps): React.JSX.Element {
   const [status, setStatus] = useState<SyncStatusResponse | null>(null);
   const [isPolling, setIsPolling] = useState(true);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const retryCountRef = useRef(0);
 
   const pollStatus = useCallback(async () => {
     try {
       const syncStatus = await getSyncStatus();
+      // Reset retry count on success
+      retryCountRef.current = 0;
       setStatus(syncStatus);
 
       if (syncStatus.status === 'completed') {
@@ -46,8 +53,24 @@ export function SyncProgressScreen({
         setIsPolling(false);
         onError?.(syncStatus.error || 'Sync failed');
       }
-    } catch {
-      // Continue polling on network errors
+    } catch (err) {
+      // Increment retry count
+      retryCountRef.current += 1;
+      console.log(`Sync status poll error (attempt ${retryCountRef.current}):`, err);
+
+      // Show error after max retries
+      if (retryCountRef.current >= MAX_RETRIES) {
+        const message = err instanceof Error ? err.message : 'Network error';
+        setStatus({
+          status: 'failed',
+          emails_synced: 0,
+          total_emails: null,
+          progress: 0,
+          error: `Connection failed: ${message}`,
+        });
+        setIsPolling(false);
+      }
+      // Otherwise continue polling
     }
   }, [onComplete, onError]);
 
@@ -110,6 +133,7 @@ export function SyncProgressScreen({
           <TouchableOpacity
             style={styles.retryButton}
             onPress={() => {
+              retryCountRef.current = 0;
               setIsPolling(true);
               pollStatus();
             }}
@@ -117,6 +141,15 @@ export function SyncProgressScreen({
           >
             <Text style={styles.retryButtonText}>Try Again</Text>
           </TouchableOpacity>
+          {onSkip && (
+            <TouchableOpacity
+              style={styles.skipButton}
+              onPress={onSkip}
+              testID="skip-button"
+            >
+              <Text style={styles.skipButtonText}>Continue without sync</Text>
+            </TouchableOpacity>
+          )}
         </View>
       );
     }
@@ -153,7 +186,7 @@ export function SyncProgressScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.primary,
+    backgroundColor: colors.backgrounds.primary,
   },
   content: {
     flex: 1,
@@ -237,5 +270,16 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.base,
     fontWeight: typography.fontWeight.semibold,
     color: colors.text.inverse,
+  },
+  skipButton: {
+    marginTop: spacing[3],
+    paddingVertical: spacing[2],
+    paddingHorizontal: spacing[4],
+  },
+  skipButtonText: {
+    fontFamily: typography.fontFamily.sans,
+    fontSize: typography.fontSize.sm,
+    color: colors.text.secondary,
+    textDecorationLine: 'underline',
   },
 });

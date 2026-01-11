@@ -428,4 +428,47 @@ describe('SyncProgressScreen', () => {
       expect(onComplete).toHaveBeenCalled();
     });
   });
+
+  describe('skip button', () => {
+    it('shows skip button when onSkip is provided and sync fails', async () => {
+      const onSkip = jest.fn();
+      mockGetSyncStatus.mockResolvedValue(
+        createSyncStatus({ status: 'failed', error: 'Test error' })
+      );
+
+      const { getByTestId } = render(<SyncProgressScreen onSkip={onSkip} />);
+
+      await waitFor(() => {
+        expect(getByTestId('skip-button')).toBeTruthy();
+      });
+    });
+
+    it('does not show skip button when onSkip is not provided', async () => {
+      mockGetSyncStatus.mockResolvedValue(
+        createSyncStatus({ status: 'failed', error: 'Test error' })
+      );
+
+      const { queryByTestId } = render(<SyncProgressScreen />);
+
+      await waitFor(() => {
+        expect(queryByTestId('skip-button')).toBeNull();
+      });
+    });
+
+    it('calls onSkip when skip button is pressed', async () => {
+      const onSkip = jest.fn();
+      mockGetSyncStatus.mockResolvedValue(
+        createSyncStatus({ status: 'failed', error: 'Test error' })
+      );
+
+      const { getByTestId } = render(<SyncProgressScreen onSkip={onSkip} />);
+
+      await waitFor(() => {
+        expect(getByTestId('skip-button')).toBeTruthy();
+      });
+
+      fireEvent.press(getByTestId('skip-button'));
+      expect(onSkip).toHaveBeenCalledTimes(1);
+    });
+  });
 });
