@@ -30,6 +30,7 @@ import type {
   ActionResponse,
   SyncStatusResponse,
   CompleteConnectionResponse,
+  DigestResponse,
   APIError,
 } from '@/types/api';
 
@@ -437,6 +438,24 @@ export async function executeAction(
  */
 export async function getActionTypes(): Promise<{ types: string[] }> {
   return get<{ types: string[] }>('/api/v1/actions/types');
+}
+
+// ============================================================================
+// Digest API
+// ============================================================================
+
+/**
+ * Get personalized smart digest
+ * Returns greeting, suggested todos, and topics to catch up on
+ */
+export async function getDigest(
+  maxTodos: number = 5,
+  maxTopics: number = 5
+): Promise<DigestResponse> {
+  return get<DigestResponse>('/api/v1/digest', {
+    max_todos: maxTodos,
+    max_topics: maxTopics,
+  });
 }
 
 // ============================================================================

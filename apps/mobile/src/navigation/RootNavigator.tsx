@@ -7,6 +7,7 @@ import { useGoogle } from '@/context/GoogleContext';
 import { SignInScreen } from '@/screens/SignInScreen';
 import { LandingScreen } from '@/screens/LandingScreen';
 import { SyncProgressScreen } from '@/screens/SyncProgressScreen';
+import { DigestScreen } from '@/screens/DigestScreen';
 import { ConversationScreen } from '@/screens/ConversationScreen';
 import { SettingsScreen } from '@/screens/SettingsScreen';
 import { colors, typography, spacing } from '@/theme';
@@ -15,6 +16,7 @@ export type RootStackParamList = {
   SignIn: undefined;
   Landing: undefined;
   SyncProgress: undefined;
+  Digest: undefined;
   Conversation: undefined;
   Settings: undefined;
 };
@@ -28,9 +30,11 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
  * 1. Not signed in → SignInScreen
  * 2. Signed in, Google not connected → LandingScreen
  * 3. Google connected, sync in progress → SyncProgressScreen
- * 4. Google connected, sync complete → ConversationScreen
+ * 4. Google connected, sync complete → DigestScreen (Execution Mode)
  *
- * Settings is accessible from ConversationScreen
+ * From DigestScreen, users can:
+ * - Navigate to ConversationScreen (Voice Mode)
+ * - Navigate to Settings
  */
 export function RootNavigator(): React.JSX.Element {
   const { isLoading: authLoading, isSignedIn } = useAuthContext();
@@ -80,6 +84,17 @@ export function RootNavigator(): React.JSX.Element {
         ) : (
           // Sync complete - show main app screens
           <>
+            <Stack.Screen name="Digest">
+              {({ navigation }) => (
+                <DigestScreen
+                  onConversationPress={() => navigation.navigate('Conversation')}
+                  onAction={(actionType, itemId) => {
+                    console.log('Digest action:', actionType, itemId);
+                    // Handle actions here or navigate to detail screens
+                  }}
+                />
+              )}
+            </Stack.Screen>
             <Stack.Screen name="Conversation">
               {({ navigation }) => (
                 <ConversationScreen

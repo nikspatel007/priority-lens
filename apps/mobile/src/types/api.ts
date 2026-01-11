@@ -354,6 +354,50 @@ export interface CompleteConnectionResponse {
 }
 
 // ============================================================================
+// Digest Types
+// ============================================================================
+
+export type UrgencyLevel = 'high' | 'medium' | 'low';
+
+export interface DigestAction {
+  id: string;
+  type: string;
+  label: string;
+  endpoint?: string | null;
+  params?: Record<string, unknown>;
+}
+
+export interface DigestTodoItem {
+  id: string;
+  title: string;
+  source: string;
+  urgency: UrgencyLevel;
+  due?: string | null;
+  context?: string | null;
+  email_id?: string | null;
+  actions: DigestAction[];
+}
+
+export interface DigestTopicItem {
+  id: string;
+  title: string;
+  email_count: number;
+  participants: string[];
+  last_activity: string;
+  summary?: string | null;
+  urgency: UrgencyLevel;
+}
+
+export interface DigestResponse {
+  greeting: string;
+  subtitle: string;
+  suggested_todos: DigestTodoItem[];
+  topics_to_catchup: DigestTopicItem[];
+  last_updated: string;
+  user_preferences?: Record<string, unknown>;
+}
+
+// ============================================================================
 // SDUI Types
 // ============================================================================
 

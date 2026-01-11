@@ -237,9 +237,9 @@ class TestAgentStreamingService:
                     # Process first event
                     events.append(event)
                     # Cancel after first event
-                    service._active_sessions[streaming_context.correlation_id] = (
-                        AgentStreamingState(is_cancelled=True, turn_open=True)
-                    )
+                    service._active_sessions[
+                        streaming_context.correlation_id
+                    ] = AgentStreamingState(is_cancelled=True, turn_open=True)
                     break
 
                 return events

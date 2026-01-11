@@ -47,6 +47,7 @@ def _setup_session_factories(session_factory: SessionFactory) -> None:
     from priority_lens.api.routes import (
         set_actions_session,
         set_agent_session,
+        set_digest_session,
         set_threads_session,
     )
 
@@ -57,6 +58,7 @@ def _setup_session_factories(session_factory: SessionFactory) -> None:
     set_threads_session(session_factory)
     set_agent_session(session_factory)
     set_actions_session(session_factory)
+    set_digest_session(session_factory)
 
 
 @asynccontextmanager
@@ -152,10 +154,11 @@ def create_app(config: APIConfig | None = None) -> FastAPI:
     app.include_router(connections_router, prefix=api_v1_prefix)
     app.include_router(webhooks_router, prefix=api_v1_prefix)
 
-    # Import and register project/task/inbox/threads/livekit/agent/actions routes
+    # Import and register project/task/inbox/threads/livekit/agent/actions/digest routes
     from priority_lens.api.routes import (
         actions_router,
         agent_router,
+        digest_router,
         inbox_router,
         livekit_router,
         projects_router,
@@ -167,6 +170,7 @@ def create_app(config: APIConfig | None = None) -> FastAPI:
     app.include_router(projects_router, prefix=api_v1_prefix)
     app.include_router(tasks_router, prefix=api_v1_prefix)
     app.include_router(inbox_router, prefix=api_v1_prefix)
+    app.include_router(digest_router, prefix=api_v1_prefix)
     app.include_router(threads_router, prefix=api_v1_prefix)
     app.include_router(livekit_router, prefix=api_v1_prefix)
     app.include_router(agent_router, prefix=api_v1_prefix)
